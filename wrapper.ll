@@ -19,7 +19,7 @@ define i32 @main() #0 {
   %7 = bitcast [3 x i32]* %2 to i8*
   call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 4 %7, i8* align 4 bitcast ([3 x i32]* @__const.main.expected to i8*), i64 12, i1 false)
   %8 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
-  store i32 0, i32* %8, align 4
+  store i32 1, i32* %8, align 4
   %9 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
   %10 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
   call void @_Z7run_cfgPiS_(i32* %9, i32* %10)

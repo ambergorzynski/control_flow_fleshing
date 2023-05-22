@@ -11,7 +11,7 @@ int main() {
 	int directions[1];
 	bool result;
 
-	directions[0] = 0;
+	directions[0] = 1;
 
 	run_cfg(directions, out);
 

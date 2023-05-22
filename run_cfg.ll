@@ -12,24 +12,33 @@ define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
 	%counter = alloca i32
 	store i32 0, i32* %counter
 
+	%dir_counter = alloca i32
+	store i32 0, i32* %dir_counter
+
 	br label %1
 
 1:
+	; store node label in output array
 	%index_1 = load i32, i32* %counter
 	%output_1 = load i32*, i32** %output
 	%output_1_ptr = getelementptr inbounds i32, i32* %output_1, i32 %index_1
 	store i32 1, i32* %output_1_ptr
 	
-	; get directions for node
-	%dir_1 = load i32*, i32** %directions
-	%dir_1_ptr = getelementptr inbounds i32, i32* %dir_1, i32 %index_1
-	%dir_1_value = load i32, i32* %dir_1_ptr
-	
 	; increment counter
 	%temp_1_1 = add i32 %index_1, 1
 	store i32 %temp_1_1, i32* %counter
 	
-	; branch 
+	; get directions for node
+	%index_dir_1 = load i32, i32* %dir_counter
+	%dir_1 = load i32*, i32** %directions
+	%dir_1_ptr = getelementptr inbounds i32, i32* %dir_1, i32 %index_dir_1
+	%dir_1_value = load i32, i32* %dir_1_ptr
+
+	; increment directions counter
+	%temp_1_2 = add i32 %index_dir_1, 1
+	store i32 %temp_1_2, i32* %dir_counter
+
+	; branch
 	%condition = icmp eq i32 %dir_1_value, 0
 	br i1 %condition, label %2, label %3
 
