@@ -3,71 +3,69 @@ source_filename = "wrapper.cpp"
 target datalayout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-apple-macosx13.0.0"
 
+@__const.main.expected = private unnamed_addr constant [3 x i32] [i32 1, i32 2, i32 4], align 4
 @.str = private unnamed_addr constant [14 x i8] c"result is %d\0A\00", align 1
 @.str.1 = private unnamed_addr constant [14 x i8] c"out %d is %d\0A\00", align 1
 
 ; Function Attrs: noinline norecurse optnone ssp uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
-  %2 = alloca [4 x i32], align 16
+  %2 = alloca [3 x i32], align 4
   %3 = alloca [4 x i32], align 16
   %4 = alloca [1 x i32], align 4
   %5 = alloca i8, align 1
   %6 = alloca i32, align 4
   store i32 0, i32* %1, align 4
-  %7 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
-  store i32 1, i32* %7, align 4
-  %8 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
-  store i32 0, i32* %8, align 16
-  %9 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 1
-  store i32 1, i32* %9, align 4
-  %10 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 2
-  store i32 2, i32* %10, align 8
-  %11 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 3
-  store i32 7, i32* %11, align 4
-  %12 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
-  %13 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
-  call void @_Z7run_cfgPiS_(i32* %12, i32* %13)
-  %14 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
-  %15 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
-  %16 = call zeroext i1 @_Z3cmpPiS_i(i32* %14, i32* %15, i32 4)
-  %17 = zext i1 %16 to i8
-  store i8 %17, i8* %5, align 1
-  %18 = load i8, i8* %5, align 1
-  %19 = trunc i8 %18 to i1
-  %20 = zext i1 %19 to i32
-  %21 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str, i64 0, i64 0), i32 %20)
+  %7 = bitcast [3 x i32]* %2 to i8*
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 4 %7, i8* align 4 bitcast ([3 x i32]* @__const.main.expected to i8*), i64 12, i1 false)
+  %8 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
+  store i32 0, i32* %8, align 4
+  %9 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
+  %10 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
+  call void @_Z7run_cfgPiS_(i32* %9, i32* %10)
+  %11 = getelementptr inbounds [3 x i32], [3 x i32]* %2, i64 0, i64 0
+  %12 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
+  %13 = call zeroext i1 @_Z3cmpPiS_i(i32* %11, i32* %12, i32 3)
+  %14 = zext i1 %13 to i8
+  store i8 %14, i8* %5, align 1
+  %15 = load i8, i8* %5, align 1
+  %16 = trunc i8 %15 to i1
+  %17 = zext i1 %16 to i32
+  %18 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str, i64 0, i64 0), i32 %17)
   store i32 0, i32* %6, align 4
-  br label %22
+  br label %19
 
-22:                                               ; preds = %32, %0
+19:                                               ; preds = %29, %0
+  %20 = load i32, i32* %6, align 4
+  %21 = icmp slt i32 %20, 3
+  br i1 %21, label %22, label %32
+
+22:                                               ; preds = %19
   %23 = load i32, i32* %6, align 4
-  %24 = icmp slt i32 %23, 4
-  br i1 %24, label %25, label %35
+  %24 = load i32, i32* %6, align 4
+  %25 = sext i32 %24 to i64
+  %26 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 %25
+  %27 = load i32, i32* %26, align 4
+  %28 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.1, i64 0, i64 0), i32 %23, i32 %27)
+  br label %29
 
-25:                                               ; preds = %22
-  %26 = load i32, i32* %6, align 4
-  %27 = load i32, i32* %6, align 4
-  %28 = sext i32 %27 to i64
-  %29 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 %28
-  %30 = load i32, i32* %29, align 4
-  %31 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.1, i64 0, i64 0), i32 %26, i32 %30)
-  br label %32
+29:                                               ; preds = %22
+  %30 = load i32, i32* %6, align 4
+  %31 = add nsw i32 %30, 1
+  store i32 %31, i32* %6, align 4
+  br label %19
 
-32:                                               ; preds = %25
-  %33 = load i32, i32* %6, align 4
-  %34 = add nsw i32 %33, 1
-  store i32 %34, i32* %6, align 4
-  br label %22
-
-35:                                               ; preds = %22
+32:                                               ; preds = %19
   ret i32 0
 }
 
-declare void @_Z7run_cfgPiS_(i32*, i32*) #1
+; Function Attrs: argmemonly nofree nounwind willreturn
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* noalias nocapture writeonly, i8* noalias nocapture readonly, i64, i1 immarg) #1
+
+declare void @_Z7run_cfgPiS_(i32*, i32*) #2
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
-define zeroext i1 @_Z3cmpPiS_i(i32* %0, i32* %1, i32 %2) #2 {
+define zeroext i1 @_Z3cmpPiS_i(i32* %0, i32* %1, i32 %2) #3 {
   %4 = alloca i1, align 1
   %5 = alloca i32*, align 8
   %6 = alloca i32*, align 8
@@ -121,11 +119,12 @@ define zeroext i1 @_Z3cmpPiS_i(i32* %0, i32* %1, i32 %2) #2 {
   ret i1 %32
 }
 
-declare i32 @printf(i8*, ...) #1
+declare i32 @printf(i8*, ...) #2
 
 attributes #0 = { noinline norecurse optnone ssp uwtable "darwin-stkchk-strong-link" "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
-attributes #1 = { "darwin-stkchk-strong-link" "frame-pointer"="all" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
-attributes #2 = { noinline nounwind optnone ssp uwtable "darwin-stkchk-strong-link" "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
+attributes #1 = { argmemonly nofree nounwind willreturn }
+attributes #2 = { "darwin-stkchk-strong-link" "frame-pointer"="all" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
+attributes #3 = { noinline nounwind optnone ssp uwtable "darwin-stkchk-strong-link" "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
 
 !llvm.module.flags = !{!0, !1, !2, !3, !4}
 !llvm.ident = !{!5}

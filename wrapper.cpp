@@ -6,25 +6,20 @@ bool cmp(int* expected, int* actual, int size);
 
 int main() {
 
-	int expected[4];
+	int expected[3] = {1, 2, 4};
 	int out[4];
 	int directions[1];
 	bool result;
 
-	directions[0] = 1;
-
-	expected[0] = 0;
-	expected[1] = 1;
-	expected[2] = 2;
-	expected[3] = 7;
+	directions[0] = 0;
 
 	run_cfg(directions, out);
 
-	result = cmp(expected, out, 4);
+	result = cmp(expected, out, 3);
 
 	printf("result is %d\n", result);
 
-	for(int i = 0; i < 4; i++) {
+	for(int i = 0; i < 3; i++) {
 		printf("out %d is %d\n", i, out[i]);
 	}
 
