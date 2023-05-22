@@ -11,7 +11,8 @@ int main() {
 	int directions[1];
 	bool result;
 
-	directions[0] = 0;
+	directions[0] = 1;
+
 	expected[0] = 0;
 	expected[1] = 1;
 	expected[2] = 2;
