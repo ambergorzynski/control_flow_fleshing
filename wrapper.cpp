@@ -22,8 +22,10 @@ int main() {
 	result = cmp(expected, out, 4);
 
 	printf("result is %d\n", result);
-	printf("out 0 is %d\n", out[0]);
-	printf("out 3 is %d\n", out[3]);
+
+	for(int i = 0; i < 4; i++) {
+		printf("out %d is %d\n", i, out[i]);
+	}
 
 	return 0;
 }

@@ -4,8 +4,7 @@ target datalayout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16
 target triple = "x86_64-apple-macosx13.0.0"
 
 @.str = private unnamed_addr constant [14 x i8] c"result is %d\0A\00", align 1
-@.str.1 = private unnamed_addr constant [13 x i8] c"out 0 is %d\0A\00", align 1
-@.str.2 = private unnamed_addr constant [13 x i8] c"out 3 is %d\0A\00", align 1
+@.str.1 = private unnamed_addr constant [14 x i8] c"out %d is %d\0A\00", align 1
 
 ; Function Attrs: noinline norecurse optnone ssp uwtable
 define i32 @main() #0 {
@@ -14,35 +13,54 @@ define i32 @main() #0 {
   %3 = alloca [4 x i32], align 16
   %4 = alloca [1 x i32], align 4
   %5 = alloca i8, align 1
+  %6 = alloca i32, align 4
   store i32 0, i32* %1, align 4
-  %6 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
+  %7 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
+  store i32 0, i32* %7, align 4
+  %8 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
+  store i32 0, i32* %8, align 16
+  %9 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 1
+  store i32 1, i32* %9, align 4
+  %10 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 2
+  store i32 2, i32* %10, align 8
+  %11 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 3
+  store i32 7, i32* %11, align 4
+  %12 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
+  %13 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
+  call void @_Z7run_cfgPiS_(i32* %12, i32* %13)
+  %14 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
+  %15 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
+  %16 = call zeroext i1 @_Z3cmpPiS_i(i32* %14, i32* %15, i32 4)
+  %17 = zext i1 %16 to i8
+  store i8 %17, i8* %5, align 1
+  %18 = load i8, i8* %5, align 1
+  %19 = trunc i8 %18 to i1
+  %20 = zext i1 %19 to i32
+  %21 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str, i64 0, i64 0), i32 %20)
   store i32 0, i32* %6, align 4
-  %7 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
-  store i32 0, i32* %7, align 16
-  %8 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 1
-  store i32 1, i32* %8, align 4
-  %9 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 2
-  store i32 2, i32* %9, align 8
-  %10 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 3
-  store i32 7, i32* %10, align 4
-  %11 = getelementptr inbounds [1 x i32], [1 x i32]* %4, i64 0, i64 0
-  %12 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
-  call void @_Z7run_cfgPiS_(i32* %11, i32* %12)
-  %13 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i64 0, i64 0
-  %14 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
-  %15 = call zeroext i1 @_Z3cmpPiS_i(i32* %13, i32* %14, i32 4)
-  %16 = zext i1 %15 to i8
-  store i8 %16, i8* %5, align 1
-  %17 = load i8, i8* %5, align 1
-  %18 = trunc i8 %17 to i1
-  %19 = zext i1 %18 to i32
-  %20 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str, i64 0, i64 0), i32 %19)
-  %21 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 0
-  %22 = load i32, i32* %21, align 16
-  %23 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([13 x i8], [13 x i8]* @.str.1, i64 0, i64 0), i32 %22)
-  %24 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 3
-  %25 = load i32, i32* %24, align 4
-  %26 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([13 x i8], [13 x i8]* @.str.2, i64 0, i64 0), i32 %25)
+  br label %22
+
+22:                                               ; preds = %32, %0
+  %23 = load i32, i32* %6, align 4
+  %24 = icmp slt i32 %23, 4
+  br i1 %24, label %25, label %35
+
+25:                                               ; preds = %22
+  %26 = load i32, i32* %6, align 4
+  %27 = load i32, i32* %6, align 4
+  %28 = sext i32 %27 to i64
+  %29 = getelementptr inbounds [4 x i32], [4 x i32]* %3, i64 0, i64 %28
+  %30 = load i32, i32* %29, align 4
+  %31 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.1, i64 0, i64 0), i32 %26, i32 %30)
+  br label %32
+
+32:                                               ; preds = %25
+  %33 = load i32, i32* %6, align 4
+  %34 = add nsw i32 %33, 1
+  store i32 %34, i32* %6, align 4
+  br label %22
+
+35:                                               ; preds = %22
   ret i32 0
 }
 
