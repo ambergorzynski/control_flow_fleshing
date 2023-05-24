@@ -22,15 +22,23 @@ int main(int argc, char** argv) {
 
 	result = cmp(expected_output, actual_output, size);
 
-	printf("result is %d\n", result);
+	printf("expected and actual output are ");
+
+	(result) ? printf("the same\n") : printf("not the same\n");
+
+	printf("expected output:");
 
 	for(int i = 0; i < size; i++) {
-		printf("expected_output %d is %d\n", i, expected_output[i]);
+		printf(" %d", expected_output[i]);
 	}
 
+	printf("\nactual output:  ");
+
 	for(int i = 0; i < size; i++) {
-		printf("actual_output %d is %d\n", i, actual_output[i]);
+		printf(" %d", actual_output[i]);
 	}
+
+	printf("\n");
 
 	// deallocate memory for dynamic arrays
 	delete [] directions;

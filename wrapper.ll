@@ -23,10 +23,14 @@ target triple = "x86_64-apple-macosx13.0.0"
 %"class.std::__1::basic_istream" = type { i32 (...)**, i64, %"class.std::__1::basic_ios.base" }
 %"struct.std::__1::nullptr_t" = type { i8* }
 
-@.str = private unnamed_addr constant [14 x i8] c"result is %d\0A\00", align 1
-@.str.1 = private unnamed_addr constant [26 x i8] c"expected_output %d is %d\0A\00", align 1
-@.str.2 = private unnamed_addr constant [24 x i8] c"actual_output %d is %d\0A\00", align 1
-@.str.3 = private unnamed_addr constant [26 x i8] c"Error opening input file\0A\00", align 1
+@.str = private unnamed_addr constant [32 x i8] c"expected and actual output are \00", align 1
+@.str.1 = private unnamed_addr constant [10 x i8] c"the same\0A\00", align 1
+@.str.2 = private unnamed_addr constant [14 x i8] c"not the same\0A\00", align 1
+@.str.3 = private unnamed_addr constant [17 x i8] c"expected output:\00", align 1
+@.str.4 = private unnamed_addr constant [4 x i8] c" %d\00", align 1
+@.str.5 = private unnamed_addr constant [18 x i8] c"\0Aactual output:  \00", align 1
+@.str.6 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+@.str.7 = private unnamed_addr constant [26 x i8] c"Error opening input file\0A\00", align 1
 @_ZTVNSt3__114basic_ifstreamIcNS_11char_traitsIcEEEE = external unnamed_addr constant { [5 x i8*], [5 x i8*] }, align 8
 @_ZTTNSt3__114basic_ifstreamIcNS_11char_traitsIcEEEE = external unnamed_addr constant [4 x i8*], align 8
 @_ZTVNSt3__19basic_iosIcNS_11char_traitsIcEEEE = external unnamed_addr constant { [4 x i8*] }, align 8
@@ -60,92 +64,104 @@ define i32 @main(i32 %0, i8** %1) #0 {
   %21 = call zeroext i1 @_Z3cmpPiS_i(i32* %18, i32* %19, i32 %20)
   %22 = zext i1 %21 to i8
   store i8 %22, i8* %9, align 1
-  %23 = load i8, i8* %9, align 1
-  %24 = trunc i8 %23 to i1
-  %25 = zext i1 %24 to i32
-  %26 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str, i64 0, i64 0), i32 %25)
+  %23 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @.str, i64 0, i64 0))
+  %24 = load i8, i8* %9, align 1
+  %25 = trunc i8 %24 to i1
+  br i1 %25, label %26, label %28
+
+26:                                               ; preds = %2
+  %27 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.1, i64 0, i64 0))
+  br label %30
+
+28:                                               ; preds = %2
+  %29 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.2, i64 0, i64 0))
+  br label %30
+
+30:                                               ; preds = %28, %26
+  %31 = phi i32 [ %27, %26 ], [ %29, %28 ]
+  %32 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.3, i64 0, i64 0))
   store i32 0, i32* %11, align 4
-  br label %27
+  br label %33
 
-27:                                               ; preds = %39, %2
-  %28 = load i32, i32* %11, align 4
-  %29 = load i32, i32* %10, align 4
-  %30 = icmp slt i32 %28, %29
-  br i1 %30, label %31, label %42
-
-31:                                               ; preds = %27
-  %32 = load i32, i32* %11, align 4
-  %33 = load i32*, i32** %6, align 8
+33:                                               ; preds = %44, %30
   %34 = load i32, i32* %11, align 4
-  %35 = sext i32 %34 to i64
-  %36 = getelementptr inbounds i32, i32* %33, i64 %35
-  %37 = load i32, i32* %36, align 4
-  %38 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.1, i64 0, i64 0), i32 %32, i32 %37)
-  br label %39
+  %35 = load i32, i32* %10, align 4
+  %36 = icmp slt i32 %34, %35
+  br i1 %36, label %37, label %47
 
-39:                                               ; preds = %31
-  %40 = load i32, i32* %11, align 4
-  %41 = add nsw i32 %40, 1
-  store i32 %41, i32* %11, align 4
-  br label %27
+37:                                               ; preds = %33
+  %38 = load i32*, i32** %6, align 8
+  %39 = load i32, i32* %11, align 4
+  %40 = sext i32 %39 to i64
+  %41 = getelementptr inbounds i32, i32* %38, i64 %40
+  %42 = load i32, i32* %41, align 4
+  %43 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.4, i64 0, i64 0), i32 %42)
+  br label %44
 
-42:                                               ; preds = %27
+44:                                               ; preds = %37
+  %45 = load i32, i32* %11, align 4
+  %46 = add nsw i32 %45, 1
+  store i32 %46, i32* %11, align 4
+  br label %33
+
+47:                                               ; preds = %33
+  %48 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.5, i64 0, i64 0))
   store i32 0, i32* %12, align 4
-  br label %43
+  br label %49
 
-43:                                               ; preds = %55, %42
-  %44 = load i32, i32* %12, align 4
-  %45 = load i32, i32* %10, align 4
-  %46 = icmp slt i32 %44, %45
-  br i1 %46, label %47, label %58
-
-47:                                               ; preds = %43
-  %48 = load i32, i32* %12, align 4
-  %49 = load i32*, i32** %7, align 8
+49:                                               ; preds = %60, %47
   %50 = load i32, i32* %12, align 4
-  %51 = sext i32 %50 to i64
-  %52 = getelementptr inbounds i32, i32* %49, i64 %51
-  %53 = load i32, i32* %52, align 4
-  %54 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([24 x i8], [24 x i8]* @.str.2, i64 0, i64 0), i32 %48, i32 %53)
-  br label %55
+  %51 = load i32, i32* %10, align 4
+  %52 = icmp slt i32 %50, %51
+  br i1 %52, label %53, label %63
 
-55:                                               ; preds = %47
-  %56 = load i32, i32* %12, align 4
-  %57 = add nsw i32 %56, 1
-  store i32 %57, i32* %12, align 4
-  br label %43
+53:                                               ; preds = %49
+  %54 = load i32*, i32** %7, align 8
+  %55 = load i32, i32* %12, align 4
+  %56 = sext i32 %55 to i64
+  %57 = getelementptr inbounds i32, i32* %54, i64 %56
+  %58 = load i32, i32* %57, align 4
+  %59 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.4, i64 0, i64 0), i32 %58)
+  br label %60
 
-58:                                               ; preds = %43
-  %59 = load i32*, i32** %8, align 8
-  %60 = icmp eq i32* %59, null
-  br i1 %60, label %63, label %61
+60:                                               ; preds = %53
+  %61 = load i32, i32* %12, align 4
+  %62 = add nsw i32 %61, 1
+  store i32 %62, i32* %12, align 4
+  br label %49
 
-61:                                               ; preds = %58
-  %62 = bitcast i32* %59 to i8*
-  call void @_ZdaPv(i8* %62) #9
-  br label %63
+63:                                               ; preds = %49
+  %64 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.6, i64 0, i64 0))
+  %65 = load i32*, i32** %8, align 8
+  %66 = icmp eq i32* %65, null
+  br i1 %66, label %69, label %67
 
-63:                                               ; preds = %61, %58
-  %64 = load i32*, i32** %7, align 8
-  %65 = icmp eq i32* %64, null
-  br i1 %65, label %68, label %66
+67:                                               ; preds = %63
+  %68 = bitcast i32* %65 to i8*
+  call void @_ZdaPv(i8* %68) #9
+  br label %69
 
-66:                                               ; preds = %63
-  %67 = bitcast i32* %64 to i8*
-  call void @_ZdaPv(i8* %67) #9
-  br label %68
+69:                                               ; preds = %67, %63
+  %70 = load i32*, i32** %7, align 8
+  %71 = icmp eq i32* %70, null
+  br i1 %71, label %74, label %72
 
-68:                                               ; preds = %66, %63
-  %69 = load i32*, i32** %6, align 8
-  %70 = icmp eq i32* %69, null
-  br i1 %70, label %73, label %71
+72:                                               ; preds = %69
+  %73 = bitcast i32* %70 to i8*
+  call void @_ZdaPv(i8* %73) #9
+  br label %74
 
-71:                                               ; preds = %68
-  %72 = bitcast i32* %69 to i8*
-  call void @_ZdaPv(i8* %72) #9
-  br label %73
+74:                                               ; preds = %72, %69
+  %75 = load i32*, i32** %6, align 8
+  %76 = icmp eq i32* %75, null
+  br i1 %76, label %79, label %77
 
-73:                                               ; preds = %71, %68
+77:                                               ; preds = %74
+  %78 = bitcast i32* %75 to i8*
+  call void @_ZdaPv(i8* %78) #9
+  br label %79
+
+79:                                               ; preds = %77, %74
   ret i32 0
 }
 
@@ -189,7 +205,7 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
   br i1 %28, label %30, label %38
 
 30:                                               ; preds = %29
-  %31 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.3, i64 0, i64 0))
+  %31 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.7, i64 0, i64 0))
           to label %32 unwind label %34
 
 32:                                               ; preds = %30
