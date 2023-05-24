@@ -6,7 +6,7 @@ extern void run_cfg(int* directions, int* actual_output);
 
 bool cmp(int* expected, int* actual, int size);
 
-void read_in(const char* filename, int** directions, int** expected_output, int** actual_output);
+void read_in(const char* filename, int** directions, int** expected_output, int** actual_output, int& out_size);
 
 int main(int argc, char** argv) {
 
@@ -14,20 +14,22 @@ int main(int argc, char** argv) {
 	int* actual_output;
 	int* directions;
 	bool result;
+	int size;
 
-	read_in(argv[1], &directions, &expected_output, &actual_output);
+	read_in(argv[1], &directions, &expected_output, &actual_output, size);
 
-	for(int i = 0; i < 3; i++) {
-		printf("expected_output %d is %d\n", i, expected_output[i]);
-	}
 	run_cfg(directions, actual_output);
 
-	result = cmp(expected_output, actual_output, 3);
+	result = cmp(expected_output, actual_output, size);
 
 	printf("result is %d\n", result);
 
-	for(int i = 0; i < 3; i++) {
-		printf("actua_output %d is %d\n", i, actual_output[i]);
+	for(int i = 0; i < size; i++) {
+		printf("expected_output %d is %d\n", i, expected_output[i]);
+	}
+
+	for(int i = 0; i < size; i++) {
+		printf("actual_output %d is %d\n", i, actual_output[i]);
 	}
 
 	// deallocate memory for dynamic arrays
@@ -49,14 +51,13 @@ bool cmp(int* expected, int* actual, int size) {
 	return true;
 }
 
-void read_in(const char* filename, int** directions, int** expected_output, int** actual_output) {
+void read_in(const char* filename, int** directions, int** expected_output, int** actual_output, int& out_size) {
 
 	ifstream in;
 	int dir_size;
-	int out_size;
 
 	// open file
-	in.open("input.txt");
+	in.open(filename);
 
 	if(in.fail()) {
 		printf("Error opening input file\n");
@@ -90,11 +91,4 @@ void read_in(const char* filename, int** directions, int** expected_output, int*
 	for(int i = 0; i < out_size; i++) {
 		(*actual_output)[i] = -1;
 	}
-/*
-	(*directions)[0] = 0;
-	(*expected_output)[0] = 1;
-	(*expected_output)[1] = 2;
-	(*expected_output)[2] = 4;
-*/
-
 }
