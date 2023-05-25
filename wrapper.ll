@@ -109,59 +109,60 @@ define i32 @main(i32 %0, i8** %1) #0 {
   store i32 0, i32* %12, align 4
   br label %49
 
-49:                                               ; preds = %60, %47
+49:                                               ; preds = %61, %47
   %50 = load i32, i32* %12, align 4
   %51 = load i32, i32* %10, align 4
-  %52 = icmp slt i32 %50, %51
-  br i1 %52, label %53, label %63
+  %52 = mul nsw i32 2, %51
+  %53 = icmp slt i32 %50, %52
+  br i1 %53, label %54, label %64
 
-53:                                               ; preds = %49
-  %54 = load i32*, i32** %7, align 8
-  %55 = load i32, i32* %12, align 4
-  %56 = sext i32 %55 to i64
-  %57 = getelementptr inbounds i32, i32* %54, i64 %56
-  %58 = load i32, i32* %57, align 4
-  %59 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.4, i64 0, i64 0), i32 %58)
-  br label %60
+54:                                               ; preds = %49
+  %55 = load i32*, i32** %7, align 8
+  %56 = load i32, i32* %12, align 4
+  %57 = sext i32 %56 to i64
+  %58 = getelementptr inbounds i32, i32* %55, i64 %57
+  %59 = load i32, i32* %58, align 4
+  %60 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.4, i64 0, i64 0), i32 %59)
+  br label %61
 
-60:                                               ; preds = %53
-  %61 = load i32, i32* %12, align 4
-  %62 = add nsw i32 %61, 1
-  store i32 %62, i32* %12, align 4
+61:                                               ; preds = %54
+  %62 = load i32, i32* %12, align 4
+  %63 = add nsw i32 %62, 1
+  store i32 %63, i32* %12, align 4
   br label %49
 
-63:                                               ; preds = %49
-  %64 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.6, i64 0, i64 0))
-  %65 = load i32*, i32** %8, align 8
-  %66 = icmp eq i32* %65, null
-  br i1 %66, label %69, label %67
+64:                                               ; preds = %49
+  %65 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.6, i64 0, i64 0))
+  %66 = load i32*, i32** %8, align 8
+  %67 = icmp eq i32* %66, null
+  br i1 %67, label %70, label %68
 
-67:                                               ; preds = %63
-  %68 = bitcast i32* %65 to i8*
-  call void @_ZdaPv(i8* %68) #9
-  br label %69
+68:                                               ; preds = %64
+  %69 = bitcast i32* %66 to i8*
+  call void @_ZdaPv(i8* %69) #9
+  br label %70
 
-69:                                               ; preds = %67, %63
-  %70 = load i32*, i32** %7, align 8
-  %71 = icmp eq i32* %70, null
-  br i1 %71, label %74, label %72
+70:                                               ; preds = %68, %64
+  %71 = load i32*, i32** %7, align 8
+  %72 = icmp eq i32* %71, null
+  br i1 %72, label %75, label %73
 
-72:                                               ; preds = %69
-  %73 = bitcast i32* %70 to i8*
-  call void @_ZdaPv(i8* %73) #9
-  br label %74
+73:                                               ; preds = %70
+  %74 = bitcast i32* %71 to i8*
+  call void @_ZdaPv(i8* %74) #9
+  br label %75
 
-74:                                               ; preds = %72, %69
-  %75 = load i32*, i32** %6, align 8
-  %76 = icmp eq i32* %75, null
-  br i1 %76, label %79, label %77
+75:                                               ; preds = %73, %70
+  %76 = load i32*, i32** %6, align 8
+  %77 = icmp eq i32* %76, null
+  br i1 %77, label %80, label %78
 
-77:                                               ; preds = %74
-  %78 = bitcast i32* %75 to i8*
-  call void @_ZdaPv(i8* %78) #9
-  br label %79
+78:                                               ; preds = %75
+  %79 = bitcast i32* %76 to i8*
+  call void @_ZdaPv(i8* %79) #9
+  br label %80
 
-79:                                               ; preds = %77, %74
+80:                                               ; preds = %78, %75
   ret i32 0
 }
 
@@ -215,7 +216,7 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
 33:                                               ; preds = %32
   unreachable
 
-34:                                               ; preds = %112, %100, %82, %64, %53, %45, %41, %38, %32, %30, %19, %5
+34:                                               ; preds = %113, %101, %83, %64, %53, %45, %41, %38, %32, %30, %19, %5
   %35 = landingpad { i8*, i32 }
           cleanup
   %36 = extractvalue { i8*, i32 } %35, 0
@@ -223,7 +224,7 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
   %37 = extractvalue { i8*, i32 } %35, 1
   store i32 %37, i32* %14, align 4
   invoke void @_ZNSt3__114basic_ifstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ifstream"* %11)
-          to label %129 unwind label %135
+          to label %131 unwind label %137
 
 38:                                               ; preds = %29
   %39 = bitcast %"class.std::__1::basic_ifstream"* %11 to %"class.std::__1::basic_istream"*
@@ -266,125 +267,127 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
   store i32* %65, i32** %66, align 8
   %67 = load i32*, i32** %10, align 8
   %68 = load i32, i32* %67, align 4
-  %69 = sext i32 %68 to i64
-  %70 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %69, i64 4)
-  %71 = extractvalue { i64, i1 } %70, 1
-  %72 = extractvalue { i64, i1 } %70, 0
-  %73 = select i1 %71, i64 -1, i64 %72
-  %74 = invoke noalias nonnull i8* @_Znam(i64 %73) #11
-          to label %75 unwind label %34
+  %69 = mul nsw i32 2, %68
+  %70 = sext i32 %69 to i64
+  %71 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %70, i64 4)
+  %72 = extractvalue { i64, i1 } %71, 1
+  %73 = extractvalue { i64, i1 } %71, 0
+  %74 = select i1 %72, i64 -1, i64 %73
+  %75 = invoke noalias nonnull i8* @_Znam(i64 %74) #11
+          to label %76 unwind label %34
 
-75:                                               ; preds = %64
-  %76 = bitcast i8* %74 to i32*
-  %77 = load i32**, i32*** %9, align 8
-  store i32* %76, i32** %77, align 8
+76:                                               ; preds = %64
+  %77 = bitcast i8* %75 to i32*
+  %78 = load i32**, i32*** %9, align 8
+  store i32* %77, i32** %78, align 8
   store i32 0, i32* %15, align 4
-  br label %78
+  br label %79
 
-78:                                               ; preds = %91, %75
-  %79 = load i32, i32* %15, align 4
-  %80 = load i32, i32* %12, align 4
-  %81 = icmp slt i32 %79, %80
-  br i1 %81, label %82, label %94
+79:                                               ; preds = %92, %76
+  %80 = load i32, i32* %15, align 4
+  %81 = load i32, i32* %12, align 4
+  %82 = icmp slt i32 %80, %81
+  br i1 %82, label %83, label %95
 
-82:                                               ; preds = %78
-  %83 = bitcast %"class.std::__1::basic_ifstream"* %11 to %"class.std::__1::basic_istream"*
-  %84 = load i32**, i32*** %7, align 8
-  %85 = load i32*, i32** %84, align 8
-  %86 = load i32, i32* %15, align 4
-  %87 = sext i32 %86 to i64
-  %88 = getelementptr inbounds i32, i32* %85, i64 %87
-  %89 = invoke nonnull align 8 dereferenceable(16) %"class.std::__1::basic_istream"* @_ZNSt3__113basic_istreamIcNS_11char_traitsIcEEErsERi(%"class.std::__1::basic_istream"* %83, i32* nonnull align 4 dereferenceable(4) %88)
-          to label %90 unwind label %34
+83:                                               ; preds = %79
+  %84 = bitcast %"class.std::__1::basic_ifstream"* %11 to %"class.std::__1::basic_istream"*
+  %85 = load i32**, i32*** %7, align 8
+  %86 = load i32*, i32** %85, align 8
+  %87 = load i32, i32* %15, align 4
+  %88 = sext i32 %87 to i64
+  %89 = getelementptr inbounds i32, i32* %86, i64 %88
+  %90 = invoke nonnull align 8 dereferenceable(16) %"class.std::__1::basic_istream"* @_ZNSt3__113basic_istreamIcNS_11char_traitsIcEEErsERi(%"class.std::__1::basic_istream"* %84, i32* nonnull align 4 dereferenceable(4) %89)
+          to label %91 unwind label %34
 
-90:                                               ; preds = %82
-  br label %91
+91:                                               ; preds = %83
+  br label %92
 
-91:                                               ; preds = %90
-  %92 = load i32, i32* %15, align 4
-  %93 = add nsw i32 %92, 1
-  store i32 %93, i32* %15, align 4
-  br label %78
+92:                                               ; preds = %91
+  %93 = load i32, i32* %15, align 4
+  %94 = add nsw i32 %93, 1
+  store i32 %94, i32* %15, align 4
+  br label %79
 
-94:                                               ; preds = %78
+95:                                               ; preds = %79
   store i32 0, i32* %16, align 4
-  br label %95
+  br label %96
 
-95:                                               ; preds = %109, %94
-  %96 = load i32, i32* %16, align 4
-  %97 = load i32*, i32** %10, align 8
-  %98 = load i32, i32* %97, align 4
-  %99 = icmp slt i32 %96, %98
-  br i1 %99, label %100, label %112
+96:                                               ; preds = %110, %95
+  %97 = load i32, i32* %16, align 4
+  %98 = load i32*, i32** %10, align 8
+  %99 = load i32, i32* %98, align 4
+  %100 = icmp slt i32 %97, %99
+  br i1 %100, label %101, label %113
 
-100:                                              ; preds = %95
-  %101 = bitcast %"class.std::__1::basic_ifstream"* %11 to %"class.std::__1::basic_istream"*
-  %102 = load i32**, i32*** %8, align 8
-  %103 = load i32*, i32** %102, align 8
-  %104 = load i32, i32* %16, align 4
-  %105 = sext i32 %104 to i64
-  %106 = getelementptr inbounds i32, i32* %103, i64 %105
-  %107 = invoke nonnull align 8 dereferenceable(16) %"class.std::__1::basic_istream"* @_ZNSt3__113basic_istreamIcNS_11char_traitsIcEEErsERi(%"class.std::__1::basic_istream"* %101, i32* nonnull align 4 dereferenceable(4) %106)
-          to label %108 unwind label %34
+101:                                              ; preds = %96
+  %102 = bitcast %"class.std::__1::basic_ifstream"* %11 to %"class.std::__1::basic_istream"*
+  %103 = load i32**, i32*** %8, align 8
+  %104 = load i32*, i32** %103, align 8
+  %105 = load i32, i32* %16, align 4
+  %106 = sext i32 %105 to i64
+  %107 = getelementptr inbounds i32, i32* %104, i64 %106
+  %108 = invoke nonnull align 8 dereferenceable(16) %"class.std::__1::basic_istream"* @_ZNSt3__113basic_istreamIcNS_11char_traitsIcEEErsERi(%"class.std::__1::basic_istream"* %102, i32* nonnull align 4 dereferenceable(4) %107)
+          to label %109 unwind label %34
 
-108:                                              ; preds = %100
-  br label %109
+109:                                              ; preds = %101
+  br label %110
 
-109:                                              ; preds = %108
-  %110 = load i32, i32* %16, align 4
-  %111 = add nsw i32 %110, 1
-  store i32 %111, i32* %16, align 4
-  br label %95
+110:                                              ; preds = %109
+  %111 = load i32, i32* %16, align 4
+  %112 = add nsw i32 %111, 1
+  store i32 %112, i32* %16, align 4
+  br label %96
 
-112:                                              ; preds = %95
+113:                                              ; preds = %96
   invoke void @_ZNSt3__114basic_ifstreamIcNS_11char_traitsIcEEE5closeEv(%"class.std::__1::basic_ifstream"* %11)
-          to label %113 unwind label %34
+          to label %114 unwind label %34
 
-113:                                              ; preds = %112
+114:                                              ; preds = %113
   store i32 0, i32* %17, align 4
-  br label %114
+  br label %115
 
-114:                                              ; preds = %125, %113
-  %115 = load i32, i32* %17, align 4
-  %116 = load i32*, i32** %10, align 8
-  %117 = load i32, i32* %116, align 4
-  %118 = icmp slt i32 %115, %117
-  br i1 %118, label %119, label %128
+115:                                              ; preds = %127, %114
+  %116 = load i32, i32* %17, align 4
+  %117 = load i32*, i32** %10, align 8
+  %118 = load i32, i32* %117, align 4
+  %119 = mul nsw i32 2, %118
+  %120 = icmp slt i32 %116, %119
+  br i1 %120, label %121, label %130
 
-119:                                              ; preds = %114
-  %120 = load i32**, i32*** %9, align 8
-  %121 = load i32*, i32** %120, align 8
-  %122 = load i32, i32* %17, align 4
-  %123 = sext i32 %122 to i64
-  %124 = getelementptr inbounds i32, i32* %121, i64 %123
-  store i32 -1, i32* %124, align 4
-  br label %125
+121:                                              ; preds = %115
+  %122 = load i32**, i32*** %9, align 8
+  %123 = load i32*, i32** %122, align 8
+  %124 = load i32, i32* %17, align 4
+  %125 = sext i32 %124 to i64
+  %126 = getelementptr inbounds i32, i32* %123, i64 %125
+  store i32 -1, i32* %126, align 4
+  br label %127
 
-125:                                              ; preds = %119
-  %126 = load i32, i32* %17, align 4
-  %127 = add nsw i32 %126, 1
-  store i32 %127, i32* %17, align 4
-  br label %114
+127:                                              ; preds = %121
+  %128 = load i32, i32* %17, align 4
+  %129 = add nsw i32 %128, 1
+  store i32 %129, i32* %17, align 4
+  br label %115
 
-128:                                              ; preds = %114
+130:                                              ; preds = %115
   call void @_ZNSt3__114basic_ifstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ifstream"* %11)
   ret void
 
-129:                                              ; preds = %34
-  br label %130
+131:                                              ; preds = %34
+  br label %132
 
-130:                                              ; preds = %129
-  %131 = load i8*, i8** %13, align 8
-  %132 = load i32, i32* %14, align 4
-  %133 = insertvalue { i8*, i32 } undef, i8* %131, 0
-  %134 = insertvalue { i8*, i32 } %133, i32 %132, 1
-  resume { i8*, i32 } %134
+132:                                              ; preds = %131
+  %133 = load i8*, i8** %13, align 8
+  %134 = load i32, i32* %14, align 4
+  %135 = insertvalue { i8*, i32 } undef, i8* %133, 0
+  %136 = insertvalue { i8*, i32 } %135, i32 %134, 1
+  resume { i8*, i32 } %136
 
-135:                                              ; preds = %34
-  %136 = landingpad { i8*, i32 }
+137:                                              ; preds = %34
+  %138 = landingpad { i8*, i32 }
           catch i8* null
-  %137 = extractvalue { i8*, i32 } %136, 0
-  call void @__clang_call_terminate(i8* %137) #12
+  %139 = extractvalue { i8*, i32 } %138, 0
+  call void @__clang_call_terminate(i8* %139) #12
   unreachable
 }
 
@@ -397,52 +400,87 @@ define zeroext i1 @_Z3cmpPiS_i(i32* %0, i32* %1, i32 %2) #3 {
   %6 = alloca i32*, align 8
   %7 = alloca i32, align 4
   %8 = alloca i32, align 4
+  %9 = alloca i32, align 4
   store i32* %0, i32** %5, align 8
   store i32* %1, i32** %6, align 8
   store i32 %2, i32* %7, align 4
   store i32 0, i32* %8, align 4
-  br label %9
+  br label %10
 
-9:                                                ; preds = %27, %3
-  %10 = load i32, i32* %8, align 4
-  %11 = load i32, i32* %7, align 4
-  %12 = icmp slt i32 %10, %11
-  br i1 %12, label %13, label %30
+10:                                               ; preds = %28, %3
+  %11 = load i32, i32* %8, align 4
+  %12 = load i32, i32* %7, align 4
+  %13 = icmp slt i32 %11, %12
+  br i1 %13, label %14, label %31
 
-13:                                               ; preds = %9
-  %14 = load i32*, i32** %5, align 8
-  %15 = load i32, i32* %8, align 4
-  %16 = sext i32 %15 to i64
-  %17 = getelementptr inbounds i32, i32* %14, i64 %16
-  %18 = load i32, i32* %17, align 4
-  %19 = load i32*, i32** %6, align 8
-  %20 = load i32, i32* %8, align 4
-  %21 = sext i32 %20 to i64
-  %22 = getelementptr inbounds i32, i32* %19, i64 %21
-  %23 = load i32, i32* %22, align 4
-  %24 = icmp ne i32 %18, %23
-  br i1 %24, label %25, label %26
+14:                                               ; preds = %10
+  %15 = load i32*, i32** %5, align 8
+  %16 = load i32, i32* %8, align 4
+  %17 = sext i32 %16 to i64
+  %18 = getelementptr inbounds i32, i32* %15, i64 %17
+  %19 = load i32, i32* %18, align 4
+  %20 = load i32*, i32** %6, align 8
+  %21 = load i32, i32* %8, align 4
+  %22 = sext i32 %21 to i64
+  %23 = getelementptr inbounds i32, i32* %20, i64 %22
+  %24 = load i32, i32* %23, align 4
+  %25 = icmp ne i32 %19, %24
+  br i1 %25, label %26, label %27
 
-25:                                               ; preds = %13
+26:                                               ; preds = %14
   store i1 false, i1* %4, align 1
-  br label %31
+  br label %51
 
-26:                                               ; preds = %13
-  br label %27
+27:                                               ; preds = %14
+  br label %28
 
-27:                                               ; preds = %26
-  %28 = load i32, i32* %8, align 4
-  %29 = add nsw i32 %28, 1
-  store i32 %29, i32* %8, align 4
-  br label %9
+28:                                               ; preds = %27
+  %29 = load i32, i32* %8, align 4
+  %30 = add nsw i32 %29, 1
+  store i32 %30, i32* %8, align 4
+  br label %10
 
-30:                                               ; preds = %9
+31:                                               ; preds = %10
+  %32 = load i32, i32* %7, align 4
+  store i32 %32, i32* %9, align 4
+  br label %33
+
+33:                                               ; preds = %47, %31
+  %34 = load i32, i32* %9, align 4
+  %35 = load i32, i32* %7, align 4
+  %36 = mul nsw i32 2, %35
+  %37 = icmp slt i32 %34, %36
+  br i1 %37, label %38, label %50
+
+38:                                               ; preds = %33
+  %39 = load i32*, i32** %6, align 8
+  %40 = load i32, i32* %9, align 4
+  %41 = sext i32 %40 to i64
+  %42 = getelementptr inbounds i32, i32* %39, i64 %41
+  %43 = load i32, i32* %42, align 4
+  %44 = icmp ne i32 %43, -1
+  br i1 %44, label %45, label %46
+
+45:                                               ; preds = %38
+  store i1 false, i1* %4, align 1
+  br label %51
+
+46:                                               ; preds = %38
+  br label %47
+
+47:                                               ; preds = %46
+  %48 = load i32, i32* %9, align 4
+  %49 = add nsw i32 %48, 1
+  store i32 %49, i32* %9, align 4
+  br label %33
+
+50:                                               ; preds = %33
   store i1 true, i1* %4, align 1
-  br label %31
+  br label %51
 
-31:                                               ; preds = %30, %25
-  %32 = load i1, i1* %4, align 1
-  ret i1 %32
+51:                                               ; preds = %50, %45, %26
+  %52 = load i1, i1* %4, align 1
+  ret i1 %52
 }
 
 declare i32 @printf(i8*, ...) #2

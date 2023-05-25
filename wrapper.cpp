@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
 	printf("\nactual output:  ");
 
-	for(int i = 0; i < size; i++) {
+	for(int i = 0; i < 2*size; i++) {
 		printf(" %d", actual_output[i]);
 	}
 
@@ -50,8 +50,16 @@ int main(int argc, char** argv) {
 
 bool cmp(int* expected, int* actual, int size) {
 
+	// check that actual and expected path are the same
 	for(int i = 0; i < size; i++) {
 		if(expected[i] != actual[i]) {
+			return false;
+		}
+	}
+
+	// check that there was no overflow; rest of actual array should be -1
+	for(int i = size; i < 2*size; i++){
+		if(actual[i] != -1) {
 			return false;
 		}
 	}
@@ -81,7 +89,7 @@ void read_in(const char* filename, int** directions, int** expected_output, int*
 	// allocate arrays
 	*directions = new int[dir_size];
 	*expected_output = new int[out_size];
-	*actual_output = new int[out_size];
+	*actual_output = new int[2*out_size]; // allocate 2x size to allow for overflow
 
 	// third line in file gives directions
 	for(int i = 0; i < dir_size; i++){
@@ -96,7 +104,7 @@ void read_in(const char* filename, int** directions, int** expected_output, int*
 	in.close();
 
 	// initialise actual output to -1
-	for(int i = 0; i < out_size; i++) {
+	for(int i = 0; i < 2*out_size; i++) {
 		(*actual_output)[i] = -1;
 	}
 }
