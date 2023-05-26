@@ -14,10 +14,42 @@ class CFG():
             and saves as member variable
         '''
 
+        self.fleshed_graph = self.add_program_start()
+
         for n in self.graph:
             print("Node: " + str(n) + " has child nodes: ")
             for v in self.graph.adj[n]:
                 print(v)
+
+
+        return self.fleshed_graph
+    
+    def add_program_start(self) -> str:
+
+        prog_start = '''
+
+; example cfg 1: with single branching block
+
+define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
+
+0:
+    ; create arrays to store directions & output
+    %directions = alloca i32*
+    %output = alloca i32*
+
+    store i32* %in_directions, i32** %directions
+    store i32* %in_output, i32** %output
+
+    %counter = alloca i32
+    store i32 0, i32* %counter
+
+    %dir_counter = alloca i32
+    store i32 0, i32* %dir_counter
+
+    br label %1'''
+        
+        return prog_start
+
 
 
     def save_llvm_to_file(self, filename : str) -> bool:
@@ -26,7 +58,7 @@ class CFG():
             returns true if file write is successful
             false otherwise
         '''
-        pass
+        print(self.fleshed_graph)
 
 def main():
 
