@@ -3,8 +3,8 @@ import pickle
 
 class GraphGenerator():
 
-    def __init__(self, name: str) -> None:
-        self.name: str = name
+    def __init__(self) -> None:
+        pass
 
     def preset_graph_1(self) -> nx.MultiDiGraph:
         
@@ -38,10 +38,14 @@ class GraphGenerator():
 
 
 def main():
-    
-    G1 = GraphGenerator.preset_graph_1()
-    G2 = GraphGenerator.preset_graph_2()
+
+    generator = GraphGenerator()
+    G1 = generator.preset_graph_1()
+    G2 = generator.preset_graph_2()
 
     #pickle graphs (for now) - change this to JSON rather than pickle later
     pickle.dump(G1, open("graph_1.p", "wb"))
     pickle.dump(G2, open("graph_2.p", "wb"))
+
+if __name__=="__main__":
+    main()
