@@ -103,7 +103,7 @@ class CFG():
             so no return statement is included here
         '''
         code = '''
-        placeholder exit'''
+            '''
         
         return code
 
