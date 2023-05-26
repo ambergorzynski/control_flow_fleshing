@@ -137,8 +137,8 @@ class CFG():
             store i32 %temp_{i}_2, i32* %dir_counter
 
             ; branch
-            %condition = icmp eq i32 %dir_{i}_value, 0
-            br i1 %condition, label %{successor_false}, label %{successor_true}
+            %condition_{i} = icmp eq i32 %dir_{i}_value, 0
+            br i1 %condition_{i}, label %{successor_false}, label %{successor_true}
             '''.format(i = n,
                        successor_false = list(self.graph.adj[n])[0],
                        successor_true = list(self.graph.adj[n])[1])
@@ -162,7 +162,7 @@ class CFG():
 
 def main():
 
-    # hard coded example graph - next step is to use cmd line args
+    # hard coded example graph 1 - next step is to use cmd line args
     
     graph1 = pickle.load(open("graph_1.p", "rb"))
 
@@ -170,7 +170,21 @@ def main():
 
     cfg.fleshout()
 
-    if (cfg.save_llvm_to_file("run_cfg_wip.ll")):
+    if (cfg.save_llvm_to_file("run_cfg_wip_1.ll")):
+        print("Fleshed CFG created successfully!")
+    
+    else:
+        print("Problem saving fleshed CFG")
+
+    # hard coded example graph 2 - next step is to use cmd line args
+    
+    graph2 = pickle.load(open("graph_2.p", "rb"))
+
+    cfg = CFG(graph2)
+
+    cfg.fleshout()
+
+    if (cfg.save_llvm_to_file("run_cfg_wip_2.ll")):
         print("Fleshed CFG created successfully!")
     
     else:
