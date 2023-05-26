@@ -90,7 +90,7 @@ class CFG():
             store i32 {i}, i32* %output_{i}_ptr
 
             ; increment counter
-            %temp_{i}_1 = add i32 %inex_{i}, 1
+            %temp_{i}_1 = add i32 %index_{i}, 1
             store i32 %temp_{i}_1, i32* %counter
         '''.format(i = n)
 
@@ -152,6 +152,13 @@ class CFG():
             false otherwise
         '''
         print(self.fleshed_graph)
+
+        file = open(filename, "w")
+        file.write(self.fleshed_graph)
+        file.close()
+
+        return True
+
 
 def main():
 
