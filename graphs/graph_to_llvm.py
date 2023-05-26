@@ -64,7 +64,7 @@ class CFG():
             %dir_counter = alloca i32
             store i32 0, i32* %dir_counter
 
-            br label %1'''
+            '''
         
         return prog_start
     
@@ -74,9 +74,15 @@ class CFG():
             and increment output counter
         '''
 
-        code = '''
-        
-        {i}:
+        # already have start of program for node 0
+        if(n == 0):
+            code = ''''''
+        else:
+            code = '''
+            
+            {i}: '''.format(i = n)
+
+        code += '''
             ; store node label in output array
             %index_{i} = load i32, i32* %counter
             %output_{i} = load i32*, i32** %output
