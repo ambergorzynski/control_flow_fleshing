@@ -79,7 +79,7 @@ class CFG():
             code = ''''''
         else:
             code = '''
-            
+
             {i}: '''.format(i = n)
 
         code += '''
@@ -113,7 +113,8 @@ class CFG():
         '''
 
         code = '''
-        placeholder unconditional'''
+            br label %{successor}
+        '''.format(successor = list(self.graph.adj[n])[0])
 
         return code
 
