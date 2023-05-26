@@ -90,7 +90,7 @@ class CFG():
             store i32 {i}, i32* %output_{i}_ptr
 
             ; increment counter
-            %temp_{i}_1 = add i32 %inex_{i}, {i}
+            %temp_{i}_1 = add i32 %inex_{i}, 1
             store i32 %temp_{i}_1, i32* %counter
         '''.format(i = n)
 
@@ -126,7 +126,22 @@ class CFG():
             there are > 2 successor nodes
         '''
         code = '''
-        placeholder conditional'''
+            ; get directions for node
+            %index_dir_{i} = load i32, i32* %dir_counter
+            %dir_{i} = load i32*, i32** %directions
+            %dir_{i}_ptr = getelementptr inbounds i32, i32* %dir_{i}, i32 %index_dir_{i}
+            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
+
+            ; increment directions counter
+            %temp_{i}_2 = add i32 %index_dir_{i}, 1
+            store i32 %temp_{i}_2, i32* %dir_counter
+
+            ; branch
+            %condition = icmp eq i32 %dir_{i}_value, 0
+            br i1 %condition, label %{successor_false}, label %{successor_true}
+            '''.format(i = n,
+                       successor_false = list(self.graph.adj[n])[0],
+                       successor_true = list(self.graph.adj[n])[1])
         
         return code
 
