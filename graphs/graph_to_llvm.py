@@ -14,17 +14,30 @@ class CFG():
             and saves as member variable
         '''
 
-        self.fleshed_graph = self.add_program_start()
+        self.fleshed_graph = self.flesh_program_start()
 
         for n in self.graph:
-            print("Node: " + str(n) + " has child nodes: ")
-            for v in self.graph.adj[n]:
-                print(v)
+
+            n_successors = len(list(self.graph.adj[n]))
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n)
+            
+            '''
+                for v in self.graph.adj[n]:
+                    print(v)
+            '''
 
 
         return self.fleshed_graph
     
-    def add_program_start(self) -> str:
+    def flesh_program_start(self) -> str:
 
         prog_start = '''
 
@@ -50,7 +63,14 @@ define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
         
         return prog_start
 
+    def flesh_exit_node(self, n : int) -> str:
+        pass
 
+    def flesh_unconditional_node(self, n : int) -> str:
+        pass
+
+    def flesh_conditional_node(self, n : int) -> str:
+        pass
 
     def save_llvm_to_file(self, filename : str) -> bool:
         ''' 
