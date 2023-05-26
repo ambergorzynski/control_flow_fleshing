@@ -1,4 +1,5 @@
 import networkx as nx
+import pickle
 
 # example graph 1
 
@@ -25,3 +26,7 @@ G2.add_edges_from([(0, 1),
     (3, 4)])
 
 print("G2: Nodes: " + str(G2.number_of_nodes()) + " Edges: " + str(G2.number_of_edges()))
+
+#pickle graphs (for now) - change this to JSON rather than pickle later
+pickle.dump(G1, open("graph_1.p", "wb"))
+pickle.dump(G2, open("graph_2.p", "wb"))
