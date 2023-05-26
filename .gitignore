@@ -4,3 +4,4 @@ out
 /.vscode
 *.dSYM
 venv/
+.DS_Store
