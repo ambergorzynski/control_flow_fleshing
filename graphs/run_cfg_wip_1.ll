@@ -54,8 +54,8 @@
             store i32 %temp_1_2, i32* %dir_counter
 
             ; branch
-            %condition = icmp eq i32 %dir_1_value, 0
-            br i1 %condition, label %2, label %3
+            %condition_1 = icmp eq i32 %dir_1_value, 0
+            br i1 %condition_1, label %2, label %3
             
 
             2: 
