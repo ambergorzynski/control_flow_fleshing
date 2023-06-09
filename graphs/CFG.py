@@ -212,22 +212,22 @@ class CFG():
             randomly chooses next node and returns it
             edits the direction array if necessary
         '''
-        
+
         if(self.successors(current_node) == 1):
 
-            return self.graph.adj[current_node]
+            return list(self.graph.adj[current_node])[0]
         
         else:
 
-            rand_num = 0.3 # HARD-CODED FOR TEST
+            rand_num = 0.3 # HARD-CODED FOR TEST - always chooses false
 
             if(rand_num < 0.5):
                 path.directions.append(0)
-                return self.graph.adj[current_node][0]
+                return list(self.graph.adj[current_node])[0]
             
             else:
                 path.directions.append(1)
-                return self.graph.adj[current_node][1]
+                return list(self.graph.adj[current_node])[1]
 
     def find_shortest_path_to_exit(self, current_node, path) -> None:
         '''
