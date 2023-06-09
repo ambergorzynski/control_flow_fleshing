@@ -37,7 +37,7 @@ class CFG():
             self.fleshed_graph += self.flesh_start_of_node(n)
 
             # write remaining block code based on number of successor nodes
-            n_successors = len(list(self.graph.adj[n]))
+            n_successors = self.successors(n)
 
             if(n_successors == 0):
                 self.fleshed_graph += self.flesh_exit_node(n)
@@ -192,21 +192,28 @@ class CFG():
 
         # iterate through the graph until an exit node is reached
         # or path length is exceeded
-        while(len(list(self.graph.adj[current_node])) != 0 and
+        while(self.successors(current_node) != 0 and
             len(path.expected_output) < max_length):
 
             self.choose_next_node(current_node, path)
 
         # if we are not at exit node, then find shortest distance
-        if(len(list(self.graph.adj[current_node])) != 0):
+        if(self.successors(current_node) != 0):
             self.find_shortest_path_to_exit(current_node, path)
 
         return path
+    
+    def successors(self, current_node) -> int:
+        '''
+            returns the number of successors for current_node 
+        '''
+        return len(list(self.graph.adj[current_node]))
     
     def choose_next_node(self, current_node, path) -> None:
         '''
             chooses next node and adds it to path
         '''
+        if
         pass
 
     def find_shortest_path_to_exit(self, current_node, path) -> None:
