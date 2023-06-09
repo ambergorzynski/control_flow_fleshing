@@ -1,8 +1,11 @@
 from CFG import CFG, Path
+from datetime import datetime
 import pickle
 
 
 def main():
+
+    seed = datetime.now().timestamp()
 
     max_length = 5
 

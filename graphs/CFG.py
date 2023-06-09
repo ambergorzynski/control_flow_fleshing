@@ -1,4 +1,7 @@
 import networkx as nx
+import sys
+import random
+from random import Random
 
 class Path():
 
@@ -10,7 +13,7 @@ class CFG():
 
     def __init__(self, graph : nx.MultiDiGraph):
         self.graph : nx.MultiDiGraph = graph
-        self.fleshed_graph : str = None
+        self.fleshed_graph : str = None 
 
     def get_root(self) -> int:
         '''
@@ -173,13 +176,20 @@ class CFG():
 
         return True
 
-    def find_path(self, max_length) -> Path:
+    def find_path(self, max_length, seed=None) -> Path:
         '''
             function finds a random path through the 
             CFG and stores it in the expected output array.
             also stores the directions needed to navigate
             this path
         '''
+
+        rand = Random()
+        
+        if seed is None:
+            seed = random.randrange(0, sys.maxsize)
+
+        rand.seed(seed)
 
         # root should be id 0
         current_node = self.get_root()
@@ -190,7 +200,7 @@ class CFG():
 
         while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
-            current_node = self.choose_next_node(current_node, path)
+            current_node = self.choose_next_node(current_node, path, rand)
 
             path.expected_output.append(current_node)
 
@@ -207,7 +217,7 @@ class CFG():
         '''
         return len(list(self.graph.adj[current_node]))
     
-    def choose_next_node(self, current_node, path) -> int:
+    def choose_next_node(self, current_node, path, rand) -> int:
         '''
             randomly chooses next node and returns it
             edits the direction array if necessary
@@ -219,7 +229,7 @@ class CFG():
         
         else:
 
-            rand_num = 0.3 # HARD-CODED FOR TEST - always chooses false
+            rand_num = rand.random()
 
             if(rand_num < 0.5):
                 path.directions.append(0)
