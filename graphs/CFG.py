@@ -1,11 +1,25 @@
 import networkx as nx
-import pickle
+
+class Path():
+
+    def __init__(self) -> None:
+        self.expected_output = []
+        self.directions = []
 
 class CFG():
 
     def __init__(self, graph : nx.MultiDiGraph):
         self.graph : nx.MultiDiGraph = graph
         self.fleshed_graph : str = None
+
+    def get_root(self) -> int:
+        '''
+            returns int identifying the root node of
+            the graph. set as 0 for now, which is how
+            we label the root node at the graph generation
+            stage
+        '''
+        return 0
 
     def fleshout(self) -> str:
         ''' 
@@ -159,36 +173,28 @@ class CFG():
 
         return True
 
+    def find_path(self, max_length) -> Path:
+        '''
+            function finds a random path through the 
+            CFG and stores it in the expected output array.
+            also stores the directions needed to navigate
+            this path
+        '''
 
-def main():
+        # root should be id 0
+        current_node = self.get_root()
 
-    # hard coded example graph 1 - next step is to use cmd line args
-    
-    graph1 = pickle.load(open("graph_1.p", "rb"))
+        # initialise empty path
+        path = Path()
 
-    cfg = CFG(graph1)
+        # add root as first node on path
+        path.expected_output += [current_node]
 
-    cfg.fleshout()
+        # iterate through the graph until an exit node is reached
+        # or path length is exceeded
+        while(len(list(self.graph.adj[current_node])) != 0 and
+            len(path.expected_output) < max_length):
 
-    if (cfg.save_llvm_to_file("run_cfg_wip_1.ll")):
-        print("Fleshed CFG created successfully!")
-    
-    else:
-        print("Problem saving fleshed CFG")
 
-    # hard coded example graph 2 - next step is to use cmd line args
-    
-    graph2 = pickle.load(open("graph_2.p", "rb"))
 
-    cfg = CFG(graph2)
 
-    cfg.fleshout()
-
-    if (cfg.save_llvm_to_file("run_cfg_wip_2.ll")):
-        print("Fleshed CFG created successfully!")
-    
-    else:
-        print("Problem saving fleshed CFG")
-
-if __name__=="__main__":
-    main()
