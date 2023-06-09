@@ -188,13 +188,32 @@ class CFG():
         path = Path()
 
         # add root as first node on path
-        path.expected_output += [current_node]
+        path.expected_output.append(current_node)
 
         # iterate through the graph until an exit node is reached
         # or path length is exceeded
         while(len(list(self.graph.adj[current_node])) != 0 and
             len(path.expected_output) < max_length):
 
+            self.choose_next_node(current_node, path)
+
+        # if we are not at exit node, then find shortest distance
+        if(len(list(self.graph.adj[current_node])) != 0):
+            self.find_shortest_path_to_exit(current_node, path)
+
+        return path
+    
+    def choose_next_node(self, current_node, path) -> None:
+        '''
+            chooses next node and adds it to path
+        '''
+        pass
+
+    def find_shortest_path_to_exit(self, current_node, path) -> None:
+        '''
+            finds shortest path to exit and adds it to path
+        '''
+        pass
 
 
 
