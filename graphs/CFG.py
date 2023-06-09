@@ -2,6 +2,7 @@ import networkx as nx
 import sys
 import random
 from random import Random
+from queue import Queue
 
 class Path():
 
@@ -207,7 +208,7 @@ class CFG():
 
         # if we are not at exit node, then find shortest distance to exit
         if(self.successors(current_node) != 0):
-            self.find_shortest_path_to_exit(current_node, path)
+            path.expected_output += self.find_shortest_path_to_exit(current_node, path)
 
         return path
     
@@ -238,12 +239,49 @@ class CFG():
             else:
                 path.directions.append(1)
                 return list(self.graph.adj[current_node])[1]
+            
 
-    def find_shortest_path_to_exit(self, current_node, path) -> None:
+    def find_shortest_path_to_exit(self, current_node, path) -> list[int]:
         '''
             finds shortest path to exit and adds it to path
         '''
+
+        parents = [-1] * self.graph.number_of_nodes()
+
+        q = Queue()
+
+        q.put(current_node)
+
+        while not q.empty():
+
+            n = q.get()
+
+            # if we have found an exit node, then return
+            # need to add finding path from src to exit
+            if(self.successors(n) == 0):
+                return self.recover_bfs_path(current_node, n, parents)
+            
+            # otherwise, add successors to queue
+            for child in self.graph.neighbors(n):
+                q.put(child)
+                parents[child] = n
+
+    def recover_bfs_path(self, start, end, parents):
+        '''
+            recovers path from start to exit given parent array
+        '''
         pass
+            
+
+
+
+
+
+
+
+
+        
+       
 
 
 
