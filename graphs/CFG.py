@@ -184,20 +184,18 @@ class CFG():
         # root should be id 0
         current_node = self.get_root()
 
-        # initialise empty path
         path = Path()
 
-        # add root as first node on path
         path.expected_output.append(current_node)
 
-        # iterate through the graph until an exit node is reached
-        # or path length is exceeded
-        while(self.successors(current_node) != 0 and
-            len(path.expected_output) < max_length):
+        while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
-            self.choose_next_node(current_node, path)
+            current_node = self.choose_next_node(current_node, path)
 
-        # if we are not at exit node, then find shortest distance
+            path.expected_output.append(current_node)
+
+
+        # if we are not at exit node, then find shortest distance to exit
         if(self.successors(current_node) != 0):
             self.find_shortest_path_to_exit(current_node, path)
 
@@ -209,12 +207,27 @@ class CFG():
         '''
         return len(list(self.graph.adj[current_node]))
     
-    def choose_next_node(self, current_node, path) -> None:
+    def choose_next_node(self, current_node, path) -> int:
         '''
-            chooses next node and adds it to path
+            randomly chooses next node and returns it
+            edits the direction array if necessary
         '''
-        if
-        pass
+        
+        if(self.successors(current_node) == 1):
+
+            return self.graph.adj[current_node]
+        
+        else:
+
+            rand_num = 0.3 # HARD-CODED FOR TEST
+
+            if(rand_num < 0.5):
+                path.directions.append(0)
+                return self.graph.adj[current_node][0]
+            
+            else:
+                path.directions.append(1)
+                return self.graph.adj[current_node][1]
 
     def find_shortest_path_to_exit(self, current_node, path) -> None:
         '''
