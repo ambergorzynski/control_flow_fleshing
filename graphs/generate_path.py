@@ -15,7 +15,7 @@ def main():
 
     cfg = CFG(graph1)
 
-    path = cfg.find_path(5)
+    path = cfg.find_path(max_length)
 
     print("Expected output and directions:")
     print(path.expected_output)
@@ -27,7 +27,7 @@ def main():
 
     cfg = CFG(graph2)
 
-    path = cfg.find_path(10)
+    path = cfg.find_path(max_length)
 
     print("Expected output and directions:")
     print(path.expected_output)

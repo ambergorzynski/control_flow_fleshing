@@ -205,7 +205,6 @@ class CFG():
 
             path.expected_output.append(current_node)
 
-
         # if we are not at exit node, then find shortest distance to exit
         if(self.successors(current_node) != 0):
             path.expected_output += self.find_shortest_path_to_exit(current_node, path)
@@ -248,6 +247,8 @@ class CFG():
 
         parents = [-1] * self.graph.number_of_nodes()
 
+        parents[current_node] = None
+
         q = Queue()
 
         q.put(current_node)
@@ -263,14 +264,24 @@ class CFG():
             
             # otherwise, add successors to queue
             for child in self.graph.neighbors(n):
-                q.put(child)
-                parents[child] = n
+                if child != n:
+                    q.put(child)
+                    parents[child] = n
 
     def recover_bfs_path(self, start, end, parents):
         '''
             recovers path from start to exit given parent array
         '''
-        pass
+        if start == end:
+            return [end]
+        
+        path = []
+
+        while parents[end] is not None:
+            path.append(end)
+            end = parents[end]
+
+        return path[::-1]
             
 
 
