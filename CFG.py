@@ -268,18 +268,14 @@ class CFG():
             return (list(self.graph.adj[current_node])[0], None)
         
         else:
-
-            rand_num = rand.random()
-
-            if(rand_num < 0.5):
-                node = list(self.graph.adj[current_node])[0]
-                dir = 0
             
-            else:
-                node = list(self.graph.adj[current_node])[1]
-                dir = 1
+            # randomly choose an index from the set of possible successors
+            # the index provides the direction
+            index = rand.choice(range(len(list(self.graph.successors(current_node)))))
+            
+            node = list(self.graph.adj[current_node])[index]
 
-        return (node, dir)
+        return (node, index)
             
 
     def find_shortest_path_to_exit(self, current_node) -> tuple[list[int], list[int]]:

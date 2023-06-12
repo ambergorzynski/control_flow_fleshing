@@ -9,11 +9,11 @@ def main():
 
     max_length = 10
 
-    n_graphs = 3
+    n_graphs = 4
 
     for i in range(n_graphs):
            
-        graph = pickle.load(open(f'graph_{i+1}.p', 'rb'))
+        graph = pickle.load(open(f'graphs/graph_{i+1}.p', 'rb'))
 
         cfg = CFG(graph)
 
