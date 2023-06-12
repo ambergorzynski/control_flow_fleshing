@@ -1,8 +1,8 @@
 #!/bin/sh
-clang -emit-llvm -S wrapper.cpp -o wrapper.ll
-llvm-as graphs/run_cfg_wip_2.ll -o run_cfg.bc
-llvm-as wrapper.ll -o wrapper.bc
-llvm-link run_cfg.bc wrapper.bc -o out_unopt.bc
+clang -emit-llvm -S run_test.cpp -o run_test.ll
+llvm-as test_input_llvm_programs/run_cfg_wip_2.ll -o run_cfg.bc
+llvm-as run_test.ll -o run_test.bc
+llvm-link run_cfg.bc run_test.bc -o out_unopt.bc
 #opimisation step
 opt -passes=instcount out_unopt.bc -o out.bc
 llc -filetype=obj out.bc -o out.o
