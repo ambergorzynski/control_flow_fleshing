@@ -9,4 +9,4 @@ venv/
 *.drawio
 *.png
 __pycache__/
-old/
+_old/
