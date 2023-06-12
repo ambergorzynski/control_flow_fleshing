@@ -7,32 +7,21 @@ def main():
 
     seed = datetime.now().timestamp()
 
-    max_length = 3
+    max_length = 10
 
-    # hard coded example graph 1 - next step is to use cmd line args
-    
-    graph1 = pickle.load(open("graph_1.p", "rb"))
+    n_graphs = 3
 
-    cfg = CFG(graph1)
+    for i in range(n_graphs):
+           
+        graph = pickle.load(open(f'graph_{i+1}.p', 'rb'))
 
-    path = cfg.find_path(max_length)
+        cfg = CFG(graph)
 
-    print("Expected output and directions:")
-    print(path.expected_output)
-    print(path.directions)
-    
-    # hard coded example graph 2 - next step is to use cmd line args
-    
-    graph2 = pickle.load(open("graph_2.p", "rb"))
+        path = cfg.find_path(max_length)
 
-    cfg = CFG(graph2)
-
-    path = cfg.find_path(max_length)
-
-    print("Expected output and directions:")
-    print(path.expected_output)
-    print(path.directions)
-
+        print("Expected output and directions:")
+        print(path.expected_output)
+        print(path.directions)
 
 if __name__=="__main__":
     main()

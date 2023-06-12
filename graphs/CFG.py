@@ -201,7 +201,7 @@ class CFG():
 
         while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
-            (current_node, dir) = self.choose_next_node(current_node, path, rand)
+            (current_node, dir) = self.choose_next_node(current_node, rand)
 
             path.expected_output.append(current_node)
             
