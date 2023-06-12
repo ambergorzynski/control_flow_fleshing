@@ -3,33 +3,25 @@ import pickle
 
 def main():
 
-    # hard coded example graph 1 - next step is to use cmd line args
-    
-    graph1 = pickle.load(open("graph_1.p", "rb"))
+    n_graphs = 3
 
-    cfg = CFG(graph1)
+    graph = [None] * n_graphs
 
-    cfg.fleshout()
+    for i in range(3):
 
-    if (cfg.save_llvm_to_file("run_cfg_wip_1.ll")):
-        print("Fleshed CFG created successfully!")
-    
-    else:
-        print("Problem saving fleshed CFG")
+        graph_name = f'graph_{i + 1}.p'
+        
+        graph[i] = pickle.load(open(graph_name, "rb"))
 
-    # hard coded example graph 2 - next step is to use cmd line args
-    
-    graph2 = pickle.load(open("graph_2.p", "rb"))
+        cfg = CFG(graph[i])
 
-    cfg = CFG(graph2)
+        cfg.fleshout()
 
-    cfg.fleshout()
-
-    if (cfg.save_llvm_to_file("run_cfg_wip_2.ll")):
-        print("Fleshed CFG created successfully!")
-    
-    else:
-        print("Problem saving fleshed CFG")
+        if (cfg.save_llvm_to_file(f'run_cfg_wip_{(i + 1)}.ll')):
+            print("Fleshed CFG created successfully!")
+        
+        else:
+            print("Problem saving fleshed CFG")
 
 if __name__=="__main__":
     main()

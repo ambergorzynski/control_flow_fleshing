@@ -81,7 +81,7 @@
 
             ; branch
             %condition_2 = icmp eq i32 %dir_2_value, 0
-            br i1 %condition_2, label %4, label %2
+            br i1 %condition_2, label %2, label %4
             
 
             3: 
