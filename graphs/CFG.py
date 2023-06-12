@@ -222,7 +222,7 @@ class CFG():
         '''
         return len(list(self.graph.adj[current_node]))
     
-    def choose_next_node(self, current_node, path, rand) -> tuple[int, int]:
+    def choose_next_node(self, current_node, rand) -> tuple[int, int]:
         '''
             randomly chooses next node and returns a 
             tuple (node, direction)
