@@ -7,7 +7,7 @@ def main():
 
     graph = [None] * n_graphs
 
-    for i in range(3):
+    for i in range(n_graphs):
 
         graph_name = f'graph_{i + 1}.p'
         
