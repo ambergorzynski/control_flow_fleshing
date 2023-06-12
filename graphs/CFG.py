@@ -201,13 +201,18 @@ class CFG():
 
         while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
-            current_node = self.choose_next_node(current_node, path, rand)
+            (current_node, dir) = self.choose_next_node(current_node, path, rand)
 
             path.expected_output.append(current_node)
+            
+            if dir is not None:
+                path.directions.append(dir)
 
         # if we are not at exit node, then find shortest distance to exit
         if(self.successors(current_node) != 0):
-            path.expected_output += self.find_shortest_path_to_exit(current_node, path)
+            (shortest_path_to_exit, dirs_to_exit) = self.find_shortest_path_to_exit(current_node, path)
+            path.expected_output += shortest_path_to_exit
+            path.directions += dirs_to_exit
 
         return path
     
@@ -217,37 +222,40 @@ class CFG():
         '''
         return len(list(self.graph.adj[current_node]))
     
-    def choose_next_node(self, current_node, path, rand) -> int:
+    def choose_next_node(self, current_node, path, rand) -> tuple[int, int]:
         '''
-            randomly chooses next node and returns it
-            edits the direction array if necessary
+            randomly chooses next node and returns a 
+            tuple (node, direction)
         '''
 
         if(self.successors(current_node) == 1):
 
-            return list(self.graph.adj[current_node])[0]
+            return (list(self.graph.adj[current_node])[0], None)
         
         else:
 
             rand_num = rand.random()
 
             if(rand_num < 0.5):
-                path.directions.append(0)
-                return list(self.graph.adj[current_node])[0]
+                node = list(self.graph.adj[current_node])[0]
+                dir = 0
             
             else:
-                path.directions.append(1)
-                return list(self.graph.adj[current_node])[1]
+                node = list(self.graph.adj[current_node])[1]
+                dir = 1
+
+        return (node, dir)
             
 
-    def find_shortest_path_to_exit(self, current_node, path) -> list[int]:
+    def find_shortest_path_to_exit(self, current_node, path) -> tuple[list[int], list[int]]:
         '''
             finds shortest path to exit and adds it to path
+            returns tuple (shortest_path, shortest_dirs)
         '''
 
-        parents = [-1] * self.graph.number_of_nodes()
+        parents = [None] * self.graph.number_of_nodes()
 
-        parents[current_node] = None
+        directions = [None] * self.graph.number_of_nodes()
 
         q = Queue()
 
@@ -260,28 +268,46 @@ class CFG():
             # if we have found an exit node, then return
             # need to add finding path from src to exit
             if(self.successors(n) == 0):
-                return self.recover_bfs_path(current_node, n, parents)
+                (shortest_path, shortest_dirs) = self.recover_bfs_path(current_node, n, parents, directions)
+                return (shortest_path, shortest_dirs)
             
             # otherwise, add successors to queue
+            dir = 0
+
             for child in self.graph.neighbors(n):
+
                 if child != n:
                     q.put(child)
                     parents[child] = n
 
-    def recover_bfs_path(self, start, end, parents):
+                    # include direction if parent has multiple children
+                    if self.successors(n) > 1:
+                        directions[dir]
+
+                dir += 1
+                    
+
+    def recover_bfs_path(self, start, end, parents, directions):
         '''
             recovers path from start to exit given parent array
+            also edits directions array to add the directions to the exit
         '''
         if start == end:
             return [end]
         
         path = []
+        dirs = [] 
 
         while parents[end] is not None:
+
             path.append(end)
+
+            if directions[end] is not None:
+                dirs.append(directions[end])
+
             end = parents[end]
 
-        return path[::-1]
+        return (path[::-1], dirs[::-1])
             
 
 

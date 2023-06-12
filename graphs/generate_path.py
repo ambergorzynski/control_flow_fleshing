@@ -7,7 +7,7 @@ def main():
 
     seed = datetime.now().timestamp()
 
-    max_length = 5
+    max_length = 10
 
     # hard coded example graph 1 - next step is to use cmd line args
     
