@@ -210,7 +210,7 @@ class CFG():
 
         # if we are not at exit node, then find shortest distance to exit
         if(self.successors(current_node) != 0):
-            (shortest_path_to_exit, dirs_to_exit) = self.find_shortest_path_to_exit(current_node, path)
+            (shortest_path_to_exit, dirs_to_exit) = self.find_shortest_path_to_exit(current_node)
             path.expected_output += shortest_path_to_exit
             path.directions += dirs_to_exit
 
@@ -247,9 +247,9 @@ class CFG():
         return (node, dir)
             
 
-    def find_shortest_path_to_exit(self, current_node, path) -> tuple[list[int], list[int]]:
+    def find_shortest_path_to_exit(self, current_node) -> tuple[list[int], list[int]]:
         '''
-            finds shortest path to exit and adds it to path
+            finds shortest path to exit and 
             returns tuple (shortest_path, shortest_dirs)
         '''
 
@@ -290,15 +290,14 @@ class CFG():
     def recover_bfs_path(self, start, end, parents, directions):
         '''
             recovers path from start to exit given parent array
-            also edits directions array to add the directions to the exit
+            returns tuple containing path and directions array
         '''
-        if start == end:
-            return [end]
         
         path = []
         dirs = [] 
 
-        while parents[end] is not None:
+        # trace path in reverse order from end node to start node
+        while start != end:
 
             path.append(end)
 
@@ -307,6 +306,8 @@ class CFG():
 
             end = parents[end]
 
+        # reverse the ordering to give path from start to end node
+        # and remove start node since already in expected_output path
         return (path[::-1], dirs[::-1])
             
 
