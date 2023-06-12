@@ -285,9 +285,7 @@ class CFG():
                         directions[child] = dir
 
                 dir += 1
-            
-            print(directions)
-                    
+                                
 
     def recover_bfs_path(self, start, end, parents, directions):
         '''

@@ -7,7 +7,7 @@ def main():
 
     seed = datetime.now().timestamp()
 
-    max_length = 10
+    max_length = 3
 
     # hard coded example graph 1 - next step is to use cmd line args
     
@@ -20,7 +20,7 @@ def main():
     print("Expected output and directions:")
     print(path.expected_output)
     print(path.directions)
-
+    
     # hard coded example graph 2 - next step is to use cmd line args
     
     graph2 = pickle.load(open("graph_2.p", "rb"))
