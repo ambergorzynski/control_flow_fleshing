@@ -276,15 +276,17 @@ class CFG():
 
             for child in self.graph.neighbors(n):
 
-                if child != n:
+                if child != n and parents[child] == None:
                     q.put(child)
                     parents[child] = n
 
                     # include direction if parent has multiple children
                     if self.successors(n) > 1:
-                        directions[dir]
+                        directions[child] = dir
 
                 dir += 1
+            
+            print(directions)
                     
 
     def recover_bfs_path(self, start, end, parents, directions):
