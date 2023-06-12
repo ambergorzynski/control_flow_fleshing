@@ -6,3 +6,6 @@ out
 *.dSYM
 venv/
 .DS_Store
+*.drawio
+*.png
+__pycache__/
