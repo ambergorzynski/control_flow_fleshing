@@ -56,6 +56,22 @@ class GraphGenerator():
             (9, 10)])
         
         return G
+    
+    def preset_graph_4(self) -> nx.MultiDiGraph:
+
+        ''' returns example graph 4 with switch statement'''
+
+        G = nx.MultiDiGraph()
+
+        G.add_nodes_from([0, 1, 2, 3, 4, 5])
+
+        G.add_edges_from([(0, 1),
+            (1, 2), (1, 3), (1, 4),
+            (2, 5),
+            (3, 5),
+            (4, 5)])
+        
+        return G
 
 def main():
 
@@ -63,11 +79,13 @@ def main():
     G1 = generator.preset_graph_1()
     G2 = generator.preset_graph_2()
     G3 = generator.preset_graph_3()
+    G4 = generator.preset_graph_4()
 
     #pickle graphs (for now) - change this to JSON rather than pickle later
     pickle.dump(G1, open("graph_1.p", "wb"))
     pickle.dump(G2, open("graph_2.p", "wb"))
     pickle.dump(G3, open("graph_3.p", "wb") )
+    pickle.dump(G4, open("graph_4.p", "wb") )
 
 if __name__=="__main__":
     main()

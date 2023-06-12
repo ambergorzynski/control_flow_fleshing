@@ -52,6 +52,9 @@ class CFG():
             elif(n_successors == 2):
                 self.fleshed_graph += self.flesh_conditional_node(n)
 
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+
 
         # end code with return statement
         self.fleshed_graph += '''
@@ -162,6 +165,38 @@ class CFG():
                        successor_true = list(self.graph.adj[n])[1])
         
         return code
+    
+    def flesh_switch_node(self, n : int, n_successors : int) -> str:
+        '''
+            returns code for node with > 2 successors
+            e.g. a switch statement
+        '''
+        code = '''
+            ; get directions for node
+            %index_dir_{i} = load i32, i32* %dir_counter
+            %dir_{i} = load i32*, i32** %directions
+            %dir_{i}_ptr = getelementptr inbounds i32, i32* %dir_{i}, i32 %index_dir_{i}
+            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
+
+            ; increment directions counter
+            %temp_{i}_2 = add i32 %index_dir_{i}, 1
+            store i32 %temp_{i}_2, i32* %dir_counter
+
+            ; switch
+            switch i32 %dir_{i}_value, label %{default} [ 
+            '''.format(i = n,
+                       default = list(self.graph.adj[n])[0])
+        
+        for j in range(n_successors):
+             code += ''' i32 {i}, label %{successor}
+            '''.format(i = j,
+                       successor = list(self.graph.adj[n])[j])
+        
+        
+        code += ''']''' 
+        
+        return code
+                
 
     def save_llvm_to_file(self, filename : str) -> bool:
         ''' 

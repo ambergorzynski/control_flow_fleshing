@@ -3,7 +3,7 @@ import pickle
 
 def main():
 
-    n_graphs = 3
+    n_graphs = 4
 
     graph = [None] * n_graphs
 
@@ -17,7 +17,7 @@ def main():
 
         cfg.fleshout()
 
-        if (cfg.save_llvm_to_file(f'run_cfg_wip_{(i + 1)}.ll')):
+        if (cfg.save_llvm_to_file(f'input_test_llvm_programs/run_cfg_wip_{(i + 1)}.ll')):
             print("Fleshed CFG created successfully!")
         
         else:

@@ -1,6 +1,6 @@
 #!/bin/sh
 clang -emit-llvm -S run_test.cpp -o run_test.ll
-llvm-as test_input_llvm_programs/run_cfg_wip_2.ll -o run_cfg.bc
+llvm-as test_input_llvm_programs/run_cfg_wip_4.ll -o run_cfg.bc
 llvm-as run_test.ll -o run_test.bc
 llvm-link run_cfg.bc run_test.bc -o out_unopt.bc
 #opimisation step
