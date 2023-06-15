@@ -23,6 +23,12 @@ def main():
         print(path.expected_output)
         print(path.directions)
 
+        with open(f'test_input_arrays/input_test_{i+1}.txt', 'w') as f:
+            f.write(str(len(path.directions))+'\n')
+            f.write(str(len(path.expected_output))+'\n')
+            f.write(spaces(path.directions)+'\n')
+            f.write(spaces(path.expected_output))
+
 def single_example(graph_name):
     
     seed = datetime.now().timestamp()
