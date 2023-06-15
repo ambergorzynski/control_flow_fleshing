@@ -1,7 +1,9 @@
 import networkx as nx
 import pickle
 import matplotlib.pyplot as plt
-import pydot
+import sys
+import random
+from random import Random
 
 class GraphGenerator():
 
@@ -75,25 +77,50 @@ class GraphGenerator():
         
         return G
 
-    def generate_graph(self, n_nodes) -> nx.MultiDiGraph:
+    def generate_graph(self, n_nodes, seed=None) -> nx.MultiDiGraph:
 
         ''' returns graph with number of nodes specified '''
 
+        rand = Random()
+        
+        if seed is None:
+            seed = random.randrange(0, sys.maxsize)
+
+        rand.seed(seed)
+
         # generate graph with given number of nodes
+        node_list = list(range(n_nodes))
+
+        G = nx.MultiDiGraph()
+
+        G.add_nodes_from(node_list)
 
         # loop over nodes and create edges
+        for node in range(n_nodes - 1):
+
+            # randomly choose number of successor nodes
+            # up to 3 for now - to update later
+            n_successors = rand.choice([1, 2, 3])
+
+            for j in range(n_successors):
+
+                successor = rand.choice(list(range(n_nodes)))
+
+                G.add_edge(node, successor)
 
         # final node should have 0 successors (exit node)
 
-def main():
+        return G
 
-    
+def main():
+  
     generator = GraphGenerator()
+    '''
     G1 = generator.preset_graph_1()
     G2 = generator.preset_graph_2()
     G3 = generator.preset_graph_3()
     G4 = generator.preset_graph_4()
-    '''
+    
     #pickle graphs (for now) - change this to JSON rather than pickle later
     pickle.dump(G1, open("graph_1.p", "wb"))
     pickle.dump(G2, open("graph_2.p", "wb"))
@@ -101,7 +128,9 @@ def main():
     pickle.dump(G4, open("graph_4.p", "wb") )
     '''
 
-    nx.draw_networkx(G3)
+    G = generator.generate_graph(10)
+
+    nx.draw_networkx(G)
     plt.show()
     '''
     graph = nx.drawing.nx_pydot.to_pydot(G1)
