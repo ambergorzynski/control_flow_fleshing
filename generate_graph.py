@@ -96,7 +96,7 @@ class GraphGenerator():
         G.add_nodes_from(node_list)
 
         # loop over nodes and create edges
-        for node in range(n_nodes - 1):
+        for node in range(0, n_nodes - 1):
 
             # randomly choose number of successor nodes
             # up to 3 for now - to update later
@@ -104,7 +104,7 @@ class GraphGenerator():
 
             for j in range(n_successors):
 
-                successor = rand.choice(list(range(n_nodes)))
+                successor = rand.choice(list(range(1, n_nodes)))
 
                 G.add_edge(node, successor)
 
@@ -122,16 +122,18 @@ def main():
     G4 = generator.preset_graph_4()
     
     #pickle graphs (for now) - change this to JSON rather than pickle later
-    pickle.dump(G1, open("graph_1.p", "wb"))
-    pickle.dump(G2, open("graph_2.p", "wb"))
-    pickle.dump(G3, open("graph_3.p", "wb") )
-    pickle.dump(G4, open("graph_4.p", "wb") )
+    pickle.dump(G1, open("graphs/graph_1.p", "wb"))
+    pickle.dump(G2, open("graphs/graph_2.p", "wb"))
+    pickle.dump(G3, open("graphs/graph_3.p", "wb") )
+    pickle.dump(G4, open("graphs/graph_4.p", "wb") )
     '''
 
     G = generator.generate_graph(10)
 
-    nx.draw_networkx(G)
+    #nx.draw_networkx(G)
+    nx.draw(G, with_labels=True)
     plt.show()
+    pickle.dump(G, open("graphs/graph_test.p", "wb"))
     '''
     graph = nx.drawing.nx_pydot.to_pydot(G1)
     graph.write_png("output.png")

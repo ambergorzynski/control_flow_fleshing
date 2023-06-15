@@ -67,7 +67,7 @@ class CFG():
 
         prog_start = '''
 
-        ; example cfg 1: with single branching block
+        ; 
 
         define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
 
