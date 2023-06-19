@@ -228,6 +228,23 @@ class CFG():
         file.close()
 
         return True
+    
+    def is_valid(self) -> bool:
+        '''
+            function checks whether CFG is valid, which is 
+            defined by a path existing from the start node
+            to an exit node
+        '''
+
+        for end in self.exit_nodes:
+
+            if(self.is_reachable(0, end)):
+
+                return True
+
+        # if we reach the end of the check, then we have not 
+        # found any paths to exit nodes
+        return False
 
     def find_path(self, max_length, seed=None) -> Path:
         '''
@@ -243,7 +260,7 @@ class CFG():
             seed = random.randrange(0, sys.maxsize)
 
         rand.seed(seed)
-
+        
         # root should be id 0
         current_node = self.get_root()
 
