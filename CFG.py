@@ -253,6 +253,9 @@ class CFG():
 
         while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
+            print("path:")
+            print(path.expected_output)
+
             (current_node, dir) = self.choose_next_node(current_node, rand)
 
             path.expected_output.append(current_node)
@@ -293,9 +296,14 @@ class CFG():
             
             # ensure node choice is not a doomed node that cannot reach an exit
             while(self.is_doomed(node)):
+                print("node:")
+                print(current_node)
                 doomed.append(node)
-                node = rand.choice([i for i in list(self.graph.successors(current_node)) 
-                                   if i not in doomed])
+                print("doomed:")
+                print(doomed)
+                print("successors:")
+                print(list(self.graph.successors(current_node)))
+                node = rand.choice([i for i in list(self.graph.successors(current_node)) if i not in doomed])
 
             # the node index provides the direction    
             index = list(self.graph.successors(current_node)).index(node)
@@ -322,12 +330,12 @@ class CFG():
                 # add node to non-doomed set
                 self.not_doomed.append(node)
 
-                return True
+                return False
         
        # if no exit nodes were reachable, then add node to doomed set 
         self.doomed.append(node)
 
-        return False
+        return True
     
     def is_reachable(self, start, end) -> bool:
         ''' returns true if the given end node can be reached from
@@ -397,6 +405,8 @@ class CFG():
                         directions[child] = dir
 
                 dir += 1
+
+        print("No path to exit!!")
                                 
 
     def recover_bfs_path(self, start, end, parents, directions):
