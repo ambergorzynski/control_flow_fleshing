@@ -189,6 +189,55 @@ class GraphGenerator():
 
         return G
     
+def generate_graph_approach_3(self, n_nodes, seed=None) -> nx.MultiDiGraph:
+
+        ''' 
+            variant on approach 1: use same initial approach and then append
+            exit nodes to a randomly selected sample of the nodes in the graph.
+            a validity check is still required to test whether a route exists 
+            from source to an exit
+        '''
+
+        rand = Random()
+        
+        if seed is None:
+            seed = random.randrange(0, sys.maxsize)
+
+        rand.seed(seed)
+
+        # generate graph with given number of nodes
+        node_list = list(range(n_nodes))
+
+        G = nx.MultiDiGraph()
+
+        G.add_nodes_from(node_list)
+
+        # loop over nodes and create edges
+        for node in range(0, n_nodes - 1):
+
+            # randomly choose number of successor nodes
+            # up to 3 for now - to update later
+            n_successors = rand.choice(list(range(0, 50)))
+
+            for j in range(n_successors):
+
+                successor = rand.choice(list(range(1, n_nodes)))
+
+                G.add_edge(node, successor)
+
+        # randomly append exit nodes to a sample of nodes
+        nodes = rand.choices(list(range(0, n_nodes)), k=n_nodes/5)
+
+        # give new index to exit nodes
+        exit_node = n_nodes
+
+        G.add_node(n_nodes)
+
+        for n in nodes:
+            G.add_edge(n, exit_node)
+
+        return G
+    
 def view_graph():
     
     graph = pickle.load(open(f'graphs/fuzzing_190623/graph_0.p', "rb"))
