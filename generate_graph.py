@@ -178,49 +178,34 @@ class GraphGenerator():
             # do not include node 0 as the destination node, since it has some 
             # set-up code that should not be repeated
             for i in range(n_annotations):
+                
+                start = rand.choice(list(range(0, n_nodes)))
 
+                end = rand.choice(list(range(1, n_nodes)))
 
+                G.add_edge(start, end)
 
 
 
         return G
-
-def main():
-  
-    generator = GraphGenerator()
-    '''
-    G1 = generator.preset_graph_1()
-    G2 = generator.preset_graph_2()
-    G3 = generator.preset_graph_3()
-    G4 = generator.preset_graph_4()
     
-    #pickle graphs (for now) - change this to JSON rather than pickle later
-    pickle.dump(G1, open("graphs/graph_1.p", "wb"))
-    pickle.dump(G2, open("graphs/graph_2.p", "wb"))
-    pickle.dump(G3, open("graphs/graph_3.p", "wb") )
-    pickle.dump(G4, open("graphs/graph_4.p", "wb") )
-    '''
-
-    G = generator.generate_graph_approach_1(20)
-
-    #nx.draw_networkx(G)
-    nx.draw(G, with_labels=True)
-    plt.show()
-    pickle.dump(G, open("graphs/graph_test.p", "wb"))
-    '''
-    graph = nx.drawing.nx_pydot.to_pydot(G1)
-    graph.write_png("output.png")
-
-    print(G1)
-    '''
-
 def view_graph():
     
     graph = pickle.load(open(f'graphs/fuzzing_190623/graph_0.p', "rb"))
     nx.draw(graph, with_labels=True)
     plt.show()
 
+def main():
+  
+    generator = GraphGenerator()
 
+    # G = generator.generate_graph_approach_1(20)
+    G = generator.generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
+
+    #nx.draw_networkx(G)
+    nx.draw(G, with_labels=True)
+    plt.show()
+    pickle.dump(G, open("graphs/graph_test.p", "wb"))
 
 if __name__=="__main__":
     #view_graph()
