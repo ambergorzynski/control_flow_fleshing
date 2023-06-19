@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 import random
 from random import Random
+from queue import Queue
 
 class GraphGenerator():
 
@@ -77,9 +78,16 @@ class GraphGenerator():
         
         return G
 
-    def generate_graph(self, n_nodes, seed=None) -> nx.MultiDiGraph:
+    def generate_graph_approach_1(self, n_nodes, seed=None) -> nx.MultiDiGraph:
 
-        ''' returns graph with number of nodes specified '''
+        ''' 
+            returns graph with number of nodes specified 
+            graph generation approach is to first create a set of nodes.
+            next, each node is given a set of edges going to randomly chosen other
+            nodes in the graph. 
+            this approach is problematic because it doesn't guranatee that there is a 
+            path from the start to an exit node, and we end up with very short paths
+        '''
 
         rand = Random()
         
@@ -100,7 +108,7 @@ class GraphGenerator():
 
             # randomly choose number of successor nodes
             # up to 3 for now - to update later
-            n_successors = rand.choice([1, 2, 3])
+            n_successors = rand.choice(list(range(0, 50)))
 
             for j in range(n_successors):
 
@@ -109,6 +117,71 @@ class GraphGenerator():
                 G.add_edge(node, successor)
 
         # final node should have 0 successors (exit node)
+
+        return G
+    
+    def generate_graph_approach_2(self, n_nodes, seed=None, add_annotations=False, n_annotations=0) -> nx.MultiDiGraph:
+
+        ''' 
+            returns graph with number of nodes specified 
+            graph generation approach is:
+                1. grow a graph in a breadth-first approach, giving each
+                    node a random number of successors (including potentially 0).
+                    this step gives a graph that should have paths from entry to 
+                    exit nodes, but without any jumps beyond immediate neighbour nodes.
+                2. annotate the graph by randomly adding edges to a randomly chosen
+                    number of nodes in the graph. the edges could jump forwards or
+                    backwards, or to the node itself
+        '''
+
+        rand = Random()
+        
+        if seed is None:
+            seed = random.randrange(0, sys.maxsize)
+
+        rand.seed(seed)
+
+        G = nx.MultiDiGraph()
+
+        node_counter = 0
+
+        q = Queue()
+
+        q.put(node_counter)
+
+        G.add_node(node_counter)
+
+        while (node_counter < n_nodes) and not q.empty():
+
+            current_node = q.get()
+
+            # randomly choose number of successor nodes
+            # from 0 to 10 (to be flexed)
+            n_successors = rand.choice(list(range(0, 10)))
+
+            # add successor nodes as children
+            # and add to back of queue
+            nodes = list(range(node_counter + 1, node_counter + n_successors))
+            
+            G.add_nodes_from(nodes)
+
+            for i in nodes:
+                G.add_edge(current_node, i)
+                q.put(i)
+
+            # increment node counter
+            node_counter += n_successors
+
+        if add_annotations:
+
+            # choose pairs of nodes randomly to add edges between
+            # do not include node 0 as the destination node, since it has some 
+            # set-up code that should not be repeated
+            for i in range(n_annotations):
+
+
+
+
 
         return G
 
@@ -128,7 +201,7 @@ def main():
     pickle.dump(G4, open("graphs/graph_4.p", "wb") )
     '''
 
-    G = generator.generate_graph(10)
+    G = generator.generate_graph_approach_1(20)
 
     #nx.draw_networkx(G)
     nx.draw(G, with_labels=True)
@@ -150,4 +223,5 @@ def view_graph():
 
 
 if __name__=="__main__":
-    view_graph()
+    #view_graph()
+    main()
