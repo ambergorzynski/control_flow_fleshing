@@ -10,3 +10,4 @@ venv/
 *.png
 __pycache__/
 _old/
+fuzzing_*
