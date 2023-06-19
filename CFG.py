@@ -263,19 +263,33 @@ class CFG():
             tuple (node, direction)
         '''
 
+        doomed = []
+
         if(self.successors(current_node) == 1):
 
             return (list(self.graph.adj[current_node])[0], None)
         
         else:
             
-            # randomly choose an index from the set of possible successors
-            # the index provides the direction
-            index = rand.choice(range(len(list(self.graph.successors(current_node)))))
+            # randomly choose a node from the set of possible successors
+            node = rand.choice(list(self.graph.successors(current_node)))
             
-            node = list(self.graph.adj[current_node])[index]
+            # ensure node choice is not a doomed node that cannot reach an exit
+            while(self.is_doomed(node)):
+                doomed.append(node)
+                node = rand.choice([i for i in list(self.graph.successors(current_node)) 
+                                   if i not in doomed])
+
+            # the node index provides the direction    
+            index = list(self.graph.successors(current_node)).index(node)
 
         return (node, index)
+    
+    def is_doomed(self, node) -> bool:
+        ''' returns true if node is doomed s.t. no exit node is 
+            reachable from this node '''
+        
+        return False
             
 
     def find_shortest_path_to_exit(self, current_node) -> tuple[list[int], list[int]]:
