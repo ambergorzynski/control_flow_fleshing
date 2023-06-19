@@ -222,7 +222,6 @@ class CFG():
             returns true if file write is successful
             false otherwise
         '''
-        print(self.fleshed_graph)
 
         file = open(filename, "w")
         file.write(self.fleshed_graph)
