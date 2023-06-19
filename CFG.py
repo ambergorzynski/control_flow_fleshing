@@ -334,7 +334,7 @@ class CFG():
         ''' returns true if the given end node can be reached from
             the start node. checked using BFS '''
         
-        visited = [False] * self.graph.number_of_nodes
+        visited = [False] * self.graph.number_of_nodes()
 
         q = Queue()
 

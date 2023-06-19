@@ -41,7 +41,7 @@
 
             ; branch
             %condition_0 = icmp eq i32 %dir_0_value, 0
-            br i1 %condition_0, label %5, label %8
+            br i1 %condition_0, label %6, label %1
             
 
             1: 
@@ -55,7 +55,7 @@
             %temp_1_1 = add i32 %index_1, 1
             store i32 %temp_1_1, i32* %counter
         
-            br label %8
+            br label %9
         
 
             2: 
@@ -69,7 +69,7 @@
             %temp_2_1 = add i32 %index_2, 1
             store i32 %temp_2_1, i32* %counter
         
-            br label %8
+            br label %3
         
 
             3: 
@@ -93,12 +93,10 @@
             %temp_3_2 = add i32 %index_dir_3, 1
             store i32 %temp_3_2, i32* %dir_counter
 
-            ; switch
-            switch i32 %dir_3_value, label %1 [ 
-             i32 0, label %1
-             i32 1, label %5
-             i32 2, label %2
-            ]
+            ; branch
+            %condition_3 = icmp eq i32 %dir_3_value, 0
+            br i1 %condition_3, label %1, label %5
+            
 
             4: 
             ; store node label in output array
@@ -111,8 +109,20 @@
             %temp_4_1 = add i32 %index_4, 1
             store i32 %temp_4_1, i32* %counter
         
-            br label %6
-        
+            ; get directions for node
+            %index_dir_4 = load i32, i32* %dir_counter
+            %dir_4 = load i32*, i32** %directions
+            %dir_4_ptr = getelementptr inbounds i32, i32* %dir_4, i32 %index_dir_4
+            %dir_4_value = load i32, i32* %dir_4_ptr
+
+            ; increment directions counter
+            %temp_4_2 = add i32 %index_dir_4, 1
+            store i32 %temp_4_2, i32* %dir_counter
+
+            ; branch
+            %condition_4 = icmp eq i32 %dir_4_value, 0
+            br i1 %condition_4, label %5, label %2
+            
 
             5: 
             ; store node label in output array
@@ -135,12 +145,10 @@
             %temp_5_2 = add i32 %index_dir_5, 1
             store i32 %temp_5_2, i32* %dir_counter
 
-            ; switch
-            switch i32 %dir_5_value, label %1 [ 
-             i32 0, label %1
-             i32 1, label %8
-             i32 2, label %6
-            ]
+            ; branch
+            %condition_5 = icmp eq i32 %dir_5_value, 0
+            br i1 %condition_5, label %6, label %1
+            
 
             6: 
             ; store node label in output array
@@ -153,22 +161,8 @@
             %temp_6_1 = add i32 %index_6, 1
             store i32 %temp_6_1, i32* %counter
         
-            ; get directions for node
-            %index_dir_6 = load i32, i32* %dir_counter
-            %dir_6 = load i32*, i32** %directions
-            %dir_6_ptr = getelementptr inbounds i32, i32* %dir_6, i32 %index_dir_6
-            %dir_6_value = load i32, i32* %dir_6_ptr
-
-            ; increment directions counter
-            %temp_6_2 = add i32 %index_dir_6, 1
-            store i32 %temp_6_2, i32* %dir_counter
-
-            ; switch
-            switch i32 %dir_6_value, label %8 [ 
-             i32 0, label %8
-             i32 1, label %9
-             i32 2, label %4
-            ]
+            br label %9
+        
 
             7: 
             ; store node label in output array
@@ -193,7 +187,7 @@
 
             ; branch
             %condition_7 = icmp eq i32 %dir_7_value, 0
-            br i1 %condition_7, label %2, label %5
+            br i1 %condition_7, label %9, label %7
             
 
             8: 
@@ -207,8 +201,20 @@
             %temp_8_1 = add i32 %index_8, 1
             store i32 %temp_8_1, i32* %counter
         
-            br label %9
-        
+            ; get directions for node
+            %index_dir_8 = load i32, i32* %dir_counter
+            %dir_8 = load i32*, i32** %directions
+            %dir_8_ptr = getelementptr inbounds i32, i32* %dir_8, i32 %index_dir_8
+            %dir_8_value = load i32, i32* %dir_8_ptr
+
+            ; increment directions counter
+            %temp_8_2 = add i32 %index_dir_8, 1
+            store i32 %temp_8_2, i32* %dir_counter
+
+            ; branch
+            %condition_8 = icmp eq i32 %dir_8_value, 0
+            br i1 %condition_8, label %9, label %3
+            
 
             9: 
             ; store node label in output array
