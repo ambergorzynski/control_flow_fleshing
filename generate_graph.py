@@ -141,5 +141,13 @@ def main():
     print(G1)
     '''
 
+def view_graph():
+    
+    graph = pickle.load(open(f'graphs/fuzzing_190623/graph_0.p', "rb"))
+    nx.draw(graph, with_labels=True)
+    plt.show()
+
+
+
 if __name__=="__main__":
-    main()
+    view_graph()
