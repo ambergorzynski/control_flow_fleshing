@@ -270,9 +270,6 @@ class CFG():
 
         while(self.successors(current_node) != 0 and len(path.expected_output) < max_length):
 
-            print("path:")
-            print(path.expected_output)
-
             (current_node, dir) = self.choose_next_node(current_node, rand)
 
             path.expected_output.append(current_node)
@@ -422,8 +419,6 @@ class CFG():
                         directions[child] = dir
 
                 dir += 1
-
-        print("No path to exit!!")
                                 
 
     def recover_bfs_path(self, start, end, parents, directions):
