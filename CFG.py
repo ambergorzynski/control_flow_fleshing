@@ -15,6 +15,24 @@ class CFG():
     def __init__(self, graph : nx.MultiDiGraph):
         self.graph : nx.MultiDiGraph = graph
         self.fleshed_graph : str = None 
+        self.doomed : list[int] = []
+        self.not_doomed : list[int] = []
+        self.exit_nodes : list[int] = self.find_exit_nodes()
+
+    def find_exit_nodes(self) -> list[int]:
+        ''' 
+            returns a list of all exit nodes in the graph
+            defined as nodes with no successors 
+        '''
+
+        exits = []
+
+        for node in self.graph:
+            if self.successors(node) == 0:
+                exits.append(node)
+
+        return exits
+
 
     def get_root(self) -> int:
         '''
@@ -288,8 +306,58 @@ class CFG():
     def is_doomed(self, node) -> bool:
         ''' returns true if node is doomed s.t. no exit node is 
             reachable from this node '''
+
+        # first check whether we have already encountered this node
+        if node in self.doomed:
+            return True
         
+        elif node in self.not_doomed:
+            return False
+        
+        # if we haven't already checked the node, then check whether
+        # it can reach any possible exit node
+        for end in self.exit_nodes:
+
+            if(self.is_reachable(node, end)):
+
+                # add node to non-doomed set
+                self.not_doomed.append(node)
+
+                return True
+        
+       # if no exit nodes were reachable, then add node to doomed set 
+        self.doomed.append(node)
+
         return False
+    
+    def is_reachable(self, start, end) -> bool:
+        ''' returns true if the given end node can be reached from
+            the start node. checked using BFS '''
+        
+        visited = [False] * self.graph.number_of_nodes
+
+        q = Queue()
+
+        q.put(start)
+
+        while not q.empty():
+
+            n = q.get()
+
+            # return true if we have found an exit node
+            if n == end:
+                return True
+            
+            # add all neighbours of n to queue
+            for child in self.graph.neighbors(n):
+                if child != n and visited[n] == False:
+                    q.put(n)
+                    visited[n] = True
+
+        # if we have completed the search without finding the
+        # end node, then return false
+        return False
+
             
 
     def find_shortest_path_to_exit(self, current_node) -> tuple[list[int], list[int]]:
