@@ -17,7 +17,9 @@ def generate_graphs(n_graphs, filepath, min_graph_size, max_graph_size, seed=Non
 
         graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
 
-        graph = generator.generate_graph_approach_3(graph_size)
+        # graph = generator.generate_graph_approach_3(graph_size)
+        # graph = generator.generate_graph_approach_2(graph_size, add_annotations=True, n_annotations=graph_size//10)
+        graph = generator.generate_graph_approach_presets(i)
 
         pickle.dump(graph, open(f'{filepath}graph_{i}.p', "wb"))
 
@@ -76,13 +78,13 @@ def spaces(input_array):
 def main():
 
     # input parameters
-    n_graphs = 10
+    n_graphs = 4
     n_paths = 5
     graph_filepath = "graphs/fuzzing_190623/"
     llvm_filepath = "test_input_llvm_programs/fuzzing_190623/"
     path_filepath = "test_input_arrays/fuzzing_190623/"
     min_graph_size = 20
-    max_graph_size = 500
+    max_graph_size = 21
     max_path_length = 900
     #seed = datetime.now().timestamp()
   

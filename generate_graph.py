@@ -108,7 +108,7 @@ class GraphGenerator():
 
             # randomly choose number of successor nodes
             # up to 3 for now - to update later
-            n_successors = rand.choice(list(range(0, 50)))
+            n_successors = rand.choice(list(range(1, 3)))
 
             for j in range(n_successors):
 
@@ -157,7 +157,7 @@ class GraphGenerator():
 
             # randomly choose number of successor nodes
             # from 0 to 10 (to be flexed)
-            n_successors = rand.choice(list(range(0, 10)))
+            n_successors = rand.choice(list(range(1, 3)))
 
             # add successor nodes as children
             # and add to back of queue
@@ -236,9 +236,21 @@ class GraphGenerator():
 
             return G
     
+    def generate_graph_approach_presets(self, i):
+        if i == 0:
+            return self.preset_graph_1()
+        if i == 1:
+            return self.preset_graph_2()
+        if i == 2:
+            return self.preset_graph_3()
+        if i == 3:
+            return self.preset_graph_4()
+
+
+    
 def view_graph():
     
-    graph = pickle.load(open(f'graphs/fuzzing_190623/graph_0.p', "rb"))
+    graph = pickle.load(open(f'graphs/fuzzing_190623/graph_2.p', "rb"))
     nx.draw(graph, with_labels=True)
     plt.show()
 
@@ -255,5 +267,5 @@ def main():
     pickle.dump(G, open("graphs/graph_test.p", "wb"))
 
 if __name__=="__main__":
-    #view_graph()
-    main()
+    view_graph()
+    #main()
