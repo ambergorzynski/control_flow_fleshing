@@ -310,13 +310,6 @@ class CFG():
             
             # ensure node choice is not a doomed node that cannot reach an exit
             while(self.is_doomed(node)):
-                print("node:")
-                print(current_node)
-                doomed.append(node)
-                print("doomed:")
-                print(doomed)
-                print("successors:")
-                print(list(self.graph.successors(current_node)))
                 node = rand.choice([i for i in list(self.graph.successors(current_node)) if i not in doomed])
 
             # the node index provides the direction    
