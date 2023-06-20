@@ -16,6 +16,7 @@ int main(int argc, char** argv) {
 	int* directions;
 	bool result;
 	int size;
+	ofstream output_file;
 
 	read_in(argv[1], &directions, &expected_output, &actual_output, size);
 
@@ -23,8 +24,13 @@ int main(int argc, char** argv) {
 
 	result = cmp(expected_output, actual_output, size);
 
-	printf("expected and actual output are ");
+	output_file.open(argv[2]);
 
+	output_file << argv[1] << endl;
+	output_file << "	Results: Expected and actual output are ";
+	(result) ? output_file << "the same\n" : output_file << "not the same\n";
+
+	printf("expected and actual output are ");
 	(result) ? printf("the same\n") : printf("not the same\n");
 
 	printf("expected output:");
