@@ -4,6 +4,7 @@ from datetime import datetime
 from random import Random
 from generate_graph import GraphGenerator
 from CFG import CFG
+from run_test import Tester
 
 def generate_graphs(n_graphs, filepath, min_graph_size, max_graph_size, seed=None):
 
@@ -73,6 +74,17 @@ def spaces(input_array):
 
     return output
 
+def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath):
+
+    test = Tester(llvm_filepath, path_filepath, output_filepath)
+
+    for i in range(n_graphs):
+        
+        test.compile(f'run_cfg_{i}')
+
+        for j in range(n_paths):
+
+            test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
 
 
 def main():
@@ -84,6 +96,7 @@ def main():
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
+    out_filepath = f'{base}/running'
     min_graph_size = 20
     max_graph_size = 21
     max_path_length = 900
@@ -99,6 +112,7 @@ def main():
     generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_length)
 
     # Step 4 : run tests
+    run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, out_filepath)
 
 
 
