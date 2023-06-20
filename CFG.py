@@ -73,6 +73,9 @@ class CFG():
             elif(n_successors > 2):
                 self.fleshed_graph += self.flesh_switch_node(n, n_successors)
 
+        # add closing brace to end of program
+        self.fleshed_graph += '''
+        }'''
 
         return self.fleshed_graph
     
@@ -137,8 +140,8 @@ class CFG():
         '''
         
         code = '''
-        ret void
-        }'''
+            ret void
+        '''
         
         return code
 
