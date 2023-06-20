@@ -21,26 +21,26 @@ def generate_graphs(n_graphs, filepath, min_graph_size, max_graph_size, seed=Non
         # graph = generator.generate_graph_approach_2(graph_size, add_annotations=True, n_annotations=graph_size//10)
         graph = generator.generate_graph_approach_presets(i)
 
-        pickle.dump(graph, open(f'{filepath}graph_{i}.p', "wb"))
+        pickle.dump(graph, open(f'{filepath}/graph_{i}.p', "wb"))
 
 def flesh_graphs(n_graphs, graph_filepath, llvm_filepath):
 
     for i in range(n_graphs):
         
-        graph = pickle.load(open(f'{graph_filepath}graph_{i}.p', "rb"))
+        graph = pickle.load(open(f'{graph_filepath}/graph_{i}.p', "rb"))
 
         cfg = CFG(graph)
 
         cfg.fleshout()
 
-        cfg.save_llvm_to_file(f'{llvm_filepath}run_cfg_{i}.ll')
+        cfg.save_llvm_to_file(f'{llvm_filepath}/run_cfg_{i}.ll')
 
 
 def generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_length, seed=None):
 
     for i in range(n_graphs):
         
-        graph = pickle.load(open(f'{graph_filepath}graph_{i}.p', 'rb'))
+        graph = pickle.load(open(f'{graph_filepath}/graph_{i}.p', 'rb'))
 
         cfg = CFG(graph)
 
@@ -52,7 +52,7 @@ def generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_le
 
                 path = cfg.find_path(max_path_length, seed)
 
-                with open(f'{path_filepath}input_graph_{i}_path{j}.txt', 'w') as f:
+                with open(f'{path_filepath}/input_graph_{i}_path{j}.txt', 'w') as f:
                     f.write(str(len(path.directions))+'\n')
                     f.write(str(len(path.expected_output))+'\n')
                     f.write(str(spaces(path.directions))+'\n')
@@ -80,9 +80,10 @@ def main():
     # input parameters
     n_graphs = 4
     n_paths = 5
-    graph_filepath = "graphs/fuzzing_190623/"
-    llvm_filepath = "test_input_llvm_programs/fuzzing_190623/"
-    path_filepath = "test_input_arrays/fuzzing_190623/"
+    base = 'fuzzing/fuzzing_200623'
+    graph_filepath = f'{base}/graphs'
+    llvm_filepath = f'{base}/llvm'
+    path_filepath = f'{base}/input'
     min_graph_size = 20
     max_graph_size = 21
     max_path_length = 900
@@ -97,8 +98,8 @@ def main():
     # Step 3 : generate paths for each graph
     generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_length)
 
+    # Step 4 : run tests
 
-    # Step 4 : compile
 
 
 
