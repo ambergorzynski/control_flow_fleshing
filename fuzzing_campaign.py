@@ -74,9 +74,9 @@ def spaces(input_array):
 
     return output
 
-def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath):
+def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath, results_name):
 
-    test = Tester(llvm_filepath, path_filepath, output_filepath)
+    test = Tester(llvm_filepath, path_filepath, output_filepath, results_name)
 
     for i in range(n_graphs):
         
@@ -97,6 +97,7 @@ def main():
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
     out_filepath = f'{base}/running'
+    results_name = 'results'
     min_graph_size = 20
     max_graph_size = 21
     max_path_length = 900
@@ -112,7 +113,7 @@ def main():
     generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_length)
 
     # Step 4 : run tests
-    run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, out_filepath)
+    run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, out_filepath, results_name)
 
 
 
