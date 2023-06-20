@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
 	result = cmp(expected_output, actual_output, size);
 
-	output_file.open(argv[2]);
+	output_file.open(argv[2], ios::app);
 
 	output_file << argv[1] << endl;
 	output_file << "	Results: Expected and actual output are ";
@@ -33,19 +33,26 @@ int main(int argc, char** argv) {
 	printf("expected and actual output are ");
 	(result) ? printf("the same\n") : printf("not the same\n");
 
+	output_file << "	Expected output:";
 	printf("expected output:");
 
 	for(int i = 0; i < size; i++) {
+		output_file << " " << expected_output[i];
 		printf(" %d", expected_output[i]);
 	}
 
+	output_file << "\n	Actual output:  ";
 	printf("\nactual output:  ");
 
 	for(int i = 0; i < 2*size; i++) {
+		output_file << " " << actual_output[i];
 		printf(" %d", actual_output[i]);
 	}
 
+	output_file << "\n";
 	printf("\n");
+
+	output_file.close();
 
 	// deallocate memory for dynamic arrays
 	delete [] directions;
