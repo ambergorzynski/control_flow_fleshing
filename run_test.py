@@ -37,8 +37,12 @@ class Tester():
         cmd = [f'clang++ {output_filepath}/{test_name}_out_opt.o -o {output_filepath}/{test_name}_out']
         result = subprocess.run(cmd, shell=True)
 
-    def execute(self):
-        pass
+    def execute(self, input_filepath, output_filepath, test_name, path_name):
+        
+        cmd = [f'./{output_filepath}/{test_name}_out {input_filepath}/{path_name}.txt']
+        result = subprocess.run(cmd, shell=True)
+        print(result.returncode)
+        
 
     def parse_results(self):
         pass
@@ -53,11 +57,12 @@ def main():
     input_filepath = f'{base}/input'
     output_filepath = f'{base}/running'
     test_name = 'run_cfg_0'
+    path_name = 'input_graph_0_path0'
     
 
-    test.compile(test_filepath, output_filepath, test_name)
+    #test.compile(test_filepath, output_filepath, test_name)
 
-    test.execute(input_filepath, output_filepath, test_name)
+    test.execute(input_filepath, output_filepath, test_name, path_name)
 
 if __name__=="__main__":
     main()
