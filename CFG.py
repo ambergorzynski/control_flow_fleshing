@@ -371,9 +371,9 @@ class CFG():
             
             # add all neighbours of n to queue
             for child in self.graph.neighbors(n):
-                if child != n and visited[n] == False:
-                    q.put(n)
-                    visited[n] = True
+                if child != n and visited[child] == False:
+                    q.put(child)
+                    visited[child] = True
 
         # if we have completed the search without finding the
         # end node, then return false
