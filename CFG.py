@@ -74,11 +74,6 @@ class CFG():
                 self.fleshed_graph += self.flesh_switch_node(n, n_successors)
 
 
-        # end code with return statement
-        self.fleshed_graph += '''
-        ret void
-        }'''
-
         return self.fleshed_graph
     
     def flesh_program_start(self) -> str:
@@ -138,11 +133,12 @@ class CFG():
     def flesh_exit_node(self, n : int) -> str:
         '''
             returns code for node n with no successors
-            (exit node). note there can be multiple exit nodes
-            so no return statement is included here
+            (exit node).
         '''
+        
         code = '''
-            '''
+        ret void
+        }'''
         
         return code
 
