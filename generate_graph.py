@@ -215,7 +215,7 @@ class GraphGenerator():
 
                 # randomly choose number of successor nodes
                 # up to 3 for now - to update later
-                n_successors = rand.choice(list(range(0, 5)))
+                n_successors = rand.choice(list(range(1, 5)))
 
                 for j in range(n_successors):
 
