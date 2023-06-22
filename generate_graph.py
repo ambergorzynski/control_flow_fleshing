@@ -157,11 +157,11 @@ class GraphGenerator():
 
             # randomly choose number of successor nodes
             # from 0 to 10 (to be flexed)
-            n_successors = rand.choice(list(range(1, 3)))
+            n_successors = rand.choice(list(range(1, 10)))
 
             # add successor nodes as children
             # and add to back of queue
-            nodes = list(range(node_counter + 1, node_counter + n_successors))
+            nodes = list(range(node_counter + 1, node_counter + 1 + n_successors))
             
             G.add_nodes_from(nodes)
 
@@ -215,7 +215,7 @@ class GraphGenerator():
 
                 # randomly choose number of successor nodes
                 # up to 3 for now - to update later
-                n_successors = rand.choice(list(range(0, 50)))
+                n_successors = rand.choice(list(range(0, 5)))
 
                 for j in range(n_successors):
 
@@ -248,9 +248,17 @@ class GraphGenerator():
 
 
     
-def view_graph():
+def view_graph(filepath):
     
-    graph = pickle.load(open(f'graphs/fuzzing_190623/graph_2.p', "rb"))
+    graph = pickle.load(open(filepath, "rb"))
+    nx.draw(graph, with_labels=True)
+    plt.show()
+
+def explore_atlas():
+
+    ins = [1,3,4,5,3,5,6,7]
+    outs = [1,3,4,5,3,5,7,6]
+    graph = nx.random_k_out_graph(20, 5, 1)
     nx.draw(graph, with_labels=True)
     plt.show()
 
@@ -267,5 +275,6 @@ def main():
     pickle.dump(G, open("graphs/graph_test.p", "wb"))
 
 if __name__=="__main__":
-    view_graph()
+    #explore_atlas()
+    view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
     #main()
