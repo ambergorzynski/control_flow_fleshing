@@ -90,14 +90,15 @@ def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath, 
 def main():
 
     # input parameters
+    time = datetime.now().timestamp()
     n_graphs = 4
     n_paths = 5
-    base = 'fuzzing/fuzzing_200623'
+    base = 'fuzzing/fuzzing_210623'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
     out_filepath = f'{base}/running'
-    results_name = 'results'
+    results_name = f'results_{time}'
     min_graph_size = 20
     max_graph_size = 21
     max_path_length = 900
