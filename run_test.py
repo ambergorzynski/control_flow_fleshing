@@ -29,9 +29,9 @@ class Tester():
 
         # perform any optimisations
         # single 'instcount' opt hard-coded for now
-        cmd = [f'opt -passes=instcount {self.out}/{test_name}_out_unopt.bc -o {self.out}/{test_name}_opt.bc']
+        cmd = [f'''opt -passes='break-crit-edges,dse' {self.out}/{test_name}_out_unopt.bc -o {self.out}/{test_name}_opt.bc''']
         result = subprocess.run(cmd, shell=True)
-
+        
         # generate object file
         cmd = [f'llc -filetype=obj {self.out}/{test_name}_opt.bc -o {self.out}/{test_name}_out_opt.o']
         result = subprocess.run(cmd, shell=True)
@@ -39,6 +39,7 @@ class Tester():
         # generate executable
         cmd = [f'clang++ {self.out}/{test_name}_out_opt.o -o {self.out}/{test_name}_out']
         result = subprocess.run(cmd, shell=True)
+        
 
     def execute(self, test_name, path_name):
         
