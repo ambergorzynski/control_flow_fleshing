@@ -2,7 +2,7 @@ import networkx as nx
 import pickle
 from datetime import datetime
 from random import Random
-from generate_graph import GraphGenerator
+from generate_graph import *
 from CFG import CFG
 from run_test import Tester
 
@@ -12,15 +12,13 @@ def generate_graphs(n_graphs, filepath, min_graph_size, max_graph_size, seed=Non
 
     rand.seed(seed)
 
-    generator = GraphGenerator()
-
     for i in range(n_graphs):
 
         graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
 
-        graph = generator.generate_graph_approach_3(graph_size)
-        #graph = generator.generate_graph_approach_2(graph_size, add_annotations=True, n_annotations=graph_size//10)
-        #graph = generator.generate_graph_approach_presets(i)
+        graph = generate_graph_approach_3(graph_size)
+        #graph = generate_graph_approach_2(graph_size, add_annotations=True, n_annotations=graph_size//10)
+        #graph = generate_graph_approach_presets(i)
 
         pickle.dump(graph, open(f'{filepath}/graph_{i}.p', "wb"))
 
