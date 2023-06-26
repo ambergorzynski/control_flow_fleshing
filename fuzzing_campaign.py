@@ -72,9 +72,9 @@ def spaces(input_array):
 
     return output
 
-def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath, results_name):
+def run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, output_filepath, results_name, optimisations):
 
-    test = Tester(llvm_filepath, path_filepath, output_filepath, results_name)
+    test = Tester(llvm_filepath, path_filepath, output_filepath, results_name, optimisations)
 
     for i in range(n_graphs):
         
@@ -100,6 +100,7 @@ def main():
     min_graph_size = 20
     max_graph_size = 21
     max_path_length = 900
+    optimisations = 'break-crit-edges,dse'
     #seed = datetime.now().timestamp()
   
     # Step 1 : generate graphs
@@ -112,7 +113,7 @@ def main():
     generate_paths(n_graphs, n_paths, graph_filepath, path_filepath, max_path_length)
 
     # Step 4 : run tests
-    run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, out_filepath, results_name)
+    run_tests(n_graphs, n_paths, llvm_filepath, path_filepath, out_filepath, results_name, optimisations)
 
 
 
