@@ -15,8 +15,9 @@ class Fuzzer():
         self.out_filepath = out_filepath
         self.results_name = results_name
         self.bad_results_name = bad_results_name
+        # optimisations that were unrecognised:
+        #   block-placement
         self.cfg_optimisations = ['adce',
-                                    'block-placement',
                                     'break-crit-edges',
                                     'dce',
                                     'jump-threading',
@@ -75,7 +76,7 @@ class Fuzzer():
                                     'tailcallelim',
                                     ]
 
-    def generate_graphs(self, n_graphs, min_graph_size, max_graph_size, seed=None):
+    def generate_graphs(self, n_graphs, min_graph_size, max_graph_size, min_successors, max_successors, seed=None):
 
         rand = Random()
 
@@ -85,9 +86,8 @@ class Fuzzer():
 
             graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
 
-            graph = generate_graph_approach_3(graph_size)
-            #graph = generate_graph_approach_2(graph_size, add_annotations=True, n_annotations=graph_size//10)
-            #graph = generate_graph_approach_presets(i)
+            graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
+            #graph = generate_graph_approach_1(graph_size, add_annotations=True, n_annotations=graph_size//10)
 
             pickle.dump(graph, open(f'{self.graph_filepath}/graph_{i}.p', "wb"))
 
@@ -143,7 +143,9 @@ class Fuzzer():
 
     def run_tests(self, n_graphs, n_paths, optimisations):
 
-        test = Tester(self.llvm_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, optimisations)
+        optimisations_str = self.parse_optimisations(optimisations)
+
+        test = Tester(self.llvm_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, optimisations_str)
 
         for i in range(n_graphs):
             
@@ -153,13 +155,19 @@ class Fuzzer():
 
                 test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
 
+    def parse_optimisations(self, indices):
+
+        opt_list = [self.cfg_optimisations[i] for i in indices]
+
+        return ','.join(opt_list)
+
+
+
 
 def main():
 
-    # input parameters
+    # fixed input parameters
     time = datetime.now().timestamp()
-    n_graphs = 4
-    n_paths = 5
     base = 'fuzzing/fuzzing_210623'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
@@ -167,16 +175,24 @@ def main():
     out_filepath = f'{base}/running'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
+
+    # fuzzing input parameters
+    n_graphs = 4
+    n_paths = 5
     min_graph_size = 20
     max_graph_size = 21
+    min_successors = 1
+    max_successors = 4
+    graph_approach = 2 # can be 1 or 2
     max_path_length = 900
-    optimisations = 'break-crit-edges,dse'
-    #seed = datetime.now().timestamp()
+    optimisations = [1,3,4]
   
     fuzzer = Fuzzer(graph_filepath, llvm_filepath, path_filepath, out_filepath, results_name, bad_results_name)
 
     # Step 1 : generate graphs
-    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size)
+    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
+                            min_successors, max_successors,
+                            graph_approach)
 
     # Step 2 : flesh graphs
     fuzzer.flesh_graphs(n_graphs)

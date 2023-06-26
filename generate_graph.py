@@ -74,7 +74,7 @@ def preset_graph_4() -> nx.MultiDiGraph:
     
     return G
 
-def generate_graph_approach_1(n_nodes, seed=None) -> nx.MultiDiGraph:
+def generate_graph_approach_0(n_nodes, seed=None) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -116,7 +116,9 @@ def generate_graph_approach_1(n_nodes, seed=None) -> nx.MultiDiGraph:
 
     return G
 
-def generate_graph_approach_2(n_nodes, seed=None, add_annotations=False, n_annotations=0) -> nx.MultiDiGraph:
+def generate_graph_approach_1(n_nodes, seed=None, min_successors = 1,
+                            max_successors = 10, add_annotations=False,
+                            n_annotations=0) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -152,8 +154,8 @@ def generate_graph_approach_2(n_nodes, seed=None, add_annotations=False, n_annot
         current_node = q.get()
 
         # randomly choose number of successor nodes
-        # from 0 to 10 (to be flexed)
-        n_successors = rand.choice(list(range(1, 10)))
+        # default 1 to 10 (to be flexed)
+        n_successors = rand.choice(list(range(min_successors, max_successors)))
 
         # add successor nodes as children
         # and add to back of queue
@@ -185,7 +187,7 @@ def generate_graph_approach_2(n_nodes, seed=None, add_annotations=False, n_annot
 
     return G
     
-def generate_graph_approach_3(n_nodes, seed=None) -> nx.MultiDiGraph:
+def generate_graph_approach_2(n_nodes, seed=None, min_successors=1, max_successors=10) -> nx.MultiDiGraph:
 
         ''' 
             variant on approach 1: use same initial approach and then append
@@ -211,7 +213,7 @@ def generate_graph_approach_3(n_nodes, seed=None) -> nx.MultiDiGraph:
 
             # randomly choose number of successor nodes
             # up to 3 for now - to update later
-            n_successors = rand.choice(list(range(1, 5)))
+            n_successors = rand.choice(list(range(min_successors, max_successors)))
 
             for j in range(n_successors):
 
