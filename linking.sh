@@ -4,6 +4,6 @@ llvm-as test_input_llvm_programs/run_cfg_wip_graph_test.ll -o run_cfg.bc
 llvm-as run_test.ll -o run_test.bc
 llvm-link run_cfg.bc run_test.bc -o out_unopt.bc
 #opimisation step
-opt -passes="instcount,dse" out_unopt.bc -o out.bc
+opt -passes="adce" out_unopt.bc -o out.bc
 llc -filetype=obj out.bc -o out.o
 clang++ out.o -o out

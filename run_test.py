@@ -2,16 +2,14 @@ import subprocess
 
 class Tester():
 
-    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name, optimisations):
+    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name):
         self.test = test_filepath
         self.out = output_filepath
         self.input = input_filepath
         self.results_name = results_name
-        self.bad_results_name = bad_results_name
-        self.optimisation_list = optimisations
-    
+        self.bad_results_name = bad_results_name    
 
-    def compile(self, test_name):
+    def compile(self, test_name, optimisation_list):
 
         # compile c++ wrapper to llvm ir
         cmd = [f'clang -emit-llvm -S run_test.cpp -o {self.out}/run_test.ll']
@@ -32,7 +30,7 @@ class Tester():
 
         # perform any optimisations
         # single 'instcount' opt hard-coded for now
-        cmd = [f'''opt -passes={self.optimisation_list} {self.out}/{test_name}_out_unopt.bc -o {self.out}/{test_name}_opt.bc''']
+        cmd = [f'''opt -passes={optimisation_list} {self.out}/{test_name}_out_unopt.bc -o {self.out}/{test_name}_opt.bc''']
         result = subprocess.run(cmd, shell=True)
         
         # generate object file
@@ -67,9 +65,9 @@ def main():
     path_name = 'input_graph_0_path0'
     optimisations = 'break-crit-edges,dse'
 
-    test = Tester(test_filepath, input_filepath, output_filepath, results_name, bad_results_name, optimisations)
+    test = Tester(test_filepath, input_filepath, output_filepath, results_name, bad_results_name)
     
-    test.compile(test_name)
+    test.compile(test_name, optimisations)
 
     test.execute(test_name, path_name)
 

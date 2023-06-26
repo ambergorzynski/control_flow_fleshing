@@ -44,18 +44,18 @@ target triple = "x86_64-apple-macosx13.0.0"
 %"struct.std::__1::iterator" = type { i8 }
 %"class.std::__1::ctype" = type <{ %"class.std::__1::locale::facet", i32*, i8, [7 x i8] }>
 
-@.str = private unnamed_addr constant [42 x i8] c"\09Results: Expected and actual output are \00", align 1
-@.str.1 = private unnamed_addr constant [10 x i8] c"the same\0A\00", align 1
-@.str.2 = private unnamed_addr constant [14 x i8] c"not the same\0A\00", align 1
-@.str.3 = private unnamed_addr constant [32 x i8] c"expected and actual output are \00", align 1
-@.str.4 = private unnamed_addr constant [18 x i8] c"\09Expected output:\00", align 1
-@.str.5 = private unnamed_addr constant [17 x i8] c"expected output:\00", align 1
-@.str.6 = private unnamed_addr constant [2 x i8] c" \00", align 1
-@.str.7 = private unnamed_addr constant [4 x i8] c" %d\00", align 1
-@.str.8 = private unnamed_addr constant [19 x i8] c"\0A\09Actual output:  \00", align 1
-@.str.9 = private unnamed_addr constant [18 x i8] c"\0Aactual output:  \00", align 1
-@.str.10 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
-@.str.11 = private unnamed_addr constant [26 x i8] c"Error opening input file\0A\00", align 1
+@.str = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+@.str.1 = private unnamed_addr constant [26 x i8] c"Error opening input file\0A\00", align 1
+@.str.2 = private unnamed_addr constant [42 x i8] c"\09Results: Expected and actual output are \00", align 1
+@.str.3 = private unnamed_addr constant [10 x i8] c"the same\0A\00", align 1
+@.str.4 = private unnamed_addr constant [14 x i8] c"not the same\0A\00", align 1
+@.str.5 = private unnamed_addr constant [32 x i8] c"expected and actual output are \00", align 1
+@.str.6 = private unnamed_addr constant [18 x i8] c"\09Expected output:\00", align 1
+@.str.7 = private unnamed_addr constant [17 x i8] c"expected output:\00", align 1
+@.str.8 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@.str.9 = private unnamed_addr constant [4 x i8] c" %d\00", align 1
+@.str.10 = private unnamed_addr constant [19 x i8] c"\0A\09Actual output:  \00", align 1
+@.str.11 = private unnamed_addr constant [18 x i8] c"\0Aactual output:  \00", align 1
 @_ZTVNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEE = external unnamed_addr constant { [5 x i8*], [5 x i8*] }, align 8
 @_ZTTNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEE = external unnamed_addr constant [4 x i8*], align 8
 @_ZTVNSt3__114basic_ifstreamIcNS_11char_traitsIcEEEE = external unnamed_addr constant { [5 x i8*], [5 x i8*] }, align 8
@@ -75,32 +75,35 @@ define i32 @main(i32 %0, i8** %1) #0 personality i8* bitcast (i32 (...)* @__gxx_
   %9 = alloca i8, align 1
   %10 = alloca i32, align 4
   %11 = alloca %"class.std::__1::basic_ofstream", align 8
-  %12 = alloca i8*, align 8
-  %13 = alloca i32, align 4
+  %12 = alloca %"class.std::__1::basic_ofstream", align 8
+  %13 = alloca i8*, align 8
   %14 = alloca i32, align 4
-  %15 = alloca i32, align 4
   store i32 0, i32* %3, align 4
   store i32 %0, i32* %4, align 4
   store i8** %1, i8*** %5, align 8
   call void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEC1Ev(%"class.std::__1::basic_ofstream"* %11)
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEC1Ev(%"class.std::__1::basic_ofstream"* %12)
+          to label %15 unwind label %58
+
+15:                                               ; preds = %2
   %16 = load i8**, i8*** %5, align 8
   %17 = getelementptr inbounds i8*, i8** %16, i64 1
   %18 = load i8*, i8** %17, align 8
   invoke void @_Z7read_inPKcPPiS2_S2_Ri(i8* %18, i32** %8, i32** %6, i32** %7, i32* nonnull align 4 dereferenceable(4) %10)
-          to label %19 unwind label %98
+          to label %19 unwind label %62
 
-19:                                               ; preds = %2
+19:                                               ; preds = %15
   %20 = load i32*, i32** %8, align 8
   %21 = load i32*, i32** %7, align 8
   invoke void @_Z7run_cfgPiS_(i32* %20, i32* %21)
-          to label %22 unwind label %98
+          to label %22 unwind label %62
 
 22:                                               ; preds = %19
   %23 = load i32*, i32** %6, align 8
   %24 = load i32*, i32** %7, align 8
   %25 = load i32, i32* %10, align 4
   %26 = invoke zeroext i1 @_Z3cmpPiS_i(i32* %23, i32* %24, i32 %25)
-          to label %27 unwind label %98
+          to label %27 unwind label %62
 
 27:                                               ; preds = %22
   %28 = zext i1 %26 to i8
@@ -109,248 +112,150 @@ define i32 @main(i32 %0, i8** %1) #0 personality i8* bitcast (i32 (...)* @__gxx_
   %30 = getelementptr inbounds i8*, i8** %29, i64 2
   %31 = load i8*, i8** %30, align 8
   invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE4openEPKcj(%"class.std::__1::basic_ofstream"* %11, i8* %31, i32 1)
-          to label %32 unwind label %98
+          to label %32 unwind label %62
 
 32:                                               ; preds = %27
-  %33 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %34 = load i8**, i8*** %5, align 8
-  %35 = getelementptr inbounds i8*, i8** %34, i64 1
-  %36 = load i8*, i8** %35, align 8
-  %37 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %33, i8* %36)
-          to label %38 unwind label %98
+  %33 = load i8**, i8*** %5, align 8
+  %34 = getelementptr inbounds i8*, i8** %33, i64 3
+  %35 = load i8*, i8** %34, align 8
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE4openEPKcj(%"class.std::__1::basic_ofstream"* %12, i8* %35, i32 1)
+          to label %36 unwind label %62
 
-38:                                               ; preds = %32
-  %39 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEPFRS3_S4_E(%"class.std::__1::basic_ostream"* %37, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* @_ZNSt3__14endlIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_)
-          to label %40 unwind label %98
+36:                                               ; preds = %32
+  %37 = load i8**, i8*** %5, align 8
+  %38 = getelementptr inbounds i8*, i8** %37, i64 1
+  %39 = load i8*, i8** %38, align 8
+  %40 = load i8, i8* %9, align 1
+  %41 = trunc i8 %40 to i1
+  %42 = load i32*, i32** %6, align 8
+  %43 = load i32*, i32** %7, align 8
+  %44 = load i32, i32* %10, align 4
+  invoke void @_Z13record_outputRNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEEPcbPiS6_i(%"class.std::__1::basic_ofstream"* nonnull align 8 dereferenceable(416) %11, i8* %39, i1 zeroext %41, i32* %42, i32* %43, i32 %44)
+          to label %45 unwind label %62
 
-40:                                               ; preds = %38
-  %41 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %42 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %41, i8* getelementptr inbounds ([42 x i8], [42 x i8]* @.str, i64 0, i64 0))
-          to label %43 unwind label %98
+45:                                               ; preds = %36
+  %46 = load i8, i8* %9, align 1
+  %47 = trunc i8 %46 to i1
+  br i1 %47, label %66, label %48
 
-43:                                               ; preds = %40
-  %44 = load i8, i8* %9, align 1
-  %45 = trunc i8 %44 to i1
-  br i1 %45, label %46, label %50
+48:                                               ; preds = %45
+  %49 = load i8**, i8*** %5, align 8
+  %50 = getelementptr inbounds i8*, i8** %49, i64 1
+  %51 = load i8*, i8** %50, align 8
+  %52 = load i8, i8* %9, align 1
+  %53 = trunc i8 %52 to i1
+  %54 = load i32*, i32** %6, align 8
+  %55 = load i32*, i32** %7, align 8
+  %56 = load i32, i32* %10, align 4
+  invoke void @_Z13record_outputRNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEEPcbPiS6_i(%"class.std::__1::basic_ofstream"* nonnull align 8 dereferenceable(416) %12, i8* %51, i1 zeroext %53, i32* %54, i32* %55, i32 %56)
+          to label %57 unwind label %62
 
-46:                                               ; preds = %43
-  %47 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %48 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %47, i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.1, i64 0, i64 0))
-          to label %49 unwind label %98
-
-49:                                               ; preds = %46
-  br label %54
-
-50:                                               ; preds = %43
-  %51 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %52 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %51, i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.2, i64 0, i64 0))
-          to label %53 unwind label %98
-
-53:                                               ; preds = %50
-  br label %54
-
-54:                                               ; preds = %53, %49
-  %55 = phi %"class.std::__1::basic_ostream"* [ %48, %49 ], [ %52, %53 ]
-  %56 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @.str.3, i64 0, i64 0))
-          to label %57 unwind label %98
-
-57:                                               ; preds = %54
-  %58 = load i8, i8* %9, align 1
-  %59 = trunc i8 %58 to i1
-  br i1 %59, label %60, label %63
-
-60:                                               ; preds = %57
-  %61 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.1, i64 0, i64 0))
-          to label %62 unwind label %98
-
-62:                                               ; preds = %60
+57:                                               ; preds = %48
   br label %66
 
-63:                                               ; preds = %57
-  %64 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.2, i64 0, i64 0))
-          to label %65 unwind label %98
-
-65:                                               ; preds = %63
-  br label %66
-
-66:                                               ; preds = %65, %62
-  %67 = phi i32 [ %61, %62 ], [ %64, %65 ]
-  %68 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %69 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %68, i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.4, i64 0, i64 0))
-          to label %70 unwind label %98
-
-70:                                               ; preds = %66
-  %71 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.5, i64 0, i64 0))
-          to label %72 unwind label %98
-
-72:                                               ; preds = %70
-  store i32 0, i32* %14, align 4
-  br label %73
-
-73:                                               ; preds = %95, %72
-  %74 = load i32, i32* %14, align 4
-  %75 = load i32, i32* %10, align 4
-  %76 = icmp slt i32 %74, %75
-  br i1 %76, label %77, label %102
-
-77:                                               ; preds = %73
-  %78 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %79 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %78, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.6, i64 0, i64 0))
-          to label %80 unwind label %98
-
-80:                                               ; preds = %77
-  %81 = load i32*, i32** %6, align 8
-  %82 = load i32, i32* %14, align 4
-  %83 = sext i32 %82 to i64
-  %84 = getelementptr inbounds i32, i32* %81, i64 %83
-  %85 = load i32, i32* %84, align 4
-  %86 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"* %79, i32 %85)
-          to label %87 unwind label %98
-
-87:                                               ; preds = %80
-  %88 = load i32*, i32** %6, align 8
-  %89 = load i32, i32* %14, align 4
-  %90 = sext i32 %89 to i64
-  %91 = getelementptr inbounds i32, i32* %88, i64 %90
-  %92 = load i32, i32* %91, align 4
-  %93 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.7, i64 0, i64 0), i32 %92)
-          to label %94 unwind label %98
-
-94:                                               ; preds = %87
+58:                                               ; preds = %91, %2
+  %59 = landingpad { i8*, i32 }
+          cleanup
+  %60 = extractvalue { i8*, i32 } %59, 0
+  store i8* %60, i8** %13, align 8
+  %61 = extractvalue { i8*, i32 } %59, 1
+  store i32 %61, i32* %14, align 4
   br label %95
 
-95:                                               ; preds = %94
-  %96 = load i32, i32* %14, align 4
-  %97 = add nsw i32 %96, 1
-  store i32 %97, i32* %14, align 4
-  br label %73
-
-98:                                               ; preds = %139, %137, %134, %123, %116, %113, %105, %102, %87, %80, %77, %70, %66, %63, %60, %54, %50, %46, %40, %38, %32, %27, %22, %19, %2
-  %99 = landingpad { i8*, i32 }
+62:                                               ; preds = %75, %74, %71, %69, %66, %48, %36, %32, %27, %22, %19, %15
+  %63 = landingpad { i8*, i32 }
           cleanup
-  %100 = extractvalue { i8*, i32 } %99, 0
-  store i8* %100, i8** %12, align 8
-  %101 = extractvalue { i8*, i32 } %99, 1
-  store i32 %101, i32* %13, align 4
-  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ofstream"* %11)
-          to label %157 unwind label %163
+  %64 = extractvalue { i8*, i32 } %63, 0
+  store i8* %64, i8** %13, align 8
+  %65 = extractvalue { i8*, i32 } %63, 1
+  store i32 %65, i32* %14, align 4
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ofstream"* %12)
+          to label %94 unwind label %102
 
-102:                                              ; preds = %73
-  %103 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %104 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %103, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.8, i64 0, i64 0))
-          to label %105 unwind label %98
+66:                                               ; preds = %57, %45
+  %67 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
+  %68 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %67, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str, i64 0, i64 0))
+          to label %69 unwind label %62
 
-105:                                              ; preds = %102
-  %106 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.9, i64 0, i64 0))
-          to label %107 unwind label %98
+69:                                               ; preds = %66
+  %70 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str, i64 0, i64 0))
+          to label %71 unwind label %62
 
-107:                                              ; preds = %105
-  store i32 0, i32* %15, align 4
-  br label %108
+71:                                               ; preds = %69
+  %72 = bitcast %"class.std::__1::basic_ofstream"* %12 to %"class.std::__1::basic_ostream"*
+  %73 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %72, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str, i64 0, i64 0))
+          to label %74 unwind label %62
 
-108:                                              ; preds = %131, %107
-  %109 = load i32, i32* %15, align 4
-  %110 = load i32, i32* %10, align 4
-  %111 = mul nsw i32 2, %110
-  %112 = icmp slt i32 %109, %111
-  br i1 %112, label %113, label %134
-
-113:                                              ; preds = %108
-  %114 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %115 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %114, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.6, i64 0, i64 0))
-          to label %116 unwind label %98
-
-116:                                              ; preds = %113
-  %117 = load i32*, i32** %7, align 8
-  %118 = load i32, i32* %15, align 4
-  %119 = sext i32 %118 to i64
-  %120 = getelementptr inbounds i32, i32* %117, i64 %119
-  %121 = load i32, i32* %120, align 4
-  %122 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"* %115, i32 %121)
-          to label %123 unwind label %98
-
-123:                                              ; preds = %116
-  %124 = load i32*, i32** %7, align 8
-  %125 = load i32, i32* %15, align 4
-  %126 = sext i32 %125 to i64
-  %127 = getelementptr inbounds i32, i32* %124, i64 %126
-  %128 = load i32, i32* %127, align 4
-  %129 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.7, i64 0, i64 0), i32 %128)
-          to label %130 unwind label %98
-
-130:                                              ; preds = %123
-  br label %131
-
-131:                                              ; preds = %130
-  %132 = load i32, i32* %15, align 4
-  %133 = add nsw i32 %132, 1
-  store i32 %133, i32* %15, align 4
-  br label %108
-
-134:                                              ; preds = %108
-  %135 = bitcast %"class.std::__1::basic_ofstream"* %11 to %"class.std::__1::basic_ostream"*
-  %136 = invoke nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %135, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.10, i64 0, i64 0))
-          to label %137 unwind label %98
-
-137:                                              ; preds = %134
-  %138 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.10, i64 0, i64 0))
-          to label %139 unwind label %98
-
-139:                                              ; preds = %137
+74:                                               ; preds = %71
   invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE5closeEv(%"class.std::__1::basic_ofstream"* %11)
-          to label %140 unwind label %98
+          to label %75 unwind label %62
 
-140:                                              ; preds = %139
-  %141 = load i32*, i32** %8, align 8
-  %142 = icmp eq i32* %141, null
-  br i1 %142, label %145, label %143
+75:                                               ; preds = %74
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE5closeEv(%"class.std::__1::basic_ofstream"* %12)
+          to label %76 unwind label %62
 
-143:                                              ; preds = %140
-  %144 = bitcast i32* %141 to i8*
-  call void @_ZdaPv(i8* %144) #11
-  br label %145
+76:                                               ; preds = %75
+  %77 = load i32*, i32** %8, align 8
+  %78 = icmp eq i32* %77, null
+  br i1 %78, label %81, label %79
 
-145:                                              ; preds = %143, %140
-  %146 = load i32*, i32** %7, align 8
-  %147 = icmp eq i32* %146, null
-  br i1 %147, label %150, label %148
+79:                                               ; preds = %76
+  %80 = bitcast i32* %77 to i8*
+  call void @_ZdaPv(i8* %80) #11
+  br label %81
 
-148:                                              ; preds = %145
-  %149 = bitcast i32* %146 to i8*
-  call void @_ZdaPv(i8* %149) #11
-  br label %150
+81:                                               ; preds = %79, %76
+  %82 = load i32*, i32** %7, align 8
+  %83 = icmp eq i32* %82, null
+  br i1 %83, label %86, label %84
 
-150:                                              ; preds = %148, %145
-  %151 = load i32*, i32** %6, align 8
-  %152 = icmp eq i32* %151, null
-  br i1 %152, label %155, label %153
+84:                                               ; preds = %81
+  %85 = bitcast i32* %82 to i8*
+  call void @_ZdaPv(i8* %85) #11
+  br label %86
 
-153:                                              ; preds = %150
-  %154 = bitcast i32* %151 to i8*
-  call void @_ZdaPv(i8* %154) #11
-  br label %155
+86:                                               ; preds = %84, %81
+  %87 = load i32*, i32** %6, align 8
+  %88 = icmp eq i32* %87, null
+  br i1 %88, label %91, label %89
 
-155:                                              ; preds = %153, %150
+89:                                               ; preds = %86
+  %90 = bitcast i32* %87 to i8*
+  call void @_ZdaPv(i8* %90) #11
+  br label %91
+
+91:                                               ; preds = %89, %86
   store i32 0, i32* %3, align 4
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ofstream"* %12)
+          to label %92 unwind label %58
+
+92:                                               ; preds = %91
   call void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ofstream"* %11)
-  %156 = load i32, i32* %3, align 4
-  ret i32 %156
+  %93 = load i32, i32* %3, align 4
+  ret i32 %93
 
-157:                                              ; preds = %98
-  br label %158
+94:                                               ; preds = %62
+  br label %95
 
-158:                                              ; preds = %157
-  %159 = load i8*, i8** %12, align 8
-  %160 = load i32, i32* %13, align 4
-  %161 = insertvalue { i8*, i32 } undef, i8* %159, 0
-  %162 = insertvalue { i8*, i32 } %161, i32 %160, 1
-  resume { i8*, i32 } %162
+95:                                               ; preds = %94, %58
+  invoke void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED1Ev(%"class.std::__1::basic_ofstream"* %11)
+          to label %96 unwind label %102
 
-163:                                              ; preds = %98
-  %164 = landingpad { i8*, i32 }
+96:                                               ; preds = %95
+  br label %97
+
+97:                                               ; preds = %96
+  %98 = load i8*, i8** %13, align 8
+  %99 = load i32, i32* %14, align 4
+  %100 = insertvalue { i8*, i32 } undef, i8* %98, 0
+  %101 = insertvalue { i8*, i32 } %100, i32 %99, 1
+  resume { i8*, i32 } %101
+
+102:                                              ; preds = %95, %62
+  %103 = landingpad { i8*, i32 }
           catch i8* null
-  %165 = extractvalue { i8*, i32 } %164, 0
-  call void @__clang_call_terminate(i8* %165) #12
+  %104 = extractvalue { i8*, i32 } %103, 0
+  call void @__clang_call_terminate(i8* %104) #12
   unreachable
 }
 
@@ -439,6 +344,8 @@ define internal void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEC1Ev(%"cla
   unreachable
 }
 
+declare i32 @__gxx_personality_v0(...)
+
 ; Function Attrs: noinline optnone ssp uwtable
 define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32* nonnull align 4 dereferenceable(4) %4) #1 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
   %6 = alloca i8*, align 8
@@ -479,7 +386,7 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
   br i1 %28, label %30, label %38
 
 30:                                               ; preds = %29
-  %31 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.11, i64 0, i64 0))
+  %31 = invoke i32 (i8*, ...) @printf(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.1, i64 0, i64 0))
           to label %32 unwind label %34
 
 32:                                               ; preds = %30
@@ -664,8 +571,6 @@ define void @_Z7read_inPKcPPiS2_S2_Ri(i8* %0, i32** %1, i32** %2, i32** %3, i32*
   unreachable
 }
 
-declare i32 @__gxx_personality_v0(...)
-
 declare void @_Z7run_cfgPiS_(i32*, i32*) #2
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
@@ -761,6 +666,148 @@ define zeroext i1 @_Z3cmpPiS_i(i32* %0, i32* %1, i32 %2) #3 {
 declare void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE4openEPKcj(%"class.std::__1::basic_ofstream"*, i8*, i32) #2
 
 ; Function Attrs: noinline optnone ssp uwtable
+define void @_Z13record_outputRNSt3__114basic_ofstreamIcNS_11char_traitsIcEEEEPcbPiS6_i(%"class.std::__1::basic_ofstream"* nonnull align 8 dereferenceable(416) %0, i8* %1, i1 zeroext %2, i32* %3, i32* %4, i32 %5) #1 {
+  %7 = alloca %"class.std::__1::basic_ofstream"*, align 8
+  %8 = alloca i8*, align 8
+  %9 = alloca i8, align 1
+  %10 = alloca i32*, align 8
+  %11 = alloca i32*, align 8
+  %12 = alloca i32, align 4
+  %13 = alloca i32, align 4
+  %14 = alloca i32, align 4
+  store %"class.std::__1::basic_ofstream"* %0, %"class.std::__1::basic_ofstream"** %7, align 8
+  store i8* %1, i8** %8, align 8
+  %15 = zext i1 %2 to i8
+  store i8 %15, i8* %9, align 1
+  store i32* %3, i32** %10, align 8
+  store i32* %4, i32** %11, align 8
+  store i32 %5, i32* %12, align 4
+  %16 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %17 = bitcast %"class.std::__1::basic_ofstream"* %16 to %"class.std::__1::basic_ostream"*
+  %18 = load i8*, i8** %8, align 8
+  %19 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %17, i8* %18)
+  %20 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEPFRS3_S4_E(%"class.std::__1::basic_ostream"* %19, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* @_ZNSt3__14endlIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_)
+  %21 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %22 = bitcast %"class.std::__1::basic_ofstream"* %21 to %"class.std::__1::basic_ostream"*
+  %23 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %22, i8* getelementptr inbounds ([42 x i8], [42 x i8]* @.str.2, i64 0, i64 0))
+  %24 = load i8, i8* %9, align 1
+  %25 = trunc i8 %24 to i1
+  br i1 %25, label %26, label %30
+
+26:                                               ; preds = %6
+  %27 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %28 = bitcast %"class.std::__1::basic_ofstream"* %27 to %"class.std::__1::basic_ostream"*
+  %29 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %28, i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.3, i64 0, i64 0))
+  br label %34
+
+30:                                               ; preds = %6
+  %31 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %32 = bitcast %"class.std::__1::basic_ofstream"* %31 to %"class.std::__1::basic_ostream"*
+  %33 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %32, i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.4, i64 0, i64 0))
+  br label %34
+
+34:                                               ; preds = %30, %26
+  %35 = phi %"class.std::__1::basic_ostream"* [ %29, %26 ], [ %33, %30 ]
+  %36 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @.str.5, i64 0, i64 0))
+  %37 = load i8, i8* %9, align 1
+  %38 = trunc i8 %37 to i1
+  br i1 %38, label %39, label %41
+
+39:                                               ; preds = %34
+  %40 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.3, i64 0, i64 0))
+  br label %43
+
+41:                                               ; preds = %34
+  %42 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.4, i64 0, i64 0))
+  br label %43
+
+43:                                               ; preds = %41, %39
+  %44 = phi i32 [ %40, %39 ], [ %42, %41 ]
+  %45 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %46 = bitcast %"class.std::__1::basic_ofstream"* %45 to %"class.std::__1::basic_ostream"*
+  %47 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %46, i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.6, i64 0, i64 0))
+  %48 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.7, i64 0, i64 0))
+  store i32 0, i32* %13, align 4
+  br label %49
+
+49:                                               ; preds = %69, %43
+  %50 = load i32, i32* %13, align 4
+  %51 = load i32, i32* %12, align 4
+  %52 = icmp slt i32 %50, %51
+  br i1 %52, label %53, label %72
+
+53:                                               ; preds = %49
+  %54 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %55 = bitcast %"class.std::__1::basic_ofstream"* %54 to %"class.std::__1::basic_ostream"*
+  %56 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %55, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0))
+  %57 = load i32*, i32** %10, align 8
+  %58 = load i32, i32* %13, align 4
+  %59 = sext i32 %58 to i64
+  %60 = getelementptr inbounds i32, i32* %57, i64 %59
+  %61 = load i32, i32* %60, align 4
+  %62 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"* %56, i32 %61)
+  %63 = load i32*, i32** %10, align 8
+  %64 = load i32, i32* %13, align 4
+  %65 = sext i32 %64 to i64
+  %66 = getelementptr inbounds i32, i32* %63, i64 %65
+  %67 = load i32, i32* %66, align 4
+  %68 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.9, i64 0, i64 0), i32 %67)
+  br label %69
+
+69:                                               ; preds = %53
+  %70 = load i32, i32* %13, align 4
+  %71 = add nsw i32 %70, 1
+  store i32 %71, i32* %13, align 4
+  br label %49
+
+72:                                               ; preds = %49
+  %73 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %74 = bitcast %"class.std::__1::basic_ofstream"* %73 to %"class.std::__1::basic_ostream"*
+  %75 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %74, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.10, i64 0, i64 0))
+  %76 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.11, i64 0, i64 0))
+  store i32 0, i32* %14, align 4
+  br label %77
+
+77:                                               ; preds = %98, %72
+  %78 = load i32, i32* %14, align 4
+  %79 = load i32, i32* %12, align 4
+  %80 = mul nsw i32 2, %79
+  %81 = icmp slt i32 %78, %80
+  br i1 %81, label %82, label %101
+
+82:                                               ; preds = %77
+  %83 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %84 = bitcast %"class.std::__1::basic_ofstream"* %83 to %"class.std::__1::basic_ostream"*
+  %85 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %84, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0))
+  %86 = load i32*, i32** %11, align 8
+  %87 = load i32, i32* %14, align 4
+  %88 = sext i32 %87 to i64
+  %89 = getelementptr inbounds i32, i32* %86, i64 %88
+  %90 = load i32, i32* %89, align 4
+  %91 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"* %85, i32 %90)
+  %92 = load i32*, i32** %11, align 8
+  %93 = load i32, i32* %14, align 4
+  %94 = sext i32 %93 to i64
+  %95 = getelementptr inbounds i32, i32* %92, i64 %94
+  %96 = load i32, i32* %95, align 4
+  %97 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.9, i64 0, i64 0), i32 %96)
+  br label %98
+
+98:                                               ; preds = %82
+  %99 = load i32, i32* %14, align 4
+  %100 = add nsw i32 %99, 1
+  store i32 %100, i32* %14, align 4
+  br label %77
+
+101:                                              ; preds = %77
+  %102 = load %"class.std::__1::basic_ofstream"*, %"class.std::__1::basic_ofstream"** %7, align 8
+  %103 = bitcast %"class.std::__1::basic_ofstream"* %102 to %"class.std::__1::basic_ostream"*
+  %104 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %103, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str, i64 0, i64 0))
+  %105 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str, i64 0, i64 0))
+  ret void
+}
+
+; Function Attrs: noinline optnone ssp uwtable
 define linkonce_odr nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__1lsINS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %0, i8* %1) #1 {
   %3 = alloca %"class.std::__1::basic_ostream"*, align 8
   %4 = alloca i8*, align 8
@@ -774,43 +821,7 @@ define linkonce_odr nonnull align 8 dereferenceable(8) %"class.std::__1::basic_o
   ret %"class.std::__1::basic_ostream"* %9
 }
 
-; Function Attrs: noinline optnone ssp uwtable
-define internal nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEPFRS3_S4_E(%"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* %1) #1 align 2 {
-  %3 = alloca %"class.std::__1::basic_ostream"*, align 8
-  %4 = alloca %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)*, align 8
-  store %"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"** %3, align 8
-  store %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* %1, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)** %4, align 8
-  %5 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %3, align 8
-  %6 = load %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)*, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)** %4, align 8
-  %7 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* %6(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %5)
-  ret %"class.std::__1::basic_ostream"* %7
-}
-
-; Function Attrs: noinline optnone ssp uwtable
-define linkonce_odr nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__14endlIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %0) #1 {
-  %2 = alloca %"class.std::__1::basic_ostream"*, align 8
-  store %"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"** %2, align 8
-  %3 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
-  %4 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
-  %5 = bitcast %"class.std::__1::basic_ostream"* %4 to i8**
-  %6 = load i8*, i8** %5, align 8
-  %7 = getelementptr i8, i8* %6, i64 -24
-  %8 = bitcast i8* %7 to i64*
-  %9 = load i64, i64* %8, align 8
-  %10 = bitcast %"class.std::__1::basic_ostream"* %4 to i8*
-  %11 = getelementptr inbounds i8, i8* %10, i64 %9
-  %12 = bitcast i8* %11 to %"class.std::__1::basic_ios"*
-  %13 = call signext i8 @_ZNKSt3__19basic_iosIcNS_11char_traitsIcEEE5widenEc(%"class.std::__1::basic_ios"* %12, i8 signext 10)
-  %14 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE3putEc(%"class.std::__1::basic_ostream"* %3, i8 signext %13)
-  %15 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
-  %16 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE5flushEv(%"class.std::__1::basic_ostream"* %15)
-  %17 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
-  ret %"class.std::__1::basic_ostream"* %17
-}
-
 declare i32 @printf(i8*, ...) #2
-
-declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"*, i32) #2
 
 ; Function Attrs: noinline optnone ssp uwtable
 define internal void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEE5closeEv(%"class.std::__1::basic_ofstream"* %0) #1 align 2 {
@@ -1086,6 +1097,42 @@ define linkonce_odr void @_ZNSt3__114basic_ifstreamIcNS_11char_traitsIcEEED1Ev(%
   call void @__clang_call_terminate(i8* %25) #12
   unreachable
 }
+
+; Function Attrs: noinline optnone ssp uwtable
+define internal nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEPFRS3_S4_E(%"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* %1) #1 align 2 {
+  %3 = alloca %"class.std::__1::basic_ostream"*, align 8
+  %4 = alloca %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)*, align 8
+  store %"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"** %3, align 8
+  store %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)* %1, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)** %4, align 8
+  %5 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %3, align 8
+  %6 = load %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)*, %"class.std::__1::basic_ostream"* (%"class.std::__1::basic_ostream"*)** %4, align 8
+  %7 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* %6(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %5)
+  ret %"class.std::__1::basic_ostream"* %7
+}
+
+; Function Attrs: noinline optnone ssp uwtable
+define linkonce_odr nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__14endlIcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_(%"class.std::__1::basic_ostream"* nonnull align 8 dereferenceable(8) %0) #1 {
+  %2 = alloca %"class.std::__1::basic_ostream"*, align 8
+  store %"class.std::__1::basic_ostream"* %0, %"class.std::__1::basic_ostream"** %2, align 8
+  %3 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
+  %4 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
+  %5 = bitcast %"class.std::__1::basic_ostream"* %4 to i8**
+  %6 = load i8*, i8** %5, align 8
+  %7 = getelementptr i8, i8* %6, i64 -24
+  %8 = bitcast i8* %7 to i64*
+  %9 = load i64, i64* %8, align 8
+  %10 = bitcast %"class.std::__1::basic_ostream"* %4 to i8*
+  %11 = getelementptr inbounds i8, i8* %10, i64 %9
+  %12 = bitcast i8* %11 to %"class.std::__1::basic_ios"*
+  %13 = call signext i8 @_ZNKSt3__19basic_iosIcNS_11char_traitsIcEEE5widenEc(%"class.std::__1::basic_ios"* %12, i8 signext 10)
+  %14 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE3putEc(%"class.std::__1::basic_ostream"* %3, i8 signext %13)
+  %15 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
+  %16 = call nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE5flushEv(%"class.std::__1::basic_ostream"* %15)
+  %17 = load %"class.std::__1::basic_ostream"*, %"class.std::__1::basic_ostream"** %2, align 8
+  ret %"class.std::__1::basic_ostream"* %17
+}
+
+declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(%"class.std::__1::basic_ostream"*, i32) #2
 
 ; Function Attrs: noinline optnone ssp uwtable
 define linkonce_odr void @_ZNSt3__114basic_ofstreamIcNS_11char_traitsIcEEED2Ev(%"class.std::__1::basic_ofstream"* %0, i8** %1) unnamed_addr #1 align 2 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
@@ -2434,10 +2481,6 @@ declare void @_ZNSt3__18ios_base5clearEj(%"class.std::__1::ios_base"*, i32) #2
 ; Function Attrs: nounwind
 declare i64 @strlen(i8*) #10
 
-declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE3putEc(%"class.std::__1::basic_ostream"*, i8 signext) #2
-
-declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE5flushEv(%"class.std::__1::basic_ostream"*) #2
-
 declare %"class.std::__1::basic_filebuf"* @_ZNSt3__113basic_filebufIcNS_11char_traitsIcEEE5closeEv(%"class.std::__1::basic_filebuf"*) #2
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
@@ -2500,6 +2543,10 @@ define internal zeroext i1 @_ZNKSt3__18ios_base4failEv(%"class.std::__1::ios_bas
   %7 = icmp ne i32 %6, 0
   ret i1 %7
 }
+
+declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE3putEc(%"class.std::__1::basic_ostream"*, i8 signext) #2
+
+declare nonnull align 8 dereferenceable(8) %"class.std::__1::basic_ostream"* @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEE5flushEv(%"class.std::__1::basic_ostream"*) #2
 
 attributes #0 = { noinline norecurse optnone ssp uwtable "darwin-stkchk-strong-link" "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
 attributes #1 = { noinline optnone ssp uwtable "darwin-stkchk-strong-link" "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "tune-cpu"="generic" }
