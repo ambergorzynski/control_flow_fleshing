@@ -2,12 +2,14 @@ import subprocess
 
 class Tester():
 
-    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, optimisaitons):
+    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name, optimisations):
         self.test = test_filepath
         self.out = output_filepath
         self.input = input_filepath
         self.results_name = results_name
-        self.optimisation_list = optimisaitons
+        self.bad_results_name = bad_results_name
+        self.optimisation_list = optimisations
+    
 
     def compile(self, test_name):
 
@@ -44,7 +46,7 @@ class Tester():
 
     def execute(self, test_name, path_name):
         
-        cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt']
+        cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt {self.out}/{self.bad_results_name}.txt']
         result = subprocess.run(cmd, shell=True)
         print(result.returncode)
         
@@ -60,11 +62,12 @@ def main():
     input_filepath = f'{base}/input'
     output_filepath = f'{base}/running'
     results_name = 'results'
+    bad_results_name = 'bad_results'
     test_name = 'run_cfg_0'
     path_name = 'input_graph_0_path0'
     optimisations = 'break-crit-edges,dse'
 
-    test = Tester(test_filepath, input_filepath, output_filepath, results_name, optimisations)
+    test = Tester(test_filepath, input_filepath, output_filepath, results_name, bad_results_name, optimisations)
     
     test.compile(test_name)
 
