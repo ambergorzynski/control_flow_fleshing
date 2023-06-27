@@ -15,26 +15,17 @@ class Tester():
         cmd = [f'clang -emit-llvm -S run_test.cpp -o {self.out}/run_test.ll']
         result = subprocess.run(cmd, shell=True)
 
-        # assemble wrapper llvm ir to llvm bc
-        # (could do previous two steps in one go)
-        cmd = [f'llvm-as {self.out}/run_test.ll -o {self.out}/run_test.bc']
-        result = subprocess.run(cmd, shell=True)
-
-        # assemble llvm ir test program to llvm bc
-        cmd = [f'llvm-as {self.test}/{test_name}.ll -o {self.out}/{test_name}.bc']
-        result = subprocess.run(cmd, shell=True)
-
         # link wrapper with test program
-        cmd = [f'llvm-link {self.out}/{test_name}.bc {self.out}/run_test.bc -o {self.out}/{test_name}_out_unopt.bc']
+        cmd = [f'''llvm-link {self.test}/{test_name}.ll {self.out}/run_test.ll -o {self.out}/{test_name}_out_unopt.ll''']
         result = subprocess.run(cmd, shell=True)
 
         # perform any optimisations
         # single 'instcount' opt hard-coded for now
-        cmd = [f'''opt -passes={optimisation_list} {self.out}/{test_name}_out_unopt.bc -o {self.out}/{test_name}_opt.bc''']
+        cmd = [f'''opt -passes={optimisation_list} {self.out}/{test_name}_out_unopt.ll -o {self.out}/{test_name}_opt.ll''']
         result = subprocess.run(cmd, shell=True)
         
         # generate object file
-        cmd = [f'llc -filetype=obj {self.out}/{test_name}_opt.bc -o {self.out}/{test_name}_out_opt.o']
+        cmd = [f'llc -filetype=obj {self.out}/{test_name}_opt.ll -o {self.out}/{test_name}_out_opt.o']
         result = subprocess.run(cmd, shell=True)
 
         # generate executable

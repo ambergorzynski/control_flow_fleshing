@@ -205,7 +205,7 @@ def main():
 def fuzzing_campaign():
  # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_260623'
+    base = 'fuzzing/fuzzing_270623'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -214,7 +214,7 @@ def fuzzing_campaign():
     bad_results_name = f'bad_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 500
+    n_graphs = 100
     n_paths = 20
     min_graph_size = 20
     max_graph_size = 21
