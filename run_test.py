@@ -16,12 +16,12 @@ class Tester():
         result = subprocess.run(cmd, shell=True)
 
         # link wrapper with test program
-        cmd = [f'''llvm-link {self.test}/{test_name}.ll {self.out}/run_test.ll -o {self.out}/{test_name}_out_unopt.ll''']
+        cmd = [f'''llvm-link -S {self.test}/{test_name}.ll {self.out}/run_test.ll -o {self.out}/{test_name}_out_unopt.ll''']
         result = subprocess.run(cmd, shell=True)
 
         # perform any optimisations
         # single 'instcount' opt hard-coded for now
-        cmd = [f'''opt -passes={optimisation_list} {self.out}/{test_name}_out_unopt.ll -o {self.out}/{test_name}_opt.ll''']
+        cmd = [f'''opt -passes={optimisation_list} -S {self.out}/{test_name}_out_unopt.ll -o {self.out}/{test_name}_opt.ll''']
         result = subprocess.run(cmd, shell=True)
         
         # generate object file
