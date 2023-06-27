@@ -1,7 +1,7 @@
 #!/bin/sh
 clang -emit-llvm -S run_test.cpp -o run_test.ll
 llvm-link -S test_input_llvm_programs/run_cfg_wip_graph_test.ll run_test.ll -o out_unopt.ll
-opt -passes="adce" -S out_unopt.ll -o out.ll
+opt -passes="loop-extract-single" -S out_unopt.ll -o out.ll
 llc -filetype=obj out.ll -o out.o
 clang++ out.o -o out
 #llvm-as test_input_llvm_programs/run_cfg_wip_graph_test.ll -o run_cfg.bc

@@ -16,16 +16,24 @@ class Fuzzer():
         self.results_name = results_name
         self.bad_results_name = bad_results_name
         # optimisations that were unrecognised:
-        #   block-placement, lcssa, simplifycfg, dce, loop-mssa, jump-threading, loop-unswitch
-        #   licm, mergereturn, loop-unroll, loop-simplify, loop-extract-single
+        #   block-placement, loop-mssa, loop-unswitch
+        #   loop-extract-single
         self.cfg_optimisations = ['adce',
                                     'break-crit-edges',
+                                    'dce',
+                                    'jump-threading',
+                                    'lcssa',
                                     'loop-deletion',
                                     'loop-extract',
                                     'loop-reduce',
                                     'loop-rotate',
+                                    'loop-simplify',
+                                    'loop-unroll',
                                     'loop-unroll-and-jam',
-                                    'lowerswitch'
+                                    'lowerswitch',
+                                    'licm',
+                                    'mergereturn',
+                                    'simplifycfg'
                                     ]
         self.non_cfg_optimisations = ['always-inline',
                                     'argpromotion',
