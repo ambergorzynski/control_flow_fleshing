@@ -5,6 +5,7 @@ from random import Random
 from generate_graph import *
 from CFG import CFG
 from run_test import Tester
+from aux_tools.program_comparator import compare_optimised
 
 class Fuzzer():
 
@@ -220,9 +221,10 @@ def fuzzing_campaign():
     out_filepath = f'{base}/running'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
+    comparison_results_name = f'comparison_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 40
+    n_graphs = 10
     n_paths = 20
     min_graph_size = 20
     max_graph_size = 21
@@ -247,6 +249,9 @@ def fuzzing_campaign():
 
     # Step 4 : run tests
     fuzzer.run_tests(n_graphs, n_paths, n_optimisations)
+
+    # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
+    compare_optimised(n_graphs, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
 if __name__=="__main__":

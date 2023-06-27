@@ -7,17 +7,13 @@ def blank(input):
 
 	return len(chars) == 0
 
-def main():
+def compare_optimised(n_results, results_folder, output_filename):
 
-	path = 'fuzzing/fuzzing_270623'
-	results_folder = f'{path}/running'
-	n_results = 40
 	diff_counter = 0
 	line_counter_unopt = 0
 	line_counter_opt = 0
-	filename = f'{path}/running/comparison_opt_unopt'
 
-	f = open(filename, 'a')
+	f = open(f'{results_folder}/{output_filename}.txt', 'a')
 
 	for i in range(0,n_results):
 
@@ -59,6 +55,16 @@ def main():
 		print(f'% difference in lines in terms of unopt is: {(pct_diff)}')
 
 	f.close()
+
+def main():
+
+	path = 'fuzzing/fuzzing_270623'
+	results_folder = f'{path}/running'
+	n_results = 40
+	output_filename = f'{path}/running/comparison_opt_unopt'
+
+	compare_optimised(n_results, results_folder, output_filename)
+
 
 if __name__ == "__main__":
 	main()
