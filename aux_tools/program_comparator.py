@@ -11,7 +11,7 @@ def main():
 
 	path = 'fuzzing/fuzzing_270623'
 	results_folder = f'{path}/running'
-	n_results = 10
+	n_results = 40
 	diff_counter = 0
 	line_counter_unopt = 0
 	line_counter_opt = 0

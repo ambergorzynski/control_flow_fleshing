@@ -222,7 +222,7 @@ def fuzzing_campaign():
     bad_results_name = f'bad_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 10
+    n_graphs = 40
     n_paths = 20
     min_graph_size = 20
     max_graph_size = 21
