@@ -17,7 +17,7 @@ def compare_optimised(n_results, results_folder, output_filename):
 
 	for i in range(0,n_results):
 
-		unopt = f'{results_folder}/run_cfg_{i}_out_unopt.ll'
+		unopt = f'{results_folder}/run_cfg_{i}.ll'
 		opt = f'{results_folder}/run_cfg_{i}_opt.ll'
 		
 		with open(unopt) as f1, open(opt) as f2:
