@@ -1,5 +1,4 @@
 from difflib import Differ
-import os
 
 def blank(input):
 
@@ -7,7 +6,7 @@ def blank(input):
 
 	return len(chars) == 0
 
-def compare_optimised(n_results, results_folder, output_filename):
+def compare_optimised(n_results, input_folder, results_folder, output_filename):
 
 	diff_counter = 0
 	line_counter_unopt = 0
@@ -17,7 +16,7 @@ def compare_optimised(n_results, results_folder, output_filename):
 
 	for i in range(0,n_results):
 
-		unopt = f'{results_folder}/run_cfg_{i}.ll'
+		unopt = f'{input_folder}/run_cfg_{i}.ll'
 		opt = f'{results_folder}/run_cfg_{i}_opt.ll'
 		
 		with open(unopt) as f1, open(opt) as f2:
@@ -38,7 +37,6 @@ def compare_optimised(n_results, results_folder, output_filename):
 					else:
 						line_counter_opt += 1
 
-					print(line)
 					diff_counter += 1
 
 		pct_diff = round((diff_counter / line_counter_unopt)*100,1)
@@ -49,21 +47,17 @@ def compare_optimised(n_results, results_folder, output_filename):
 		f.write(f'	N differences: {diff_counter}\n')
 		f.write(f'	Pct diff:      {pct_diff}%\n')
 
-		print(f'diff counter for files is: {diff_counter}')
-		print(f'n lines in unopt is: {line_counter_unopt}')
-		print(f'n lines in opt is: {line_counter_opt}')
-		print(f'% difference in lines in terms of unopt is: {(pct_diff)}')
-
 	f.close()
 
 def main():
 
-	path = 'fuzzing/fuzzing_270623'
+	path = 'fuzzing/fuzzing_280623'
+	input_folder = f'{path}/llvm'
 	results_folder = f'{path}/running'
 	n_results = 40
-	output_filename = f'{path}/running/comparison_opt_unopt'
+	output_filename = 'comparison_opt_unopt'
 
-	compare_optimised(n_results, results_folder, output_filename)
+	compare_optimised(n_results, input_folder, results_folder, output_filename)
 
 
 if __name__ == "__main__":

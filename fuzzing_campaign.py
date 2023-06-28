@@ -251,7 +251,7 @@ def fuzzing_campaign():
     fuzzer.run_tests(n_graphs, n_paths, n_optimisations)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
-    compare_optimised(n_graphs, results_folder=out_filepath, output_filename=comparison_results_name)
+    compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
 if __name__=="__main__":
