@@ -158,7 +158,7 @@ class Fuzzer():
 
             print(f'optimisaitons: {optimisations_str}')
 
-            test.compile(f'run_cfg_{i}', optimisations_str)
+            test.compile_through_shell(f'run_cfg_{i}', optimisations_str)
 
             for j in range(n_paths):
 
@@ -214,7 +214,7 @@ def main():
 def fuzzing_campaign():
  # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_270623'
+    base = 'fuzzing/fuzzing_280623'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -224,7 +224,7 @@ def fuzzing_campaign():
     comparison_results_name = f'comparison_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 10
+    n_graphs = 1
     n_paths = 20
     min_graph_size = 20
     max_graph_size = 21
