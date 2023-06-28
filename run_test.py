@@ -11,42 +11,32 @@ class Tester():
 
     def compile(self, test_name, optimisation_list):
 
-        # compile c++ wrapper to llvm ir
-        cmd = [f'clang -emit-llvm -S run_test.cpp -o {self.out}/run_test.ll']
+        cmd = [f'clang++ -c run_test.cpp -o fuzzing/fuzzing_280623/running/run_test.o']
         result = subprocess.run(cmd, shell=True)
 
-        # link wrapper with test program
-        cmd = [f'''llvm-link -S {self.test}/{test_name}.ll {self.out}/run_test.ll -o {self.out}/{test_name}_out_unopt.ll''']
+        cmd = [f'opt -passes={optimisation_list} -S fuzzing/fuzzing_280623/llvm/{test_name}.ll -o fuzzing/fuzzing_280623/running/{test_name}_opt.ll']
         result = subprocess.run(cmd, shell=True)
 
-        # perform any optimisations
-        # single 'instcount' opt hard-coded for now
-        cmd = [f'''opt -passes={optimisation_list} -S {self.out}/{test_name}_out_unopt.ll -o {self.out}/{test_name}_opt.ll''']
-        result = subprocess.run(cmd, shell=True)
-        
-        # generate object file
-        cmd = [f'llc -filetype=obj {self.out}/{test_name}_opt.ll -o {self.out}/{test_name}_out_opt.o']
+        cmd = [f'llc -filetype=obj fuzzing/fuzzing_280623/running/{test_name}_opt.ll -o fuzzing/fuzzing_280623/running/{test_name}_opt.o']
         result = subprocess.run(cmd, shell=True)
 
-        # generate executable
-        cmd = [f'clang++ {self.out}/{test_name}_out_opt.o -o {self.out}/{test_name}_out']
+        cmd = [f'clang++ fuzzing/fuzzing_280623/running/run_test.o fuzzing/fuzzing_280623/running/{test_name}_opt.o -o fuzzing/fuzzing_280623/running/{test_name}']
         result = subprocess.run(cmd, shell=True)
-        
+
+    def compile_through_shell(self, test_name, optimisation_list):
+
+        cmd = [f'''./compile_test.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name, path_name):
         
         cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt {self.out}/{self.bad_results_name}.txt']
-        result = subprocess.run(cmd, shell=True)
-        print(result.returncode)
-        
-
-    def parse_results(self):
-        pass
+        result = subprocess.run(cmd, shell=True)        
 
 
 def main():
 
-    base = 'fuzzing/fuzzing_200623'
+    base = 'fuzzing/fuzzing_280623'
     test_filepath = f'{base}/llvm'
     input_filepath = f'{base}/input'
     output_filepath = f'{base}/running'
@@ -54,13 +44,14 @@ def main():
     bad_results_name = 'bad_results'
     test_name = 'run_cfg_0'
     path_name = 'input_graph_0_path0'
-    optimisations = 'break-crit-edges,dse'
+    optimisations = 'simplifycfg'
 
     test = Tester(test_filepath, input_filepath, output_filepath, results_name, bad_results_name)
     
-    test.compile(test_name, optimisations)
+    #test.compile(test_name, optimisations)
+    test.compile_through_shell(test_name, optimisations)
 
-    test.execute(test_name, path_name)
+    #test.execute(test_name, path_name)
 
 if __name__=="__main__":
     main()
