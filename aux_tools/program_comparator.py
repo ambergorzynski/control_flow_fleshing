@@ -36,7 +36,6 @@ def compare_optimised(n_results, input_folder, results_folder, output_filename):
 						line_counter_unopt += 1
 					else:
 						line_counter_opt += 1
-
 					diff_counter += 1
 
 		pct_diff = round((diff_counter / line_counter_unopt)*100,1)
@@ -54,7 +53,7 @@ def main():
 	path = 'fuzzing/fuzzing_280623'
 	input_folder = f'{path}/llvm'
 	results_folder = f'{path}/running'
-	n_results = 40
+	n_results = 1
 	output_filename = 'comparison_opt_unopt'
 
 	compare_optimised(n_results, input_folder, results_folder, output_filename)
