@@ -19,6 +19,11 @@ class Fuzzer():
         # optimisations that were unrecognised:
         #   block-placement, loop-mssa, loop-unswitch
         #   loop-extract-single
+        self.cfg_preset_optimisations = ['default<O1>',
+                                         'default<O2>',
+                                         'default<O3>',
+                                         'default<Os>',
+                                         'default<Oz>']
         self.cfg_optimisations = ['adce',
                                     'break-crit-edges',
                                     'dce',
@@ -150,7 +155,7 @@ class Fuzzer():
 
         for i in range(n_graphs):
 
-            optimisations_index = [random.randint(0, len(self.cfg_optimisations) - 1) for i in range(n_optimisations)]
+            optimisations_index = [random.randint(0, len(self.cfg_preset_optimisations) - 1) for i in range(n_optimisations)]
 
             print(f'optimisation indices: {optimisations_index}')
 
@@ -166,55 +171,14 @@ class Fuzzer():
 
     def parse_optimisations(self, indices):
 
-        opt_list = [self.cfg_optimisations[i] for i in indices]
+        opt_list = [self.cfg_preset_optimisations[i] for i in indices]
 
         return ','.join(opt_list)
 
-
 def main():
-
-    # fixed input parameters
-    time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_210623'
-    graph_filepath = f'{base}/graphs'
-    llvm_filepath = f'{base}/llvm'
-    path_filepath = f'{base}/input'
-    out_filepath = f'{base}/running'
-    results_name = f'results_{time}'
-    bad_results_name = f'bad_results_{time}'
-
-    # fuzzing input parameters
-    n_graphs = 4
-    n_paths = 5
-    min_graph_size = 20
-    max_graph_size = 21
-    min_successors = 1
-    max_successors = 4
-    graph_approach = 2 # can be 1 or 2
-    max_path_length = 900
-    optimisations = [1,3,4]
-  
-    fuzzer = Fuzzer(graph_filepath, llvm_filepath, path_filepath, out_filepath, results_name, bad_results_name)
-
-    # Step 1 : generate graphs
-    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
-                            min_successors, max_successors,
-                            graph_approach)
-
-    # Step 2 : flesh graphs
-    fuzzer.flesh_graphs(n_graphs)
-
-    # Step 3 : generate paths for each graph
-    fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
-
-    # Step 4 : run tests
-    fuzzer.run_tests(n_graphs, n_paths, optimisations)
-
-
-def fuzzing_campaign():
  # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_280623'
+    base = 'fuzzing/fuzzing_040723'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -225,7 +189,7 @@ def fuzzing_campaign():
 
     # fuzzing input parameters
     n_graphs = 1
-    n_paths = 20
+    n_paths = 50
     min_graph_size = 20
     max_graph_size = 21
     min_successors = 1
@@ -255,5 +219,4 @@ def fuzzing_campaign():
 
 
 if __name__=="__main__":
-    #main()
-    fuzzing_campaign()
+    main()
