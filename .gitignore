@@ -11,3 +11,4 @@ venv/
 __pycache__/
 _old/
 fuzzing_*/
+cil/

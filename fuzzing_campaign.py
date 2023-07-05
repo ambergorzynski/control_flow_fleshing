@@ -188,10 +188,10 @@ def main():
     comparison_results_name = f'comparison_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 1
-    n_paths = 50
+    n_graphs = 1000
+    n_paths = 100
     min_graph_size = 20
-    max_graph_size = 21
+    max_graph_size = 500
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
