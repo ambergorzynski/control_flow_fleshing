@@ -262,14 +262,24 @@ def explore_atlas():
 
 def main():
   
-    G = generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
-
+    #G = generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
+    G = generate_graph_approach_presets()
     #nx.draw_networkx(G)
     nx.draw(G, with_labels=True)
     plt.show()
     pickle.dump(G, open("graphs/graph_test.p", "wb"))
 
+def make_simple_graph(i):
+
+    base = 'fuzzing/java_test_140723'
+    graph_path = f'{base}/graphs'
+
+    G = generate_graph_approach_presets(i)
+    pickle.dump(G, open(f'{graph_path}/graph_test.p', "wb"))
+
+
 if __name__=="__main__":
     #explore_atlas()
-    view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
+    #view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
     #main()
+    make_simple_graph(3)

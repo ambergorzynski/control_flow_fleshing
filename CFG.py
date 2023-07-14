@@ -1,7 +1,6 @@
 import networkx as nx
 import sys
 import random
-import ProgramGenerator
 from random import Random
 from queue import Queue
 

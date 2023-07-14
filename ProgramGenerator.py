@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from CFG import CFG
+import pickle
 
 class ProgramGenerator(ABC):
     
@@ -235,22 +236,158 @@ class LLVMGenerator(ProgramGenerator):
 class JavaBytecodeGenerator(ProgramGenerator):
 
     def flesh_program_start(self) -> str:
-        pass
+        code = '''
+.class public testing.TestCase
+.super java/lang/Object
+
+; default constructor
+.method public <init>()V
+    aload_0
+    invokespecial java/lang/Object/<init>()V
+    return
+.end method
+
+.method public static testCase([I[I)V
+    .limit stack 5
+    .limit locals 4
+
+block_0:
+    ; set up counter in local variable 2
+    iconst_0
+    istore_2
+
+    ; set up directions counter in local variable 3
+    iconst_0
+    istore_3    
+'''
+
+        return code
 
     def flesh_start_of_node(self, n : int) -> str:
-        pass
+        
+        if(n == 0):
+            code = ''''''
+        else:
+            code = '''
+
+block_{i}: '''.format(i = n)
+
+        code += '''
+    ; store node label in output array
+    aload_1
+    iload_2
+    bipush {i}
+    iastore
+
+    ; increment counter
+    iinc 2 1
+'''.format(i = n)
+
+        return code
 
     def flesh_exit_node(self, n : int) -> str:
-        pass
+        '''
+            returns code for node n with no successors
+            (exit node).
+        '''
+        
+        code = '''
+    return
+        '''
+        
+        return code
 
     def flesh_unconditional_node(self, n : int) -> str:
-        pass
+        '''
+            returns code for node n with single successor
+        '''
+
+        code = '''
+    goto block_{successor}
+        '''.format(successor = list(self.cfg.graph.adj[n])[0])
+
+        return code
 
     def flesh_conditional_node(self, n : int) -> str:
-        pass
+        ''' 
+            returns code for node n with two successors, one of
+            which may be self (e.g. in case of loop)
+            note this does not deal with switch statements where
+            there are > 2 successor nodes
+        '''
+        code = '''
+    ; get directions for node
+    aload_0
+    iload_3
+    iaload
+
+    ; increment directions counter
+    iinc 3 1
+
+    ; branch
+    ifeq block_{successor_true}
+    goto block_{successor_false}
+            '''.format(i = n,
+                       successor_false = list(self.cfg.graph.adj[n])[0],
+                       successor_true = list(self.cfg.graph.adj[n])[1])
+        
+        return code
 
     def flesh_switch_node(self, n: int, n_successors : int) -> str:
-        pass
+        '''
+            returns code for node with > 2 successors
+            e.g. a switch statement
+        '''
+        code = '''
+    ; get directions for node
+    aload_0
+    iload_3
+    iaload
 
+    ; increment directions counter
+    iinc 3 1
+
+    ; switch
+    lookupswitch'''
+        
+        for j in range(n_successors):
+             code += '''
+        {i}: block_{successor}'''.format(i = j,
+                       successor = list(self.cfg.graph.adj[n])[j])
+        
+        
+        code += '''
+        default : block_{default}'''.format(
+                       default = list(self.cfg.graph.adj[n])[0])
+        
+        return code
     def flesh_end(self) -> str:
-        pass
+        return '''
+.end method'''
+
+def main():
+        
+        base = 'fuzzing/java_test_140723'
+        graph_path = f'{base}/graphs'
+        program_filepath = f'{base}/programs'
+
+        graph_name = 'graph_test'
+            
+        graph = pickle.load(open(f'{graph_path}/{graph_name}.p', "rb"))
+
+        program_generator = JavaBytecodeGenerator()
+
+        cfg = CFG(graph)
+
+        program_generator.fleshout(cfg)
+
+        if (program_generator.save_to_file(f'{program_filepath}/{(graph_name)}.j')):
+            print("Fleshed CFG created successfully!")
+        
+        else:
+            print("Problem saving fleshed CFG")
+
+if __name__=="__main__":
+    main()
+
+
