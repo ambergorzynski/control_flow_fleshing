@@ -13,9 +13,8 @@ class Path():
 
 class CFG():
 
-    def __init__(self, graph : nx.MultiDiGraph, program_generator : ProgramGenerator):
+    def __init__(self, graph : nx.MultiDiGraph):
         self.graph : nx.MultiDiGraph = graph
-        self.flesher : ProgramGenerator = program_generator
         self.fleshed_graph : str = None 
         self.doomed : list[int] = []
         self.not_doomed : list[int] = []
@@ -45,53 +44,6 @@ class CFG():
         '''
         return 0
 
-    def fleshout(self) -> str:
-        ''' 
-            converts control flow graph to LLVM IR 
-            returns str containing LLVM IR program
-            and saves as member variable
-        '''
-
-        # all programs have common start
-        self.fleshed_graph = self.flesher.flesh_program_start()
-
-        for n in self.graph:
-
-            # store node label in output array for every node visited
-            self.fleshed_graph += self.flesher.flesh_start_of_node(n)
-
-            # write remaining block code based on number of successor nodes
-            n_successors = self.successors(n)
-
-            if(n_successors == 0):
-                self.fleshed_graph += self.flesher.flesh_exit_node(n)
-            
-            elif(n_successors == 1):
-                self.fleshed_graph += self.flesher.flesh_unconditional_node(n)
-
-            elif(n_successors == 2):
-                self.fleshed_graph += self.flesher.flesh_conditional_node(n)
-
-            elif(n_successors > 2):
-                self.fleshed_graph += self.flesher.flesh_switch_node(n, n_successors)
-
-        # add closing phrase to program
-        self.fleshed_graph += self.flesher.flesh_end()
-
-        return self.fleshed_graph
-    
-    def save_to_file(self, filename : str) -> bool:
-        ''' 
-            writes CFG to given file 
-            returns true if file write is successful
-            false otherwise
-        '''
-
-        file = open(filename, "w")
-        file.write(self.fleshed_graph)
-        file.close()
-
-        return True
     
     def is_valid(self) -> bool:
         '''

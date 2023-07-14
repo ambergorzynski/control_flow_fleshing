@@ -1,7 +1,67 @@
+from CFG import CFG, Path
+
 class ProgramGenerator():
     pass
 
 class LLVMGenerator(ProgramGenerator):
+
+    def __init__(self):
+        self.fleshed_graph = None
+        self.cfg = None
+
+    def fleshout(self, cfg : CFG):
+
+        ''' 
+            converts control flow graph to LLVM IR 
+            returns str containing LLVM IR program
+            and saves as member variable
+        '''
+
+        # clear previously stored graph
+        self.fleshed_graph = None
+        self.cfg = cfg
+
+        # all programs have common start
+        self.fleshed_graph = self.flesh_program_start()
+
+        for n in self.cfg.graph:
+
+            # store node label in output array for every node visited
+            self.fleshed_graph += self.flesh_start_of_node(n)
+
+            # write remaining block code based on number of successor nodes
+            n_successors = self.cfg.successors(n)
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n)
+
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+
+        # add closing phrase to program
+        self.fleshed_graph += self.flesh_end()
+
+        return self.fleshed_graph
+    
+    def save_to_file(self, filename : str) -> bool:
+        ''' 
+            writes CFG to given file 
+            returns true if file write is successful
+            false otherwise
+        '''
+
+        file = open(filename, "w")
+        file.write(self.fleshed_graph)
+        file.close()
+
+        return True
+
     
     def flesh_program_start(self) -> str:
 
@@ -76,7 +136,7 @@ class LLVMGenerator(ProgramGenerator):
 
         code = '''
             br label %{successor}
-        '''.format(successor = list(self.graph.adj[n])[0])
+        '''.format(successor = list(self.cfg.graph.adj[n])[0])
 
         return code
 
@@ -102,8 +162,8 @@ class LLVMGenerator(ProgramGenerator):
             %condition_{i} = icmp eq i32 %dir_{i}_value, 0
             br i1 %condition_{i}, label %{successor_false}, label %{successor_true}
             '''.format(i = n,
-                       successor_false = list(self.graph.adj[n])[0],
-                       successor_true = list(self.graph.adj[n])[1])
+                       successor_false = list(self.cfg.graph.adj[n])[0],
+                       successor_true = list(self.cfg.graph.adj[n])[1])
         
         return code
     
@@ -126,12 +186,12 @@ class LLVMGenerator(ProgramGenerator):
             ; switch
             switch i32 %dir_{i}_value, label %{default} [ 
             '''.format(i = n,
-                       default = list(self.graph.adj[n])[0])
+                       default = list(self.cfg.graph.adj[n])[0])
         
         for j in range(n_successors):
              code += ''' i32 {i}, label %{successor}
             '''.format(i = j,
-                       successor = list(self.graph.adj[n])[j])
+                       successor = list(self.cfg.graph.adj[n])[j])
         
         
         code += ''']''' 

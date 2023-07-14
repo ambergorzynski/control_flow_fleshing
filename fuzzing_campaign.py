@@ -1,5 +1,6 @@
 import networkx as nx
 import pickle
+from ProgramGenerator import LLVMGenerator
 from datetime import datetime
 from random import Random
 from generate_graph import *
@@ -101,15 +102,17 @@ class Fuzzer():
 
     def flesh_graphs(self, n_graphs):
 
+        program_generator = LLVMGenerator()
+
         for i in range(n_graphs):
             
             graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', "rb"))
 
             cfg = CFG(graph)
 
-            cfg.fleshout()
+            program_generator.fleshout(cfg)
 
-            cfg.save_to_file(f'{self.llvm_filepath}/run_cfg_{i}.ll')
+            program_generator.save_to_file(f'{self.llvm_filepath}/run_cfg_{i}.ll')
 
 
     def generate_paths(self, n_graphs, n_paths, max_path_length, seed=None):
