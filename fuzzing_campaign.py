@@ -153,6 +153,9 @@ class Fuzzer():
 
         test = Tester(self.llvm_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
 
+        # compile wrapper once
+        test.compile_wrapper()
+
         for i in range(n_graphs):
 
             optimisations_index = [random.randint(0, len(self.cfg_preset_optimisations) - 1) for i in range(n_optimisations)]
@@ -178,7 +181,7 @@ class Fuzzer():
 def main():
  # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_040723'
+    base = 'fuzzing/fuzzing_090723'
     graph_filepath = f'{base}/graphs'
     llvm_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -188,7 +191,7 @@ def main():
     comparison_results_name = f'comparison_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 1000
+    n_graphs = 5000
     n_paths = 100
     min_graph_size = 20
     max_graph_size = 500
@@ -215,7 +218,7 @@ def main():
     fuzzer.run_tests(n_graphs, n_paths, n_optimisations)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
-    compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
+    #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
 if __name__=="__main__":

@@ -23,6 +23,10 @@ class Tester():
         cmd = [f'clang++ fuzzing/fuzzing_280623/running/run_test.o fuzzing/fuzzing_280623/running/{test_name}_opt.o -o fuzzing/fuzzing_280623/running/{test_name}']
         result = subprocess.run(cmd, shell=True)
 
+    def compile_wrapper(self):
+        cmd = [f'''./compile_wrapper.sh {self.out}''']
+        result = subprocess.run(cmd, shell=True)
+
     def compile_through_shell(self, test_name, optimisation_list):
 
         cmd = [f'''./compile_test.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']

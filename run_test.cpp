@@ -38,11 +38,6 @@ int main(int argc, char** argv) {
 		record_output(output_file_differences, argv[1], result, expected_output, actual_output, size);
 	}
 
-	output_file << "\n";
-	printf("\n");
-
-	output_file_differences << "\n";
-
 	output_file.close();
 	output_file_differences.close();
 
@@ -140,7 +135,7 @@ void record_output(ofstream &output_file, char* name, bool result, int* expected
 		printf(" %d", actual_output[i]);
 	}
 
-	output_file << "\n";
+	output_file << "\n\n";
 	printf("\n");
 
 }
