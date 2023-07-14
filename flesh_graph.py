@@ -3,7 +3,7 @@ import pickle
 
 def main():
 
-    n_graphs = 4
+    n_graphs = 1
 
     graph = [None] * n_graphs
 

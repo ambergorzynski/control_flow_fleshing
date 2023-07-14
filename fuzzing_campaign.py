@@ -109,7 +109,7 @@ class Fuzzer():
 
             cfg.fleshout()
 
-            cfg.save_llvm_to_file(f'{self.llvm_filepath}/run_cfg_{i}.ll')
+            cfg.save_to_file(f'{self.llvm_filepath}/run_cfg_{i}.ll')
 
 
     def generate_paths(self, n_graphs, n_paths, max_path_length, seed=None):
@@ -191,8 +191,8 @@ def main():
     comparison_results_name = f'comparison_results_{time}'
 
     # fuzzing input parameters
-    n_graphs = 5000
-    n_paths = 100
+    n_graphs = 1
+    n_paths = 1
     min_graph_size = 20
     max_graph_size = 500
     min_successors = 1
