@@ -5,7 +5,7 @@ from datetime import datetime
 from random import Random
 from generate_graph import *
 from CFG import CFG
-from run_test import Tester
+from run_test import LLVMTester
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 
@@ -170,7 +170,7 @@ class Fuzzer():
 
     def run_tests(self, n_graphs, n_paths, n_optimisations):
 
-        test = Tester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+        test = LLVMTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
 
         # compile wrapper once
         test.compile_wrapper()

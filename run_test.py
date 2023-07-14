@@ -1,6 +1,7 @@
 import subprocess
+from abc import ABC, abstractmethod
 
-class Tester():
+class Tester(ABC):
 
     def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name):
         self.test = test_filepath
@@ -8,6 +9,20 @@ class Tester():
         self.input = input_filepath
         self.results_name = results_name
         self.bad_results_name = bad_results_name    
+
+    @abstractmethod
+    def compile_wrapper(self) -> None:
+        pass
+
+    @abstractmethod
+    def compile_through_shell(self, test_name : str, optimisation_list=None) -> None:
+        pass
+
+    @abstractmethod
+    def execute(self, test_name : str, path_name : str) -> None:
+        pass
+
+class LLVMTester(Tester):
 
     def compile(self, test_name, optimisation_list):
 
@@ -24,18 +39,33 @@ class Tester():
         result = subprocess.run(cmd, shell=True)
 
     def compile_wrapper(self):
-        cmd = [f'''./compile_wrapper.sh {self.out}''']
+        cmd = [f'''./compile_wrapper_llvm.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_through_shell(self, test_name, optimisation_list):
 
-        cmd = [f'''./compile_test.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        cmd = [f'''./compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name, path_name):
         
         cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt {self.out}/{self.bad_results_name}.txt']
         result = subprocess.run(cmd, shell=True)        
+
+
+class JavaBytecodeTester(Tester):
+    
+    def compile_wrapper(self) -> None:
+        cmd = [f'''./compile_wrapper_java_bytecode.sh {self.out}''']
+        result = subprocess.run(cmd, shell=True)
+
+    def compile_through_shell(self, test_name : str) -> None:
+        cmd = [f'''./compile_test_java_bytecode.sh {self.out} {self.test} {test_name}''']
+        result = subprocess.run(cmd, shell=True)
+
+    def execute(self, test_name : str, path_name : str) -> None:
+        pass
+
 
 
 def main():
