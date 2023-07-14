@@ -1,10 +1,8 @@
-from CFG import CFG, Path
+from abc import ABC, abstractmethod
+from CFG import CFG
 
-class ProgramGenerator():
-    pass
-
-class LLVMGenerator(ProgramGenerator):
-
+class ProgramGenerator(ABC):
+    
     def __init__(self):
         self.fleshed_graph = None
         self.cfg = None
@@ -49,6 +47,34 @@ class LLVMGenerator(ProgramGenerator):
 
         return self.fleshed_graph
     
+    @abstractmethod
+    def flesh_program_start(self) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_start_of_node(self, n : int) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_exit_node(self, n : int) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_unconditional_node(self, n : int) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_conditional_node(self, n : int) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_switch_node(self, n: int, n_successors : int) -> str:
+        pass
+
+    @abstractmethod
+    def flesh_end(self) -> str:
+        pass
+    
     def save_to_file(self, filename : str) -> bool:
         ''' 
             writes CFG to given file 
@@ -62,6 +88,8 @@ class LLVMGenerator(ProgramGenerator):
 
         return True
 
+
+class LLVMGenerator(ProgramGenerator):
     
     def flesh_program_start(self) -> str:
 
@@ -205,4 +233,24 @@ class LLVMGenerator(ProgramGenerator):
 
 
 class JavaBytecodeGenerator(ProgramGenerator):
-    pass
+
+    def flesh_program_start(self) -> str:
+        pass
+
+    def flesh_start_of_node(self, n : int) -> str:
+        pass
+
+    def flesh_exit_node(self, n : int) -> str:
+        pass
+
+    def flesh_unconditional_node(self, n : int) -> str:
+        pass
+
+    def flesh_conditional_node(self, n : int) -> str:
+        pass
+
+    def flesh_switch_node(self, n: int, n_successors : int) -> str:
+        pass
+
+    def flesh_end(self) -> str:
+        pass

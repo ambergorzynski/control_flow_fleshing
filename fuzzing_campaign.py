@@ -1,18 +1,30 @@
 import networkx as nx
 import pickle
-from ProgramGenerator import LLVMGenerator
+from ProgramGenerator import LLVMGenerator, JavaBytecodeGenerator
 from datetime import datetime
 from random import Random
 from generate_graph import *
 from CFG import CFG
 from run_test import Tester
 from aux_tools.program_comparator import compare_optimised
+from enum import Enum
+
+class Language(Enum):
+    LLVM  = 0
+    JAVA_BYTECODE = 1
 
 class Fuzzer():
 
-    def __init__(self, graph_filepath, llvm_filepath, path_filepath, out_filepath, results_name, bad_results_name):
+    def __init__(self, language : Language,
+                 graph_filepath : str, 
+                 program_filepath : str,
+                 path_filepath : str,
+                 out_filepath : str,
+                 results_name : str, 
+                 bad_results_name : str):
+        self.language = language
         self.graph_filepath = graph_filepath
-        self.llvm_filepath = llvm_filepath
+        self.program_filepath = program_filepath
         self.path_filepath = path_filepath
         self.out_filepath = out_filepath
         self.results_name = results_name
@@ -102,7 +114,11 @@ class Fuzzer():
 
     def flesh_graphs(self, n_graphs):
 
-        program_generator = LLVMGenerator()
+        if(self.language == Language.LLVM):
+            program_generator = LLVMGenerator()
+        
+        elif(self.language == Language.JAVA_BYTECODE):
+            program_generator = JavaBytecodeGenerator()
 
         for i in range(n_graphs):
             
@@ -112,7 +128,7 @@ class Fuzzer():
 
             program_generator.fleshout(cfg)
 
-            program_generator.save_to_file(f'{self.llvm_filepath}/run_cfg_{i}.ll')
+            program_generator.save_to_file(f'{self.program_filepath}/run_cfg_{i}.ll')
 
 
     def generate_paths(self, n_graphs, n_paths, max_path_length, seed=None):
@@ -154,7 +170,7 @@ class Fuzzer():
 
     def run_tests(self, n_graphs, n_paths, n_optimisations):
 
-        test = Tester(self.llvm_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+        test = Tester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
 
         # compile wrapper once
         test.compile_wrapper()
@@ -186,12 +202,13 @@ def main():
     time = datetime.now().timestamp()
     base = 'fuzzing/fuzzing_090723'
     graph_filepath = f'{base}/graphs'
-    llvm_filepath = f'{base}/llvm'
+    program_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
     out_filepath = f'{base}/running'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
     comparison_results_name = f'comparison_results_{time}'
+    language = Language.LLVM
 
     # fuzzing input parameters
     n_graphs = 1
@@ -204,7 +221,7 @@ def main():
     max_path_length = 900
     n_optimisations = 1
   
-    fuzzer = Fuzzer(graph_filepath, llvm_filepath, path_filepath, out_filepath, results_name, bad_results_name)
+    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name)
 
     # Step 1 : generate graphs
     fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
