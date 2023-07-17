@@ -250,7 +250,7 @@ class JavaBytecodeGenerator(ProgramGenerator):
 
 .method public testCase([I[I)V
     .limit stack 5
-    .limit locals 4
+    .limit locals 5
 
 block_0:
     ; set up counter in local variable 3

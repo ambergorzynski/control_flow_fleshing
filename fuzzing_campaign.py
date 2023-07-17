@@ -266,7 +266,7 @@ def java_bc_test():
     base = 'fuzzing/java/fuzzing_170723'
     graph_filepath = f'{base}/graphs'
     program_filepath = f'{base}/src/testing'
-    path_filepath = f'{base}/paths'
+    path_filepath = f'{base}/src/paths'
     out_filepath = f'{base}/output'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
@@ -276,8 +276,8 @@ def java_bc_test():
     # fuzzing input parameters
     n_graphs = 1
     n_paths = 1
-    min_graph_size = 20
-    max_graph_size = 500
+    min_graph_size = 10
+    max_graph_size = 11
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
