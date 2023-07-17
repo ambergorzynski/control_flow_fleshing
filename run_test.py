@@ -24,20 +24,6 @@ class Tester(ABC):
 
 class LLVMTester(Tester):
 
-    def compile(self, test_name, optimisation_list):
-
-        cmd = [f'clang++ -c run_test.cpp -o fuzzing/fuzzing_280623/running/run_test.o']
-        result = subprocess.run(cmd, shell=True)
-
-        cmd = [f'opt -passes={optimisation_list} -S fuzzing/fuzzing_280623/llvm/{test_name}.ll -o fuzzing/fuzzing_280623/running/{test_name}_opt.ll']
-        result = subprocess.run(cmd, shell=True)
-
-        cmd = [f'llc -filetype=obj fuzzing/fuzzing_280623/running/{test_name}_opt.ll -o fuzzing/fuzzing_280623/running/{test_name}_opt.o']
-        result = subprocess.run(cmd, shell=True)
-
-        cmd = [f'clang++ fuzzing/fuzzing_280623/running/run_test.o fuzzing/fuzzing_280623/running/{test_name}_opt.o -o fuzzing/fuzzing_280623/running/{test_name}']
-        result = subprocess.run(cmd, shell=True)
-
     def compile_wrapper(self):
         cmd = [f'''./compile_wrapper_llvm.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
@@ -56,15 +42,16 @@ class LLVMTester(Tester):
 class JavaBytecodeTester(Tester):
     
     def compile_wrapper(self) -> None:
-        cmd = [f'''./compile_wrapper_java_bytecode.sh {self.out}''']
+        cmd = [f'''./compile_wrapper_java.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_through_shell(self, test_name : str) -> None:
-        cmd = [f'''./compile_test_java_bytecode.sh {self.out} {self.test} {test_name}''']
+        cmd = [f'''./compile_test_java.sh {self.out} {self.test} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name : str, path_name : str) -> None:
-        pass
+        cmd = [f'java testing/Wrapper testing.{test_name}']
+        result = subprocess.run(cmd, shell=True)        
 
 
 

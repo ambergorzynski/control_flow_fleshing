@@ -1,4 +1,0 @@
-#!/bin/sh
-$testing=""
-$test_name=""
-java -jar /Users/ambergorzynski/jasmin-2.4/jasmin.jar $testing/$test_name.j

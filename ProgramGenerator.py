@@ -8,7 +8,7 @@ class ProgramGenerator(ABC):
         self.fleshed_graph = None
         self.cfg = None
 
-    def fleshout(self, cfg : CFG):
+    def fleshout(self, cfg : CFG, prog_number=None):
 
         ''' 
             converts control flow graph to LLVM IR 
@@ -21,7 +21,7 @@ class ProgramGenerator(ABC):
         self.cfg = cfg
 
         # all programs have common start
-        self.fleshed_graph = self.flesh_program_start()
+        self.fleshed_graph = self.flesh_program_start(prog_number)
 
         for n in self.cfg.graph:
 
@@ -49,7 +49,7 @@ class ProgramGenerator(ABC):
         return self.fleshed_graph
     
     @abstractmethod
-    def flesh_program_start(self) -> str:
+    def flesh_program_start(self, prog_number=None) -> str:
         pass
 
     @abstractmethod
@@ -235,9 +235,9 @@ class LLVMGenerator(ProgramGenerator):
 
 class JavaBytecodeGenerator(ProgramGenerator):
 
-    def flesh_program_start(self) -> str:
+    def flesh_program_start(self, prog_number : int) -> str:
         code = '''
-.class public testing.TestCase
+.class public testing.TestCase{i}
 .super java/lang/Object
 .implements testing.TestCaseInterface
 
@@ -260,7 +260,7 @@ block_0:
     ; set up directions counter in local variable 4
     iconst_0
     istore 4    
-'''
+'''.format(i = prog_number)
 
         return code
 
@@ -277,7 +277,7 @@ block_{i}: '''.format(i = n)
     ; store node label in output array
     aload_2
     iload_3
-    bipush {i}
+    sipush {i}
     iastore
 
     ; increment counter

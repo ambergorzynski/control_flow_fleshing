@@ -5,7 +5,7 @@ from datetime import datetime
 from random import Random
 from generate_graph import *
 from CFG import CFG
-from run_test import LLVMTester
+from run_test import LLVMTester, JavaBytecodeTester
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 
@@ -116,9 +116,11 @@ class Fuzzer():
 
         if(self.language == Language.LLVM):
             program_generator = LLVMGenerator()
+            filetype = 'll'
         
         elif(self.language == Language.JAVA_BYTECODE):
             program_generator = JavaBytecodeGenerator()
+            filetype = 'j'
 
         for i in range(n_graphs):
             
@@ -126,9 +128,9 @@ class Fuzzer():
 
             cfg = CFG(graph)
 
-            program_generator.fleshout(cfg)
+            program_generator.fleshout(cfg, i)
 
-            program_generator.save_to_file(f'{self.program_filepath}/run_cfg_{i}.ll')
+            program_generator.save_to_file(f'{self.program_filepath}/run_cfg_{i}.{filetype}')
 
 
     def generate_paths(self, n_graphs, n_paths, max_path_length, seed=None):
@@ -168,7 +170,7 @@ class Fuzzer():
 
         return output
 
-    def run_tests(self, n_graphs, n_paths, n_optimisations):
+    def run_tests_llvm(self, n_graphs, n_paths, n_optimisations):
 
         test = LLVMTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
 
@@ -196,6 +198,22 @@ class Fuzzer():
         opt_list = [self.cfg_preset_optimisations[i] for i in indices]
 
         return ','.join(opt_list)
+    
+    def run_tests_java(self, n_graphs, n_paths):
+
+        test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+
+        # compile wrapper once
+        test.compile_wrapper()
+
+        for i in range(n_graphs):
+
+            test.compile_through_shell(f'run_cfg_{i}')
+
+            for j in range(n_paths):
+
+                test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
+
 
 def llvm_test():
 
@@ -236,7 +254,7 @@ def llvm_test():
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
 
     # Step 4 : run tests
-    fuzzer.run_tests(n_graphs, n_paths, n_optimisations)
+    fuzzer.run_tests_llvm(n_graphs, n_paths, n_optimisations)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
@@ -245,7 +263,7 @@ def java_bc_test():
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_170723'
+    base = 'fuzzing/java/fuzzing_170723'
     graph_filepath = f'{base}/graphs'
     program_filepath = f'{base}/src/testing'
     path_filepath = f'{base}/paths'
@@ -280,11 +298,11 @@ def java_bc_test():
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
 
     # Step 4 : run tests
-    fuzzer.run_tests(n_graphs, n_paths, n_optimisations)
+    fuzzer.run_tests_java(n_graphs, n_paths)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
 if __name__=="__main__":
-    main()
+    java_bc_test()
