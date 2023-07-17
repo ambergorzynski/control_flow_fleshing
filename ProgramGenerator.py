@@ -239,6 +239,7 @@ class JavaBytecodeGenerator(ProgramGenerator):
         code = '''
 .class public testing.TestCase
 .super java/lang/Object
+.implements testing.TestCaseInterface
 
 ; default constructor
 .method public <init>()V
@@ -247,18 +248,18 @@ class JavaBytecodeGenerator(ProgramGenerator):
     return
 .end method
 
-.method public static testCase([I[I)V
+.method public testCase([I[I)V
     .limit stack 5
     .limit locals 4
 
 block_0:
-    ; set up counter in local variable 2
+    ; set up counter in local variable 3
     iconst_0
-    istore_2
+    istore_3
 
-    ; set up directions counter in local variable 3
+    ; set up directions counter in local variable 4
     iconst_0
-    istore_3    
+    istore 4    
 '''
 
         return code
@@ -274,13 +275,13 @@ block_{i}: '''.format(i = n)
 
         code += '''
     ; store node label in output array
-    aload_1
-    iload_2
+    aload_2
+    iload_3
     bipush {i}
     iastore
 
     ; increment counter
-    iinc 2 1
+    iinc 3 1
 '''.format(i = n)
 
         return code
@@ -317,12 +318,12 @@ block_{i}: '''.format(i = n)
         '''
         code = '''
     ; get directions for node
-    aload_0
-    iload_3
+    aload_1
+    iload 4
     iaload
 
     ; increment directions counter
-    iinc 3 1
+    iinc 4 1
 
     ; branch
     ifeq block_{successor_true}
@@ -340,12 +341,12 @@ block_{i}: '''.format(i = n)
         '''
         code = '''
     ; get directions for node
-    aload_0
-    iload_3
+    aload_1
+    iload 4
     iaload
 
     ; increment directions counter
-    iinc 3 1
+    iinc 4 1
 
     ; switch
     lookupswitch'''
