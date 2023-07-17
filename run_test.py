@@ -50,10 +50,8 @@ class JavaBytecodeTester(Tester):
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name : str, path_name : str) -> None:
-        pass
-        #cmd = [f'java testing/Wrapper testing.{test_name}']
-        #result = subprocess.run(cmd, shell=True)        
-
+        cmd = [f'''./execute_test_java.sh {self.out} {self.test} {test_name}''']
+        result = subprocess.run(cmd, shell=True)
 
 
 def main():
