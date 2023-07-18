@@ -265,7 +265,7 @@ def java_bc_test():
     time = datetime.now().timestamp()
     base = 'fuzzing/java/fuzzing_170723'
     graph_filepath = f'{base}/graphs'
-    program_filepath = f'{base}/src/testing'
+    program_filepath = f'{base}/src'
     path_filepath = f'{base}/src/paths'
     out_filepath = f'{base}/output'
     results_name = f'results_{time}'

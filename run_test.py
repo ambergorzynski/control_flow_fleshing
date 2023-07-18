@@ -42,7 +42,7 @@ class LLVMTester(Tester):
 class JavaBytecodeTester(Tester):
     
     def compile_wrapper(self) -> None:
-        cmd = [f'''./compile_wrapper_java.sh {self.out}''']
+        cmd = [f'''./compile_wrapper_java.sh {self.test}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_through_shell(self, test_name : str) -> None:
