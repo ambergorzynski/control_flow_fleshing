@@ -277,10 +277,10 @@ def java_bc_test():
     language = Language.JAVA_BYTECODE
 
     # fuzzing input parameters
-    n_graphs = 1
-    n_paths = 1
-    min_graph_size = 20
-    max_graph_size = 21
+    n_graphs = 10
+    n_paths = 10
+    min_graph_size = 50
+    max_graph_size = 51
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
