@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 
 class Tester(ABC):
 
-    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name):
+    def __init__(self, test_filepath, input_filepath, output_filepath, results_name, bad_results_name, src_filepath=None):
+        self.src = src_filepath
         self.test = test_filepath
         self.out = output_filepath
         self.input = input_filepath
@@ -42,15 +43,15 @@ class LLVMTester(Tester):
 class JavaBytecodeTester(Tester):
     
     def compile_wrapper(self) -> None:
-        cmd = [f'''./compile_wrapper_java.sh {self.test}''']
+        cmd = [f'''./compile_wrapper_java.sh {self.src}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_through_shell(self, test_name : str) -> None:
-        cmd = [f'''./compile_test_java.sh {self.test} {test_name}''']
+        cmd = [f'''./compile_test_java.sh {self.src} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_number : int, path_name : str) -> None:
-        cmd = [f'''./execute_test_java.sh {self.test} {test_number} {path_name}''']
+        cmd = [f'''./execute_test_java.sh {self.src} {test_number} {path_name}''']
         result = subprocess.run(cmd, shell=True)
 
 

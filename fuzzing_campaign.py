@@ -21,7 +21,8 @@ class Fuzzer():
                  path_filepath : str,
                  out_filepath : str,
                  results_name : str, 
-                 bad_results_name : str):
+                 bad_results_name : str,
+                 src_filepath : str = None):
         self.language = language
         self.graph_filepath = graph_filepath
         self.program_filepath = program_filepath
@@ -29,6 +30,7 @@ class Fuzzer():
         self.out_filepath = out_filepath
         self.results_name = results_name
         self.bad_results_name = bad_results_name
+        self.src_filepath = src_filepath
         # optimisations that were unrecognised:
         #   block-placement, loop-mssa, loop-unswitch
         #   loop-extract-single
@@ -201,7 +203,7 @@ class Fuzzer():
     
     def run_tests_java(self, n_graphs, n_paths):
 
-        test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+        test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
         # compile wrapper once
         test.compile_wrapper()
@@ -263,9 +265,10 @@ def java_bc_test():
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/java/fuzzing_170723'
+    base = 'fuzzing/java/fuzzing_180723'
     graph_filepath = f'{base}/graphs'
-    program_filepath = f'{base}/src'
+    src_filepath = f'{base}/src'
+    program_filepath = f'{base}/src/testing'
     path_filepath = f'{base}/src/paths'
     out_filepath = f'{base}/output'
     results_name = f'results_{time}'
@@ -276,15 +279,15 @@ def java_bc_test():
     # fuzzing input parameters
     n_graphs = 1
     n_paths = 1
-    min_graph_size = 10
-    max_graph_size = 11
+    min_graph_size = 20
+    max_graph_size = 21
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
     n_optimisations = 1
   
-    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name)
+    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
 
     # Step 1 : generate graphs
     fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,

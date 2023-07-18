@@ -11,7 +11,7 @@ class Wrapper{
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-		// parse arg for class name
+		// parse args
 		String className = args[0];
 		String filename = args[1];
 
