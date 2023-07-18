@@ -8,6 +8,7 @@ from CFG import CFG
 from run_test import LLVMTester, JavaBytecodeTester
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
+import subprocess
 
 class Language(Enum):
     LLVM  = 0
@@ -205,6 +206,13 @@ class Fuzzer():
 
         test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
+        # copy the wrapper and test case interface to the relevant folder
+        cmd = [f'''cp Wrapper.java {self.program_filepath}/Wrapper.java''']
+        result = subprocess.run(cmd, shell=True)
+
+        cmd = [f'''cp TestCaseInterface.java {self.program_filepath}/TestCaseInterface.java''']
+        result = subprocess.run(cmd, shell=True)
+
         # compile wrapper once
         test.compile_wrapper()
 
@@ -288,7 +296,7 @@ def java_bc_test():
     n_optimisations = 1
   
     fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
-
+    
     # Step 1 : generate graphs
     fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
                             min_successors, max_successors,
@@ -299,7 +307,7 @@ def java_bc_test():
 
     # Step 3 : generate paths for each graph
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
-
+    
     # Step 4 : run tests
     fuzzer.run_tests_java(n_graphs, n_paths)
 

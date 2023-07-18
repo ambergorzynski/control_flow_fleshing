@@ -51,7 +51,7 @@ class JavaBytecodeTester(Tester):
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_number : int, path_name : str) -> None:
-        cmd = [f'''./execute_test_java.sh {self.src} {test_number} {path_name}''']
+        cmd = [f'''./execute_test_java.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name}''']
         result = subprocess.run(cmd, shell=True)
 
 

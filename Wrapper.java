@@ -3,6 +3,7 @@ package testing;
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.lang.reflect.*;
@@ -13,10 +14,12 @@ class Wrapper{
 
 		// parse args
 		String className = args[0];
-		String filename = args[1];
+		String inputFilename = args[1];
+		String outputFilename = args[2];
+		String badOutputFilename = args[3];
 
 		// get direction size and expected output size from file
-		Scanner reader = new Scanner(new File(filename));
+		Scanner reader = new Scanner(new File(inputFilename));
 
 		int dirSize = Integer.parseInt(reader.nextLine());
 		int outputSize = Integer.parseInt(reader.nextLine());
@@ -30,9 +33,6 @@ class Wrapper{
 		setupArrays(dirSize, outputSize, dir, actualOutput, expectedOutput, reader);
 
 		// create class
-		//SwitchTest test = new SwitchTest();
-		//TestInterface test = new TestCase();
-		//Constructor<?> constructor = Class.forName(className).getConstructor();
 		Constructor<?> constructor = Class.forName(className).getConstructor();
 	
 		TestCaseInterface test = (TestCaseInterface) constructor.newInstance();
@@ -41,6 +41,14 @@ class Wrapper{
 
 		// compare expected and actual
 		boolean result = compare(expectedOutput, actualOutput, outputSize);
+
+		// record all output
+		recordOutput(outputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
+
+		// record bad output in separate file
+		if (!result){
+			recordOutput(badOutputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
+		}
 
 		// print outcomes
 		System.out.print("Expected and actual output are");
@@ -71,6 +79,47 @@ class Wrapper{
 
 		System.out.print("\n");
 
+
+	}
+
+	private static void recordOutput(String fileName, String testName, boolean result, int[] expectedOutput, int[] actualOutput, int outputSize){
+
+		try{
+			FileWriter fw = new FileWriter(fileName, true);
+
+			fw.write("Expected and actual output are");
+
+			if(result) {
+				fw.write("");
+			}
+			else {
+				fw.write(" not");
+			}
+
+			fw.write(" the same\n");
+
+			fw.write("Expected output:");
+			
+			for(int i = 0; i < outputSize; i++){
+				fw.write(" " + expectedOutput[i]);
+			}
+
+			fw.write("\n");
+
+
+			fw.write("Actual output:  ");
+			
+			for(int i = 0; i < 2*outputSize; i++){
+				fw.write(" " + actualOutput[i]);
+			}
+
+			fw.write("\n");
+
+			fw.close();
+
+		}catch(IOException e){
+			System.out.println("Error writing results to file");
+		}
 
 	}
 
