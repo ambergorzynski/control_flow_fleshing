@@ -202,7 +202,7 @@ class Fuzzer():
 
         return ','.join(opt_list)
     
-    def run_tests_java(self, n_graphs, n_paths):
+    def run_tests_java(self, n_graphs, n_paths, n_function_repeats):
 
         test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
@@ -222,7 +222,7 @@ class Fuzzer():
 
             for j in range(n_paths):
 
-                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}')
+                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
 
 
 def llvm_test():
@@ -293,7 +293,7 @@ def java_bc_test():
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
-    n_optimisations = 1
+    n_function_repeats = 10
   
     fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
     
@@ -309,7 +309,7 @@ def java_bc_test():
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
     
     # Step 4 : run tests
-    fuzzer.run_tests_java(n_graphs, n_paths)
+    fuzzer.run_tests_java(n_graphs, n_paths, n_function_repeats)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)

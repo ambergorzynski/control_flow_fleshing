@@ -17,6 +17,7 @@ class Wrapper{
 		String inputFilename = args[1];
 		String outputFilename = args[2];
 		String badOutputFilename = args[3];
+		int nFunctionRepeats = Integer.parseInt(args[4]);
 
 		// get direction size and expected output size from file
 		Scanner reader = new Scanner(new File(inputFilename));
