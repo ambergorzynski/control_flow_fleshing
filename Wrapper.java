@@ -38,7 +38,10 @@ class Wrapper{
 	
 		TestCaseInterface test = (TestCaseInterface) constructor.newInstance();
 
-		test.testCase(dir, actualOutput);
+		// repeat function to induce JIT
+		for(int i = 0; i < nFunctionRepeats; i++){
+			test.testCase(dir, actualOutput);
+		}
 
 		// compare expected and actual
 		boolean result = compare(expectedOutput, actualOutput, outputSize);
