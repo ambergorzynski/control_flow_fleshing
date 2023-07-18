@@ -212,7 +212,7 @@ class Fuzzer():
 
             for j in range(n_paths):
 
-                test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
+                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}')
 
 
 def llvm_test():
