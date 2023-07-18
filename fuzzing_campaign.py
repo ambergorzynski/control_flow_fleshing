@@ -293,7 +293,7 @@ def java_bc_test():
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
-    n_function_repeats = 10
+    n_function_repeats = 1024
   
     fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
     
