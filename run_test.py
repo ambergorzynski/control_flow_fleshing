@@ -46,7 +46,7 @@ class JavaBytecodeTester(Tester):
         result = subprocess.run(cmd, shell=True)
 
     def compile_through_shell(self, test_name : str) -> None:
-        cmd = [f'''./compile_test_java.sh {self.out} {self.test} {test_name}''']
+        cmd = [f'''./compile_test_java.sh {self.test} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name : str, path_name : str) -> None:
