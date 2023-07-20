@@ -92,7 +92,7 @@ class ProgramGenerator(ABC):
 
 class LLVMGenerator(ProgramGenerator):
     
-    def flesh_program_start(self) -> str:
+    def flesh_program_start(self, prog_number : int = None) -> str:
 
         prog_start = '''
 
