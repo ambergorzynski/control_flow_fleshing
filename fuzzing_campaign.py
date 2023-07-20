@@ -229,7 +229,7 @@ def llvm_test():
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/fuzzing_090723'
+    base = 'fuzzing/llvm/fuzzing_200723'
     graph_filepath = f'{base}/graphs'
     program_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -243,7 +243,7 @@ def llvm_test():
     n_graphs = 1
     n_paths = 1
     min_graph_size = 20
-    max_graph_size = 500
+    max_graph_size = 21
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
@@ -316,4 +316,4 @@ def java_bc_test():
 
 
 if __name__=="__main__":
-    java_bc_test()
+    llvm_test()
