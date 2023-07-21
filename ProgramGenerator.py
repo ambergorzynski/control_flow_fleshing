@@ -461,20 +461,66 @@ block_{i}: '''.format(i = n)
     ldc.i4.1
     add
     stloc.1
-    
+
 '''.format(i = n)
 
         return code
 
 
     def flesh_exit_node(self, n : int) -> str:
-        pass
+        '''
+            returns code for node n with no successors
+            (exit node).
+        '''
+        
+        code = '''
+    ret
+        '''
+        
+        return code
+
 
     def flesh_unconditional_node(self, n : int) -> str:
-        pass
+        '''
+            returns code for node n with single successor
+        '''
+
+        code = '''
+    br.s block_{successor}
+        '''.format(successor = list(self.cfg.graph.adj[n])[0])
+
+        return code
+
 
     def flesh_conditional_node(self, n : int) -> str:
-        pass
+        ''' 
+            returns code for node n with two successors, one of
+            which may be self (e.g. in case of loop)
+            note this does not deal with switch statements where
+            there are > 2 successor nodes
+        '''
+        code = '''
+    // get directions for node
+    ldarg.1
+    ldloc.0
+    ldelem.i4
+    ldc.i4.0
+
+    // increment directions counter
+    ldloc.0
+    ldc.i4.1
+    add
+    stloc.0
+
+    // branch
+    ceq
+    brfalse.s block_{successor_false}
+    br.s block_{successor_true}
+                '''.format(i = n,
+                       successor_false = list(self.cfg.graph.adj[n])[1],
+                       successor_true = list(self.cfg.graph.adj[n])[0])
+        
+        return code
 
     def flesh_switch_node(self, n: int, n_successors : int) -> str:
         pass
