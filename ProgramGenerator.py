@@ -48,6 +48,19 @@ class ProgramGenerator(ABC):
 
         return self.fleshed_graph
     
+    def save_to_file(self, filename : str) -> bool:
+        ''' 
+            writes CFG to given file 
+            returns true if file write is successful
+            false otherwise
+        '''
+
+        file = open(filename, "w")
+        file.write(self.fleshed_graph)
+        file.close()
+
+        return True
+    
     @abstractmethod
     def flesh_program_start(self, prog_number=None) -> str:
         pass
@@ -76,18 +89,6 @@ class ProgramGenerator(ABC):
     def flesh_end(self) -> str:
         pass
     
-    def save_to_file(self, filename : str) -> bool:
-        ''' 
-            writes CFG to given file 
-            returns true if file write is successful
-            false otherwise
-        '''
-
-        file = open(filename, "w")
-        file.write(self.fleshed_graph)
-        file.close()
-
-        return True
 
 
 class LLVMGenerator(ProgramGenerator):
@@ -365,6 +366,99 @@ block_{i}: '''.format(i = n)
     def flesh_end(self) -> str:
         return '''
 .end method'''
+
+class CILGenerator(ProgramGenerator):
+
+    def flesh_program_start(self, prog_number=None) -> str:
+        code = '''
+.assembly extern mscorlib
+{
+  .ver 4:0:0:0
+  .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
+}
+.assembly 'testCase{i}'
+{
+  .custom instance void class [mscorlib]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::'.ctor'(int32) =  (01 00 08 00 00 00 00 00 ) // ........
+
+  .custom instance void class [mscorlib]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::'.ctor'() =  (
+		01 00 01 00 54 02 16 57 72 61 70 4E 6F 6E 45 78   // ....T..WrapNonEx
+		63 65 70 74 69 6F 6E 54 68 72 6F 77 73 01       ) // ceptionThrows.
+
+  .custom instance void class [mscorlib]System.Diagnostics.DebuggableAttribute::'.ctor'(valuetype [mscorlib]System.Diagnostics.DebuggableAttribute/DebuggingModes) =  (01 00 07 01 00 00 00 00 ) // ........
+
+  .hash algorithm 0x00008004
+  .ver  0:0:0:0
+}
+.module testCase{i}.exe 
+
+  .class private auto ansi beforefieldinit TestCase{i}
+  	extends [mscorlib]System.Object
+  {
+
+    // main
+    .method public static hidebysig 
+           default void Main (string[] args)  cil managed 
+    {
+	.entrypoint
+	.maxstack 8
+	IL_0000:  nop 
+	IL_0001:  ret 
+    } 
+       
+	// default constructor
+    .method public hidebysig specialname rtspecialname 
+           instance default void '.ctor' ()  cil managed 
+    {
+	.maxstack 8
+	IL_0000:  ldarg.0 
+	IL_0001:  call instance void object::'.ctor'()
+	IL_0006:  nop 
+	IL_0007:  ret 
+    } 
+
+    // test method
+	.method public hidebysig 
+           instance default void callTest (int32[] dir, int32[]& output)  cil managed 
+    {
+	
+	.maxstack 3
+	.locals init(
+		int32	V_0, // directions counter
+		int32	V_1	// output counter
+	)
+
+	block_0:
+
+		// initialise counters
+		ldc.i4.0
+		stloc.0		// set local var 0 to 0
+		ldc.i4.0
+		stloc.1		// set local var 1 to 0
+        
+'''.format(i = prog_number)
+        
+        return code
+
+    def flesh_start_of_node(self, n : int) -> str:
+        pass
+
+    def flesh_exit_node(self, n : int) -> str:
+        pass
+
+    def flesh_unconditional_node(self, n : int) -> str:
+        pass
+
+    def flesh_conditional_node(self, n : int) -> str:
+        pass
+
+    def flesh_switch_node(self, n: int, n_successors : int) -> str:
+        pass
+
+    def flesh_end(self) -> str:
+        pass
+    
+
+
 
 def main():
         
