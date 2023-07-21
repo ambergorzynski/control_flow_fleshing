@@ -440,7 +440,32 @@ class CILGenerator(ProgramGenerator):
         return code
 
     def flesh_start_of_node(self, n : int) -> str:
-        pass
+        
+        if(n == 0):
+            code = ''''''
+        else:
+            code = '''
+
+block_{i}: '''.format(i = n)
+
+        code += '''
+    // store node label in output array
+    ldarg.2
+    ldind.ref
+    ldloc.1
+    ldc.i4 {i}
+    stelem.i4
+
+    // increment output counter
+    ldloc.1
+    ldc.i4.1
+    add
+    stloc.1
+    
+'''.format(i = n)
+
+        return code
+
 
     def flesh_exit_node(self, n : int) -> str:
         pass
