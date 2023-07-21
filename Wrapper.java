@@ -91,6 +91,8 @@ class Wrapper{
 		try{
 			FileWriter fw = new FileWriter(fileName, true);
 
+			fw.write("Test name: " + testName + "\n");
+
 			fw.write("Expected and actual output are");
 
 			if(result) {

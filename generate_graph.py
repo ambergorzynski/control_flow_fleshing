@@ -277,9 +277,21 @@ def make_simple_graph(i):
     G = generate_graph_approach_presets(i)
     pickle.dump(G, open(f'{graph_path}/graph_test.p', "wb"))
 
+def list_graph(filepath):
+
+    graph = pickle.load(open(filepath, "rb"))
+
+    print("all edges")
+    print(graph.edges())
+    print("edges from node 3")
+    print(graph.edges(3))
+
+
+    
 
 if __name__=="__main__":
     #explore_atlas()
     #view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
     #main()
-    make_simple_graph(3)
+    #make_simple_graph(3)
+    list_graph('fuzzing/java/fuzzing_180723/graphs/graph_84.p')

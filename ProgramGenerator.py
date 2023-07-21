@@ -189,10 +189,10 @@ class LLVMGenerator(ProgramGenerator):
 
             ; branch
             %condition_{i} = icmp eq i32 %dir_{i}_value, 0
-            br i1 %condition_{i}, label %{successor_false}, label %{successor_true}
+            br i1 %condition_{i}, label %{successor_true}, label %{successor_false}
             '''.format(i = n,
-                       successor_false = list(self.cfg.graph.adj[n])[0],
-                       successor_true = list(self.cfg.graph.adj[n])[1])
+                       successor_false = list(self.cfg.graph.adj[n])[1],
+                       successor_true = list(self.cfg.graph.adj[n])[0])
         
         return code
     
@@ -329,8 +329,8 @@ block_{i}: '''.format(i = n)
     ifeq block_{successor_true}
     goto block_{successor_false}
             '''.format(i = n,
-                       successor_false = list(self.cfg.graph.adj[n])[0],
-                       successor_true = list(self.cfg.graph.adj[n])[1])
+                       successor_false = list(self.cfg.graph.adj[n])[1],
+                       successor_true = list(self.cfg.graph.adj[n])[0])
         
         return code
 

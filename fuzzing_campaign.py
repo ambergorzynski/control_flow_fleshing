@@ -273,7 +273,7 @@ def java_bc_test():
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/java/fuzzing_180723'
+    base = 'fuzzing/java/fuzzing_200723'
     graph_filepath = f'{base}/graphs'
     src_filepath = f'{base}/src'
     program_filepath = f'{base}/src/testing'
@@ -285,12 +285,12 @@ def java_bc_test():
     language = Language.JAVA_BYTECODE
 
     # fuzzing input parameters
-    n_graphs = 10
-    n_paths = 10
-    min_graph_size = 50
-    max_graph_size = 51
+    n_graphs = 100
+    n_paths = 100
+    min_graph_size = 20
+    max_graph_size = 500
     min_successors = 1
-    max_successors = 4
+    max_successors = 2
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
     n_function_repeats = 1024
@@ -316,4 +316,4 @@ def java_bc_test():
 
 
 if __name__=="__main__":
-    llvm_test()
+    java_bc_test()
