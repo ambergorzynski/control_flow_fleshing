@@ -229,7 +229,7 @@ class Fuzzer():
 
                 test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
 
-    def run_tests_cil(self, n_graphs, n_paths, n_function_repeats):
+    def run_tests_cil(self, n_graphs, n_paths, n_function_repeats, full_path):
 
         test = CILTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
@@ -246,7 +246,7 @@ class Fuzzer():
 
             for j in range(n_paths):
 
-                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
+                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats, full_path=full_path)
 
 
 def llvm_test():
@@ -351,6 +351,7 @@ def cil_test():
     out_filepath = f'{base}/output'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
+    full_path = f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/{program_filepath}'
     language = Language.CIL
 
     # fuzzing input parameters
@@ -378,7 +379,7 @@ def cil_test():
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
     
     # Step 4 : run tests
-    fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats)
+    fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
 if __name__=="__main__":
     java_bc_test()

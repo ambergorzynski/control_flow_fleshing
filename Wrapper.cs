@@ -7,71 +7,35 @@ class Wrapper
 {
 		static void Main(string[] args)
 		{
-
-			int[] dir1 = new int[5] {2,1,1,1,1};
-			int[] output = new int[3] {-1,-1,-1};
-
 			int[] dir = null;
 			int[] expectedOutput = null;
 			int[] actualOutput = null;
 			int dirSize = 0;
 			int outSize = 0;
 
+			// parse args
 			string className = args[0];
-			string filename = args[1];
-			string path = "/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/cil/";
-			string outputName = path + "test_output.txt";
-			string badOutputName = path + "bad_test_output.txt";
+			string inputFilename = args[1];
+			string outputName = args[2];
+			string badOutputName = args[3];
+			string fullPath = args[4];
 
-			readIn(filename, ref dirSize, ref outSize, ref dir, ref expectedOutput, ref actualOutput);
-
-			// check that file was read correctly
-			Console.WriteLine(dirSize);
-			Console.WriteLine(outSize);
+			readIn(inputFilename, ref dirSize, ref outSize, ref dir, ref expectedOutput, ref actualOutput);
 			
-			foreach(int i in dir)
-			{
-				Console.Write(i);
-			}
-
-			Console.Write('\n');
-
-			foreach(int i in expectedOutput)
-			{
-				Console.Write(i);
-			}
-
-			Console.Write('\n');
-
-			foreach(int i in actualOutput)
-			{
-				Console.Write(i);
-			}
-
-			Console.Write('\n');
-
 			// load test case class dynamically from assembly
 
-			Assembly externalAssembly = Assembly.LoadFile(@"/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/cil/"+className+".exe");
+			Assembly externalAssembly = Assembly.LoadFile(@+fullPath+className+".exe");
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 
-			foreach(Type t in assemblyTypes)
-			{
-				Console.WriteLine(t);
-			}
-
-			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name=="TestCase0");
+			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name==className);
 			
-
 			Console.WriteLine(targetType);
 			
 			if(targetType != null)
 			{
 				object targetInstance = Activator.CreateInstance(targetType);
 				
-				Console.WriteLine("starting!");
-
 				// get the callTest method
 				MethodInfo callTestMethod = targetType.GetMethod("callTest");
 
