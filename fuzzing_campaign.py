@@ -13,6 +13,7 @@ import subprocess
 class Language(Enum):
     LLVM  = 0
     JAVA_BYTECODE = 1
+    CIL = 2
 
 class Fuzzer():
 
@@ -314,6 +315,47 @@ def java_bc_test():
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
+
+def cil_test():
+
+   # fixed input parameters
+    time = datetime.now().timestamp()
+    base = 'fuzzing/cil/fuzzing_220723'
+    graph_filepath = f'{base}/graphs'
+    src_filepath = f'{base}/proj'
+    program_filepath = f'{base}/proj/testing'
+    path_filepath = f'{base}/proj/paths'
+    out_filepath = f'{base}/output'
+    results_name = f'results_{time}'
+    bad_results_name = f'bad_results_{time}'
+    language = Language.CIL
+
+    # fuzzing input parameters
+    n_graphs = 100
+    n_paths = 100
+    min_graph_size = 20
+    max_graph_size = 500
+    min_successors = 1
+    max_successors = 2
+    graph_approach = 2 # can be 1 or 2
+    max_path_length = 900
+    n_function_repeats = 1024
+  
+    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
+    
+    # Step 1 : generate graphs
+    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
+                            min_successors, max_successors,
+                            graph_approach)
+
+    # Step 2 : flesh graphs
+    fuzzer.flesh_graphs(n_graphs)
+
+    # Step 3 : generate paths for each graph
+    fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
+    
+    # Step 4 : run tests
+    fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats)
 
 if __name__=="__main__":
     java_bc_test()
