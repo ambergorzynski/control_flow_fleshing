@@ -500,11 +500,10 @@ class CILGenerator(ProgramGenerator):
             there are > 2 successor nodes
         '''
         code = '''
-            // get directions for node
+        // push node direction
         ldarg.1
         ldloc.0
         ldelem.i4
-        ldc.i4.0
 
         // increment directions counter
         ldloc.0
@@ -513,6 +512,7 @@ class CILGenerator(ProgramGenerator):
         stloc.0
 
         // branch
+        ldc.i4.0
         ceq
         brfalse.s block_{successor_false}
         br.s block_{successor_true}
@@ -532,7 +532,6 @@ class CILGenerator(ProgramGenerator):
         ldarg.1
         ldloc.0
         ldelem.i4
-        ldc.i4.0
 
         // increment directions counter
         ldloc.0
