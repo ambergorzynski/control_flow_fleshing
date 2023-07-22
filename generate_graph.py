@@ -271,7 +271,7 @@ def main():
 
 def make_simple_graph(i):
 
-    base = 'fuzzing/java_test_140723'
+    base = 'fuzzing/cil/cil_test_210723'
     graph_path = f'{base}/graphs'
 
     G = generate_graph_approach_presets(i)
@@ -293,5 +293,5 @@ if __name__=="__main__":
     #explore_atlas()
     #view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
     #main()
-    #make_simple_graph(3)
-    list_graph('fuzzing/java/fuzzing_180723/graphs/graph_84.p')
+    make_simple_graph(1)
+    #list_graph('fuzzing/java/fuzzing_180723/graphs/graph_84.p')

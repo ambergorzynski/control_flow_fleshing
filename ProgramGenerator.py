@@ -363,6 +363,7 @@ block_{i}: '''.format(i = n)
                        default = list(self.cfg.graph.adj[n])[0])
         
         return code
+    
     def flesh_end(self) -> str:
         return '''
 .end method'''
@@ -370,14 +371,14 @@ block_{i}: '''.format(i = n)
 class CILGenerator(ProgramGenerator):
 
     def flesh_program_start(self, prog_number=None) -> str:
-        code = '''
+        code = """
 .assembly extern mscorlib
-{
+{{
   .ver 4:0:0:0
   .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
-}
+}}
 .assembly 'testCase{i}'
-{
+{{
   .custom instance void class [mscorlib]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::'.ctor'(int32) =  (01 00 08 00 00 00 00 00 ) // ........
 
   .custom instance void class [mscorlib]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::'.ctor'() =  (
@@ -388,54 +389,54 @@ class CILGenerator(ProgramGenerator):
 
   .hash algorithm 0x00008004
   .ver  0:0:0:0
-}
+}}
 .module testCase{i}.exe 
 
   .class private auto ansi beforefieldinit TestCase{i}
   	extends [mscorlib]System.Object
-  {
+  {{
 
     // main
     .method public static hidebysig 
            default void Main (string[] args)  cil managed 
-    {
+    {{
 	.entrypoint
 	.maxstack 8
 	IL_0000:  nop 
 	IL_0001:  ret 
-    } 
+    }}
        
 	// default constructor
     .method public hidebysig specialname rtspecialname 
            instance default void '.ctor' ()  cil managed 
-    {
+    {{
 	.maxstack 8
 	IL_0000:  ldarg.0 
 	IL_0001:  call instance void object::'.ctor'()
 	IL_0006:  nop 
 	IL_0007:  ret 
-    } 
+    }}
 
     // test method
 	.method public hidebysig 
            instance default void callTest (int32[] dir, int32[]& output)  cil managed 
-    {
+    {{
 	
-	.maxstack 3
+	.maxstack 5
 	.locals init(
 		int32	V_0, // directions counter
 		int32	V_1	// output counter
 	)
 
-	block_0:
+    block_0:
 
-		// initialise counters
-		ldc.i4.0
-		stloc.0		// set local var 0 to 0
-		ldc.i4.0
-		stloc.1		// set local var 1 to 0
+        // initialise counters
+        ldc.i4.0
+        stloc.0		// set local var 0 to 0
+        ldc.i4.0
+        stloc.1		// set local var 1 to 0
         
-'''.format(i = prog_number)
+""".format(i = prog_number)
         
         return code
 
@@ -446,23 +447,23 @@ class CILGenerator(ProgramGenerator):
         else:
             code = '''
 
-block_{i}: '''.format(i = n)
+    block_{i}: '''.format(i = n)
 
         code += '''
-    // store node label in output array
-    ldarg.2
-    ldind.ref
-    ldloc.1
-    ldc.i4 {i}
-    stelem.i4
+        // store node label in output array
+        ldarg.2
+        ldind.ref
+        ldloc.1
+        ldc.i4 {i}
+        stelem.i4
 
-    // increment output counter
-    ldloc.1
-    ldc.i4.1
-    add
-    stloc.1
+        // increment output counter
+        ldloc.1
+        ldc.i4.1
+        add
+        stloc.1
 
-'''.format(i = n)
+    '''.format(i = n)
 
         return code
 
@@ -486,8 +487,8 @@ block_{i}: '''.format(i = n)
         '''
 
         code = '''
-    br.s block_{successor}
-        '''.format(successor = list(self.cfg.graph.adj[n])[0])
+        br.s block_{successor}
+            '''.format(successor = list(self.cfg.graph.adj[n])[0])
 
         return code
 
@@ -500,23 +501,23 @@ block_{i}: '''.format(i = n)
             there are > 2 successor nodes
         '''
         code = '''
-    // get directions for node
-    ldarg.1
-    ldloc.0
-    ldelem.i4
-    ldc.i4.0
+            // get directions for node
+        ldarg.1
+        ldloc.0
+        ldelem.i4
+        ldc.i4.0
 
-    // increment directions counter
-    ldloc.0
-    ldc.i4.1
-    add
-    stloc.0
+        // increment directions counter
+        ldloc.0
+        ldc.i4.1
+        add
+        stloc.0
 
-    // branch
-    ceq
-    brfalse.s block_{successor_false}
-    br.s block_{successor_true}
-                '''.format(i = n,
+        // branch
+        ceq
+        brfalse.s block_{successor_false}
+        br.s block_{successor_true}
+                    '''.format(i = n,
                        successor_false = list(self.cfg.graph.adj[n])[1],
                        successor_true = list(self.cfg.graph.adj[n])[0])
         
@@ -526,14 +527,13 @@ block_{i}: '''.format(i = n)
         pass
 
     def flesh_end(self) -> str:
-        pass
-    
-
-
+        return '''
+    }
+}'''
 
 def main():
         
-        base = 'fuzzing/java_test_140723'
+        base = 'fuzzing/cil/cil_test_210723'
         graph_path = f'{base}/graphs'
         program_filepath = f'{base}/programs'
 
@@ -541,13 +541,13 @@ def main():
             
         graph = pickle.load(open(f'{graph_path}/{graph_name}.p', "rb"))
 
-        program_generator = JavaBytecodeGenerator()
+        program_generator = CILGenerator()
 
         cfg = CFG(graph)
 
-        program_generator.fleshout(cfg)
+        program_generator.fleshout(cfg,0)
 
-        if (program_generator.save_to_file(f'{program_filepath}/{(graph_name)}.j')):
+        if (program_generator.save_to_file(f'{program_filepath}/{(graph_name)}.il')):
             print("Fleshed CFG created successfully!")
         
         else:
