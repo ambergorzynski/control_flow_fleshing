@@ -24,7 +24,7 @@ class Wrapper
 			
 			// load test case class dynamically from assembly
 
-			Assembly externalAssembly = Assembly.LoadFile(@+fullPath+className+".exe");
+			Assembly externalAssembly = Assembly.LoadFile(@fullPath+className+".exe");
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 
