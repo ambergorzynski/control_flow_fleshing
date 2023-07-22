@@ -371,13 +371,12 @@ block_{i}: '''.format(i = n)
 class CILGenerator(ProgramGenerator):
 
     def flesh_program_start(self, prog_number=None) -> str:
-        code = """
-.assembly extern mscorlib
+        code = """.assembly extern mscorlib
 {{
   .ver 4:0:0:0
   .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
 }}
-.assembly 'testCase{i}'
+.assembly 'TestCase{i}'
 {{
   .custom instance void class [mscorlib]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::'.ctor'(int32) =  (01 00 08 00 00 00 00 00 ) // ........
 
@@ -390,7 +389,7 @@ class CILGenerator(ProgramGenerator):
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }}
-.module testCase{i}.exe 
+.module TestCase{i}.exe 
 
   .class private auto ansi beforefieldinit TestCase{i}
   	extends [mscorlib]System.Object
@@ -417,7 +416,7 @@ class CILGenerator(ProgramGenerator):
 	IL_0007:  ret 
     }}
 
-    // test method
+    // test case method
 	.method public hidebysig 
            instance default void callTest (int32[] dir, int32[]& output)  cil managed 
     {{
