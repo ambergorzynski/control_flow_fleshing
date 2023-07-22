@@ -1,11 +1,11 @@
 import networkx as nx
 import pickle
-from ProgramGenerator import LLVMGenerator, JavaBytecodeGenerator
+from ProgramGenerator import LLVMGenerator, JavaBytecodeGenerator, CILGenerator
 from datetime import datetime
 from random import Random
 from generate_graph import *
 from CFG import CFG
-from run_test import LLVMTester, JavaBytecodeTester
+from run_test import LLVMTester, JavaBytecodeTester, CILTester
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 import subprocess
@@ -126,6 +126,10 @@ class Fuzzer():
             program_generator = JavaBytecodeGenerator()
             filetype = 'j'
 
+        elif(self.language == Language.CIL):
+            program_generator = CILGenerator()
+            filetype = 'il'
+
         for i in range(n_graphs):
             
             graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', "rb"))
@@ -212,6 +216,25 @@ class Fuzzer():
         result = subprocess.run(cmd, shell=True)
 
         cmd = [f'''cp TestCaseInterface.java {self.program_filepath}/TestCaseInterface.java''']
+        result = subprocess.run(cmd, shell=True)
+
+        # compile wrapper once
+        test.compile_wrapper()
+
+        for i in range(n_graphs):
+
+            test.compile_through_shell(f'run_cfg_{i}')
+
+            for j in range(n_paths):
+
+                test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
+
+    def run_tests_cil(self, n_graphs, n_paths, n_function_repeats):
+
+        test = CILTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
+
+        # copy the wrapper and test case interface to the relevant folder
+        cmd = [f'''cp Wrapper.cs {self.program_filepath}/Wrapper.cs''']
         result = subprocess.run(cmd, shell=True)
 
         # compile wrapper once
