@@ -24,7 +24,7 @@ class Wrapper
 			
 			// load test case class dynamically from assembly
 
-			Assembly externalAssembly = Assembly.LoadFile(@fullPath+className+".exe");
+			Assembly externalAssembly = Assembly.LoadFile(@"/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/fuzzing/cil/fuzzing_220723/proj/testing/"+className+".exe");
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 

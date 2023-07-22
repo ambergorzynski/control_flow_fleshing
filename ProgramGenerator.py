@@ -376,7 +376,7 @@ class CILGenerator(ProgramGenerator):
   .ver 4:0:0:0
   .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
 }}
-.assembly 'TestCase{i}'
+.assembly 'run_cfg_{i}'
 {{
   .custom instance void class [mscorlib]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::'.ctor'(int32) =  (01 00 08 00 00 00 00 00 ) // ........
 
@@ -389,9 +389,9 @@ class CILGenerator(ProgramGenerator):
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }}
-.module TestCase{i}.exe 
+.module run_cfg_{i}.exe 
 
-  .class private auto ansi beforefieldinit TestCase{i}
+  .class private auto ansi beforefieldinit run_cfg_{i}
   	extends [mscorlib]System.Object
   {{
 

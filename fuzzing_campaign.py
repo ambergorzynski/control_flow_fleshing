@@ -355,10 +355,10 @@ def cil_test():
     language = Language.CIL
 
     # fuzzing input parameters
-    n_graphs = 100
-    n_paths = 100
-    min_graph_size = 20
-    max_graph_size = 500
+    n_graphs = 1
+    n_paths = 1
+    min_graph_size = 10
+    max_graph_size = 11
     min_successors = 1
     max_successors = 2
     graph_approach = 2 # can be 1 or 2
@@ -382,4 +382,4 @@ def cil_test():
     fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
 if __name__=="__main__":
-    java_bc_test()
+    cil_test()
