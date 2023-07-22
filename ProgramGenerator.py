@@ -524,7 +524,41 @@ class CILGenerator(ProgramGenerator):
         return code
 
     def flesh_switch_node(self, n: int, n_successors : int) -> str:
-        pass
+        '''
+            returns code for node with > 2 successors
+            e.g. a switch statement
+        '''
+        code = '''
+        // get directions for node
+        ldarg.1
+        ldloc.0
+        ldelem.i4
+        ldc.i4.0
+
+        // increment directions counter
+        ldloc.0
+        ldc.i4.1
+        add
+        stloc.0
+
+        // switch
+        switch ('''
+        
+        for j in range(n_successors):
+             code += '''
+        block_{successor}'''.format(successor = list(self.cfg.graph.adj[n])[j])
+             
+             if j == (n_successors - 1):
+                 code += ''')'''
+             else:
+                 code += ''','''
+        
+        # default block
+        code += '''
+        br.s block_{default}'''.format(
+                       default = list(self.cfg.graph.adj[n])[0])
+        
+        return code
 
     def flesh_end(self) -> str:
         return '''
