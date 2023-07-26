@@ -268,6 +268,9 @@ def setup_folder(language : Language, folder_name):
         cmd += f' ;mkdir fuzzing/llvm/{folder_name}/llvm'
         cmd += f' ;mkdir fuzzing/llvm/{folder_name}/running'
 
+        result = subprocess.run(cmd, shell=True)
+
+
     elif language == Language.CIL:
         cmd = f'mkdir fuzzing/cil/{folder_name}'
         cmd += f' ;mkdir fuzzing/cil/{folder_name}/graphs'
@@ -275,6 +278,9 @@ def setup_folder(language : Language, folder_name):
         cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/output'
         cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/paths'
         cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/testing'
+
+        result = subprocess.run(cmd, shell=True)
+
 
     else:
         print("Error")
