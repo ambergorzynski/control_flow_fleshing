@@ -248,12 +248,43 @@ class Fuzzer():
 
                 test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats, full_path=full_path)
 
+def setup_folder(language : Language, folder_name):
 
-def llvm_test():
+    if (language == Language.JAVA_BYTECODE):
+
+        cmd = f'mkdir fuzzing/java/{folder_name}'
+        cmd += f' ;mkdir fuzzing/java/{folder_name}/graphs'
+        cmd += f' ;mkdir fuzzing/java/{folder_name}/src'
+        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/output'
+        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/paths'
+        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/testing'
+
+        result = subprocess.run(cmd, shell=True)
+
+    elif language == Language.LLVM:
+        cmd = f'mkdir fuzzing/llvm/{folder_name}'
+        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/graphs'
+        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/input'
+        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/llvm'
+        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/running'
+
+    elif language == Language.CIL:
+        cmd = f'mkdir fuzzing/cil/{folder_name}'
+        cmd += f' ;mkdir fuzzing/cil/{folder_name}/graphs'
+        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj'
+        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/output'
+        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/paths'
+        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/testing'
+
+    else:
+        print("Error")
+
+
+def llvm_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/llvm/fuzzing_200723'
+    base = f'fuzzing/llvm/{folder}'
     graph_filepath = f'{base}/graphs'
     program_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -264,10 +295,10 @@ def llvm_test():
     language = Language.LLVM
 
     # fuzzing input parameters
-    n_graphs = 1
-    n_paths = 1
+    n_graphs = n_tests
+    n_paths = 100
     min_graph_size = 20
-    max_graph_size = 21
+    max_graph_size = 500
     min_successors = 1
     max_successors = 4
     graph_approach = 2 # can be 1 or 2
@@ -293,11 +324,11 @@ def llvm_test():
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
-def java_bc_test():
+def java_bc_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/java/fuzzing_200723'
+    base = f'fuzzing/java/{folder}'
     graph_filepath = f'{base}/graphs'
     src_filepath = f'{base}/src'
     program_filepath = f'{base}/src/testing'
@@ -309,12 +340,12 @@ def java_bc_test():
     language = Language.JAVA_BYTECODE
 
     # fuzzing input parameters
-    n_graphs = 100
+    n_graphs = n_tests
     n_paths = 100
     min_graph_size = 20
     max_graph_size = 500
     min_successors = 1
-    max_successors = 2
+    max_successors = 4
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
     n_function_repeats = 1024
@@ -339,11 +370,11 @@ def java_bc_test():
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
-def cil_test():
+def cil_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = 'fuzzing/cil/fuzzing_220723'
+    base = f'fuzzing/cil/{folder}'
     graph_filepath = f'{base}/graphs'
     src_filepath = f'{base}/proj'
     program_filepath = f'{base}/proj/testing'
@@ -355,7 +386,7 @@ def cil_test():
     language = Language.CIL
 
     # fuzzing input parameters
-    n_graphs = 1
+    n_graphs = n_tests
     n_paths = 1
     min_graph_size = 10
     max_graph_size = 11
@@ -381,5 +412,43 @@ def cil_test():
     # Step 4 : run tests
     fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
+def parse_lang(language):
+    if language == 'java':
+        return Language.JAVA_BYTECODE
+    elif language == 'llvm':
+        return Language.LLVM
+    elif language == 'cil':
+        return Language.CIL
+    
+
+def run_tests(language, n_tests, folder):
+
+    if language==Language.JAVA_BYTECODE:
+        java_bc_test(n_tests, folder)
+
+    elif language==Language.LLVM:
+        llvm_test(n_tests, folder)
+
+    elif language==Language.CIL:
+        cil_test(n_tests, folder)
+
+def main():
+    '''
+        args:
+        fuzzing_campaign.py <language> <n_tests> <folder>
+    '''
+
+    # parse args
+    args = sys.argv[1:]
+    language = parse_lang(args[0])
+    n_tests = int(args[1])
+    folder = args[2]
+
+    # create folders
+    setup_folder(language, folder)
+
+    # run tests from folder
+    run_tests(language, n_tests, folder)
+
 if __name__=="__main__":
-    java_bc_test()
+    main()
