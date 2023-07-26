@@ -366,7 +366,7 @@ def cil_test():
     n_function_repeats = 1024
   
     fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
-    
+    '''
     # Step 1 : generate graphs
     fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
                             min_successors, max_successors,
@@ -377,9 +377,9 @@ def cil_test():
 
     # Step 3 : generate paths for each graph
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
-    
+    '''
     # Step 4 : run tests
     fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
 if __name__=="__main__":
-    cil_test()
+    java_bc_test()

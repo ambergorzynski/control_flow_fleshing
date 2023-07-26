@@ -21,7 +21,12 @@ class Wrapper
 			string fullPath = args[4];
 
 			readIn(inputFilename, ref dirSize, ref outSize, ref dir, ref expectedOutput, ref actualOutput);
-			
+
+			Console.WriteLine("array sizes");
+			Console.WriteLine("dir size:" + dir.Length);
+			Console.WriteLine("exp size:" + expectedOutput.Length);
+			Console.WriteLine("act size:" + actualOutput.Length);
+
 			// load test case class dynamically from assembly
 
 			Assembly externalAssembly = Assembly.LoadFile(@"/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/fuzzing/cil/fuzzing_220723/proj/testing/"+className+".exe");
@@ -148,14 +153,26 @@ class Wrapper
 			outSize = Int32.Parse(lines[1]);
 
 			// lines are space-separated arrays
-			dir = Array.ConvertAll(lines[2].Split(' '), int.Parse);
+			dir = new int[10*dirSize];
+			int[] dir_temp = Array.ConvertAll(lines[2].Split(' '), int.Parse);
 			expectedOutput = Array.ConvertAll(lines[3].Split(' '), int.Parse);
-			actualOutput = new int[2*outSize];
+			actualOutput = new int[10*outSize];
 
 			for(int i = 0; i < 2*outSize; i++)
 			{
 				actualOutput[i] = -1;
 			}
+
+			for(int i = 0; i < dirSize; i++)
+			{
+				dir[i] = dir_temp[i];
+			}
+			
+			for(int i = dirSize; i < 10*dirSize; i++)
+			{
+				dir[i] = 0;
+			}
+
 		}
 
 		public static bool cmp(int[] expectedOutput, int[] actualOutput)
