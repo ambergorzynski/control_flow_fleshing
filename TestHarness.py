@@ -3,7 +3,7 @@ import pickle
 from ProgramGenerator import LLVMGenerator, JavaBytecodeGenerator, CILGenerator
 from datetime import datetime
 from random import Random
-from generate_graph import *
+from GraphGenerator import *
 from CFG import CFG
 from Runner import *
 from aux_tools.program_comparator import compare_optimised
@@ -212,10 +212,10 @@ class Fuzzer():
         test = JavaBytecodeRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
         # copy the wrapper and test case interface to the relevant folder
-        cmd = [f'''cp Wrapper.java {self.program_filepath}/Wrapper.java''']
+        cmd = [f'''cp javabc/Wrapper.java {self.program_filepath}/Wrapper.java''']
         result = subprocess.run(cmd, shell=True)
 
-        cmd = [f'''cp TestCaseInterface.java {self.program_filepath}/TestCaseInterface.java''']
+        cmd = [f'''cp javabc/TestCaseInterface.java {self.program_filepath}/TestCaseInterface.java''']
         result = subprocess.run(cmd, shell=True)
 
         # compile wrapper once
@@ -234,7 +234,7 @@ class Fuzzer():
         test = CILRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
         # copy the wrapper and test case interface to the relevant folder
-        cmd = [f'''cp Wrapper.cs {self.program_filepath}/Wrapper.cs''']
+        cmd = [f'''cp cil/Wrapper.cs {self.program_filepath}/Wrapper.cs''']
         result = subprocess.run(cmd, shell=True)
 
         # compile wrapper once
@@ -252,32 +252,32 @@ def setup_folder(language : Language, folder_name):
 
     if (language == Language.JAVA_BYTECODE):
 
-        cmd = f'mkdir fuzzing/java/{folder_name}'
-        cmd += f' ;mkdir fuzzing/java/{folder_name}/graphs'
-        cmd += f' ;mkdir fuzzing/java/{folder_name}/src'
-        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/output'
-        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/paths'
-        cmd += f' ;mkdir fuzzing/java/{folder_name}/src/testing'
+        cmd = f'mkdir javabc/fuzzing/{folder_name}'
+        cmd += f' ;mkdir javabc/fuzzing/{folder_name}/graphs'
+        cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src'
+        cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/output'
+        cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/paths'
+        cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/testing'
 
         result = subprocess.run(cmd, shell=True)
 
     elif language == Language.LLVM:
-        cmd = f'mkdir fuzzing/llvm/{folder_name}'
-        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/graphs'
-        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/input'
-        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/llvm'
-        cmd += f' ;mkdir fuzzing/llvm/{folder_name}/running'
+        cmd = f'mkdir llvm/fuzzing/{folder_name}'
+        cmd += f' ;mkdir llvm/fuzzing/{folder_name}/graphs'
+        cmd += f' ;mkdir llvm/fuzzing/{folder_name}/input'
+        cmd += f' ;mkdir llvm/fuzzing/{folder_name}/llvm'
+        cmd += f' ;mkdir llvm/fuzzing/{folder_name}/running'
 
         result = subprocess.run(cmd, shell=True)
 
 
     elif language == Language.CIL:
-        cmd = f'mkdir fuzzing/cil/{folder_name}'
-        cmd += f' ;mkdir fuzzing/cil/{folder_name}/graphs'
-        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj'
-        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/output'
-        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/paths'
-        cmd += f' ;mkdir fuzzing/cil/{folder_name}/proj/testing'
+        cmd = f'mkdir cil/fuzzing/{folder_name}'
+        cmd += f' ;mkdir cil/fuzzing/{folder_name}/graphs'
+        cmd += f' ;mkdir cil/fuzzing/{folder_name}/proj'
+        cmd += f' ;mkdir cil/fuzzing/{folder_name}/proj/output'
+        cmd += f' ;mkdir cil/fuzzing/{folder_name}/proj/paths'
+        cmd += f' ;mkdir cil/fuzzing/{folder_name}/proj/testing'
 
         result = subprocess.run(cmd, shell=True)
 
@@ -290,7 +290,7 @@ def llvm_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = f'fuzzing/llvm/{folder}'
+    base = f'llvm/fuzzing/{folder}'
     graph_filepath = f'{base}/graphs'
     program_filepath = f'{base}/llvm'
     path_filepath = f'{base}/input'
@@ -302,7 +302,7 @@ def llvm_test(n_tests, folder):
 
     # fuzzing input parameters
     n_graphs = n_tests
-    n_paths = 100
+    n_paths = 1
     min_graph_size = 20
     max_graph_size = 500
     min_successors = 1
@@ -334,7 +334,7 @@ def java_bc_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = f'fuzzing/java/{folder}'
+    base = f'javabc/fuzzing/{folder}'
     graph_filepath = f'{base}/graphs'
     src_filepath = f'{base}/src'
     program_filepath = f'{base}/src/testing'
@@ -380,7 +380,7 @@ def cil_test(n_tests, folder):
 
    # fixed input parameters
     time = datetime.now().timestamp()
-    base = f'fuzzing/cil/{folder}'
+    base = f'cil/fuzzing/{folder}'
     graph_filepath = f'{base}/graphs'
     src_filepath = f'{base}/proj'
     program_filepath = f'{base}/proj/testing'

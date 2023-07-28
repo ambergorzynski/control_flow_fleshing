@@ -26,12 +26,12 @@ class Runner(ABC):
 class LLVMRunner(Runner):
 
     def compile_wrapper(self):
-        cmd = [f'''./compile_wrapper_llvm.sh {self.out}''']
+        cmd = [f'''./llvm/compile_wrapper_llvm.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test(self, test_name, optimisation_list):
 
-        cmd = [f'''./compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        cmd = [f'''./llvm/compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name, path_name):
@@ -43,28 +43,28 @@ class LLVMRunner(Runner):
 class JavaBytecodeRunner(Runner):
     
     def compile_wrapper(self) -> None:
-        cmd = [f'''./compile_wrapper_java.sh {self.src}''']
+        cmd = [f'''./javabc/compile_wrapper_java.sh {self.src}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test(self, test_name : str) -> None:
-        cmd = [f'''./compile_test_java.sh {self.src} {test_name}''']
+        cmd = [f'''./javabc/compile_test_java.sh {self.src} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_number : int, path_name : str, n_function_repeats : int) -> None:
-        cmd = [f'''./execute_test_java.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats}''']
+        cmd = [f'''./javabc/execute_test_java.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats}''']
         result = subprocess.run(cmd, shell=True)
 
 class CILRunner(Runner):
     
     def compile_wrapper(self) -> None:
-        cmd = [f'''./compile_wrapper_cil.sh {self.src}''']
+        cmd = [f'''./cil/compile_wrapper_cil.sh {self.src}''']
         result = subprocess.run(cmd, shell=True)
         
     def compile_test(self, test_name : str) -> None:
-        cmd = [f'''./compile_test_cil.sh {self.src} {test_name}''']
+        cmd = [f'''./cil/compile_test_cil.sh {self.src} {test_name}''']
         result = subprocess.run(cmd, shell=True)
         
     def execute(self, test_number : int, path_name : str, n_function_repeats : int, full_path : str) -> None:
-        cmd = [f'''./execute_test_cil.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats} {full_path}''']
+        cmd = [f'''./cil/execute_test_cil.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats} {full_path}''']
         result = subprocess.run(cmd, shell=True)
 
