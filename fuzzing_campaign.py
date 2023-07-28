@@ -5,7 +5,7 @@ from datetime import datetime
 from random import Random
 from generate_graph import *
 from CFG import CFG
-from run_test import LLVMTester, JavaBytecodeTester, CILTester
+from Runner import *
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 import subprocess
@@ -180,7 +180,7 @@ class Fuzzer():
 
     def run_tests_llvm(self, n_graphs, n_paths, n_optimisations):
 
-        test = LLVMTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+        test = LLVMRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
 
         # compile wrapper once
         test.compile_wrapper()
@@ -195,7 +195,7 @@ class Fuzzer():
 
             print(f'optimisaitons: {optimisations_str}')
 
-            test.compile_through_shell(f'run_cfg_{i}', optimisations_str)
+            test.compile_test(f'run_cfg_{i}', optimisations_str)
 
             for j in range(n_paths):
 
@@ -209,7 +209,7 @@ class Fuzzer():
     
     def run_tests_java(self, n_graphs, n_paths, n_function_repeats):
 
-        test = JavaBytecodeTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
+        test = JavaBytecodeRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
         # copy the wrapper and test case interface to the relevant folder
         cmd = [f'''cp Wrapper.java {self.program_filepath}/Wrapper.java''']
@@ -223,7 +223,7 @@ class Fuzzer():
 
         for i in range(n_graphs):
 
-            test.compile_through_shell(f'run_cfg_{i}')
+            test.compile_test(f'run_cfg_{i}')
 
             for j in range(n_paths):
 
@@ -231,7 +231,7 @@ class Fuzzer():
 
     def run_tests_cil(self, n_graphs, n_paths, n_function_repeats, full_path):
 
-        test = CILTester(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
+        test = CILRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
 
         # copy the wrapper and test case interface to the relevant folder
         cmd = [f'''cp Wrapper.cs {self.program_filepath}/Wrapper.cs''']
@@ -242,7 +242,7 @@ class Fuzzer():
 
         for i in range(n_graphs):
 
-            test.compile_through_shell(f'run_cfg_{i}')
+            test.compile_test(f'run_cfg_{i}')
 
             for j in range(n_paths):
 
