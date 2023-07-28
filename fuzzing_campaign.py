@@ -388,7 +388,7 @@ def cil_test(n_tests, folder):
     out_filepath = f'{base}/output'
     results_name = f'results_{time}'
     bad_results_name = f'bad_results_{time}'
-    full_path = f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/{program_filepath}'
+    full_path = f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/{program_filepath}/'
     language = Language.CIL
 
     # fuzzing input parameters
@@ -403,7 +403,7 @@ def cil_test(n_tests, folder):
     n_function_repeats = 1024
   
     fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
-    '''
+    
     # Step 1 : generate graphs
     fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
                             min_successors, max_successors,
@@ -414,7 +414,7 @@ def cil_test(n_tests, folder):
 
     # Step 3 : generate paths for each graph
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
-    '''
+    
     # Step 4 : run tests
     fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
@@ -449,9 +449,10 @@ def main():
     language = parse_lang(args[0])
     n_tests = int(args[1])
     folder = args[2]
-
-    # create folders
-    setup_folder(language, folder)
+    
+    if len(args) == 4:
+        # create folders
+        setup_folder(language, folder)
 
     # run tests from folder
     run_tests(language, n_tests, folder)

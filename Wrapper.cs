@@ -18,18 +18,16 @@ class Wrapper
 			string inputFilename = args[1];
 			string outputName = args[2];
 			string badOutputName = args[3];
-			string fullPath = args[4];
+			int nFunctionRepeats = Int32.Parse(args[4]);
+			string fullPath = args[5];
+
+			Console.WriteLine(fullPath);
 
 			readIn(inputFilename, ref dirSize, ref outSize, ref dir, ref expectedOutput, ref actualOutput);
 
-			Console.WriteLine("array sizes");
-			Console.WriteLine("dir size:" + dir.Length);
-			Console.WriteLine("exp size:" + expectedOutput.Length);
-			Console.WriteLine("act size:" + actualOutput.Length);
-
 			// load test case class dynamically from assembly
 
-			Assembly externalAssembly = Assembly.LoadFile(@"/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/fuzzing/cil/fuzzing_220723/proj/testing/"+className+".exe");
+			Assembly externalAssembly = Assembly.LoadFile(fullPath+className+".exe");
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 
@@ -45,7 +43,10 @@ class Wrapper
 				MethodInfo callTestMethod = targetType.GetMethod("callTest");
 
 				// invoke method dynamically
+				for(int i = 0; i < nFunctionRepeats; i++)
+				{
 				callTestMethod.Invoke(targetInstance, new object[] {dir, actualOutput});
+				}
 
 			}
 			else
@@ -153,10 +154,10 @@ class Wrapper
 			outSize = Int32.Parse(lines[1]);
 
 			// lines are space-separated arrays
-			dir = new int[10*dirSize];
+			dir = new int[dirSize];
 			int[] dir_temp = Array.ConvertAll(lines[2].Split(' '), int.Parse);
 			expectedOutput = Array.ConvertAll(lines[3].Split(' '), int.Parse);
-			actualOutput = new int[10*outSize];
+			actualOutput = new int[2*outSize];
 
 			for(int i = 0; i < 2*outSize; i++)
 			{
@@ -167,11 +168,7 @@ class Wrapper
 			{
 				dir[i] = dir_temp[i];
 			}
-			
-			for(int i = dirSize; i < 10*dirSize; i++)
-			{
-				dir[i] = 0;
-			}
+
 
 		}
 

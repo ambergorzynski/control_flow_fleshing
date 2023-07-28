@@ -486,7 +486,7 @@ class CILGenerator(ProgramGenerator):
         '''
 
         code = '''
-        br.s block_{successor}
+        br block_{successor}
             '''.format(successor = list(self.cfg.graph.adj[n])[0])
 
         return code
@@ -514,8 +514,8 @@ class CILGenerator(ProgramGenerator):
         // branch
         ldc.i4.0
         ceq
-        brfalse.s block_{successor_false}
-        br.s block_{successor_true}
+        brfalse block_{successor_false}
+        br block_{successor_true}
                     '''.format(i = n,
                        successor_false = list(self.cfg.graph.adj[n])[1],
                        successor_true = list(self.cfg.graph.adj[n])[0])
@@ -553,7 +553,7 @@ class CILGenerator(ProgramGenerator):
         
         # default block
         code += '''
-        br.s block_{default}'''.format(
+        br block_{default}'''.format(
                        default = list(self.cfg.graph.adj[n])[0])
         
         return code
