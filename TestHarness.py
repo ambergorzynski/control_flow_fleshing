@@ -1,6 +1,6 @@
 import networkx as nx
 import pickle
-from ProgramGenerator import LLVMGenerator, JavaBytecodeGenerator, CILGenerator
+from llvm.LLVMProgramGenerator import *
 from datetime import datetime
 from random import Random
 from GraphGenerator import *
@@ -119,9 +119,9 @@ class Fuzzer():
     def flesh_graphs(self, n_graphs):
 
         if(self.language == Language.LLVM):
-            program_generator = LLVMGenerator()
+            program_generator = LLVMProgramGenerator()
             filetype = 'll'
-        
+        '''
         elif(self.language == Language.JAVA_BYTECODE):
             program_generator = JavaBytecodeGenerator()
             filetype = 'j'
@@ -129,7 +129,7 @@ class Fuzzer():
         elif(self.language == Language.CIL):
             program_generator = CILGenerator()
             filetype = 'il'
-
+        '''
         for i in range(n_graphs):
             
             graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', "rb"))
