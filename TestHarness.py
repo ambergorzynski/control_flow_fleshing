@@ -1,6 +1,5 @@
 import networkx as nx
 import pickle
-from llvm.LLVMProgramGenerator import *
 from datetime import datetime
 from random import Random
 from GraphGenerator import *
@@ -9,6 +8,9 @@ from Runner import *
 from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 import subprocess
+from llvm.LLVMProgramGenerator import *
+from cil.CILProgramGenerator import *
+from javabc.JavaBCProgramGenerator import *
 
 class Language(Enum):
     LLVM  = 0
@@ -121,15 +123,15 @@ class Fuzzer():
         if(self.language == Language.LLVM):
             program_generator = LLVMProgramGenerator()
             filetype = 'll'
-        '''
+        
         elif(self.language == Language.JAVA_BYTECODE):
-            program_generator = JavaBytecodeGenerator()
+            program_generator = JavaBCProgramGenerator()
             filetype = 'j'
-
+        
         elif(self.language == Language.CIL):
-            program_generator = CILGenerator()
+            program_generator = CILProgramGenerator()
             filetype = 'il'
-        '''
+        
         for i in range(n_graphs):
             
             graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', "rb"))
