@@ -395,11 +395,11 @@ def cil_test(n_tests, folder):
 
     # fuzzing input parameters
     n_graphs = n_tests
-    n_paths = 1
-    min_graph_size = 10
-    max_graph_size = 11
+    n_paths = 100
+    min_graph_size = 20
+    max_graph_size = 500
     min_successors = 1
-    max_successors = 2
+    max_successors = 3
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
     n_function_repeats = 1024

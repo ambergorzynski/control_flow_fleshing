@@ -10,7 +10,6 @@ venv/
 *.png
 __pycache__/
 _old/
-fuzzing_*/
-cil/
+fuzzing*/
 java/
 jasmin/
