@@ -29,6 +29,10 @@ class LLVMRunner(Runner):
         cmd = [f'''./llvm/compile_wrapper_llvm.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
 
+    def compile_wrapper_static(self):
+        cmd = [f'''./llvm/compile_wrapper_llvm_static.sh {self.out}''']
+        result = subprocess.run(cmd, shell=True)
+
     def compile_test(self, test_name, optimisation_list):
 
         cmd = [f'''./llvm/compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
