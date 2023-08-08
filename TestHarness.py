@@ -203,6 +203,23 @@ class Fuzzer():
 
                 test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
 
+    def run_tests_llvm_single_opt(self, n_graphs, n_paths, opt):
+
+        test = LLVMRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name)
+
+        # compile wrapper once
+        test.compile_wrapper()
+
+        for i in range(n_graphs):
+
+            print(f'optimisaitons: {opt}')
+
+            test.compile_test(f'run_cfg_{i}', opt)
+
+            for j in range(n_paths):
+
+                test.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
+
     def parse_optimisations(self, indices):
 
         opt_list = [self.cfg_preset_optimisations[i] for i in indices]
@@ -305,10 +322,10 @@ def llvm_test(n_tests, folder):
     # fuzzing input parameters
     n_graphs = n_tests
     n_paths = 1
-    min_graph_size = 20
-    max_graph_size = 500
+    min_graph_size = 10
+    max_graph_size = 15
     min_successors = 1
-    max_successors = 4
+    max_successors = 3
     graph_approach = 2 # can be 1 or 2
     max_path_length = 900
     n_optimisations = 1
@@ -331,6 +348,48 @@ def llvm_test(n_tests, folder):
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
+
+
+def llvm_test_opt():
+
+   # fixed input parameters
+    time = datetime.now().timestamp()
+    base = f'llvm/fuzzing/opt_test'
+    graph_filepath = f'{base}/graphs'
+    program_filepath = f'{base}/llvm'
+    path_filepath = f'{base}/input'
+    out_filepath = f'{base}/running'
+    results_name = f'results_{time}'
+    bad_results_name = f'bad_results_{time}'
+    comparison_results_name = f'comparison_results_{time}'
+    language = Language.LLVM
+
+    # fuzzing input parameters
+    n_graphs = 1
+    n_paths = 1
+    min_graph_size = 20
+    max_graph_size = 500
+    min_successors = 1
+    max_successors = 4
+    graph_approach = 2 # can be 1 or 2
+    max_path_length = 900
+    opt = 'break-crit-edges'
+  
+    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name)
+
+    # Step 1 : generate graphs
+    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
+                            min_successors, max_successors,
+                            graph_approach)
+
+    # Step 2 : flesh graphs
+    fuzzer.flesh_graphs(n_graphs)
+
+    # Step 3 : generate paths for each graph
+    fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
+
+    # Step 4 : run tests
+    fuzzer.run_tests_llvm_single_opt(n_graphs, n_paths, opt)
 
 def java_bc_test(n_tests, folder):
 
@@ -420,6 +479,8 @@ def cil_test(n_tests, folder):
     # Step 4 : run tests
     fuzzer.run_tests_cil(n_graphs, n_paths, n_function_repeats, full_path)
 
+
+
 def parse_lang(language):
     if language == 'java':
         return Language.JAVA_BYTECODE
@@ -443,21 +504,26 @@ def run_tests(language, n_tests, folder):
 def main():
     '''
         args:
-        fuzzing_campaign.py <language> <n_tests> <folder>
+        fuzzing_campaign.py <language> <n_tests> <folder> <optional: n (to create new folder)>
     '''
 
     # parse args
     args = sys.argv[1:]
-    language = parse_lang(args[0])
-    n_tests = int(args[1])
-    folder = args[2]
-    
-    if len(args) == 4:
-        # create folders
-        setup_folder(language, folder)
 
-    # run tests from folder
-    run_tests(language, n_tests, folder)
+    # opt pass - work in progress
+    if(args[0]) == 'llvm_opt':
+        llvm_test_opt()
+    else:
+        language = parse_lang(args[0])
+        n_tests = int(args[1])
+        folder = args[2]
+        
+        if len(args) == 4:
+            # create folders
+            setup_folder(language, folder)
+
+        # run tests from folder
+        run_tests(language, n_tests, folder)
 
 if __name__=="__main__":
     main()

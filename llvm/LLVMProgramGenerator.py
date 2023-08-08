@@ -1,6 +1,51 @@
 from ProgramGenerator import ProgramGenerator
 
 class LLVMProgramGenerator(ProgramGenerator):
+
+    def flesh_program_start_static(self, directions : list[int], prog_number : int = None) -> str:
+        ''' 
+            Sets up the program start in which the directions
+            array is statically known. This version codes the array via a 
+            pointer; it is the closes to the dynamically passed array version. 
+            TODO Set up alternative statically known array that is a simple int 
+            array rather than pointer (will require changing how the directions
+            are referenced in the rest of the IR program)
+            TODO Set up alternative statically known array that is a const array, 
+            which will also require changes to the access in later parts 
+        '''
+
+        prog_start = '''
+
+        ; 
+
+        define void @_Z7run_cfgPi(i32* %in_output) #0 {
+
+        0:
+            ; create array to store output
+            %output = alloca i32*
+            store i32* %in_output, i32** %output
+
+            %counter = alloca i32
+            store i32 0, i32* %counter
+
+            %dir_counter = alloca i32
+            store i32 0, i32* %dir_counter;
+
+            ; set up direction array and pointer
+            %index_0 = alloca i32
+            %dirs = alloca [{dir_size} x i32]
+            %directions = alloca [{dir_size} x i32]
+
+            ; point directions ptr at directions
+            store i32 0, i32* index_0
+            %var_0_0 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 0
+            store i32* %var_0_0, i32** %directions
+
+        '''.format(dir_size = len(directions))
+
+        # fill in directions array
+        
+        return prog_start
     
     def flesh_program_start(self, prog_number : int = None) -> str:
 
