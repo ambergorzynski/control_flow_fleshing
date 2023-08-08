@@ -1,6 +1,7 @@
 from ProgramGenerator import ProgramGenerator
 
 class LLVMProgramGenerator(ProgramGenerator):
+    
 
     def flesh_program_start_static(self, directions : list[int], prog_number : int = None) -> str:
         ''' 
