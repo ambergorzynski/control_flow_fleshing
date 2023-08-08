@@ -43,7 +43,14 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         '''.format(dir_size = len(directions))
 
-        # fill in directions array
+        #fill in directions array
+        for i, d in directions:
+            prog_start += '''
+        %v{index}_1 = load i32*, i32** %directions
+        %v{index}_2 = getelementptr inbounds i32, i32* %v{index}_1, i64 {index}
+        store i32 {dir}, i32* %v{index}_2
+        '''.format(index=i, dir=d)
+        
         
         return prog_start
     
