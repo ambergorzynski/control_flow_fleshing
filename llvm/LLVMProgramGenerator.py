@@ -1,10 +1,52 @@
+from CFG import CFG
 from ProgramGenerator import ProgramGenerator
 
 class LLVMProgramGenerator(ProgramGenerator):
+
+    def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
+
+        ''' 
+            converts control flow graph to LLVM IR 
+            returns str containing LLVM IR program
+            and saves as member variable
+        '''
+
+        # clear previously stored graph
+        self.fleshed_graph = None
+        self.cfg = cfg
+
+        # all programs have common start
+        self.fleshed_graph = self.flesh_program_start_static(directions)
+
+        for n in self.cfg.graph:
+
+            # store node label in output array for every node visited
+            self.fleshed_graph += self.flesh_start_of_node(n)
+
+            # write remaining block code based on number of successor nodes
+            n_successors = self.cfg.successors(n)
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n)
+
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+
+        # add closing phrase to program
+        self.fleshed_graph += self.flesh_end()
+
+        return self.fleshed_graph
     
 
-    def flesh_program_start_static(self, directions : list[int], prog_number : int = None) -> str:
-        ''' 
+    def flesh_program_start_static(self, directions : list[int]) -> str:
+
+        """
             Sets up the program start in which the directions
             array is statically known. This version codes the array via a 
             pointer; it is the closes to the dynamically passed array version. 
@@ -13,13 +55,14 @@ class LLVMProgramGenerator(ProgramGenerator):
             are referenced in the rest of the IR program)
             TODO Set up alternative statically known array that is a const array, 
             which will also require changes to the access in later parts 
-        '''
+        """
 
-        prog_start = '''
+        l = len(directions)
 
-        ; 
+        prog_start = ''' ; 
 
-        define void @_Z7run_cfgPi(i32* %in_output) #0 {
+
+        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
 
         0:
             ; create array to store output
@@ -33,23 +76,23 @@ class LLVMProgramGenerator(ProgramGenerator):
             store i32 0, i32* %dir_counter;
 
             ; set up direction array and pointer
-            %index_0 = alloca i32
+            %index_a = alloca i32
             %dirs = alloca [{dir_size} x i32]
             %directions = alloca [{dir_size} x i32]
 
             ; point directions ptr at directions
-            store i32 0, i32* index_0
+            store i32 0, i32* %index_a
             %var_0_0 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 0
             store i32* %var_0_0, i32** %directions
 
-        '''.format(dir_size = len(directions))
+        '''.format(dir_size = l)
 
         #fill in directions array
-        for i, d in directions:
+        for i, d in enumerate(directions):
             prog_start += '''
-        %v{index}_1 = load i32*, i32** %directions
-        %v{index}_2 = getelementptr inbounds i32, i32* %v{index}_1, i64 {index}
-        store i32 {dir}, i32* %v{index}_2
+            %v{index}_1 = load i32*, i32** %directions
+            %v{index}_2 = getelementptr inbounds i32, i32* %v{index}_1, i64 {index}
+            store i32 {dir}, i32* %v{index}_2
         '''.format(index=i, dir=d)
         
         
