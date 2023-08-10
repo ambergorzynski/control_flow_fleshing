@@ -458,9 +458,9 @@ def llvm_test_statically_known_directions(n_tests, folder):
 
     # fuzzing input parameters
     n_graphs = n_tests
-    n_paths = 10
-    min_graph_size = 10
-    max_graph_size = 15
+    n_paths = 100
+    min_graph_size = 20
+    max_graph_size = 500
     min_successors = 1
     max_successors = 3
     graph_approach = 2 # can be 1 or 2
@@ -611,7 +611,15 @@ def main():
 
     # statically known directions - work in progress
     elif(args[0]) == 'llvm_static':
-        llvm_test_statically_known_directions(n_tests=int(args[1]), folder=args[2])
+
+        n_tests = int(args[1])
+        folder = args[2]
+        
+        if len(args) == 4:
+            # create folders
+            setup_folder(Language.LLVM, folder)
+
+        llvm_test_statically_known_directions(n_tests=int(args[1]), folder=folder)
 
     else:
         language = parse_lang(args[0])
