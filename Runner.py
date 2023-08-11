@@ -33,9 +33,18 @@ class LLVMRunner(Runner):
         cmd = [f'''./llvm/compile_wrapper_llvm_static.sh {self.out}''']
         result = subprocess.run(cmd, shell=True)
 
+    def compile_wrapper_graalvm(self):
+        cmd = [f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.out}''']
+        result = subprocess.run(cmd, shell=True)
+
     def compile_test(self, test_name, optimisation_list):
 
         cmd = [f'''./llvm/compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        result = subprocess.run(cmd, shell=True)
+
+    def compile_test_graalvm(self, test_name, optimisation_list):
+
+        cmd = [f'''./llvm/compile_test_llvm_graalvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name, path_name):
