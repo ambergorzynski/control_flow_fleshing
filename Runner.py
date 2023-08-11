@@ -50,7 +50,7 @@ class LLVMRunner(Runner):
     def execute(self, test_name, path_name):
         
         cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt {self.out}/{self.bad_results_name}.txt']
-        result = subprocess.run(cmd, shell=True)        
+        result = subprocess.run(cmd, shell=True)    
 
 
 class JavaBytecodeRunner(Runner):

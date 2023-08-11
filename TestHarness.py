@@ -369,7 +369,7 @@ def setup_folder(language : Language, folder_name):
 
 
     else:
-        print("Error")
+        print("Language error")
 
 
 def llvm_test(n_tests, folder):
