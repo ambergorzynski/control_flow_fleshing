@@ -46,6 +46,7 @@ class JavaBCProgramGenerator(ProgramGenerator):
 
     def flesh_program_start_no_reflection(self) -> str:
         code = '''
+.class public TestCase
 .super java/lang/Object
 
 ; default constructor

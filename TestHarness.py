@@ -345,6 +345,23 @@ class Fuzzer():
 
                 test.execute(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
 
+    def run_tests_java_no_reflection(self, n_graphs, n_paths, n_function_repeats):
+
+        test = JavaBytecodeRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
+
+        # copy the wrapper and test case interface to the relevant folder
+        cmd = [f'''cp javabc/WrapperNoReflection.java {self.program_filepath}/WrapperNoReflection.java''']
+        result = subprocess.run(cmd, shell=True)
+
+        for i in range(n_graphs):
+
+            # pre-compile wrapper and test together
+            test.compile_no_ref(i)
+
+            for j in range(n_paths):
+
+                test.execute_no_ref(test_number=i, path_name=f'input_graph_{i}_path{j}', n_function_repeats=n_function_repeats)
+    
     def run_tests_cil(self, n_graphs, n_paths, n_function_repeats, full_path):
 
         test = CILRunner(self.program_filepath, self.path_filepath, self.out_filepath, self.results_name, self.bad_results_name, self.src_filepath)
@@ -709,7 +726,7 @@ def java_bc_test_no_reflection(n_tests, folder):
     fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
     
     # Step 4 : run tests
-    #fuzzer.run_tests_java_no_reflection(n_graphs, n_paths, n_function_repeats)
+    fuzzer.run_tests_java_no_reflection(n_graphs, n_paths, n_function_repeats)
 
     # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)

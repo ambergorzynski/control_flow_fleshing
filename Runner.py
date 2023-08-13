@@ -63,8 +63,16 @@ class JavaBytecodeRunner(Runner):
         cmd = [f'''./javabc/compile_test_java.sh {self.src} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
+    def compile_no_ref(self, test_number : int) -> None:
+        cmd = [f'''./javabc/compile_java_no_ref.sh {self.src} {test_number}''']
+        result = subprocess.run(cmd, shell=True)
+
     def execute(self, test_number : int, path_name : str, n_function_repeats : int) -> None:
         cmd = [f'''./javabc/execute_test_java.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats}''']
+        result = subprocess.run(cmd, shell=True)
+
+    def execute_no_ref(self, test_number : int, path_name : str, n_function_repeats : int) -> None:
+        cmd = [f'''./javabc/execute_java_no_ref.sh {self.src} {test_number} {path_name} {self.results_name} {self.bad_results_name} {n_function_repeats}''']
         result = subprocess.run(cmd, shell=True)
 
 class CILRunner(Runner):

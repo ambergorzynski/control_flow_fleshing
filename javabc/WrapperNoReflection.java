@@ -11,11 +11,10 @@ class Wrapper{
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
 		// parse args
-		String className = args[0];
-		String inputFilename = args[1];
-		String outputFilename = args[2];
-		String badOutputFilename = args[3];
-		int nFunctionRepeats = Integer.parseInt(args[4]);
+		String inputFilename = args[0];
+		String outputFilename = args[1];
+		String badOutputFilename = args[2];
+		int nFunctionRepeats = Integer.parseInt(args[3]);
 
 		// get direction size and expected output size from file
 		Scanner reader = new Scanner(new File(inputFilename));
