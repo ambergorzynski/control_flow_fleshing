@@ -160,6 +160,36 @@ class Fuzzer():
 
                     program_generator.save_to_file(f'{self.program_filepath}/run_cfg_{i}_path_{p}.{filetype}')
 
+    def flesh_graphs_no_reflection(self, n_graphs):
+
+        if(self.language == Language.LLVM):
+            program_generator = LLVMProgramGenerator()
+            filetype = 'll'
+        
+        elif(self.language == Language.JAVA_BYTECODE):
+            program_generator = JavaBCProgramGenerator()
+            filetype = 'j'
+        
+        elif(self.language == Language.CIL):
+            program_generator = CILProgramGenerator()
+            filetype = 'il'
+        
+
+        for i in range(n_graphs):
+            
+            graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', "rb"))
+
+            cfg = CFG(graph)
+
+            program_generator.fleshout_no_reflection(cfg, i)
+
+            # make directory for test case 
+            subprocess.run(f'mkdir {self.program_filepath}/test{i}', shell=True)
+
+            # save in separate folder for classpath
+            program_generator.save_to_file(f'{self.program_filepath}/test{i}/run_cfg_{i}.{filetype}')
+    
+
 
     def read_in_dirs(self, graph, path):
         
@@ -639,6 +669,53 @@ def java_bc_test(n_tests, folder):
     #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
 
 
+def java_bc_test_no_reflection(n_tests, folder):
+
+   # fixed input parameters
+    time = datetime.now().timestamp()
+    base = f'javabc/fuzzing/{folder}'
+    graph_filepath = f'{base}/graphs'
+    src_filepath = f'{base}/src'
+    program_filepath = f'{base}/src/testing'
+    path_filepath = f'{base}/src/paths'
+    out_filepath = f'{base}/output'
+    results_name = f'results_{time}'
+    bad_results_name = f'bad_results_{time}'
+    comparison_results_name = f'comparison_results_{time}'
+    language = Language.JAVA_BYTECODE
+
+    # fuzzing input parameters
+    n_graphs = n_tests
+    n_paths = 100
+    min_graph_size = 20
+    max_graph_size = 500
+    min_successors = 1
+    max_successors = 4
+    graph_approach = 2 # can be 1 or 2
+    max_path_length = 900
+    n_function_repeats = 1024
+  
+    fuzzer = Fuzzer(language, graph_filepath, program_filepath, path_filepath, out_filepath, results_name, bad_results_name, src_filepath)
+    
+    # Step 1 : generate graphs
+    fuzzer.generate_graphs(n_graphs, min_graph_size, max_graph_size,
+                            min_successors, max_successors,
+                            graph_approach)
+
+    # Step 2 : flesh graphs
+    fuzzer.flesh_graphs_no_reflection(n_graphs)
+
+    # Step 3 : generate paths for each graph
+    fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
+    
+    # Step 4 : run tests
+    #fuzzer.run_tests_java_no_reflection(n_graphs, n_paths, n_function_repeats)
+
+    # Step 5 : run comparison on optimised and unoptimised .ll files to check whether optimisations had an impact
+    #compare_optimised(n_graphs, input_folder=llvm_filepath, results_folder=out_filepath, output_filename=comparison_results_name)
+
+
+
 def cil_test(n_tests, folder):
 
    # fixed input parameters
@@ -739,6 +816,16 @@ def main():
             setup_folder(Language.LLVM, folder)
 
         llvm_test_graalvm(n_tests=int(args[1]), folder=folder)
+
+    elif(args[0]) == 'java_no_ref':
+        n_tests = int(args[1])
+        folder = args[2]
+        
+        if len(args) == 4:
+            # create folders
+            setup_folder(Language.JAVA_BYTECODE, folder)
+
+        java_bc_test_no_reflection(n_tests=int(args[1]), folder=folder)
 
     else:
         language = parse_lang(args[0])

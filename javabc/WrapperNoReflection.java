@@ -1,5 +1,3 @@
-package testing;
-
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileReader;
@@ -34,9 +32,7 @@ class Wrapper{
 		setupArrays(dirSize, outputSize, dir, actualOutput, expectedOutput, reader);
 
 		// create class
-		Constructor<?> constructor = Class.forName(className).getConstructor();
-	
-		TestCaseInterface test = (TestCaseInterface) constructor.newInstance();
+        TestCase test = new TestCase();
 
 		// repeat function to induce JIT
 		for(int i = 0; i < nFunctionRepeats; i++){
