@@ -257,7 +257,7 @@ class CFG():
 
 def generate_path(graph_number : int,
                   graph_filepath : str, 
-                   output_filepath : str,
+                   path_filepath : str,
                    graph_name : str, 
                    n_paths : int, 
                    max_path_length : int, 
@@ -280,7 +280,7 @@ def generate_path(graph_number : int,
 
             path = cfg.find_path(max_path_length, seed)
 
-            with open(f'{output_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
+            with open(f'{path_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
                 f.write(str(len(path.directions))+'\n')
                 f.write(str(len(path.expected_output))+'\n')
                 f.write(str(spaces(path.directions))+'\n')

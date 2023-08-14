@@ -74,7 +74,7 @@ def main():
     for i in range(params.n_graphs):
         generate_path(graph_number = i,
                         graph_filepath = filepaths.graph_filepath, 
-                        output_filepath = filepaths.output_filepath,
+                        path_filepath = filepaths.path_filepath,
                         graph_name = f'graph_{i}.p', 
                         n_paths = params.n_paths, 
                         max_path_length = params.max_path_length, 

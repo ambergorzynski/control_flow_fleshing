@@ -102,10 +102,10 @@ class LLVMRunner():
 
         # compile wrapper from C++ to object file
         if(self.directions=='unknown'):
-            subprocess.run(f'''./llvm/compile_wrapper_llvm.sh {self.out}''', shell=True)
+            subprocess.run(f'''./llvm/compile_wrapper_llvm.sh {self.filepaths.output_filepath}''', shell=True)
 
         elif(self.directions=='known'):
-            subprocess.run(f'''./llvm/compile_wrapper_llvm_static.sh {self.out}''', shell=True)
+            subprocess.run(f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath}''', shell=True)
 
     def compile_tests_overall(self):
 
@@ -115,11 +115,13 @@ class LLVMRunner():
             for i in range(self.params.n_graphs):
 
                 optimisations_str = self.parse_opts()
-
+                print(f'optimisation: {optimisations_str}')
+                
                 self.compile_test(f'run_cfg_{i}', optimisations_str)
+                
+                for j in range(self.params.n_paths):
 
-                # execute
-                self.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
+                    self.execute(f'run_cfg_{i}', f'input_graph_{i}_path{j}')
 
 
         # compile each graph-path pair once (n*m total)
@@ -130,6 +132,7 @@ class LLVMRunner():
                 for j in range(self.params.n_paths):
 
                     optimisations_str = self.parse_opts()
+                    print(f'optimisation: {optimisations_str}')
 
                     self.compile_test(f'run_cfg_{i}_path_{j}', optimisations_str)
 
@@ -138,35 +141,35 @@ class LLVMRunner():
 
 
     def compile_wrapper(self):
-        cmd = [f'''./llvm/compile_wrapper_llvm.sh {self.out}''']
+        cmd = [f'''./llvm/compile_wrapper_llvm.sh {self.filepaths.output_filepath}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_wrapper_static(self):
-        cmd = [f'''./llvm/compile_wrapper_llvm_static.sh {self.out}''']
+        cmd = [f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_wrapper_graalvm(self):
-        cmd = [f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.out}''']
+        cmd = [f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.filepaths.output_filepath}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test(self, test_name, optimisation_list):
 
-        cmd = [f'''./llvm/compile_test_llvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        cmd = [f'''./llvm/compile_test_llvm.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test_graalvm(self, test_name, optimisation_list):
 
-        cmd = [f'''./llvm/compile_test_llvm_graalvm.sh {self.out} {self.test} {test_name} "{optimisation_list}"''']
+        cmd = [f'''./llvm/compile_test_llvm_graalvm.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_name, path_name):
         
-        cmd = [f'./{self.out}/{test_name}_out {self.input}/{path_name}.txt {self.out}/{self.results_name}.txt {self.out}/{self.bad_results_name}.txt']
+        cmd = [f'./{self.filepaths.output_filepath}/{test_name}_out {self.filepaths.program_filepath}/{path_name}.txt {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
         result = subprocess.run(cmd, shell=True)    
 
     def parse_opts(self) -> str:
 
-        if(self.optimisations=='default'):
+        if(self.optimisations=='random_level'):
             
             #TODO: pass n_optimisations instead of just setting to 1; issues with sequencing of optimisations
             optimisations_index = [random.randint(0, len(self.cfg_preset_optimisations) - 1) for i in range(1)]
