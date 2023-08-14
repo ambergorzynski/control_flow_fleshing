@@ -23,7 +23,7 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
-    parser.add_argument("-c", type=str, default="llvm",
+    parser.add_argument("-c", type=str, default="default",
                         help="Specifies which compiler to use")
     parser.add_argument("-dir", type=str, default="unknown",
                         help="Specifies whether directions array is known or unknown at compile time")
