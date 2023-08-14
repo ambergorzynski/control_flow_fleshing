@@ -1,5 +1,7 @@
 import argparse
 import sys
+import networkx as nx
+
 from datetime import datetime
 
 #TODO: convert graph generator etc to package
@@ -8,6 +10,7 @@ sys.path.append('../control_flow_fleshing')
 
 from GraphGenerator import *
 from CFG import *
+from LLVMProgramGenerator import *
 
 
 class FilePaths():
@@ -122,17 +125,41 @@ def main():
 
 
     # Step 3 : flesh graphs
+    program_generator = LLVMProgramGenerator()
 
-    '''
-        NOTES - fleshing depends on program generation method
-    '''
     if(args.dir == 'known'):
-        flesh_graph()
+        
+        for i in range(params.n_graphs):
+        
+            # load graph                    
+            graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
+
+            cfg = CFG(graph)
+
+            for p in range(params.n_paths):
+
+                directions = read_in_dirs(i, p, filepaths)
+
+                program_generator.fleshout_static(cfg, directions)
+
+                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
+
     
     elif(args.dir == 'unknown'):
         pass
 
     # Step 4 : run tests
 
+def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths):
+        
+        with open(f'{filepaths.path_filepath}/input_graph_{graph}_path{path}.txt', 'r') as f:
+            lines = f.readlines()
+
+        # third line is directions list
+        dirs = lines[2].split(' ')
+
+        # convert str to int
+        return [eval(i) for i in dirs]
+    
 if __name__ == "__main__":
     main()
