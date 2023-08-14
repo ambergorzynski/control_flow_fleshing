@@ -255,8 +255,8 @@ class CFG():
             
 
 
-def generate_path(self, 
-                   graph_filepath : str, 
+def generate_path(graph_number : int,
+                  graph_filepath : str, 
                    output_filepath : str,
                    graph_name : str, 
                    n_paths : int, 
@@ -276,19 +276,30 @@ def generate_path(self,
 
         for j in range(n_paths):
 
-            print(f'new path for graph {i}, path {j}')
+            print(f'new path for graph {graph_number}, path {j}')
 
             path = cfg.find_path(max_path_length, seed)
 
-            with open(f'{output_filepath}/input_graph_{i}_path{j}.txt', 'w') as f:
+            with open(f'{output_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
                 f.write(str(len(path.directions))+'\n')
                 f.write(str(len(path.expected_output))+'\n')
-                f.write(str(self.spaces(path.directions))+'\n')
-                f.write(str(self.spaces(path.expected_output)))
+                f.write(str(spaces(path.directions))+'\n')
+                f.write(str(spaces(path.expected_output)))
 
     else:
         print("cfg is not valid")
 
+def spaces(input_array):
+
+    if input_array == []:
+        return
+
+    output = str(input_array[0])
+
+    for i in range(1, len(input_array)):
+        output += f' {input_array[i]}'
+
+    return output
 
 
 
