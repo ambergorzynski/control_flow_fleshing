@@ -255,10 +255,10 @@ class CFG():
             
 
 
-def generate_paths(self, 
+def generate_path(self, 
                    graph_filepath : str, 
-                   output_filepath : str, 
-                   n_graphs : int, 
+                   output_filepath : str,
+                   graph_name : str, 
                    n_paths : int, 
                    max_path_length : int, 
                    seed : float = None):
@@ -267,29 +267,27 @@ def generate_paths(self,
         Funtion generates a set of paths for each graph and writes the path and 
         directions to the output filepath provided
     '''
-
-    for i in range(n_graphs):
         
-        graph = pickle.load(open(f'{graph_filepath}/graph_{i}.p', 'rb'))
+    graph = pickle.load(open(f'{graph_filepath}/{graph_name}', 'rb'))
 
-        cfg = CFG(graph)
+    cfg = CFG(graph)
 
-        if cfg.is_valid():
+    if cfg.is_valid():
 
-            for j in range(n_paths):
+        for j in range(n_paths):
 
-                print(f'new path for graph {i}, path {j}')
+            print(f'new path for graph {i}, path {j}')
 
-                path = cfg.find_path(max_path_length, seed)
+            path = cfg.find_path(max_path_length, seed)
 
-                with open(f'{output_filepath}/input_graph_{i}_path{j}.txt', 'w') as f:
-                    f.write(str(len(path.directions))+'\n')
-                    f.write(str(len(path.expected_output))+'\n')
-                    f.write(str(self.spaces(path.directions))+'\n')
-                    f.write(str(self.spaces(path.expected_output)))
+            with open(f'{output_filepath}/input_graph_{i}_path{j}.txt', 'w') as f:
+                f.write(str(len(path.directions))+'\n')
+                f.write(str(len(path.expected_output))+'\n')
+                f.write(str(self.spaces(path.directions))+'\n')
+                f.write(str(self.spaces(path.expected_output)))
 
-        else:
-            print("cfg is not valid")
+    else:
+        print("cfg is not valid")
 
 
 
