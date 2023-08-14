@@ -74,7 +74,7 @@ def preset_graph_4() -> nx.MultiDiGraph:
     
     return G
 
-def generate_graph_approach_0(n_nodes, seed=None) -> nx.MultiDiGraph:
+def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -116,9 +116,9 @@ def generate_graph_approach_0(n_nodes, seed=None) -> nx.MultiDiGraph:
 
     return G
 
-def generate_graph_approach_1(n_nodes, seed=None, min_successors = 1,
-                            max_successors = 10, add_annotations=False,
-                            n_annotations=0) -> nx.MultiDiGraph:
+def generate_graph_approach_1(n_nodes : int, seed=None, min_successors : int = 1,
+                            max_successors : int = 10, add_annotations : bool =False,
+                            n_annotations : int = 0) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -187,7 +187,10 @@ def generate_graph_approach_1(n_nodes, seed=None, min_successors = 1,
 
     return G
     
-def generate_graph_approach_2(n_nodes, seed=None, min_successors=1, max_successors=10) -> nx.MultiDiGraph:
+def generate_graph_approach_2(n_nodes : int, 
+                              seed : float = None, 
+                              min_successors : int = 1, 
+                              max_successors : int = 10) -> nx.MultiDiGraph:
 
         ''' 
             variant on approach 1: use same initial approach and then append
@@ -234,7 +237,7 @@ def generate_graph_approach_2(n_nodes, seed=None, min_successors=1, max_successo
 
         return G
 
-def generate_graph_approach_presets(i):
+def generate_graph_approach_presets(i : int) -> nx.MultiDiGraph:
     if i == 0:
         return preset_graph_1()
     if i == 1:
@@ -246,19 +249,66 @@ def generate_graph_approach_presets(i):
 
 
     
-def view_graph(filepath):
+def view_graph(filepath : str) -> None:
     
     graph = pickle.load(open(filepath, "rb"))
     nx.draw(graph, with_labels=True)
     plt.show()
 
-def explore_atlas():
+def explore_atlas() -> None:
 
     ins = [1,3,4,5,3,5,6,7]
     outs = [1,3,4,5,3,5,7,6]
     graph = nx.random_k_out_graph(20, 5, 1)
     nx.draw(graph, with_labels=True)
     plt.show()
+
+def make_simple_graph(i : int) -> None:
+
+    base = 'fuzzing/cil/cil_test_210723'
+    graph_path = f'{base}/graphs'
+
+    G = generate_graph_approach_presets(i)
+    pickle.dump(G, open(f'{graph_path}/graph_test.p', "wb"))
+
+def list_graph(filepath : str) -> None:
+
+    graph = pickle.load(open(filepath, "rb"))
+
+    print("all edges")
+    print(graph.edges())
+    print("edges from node 3")
+    print(graph.edges(3))
+
+def generate_graphs(graph_filepath : str,
+                    n_graphs : int,
+                    min_graph_size : int,
+                    max_graph_size : int,
+                    min_successors : int, 
+                    max_successors : int, 
+                    graph_generation_approach : int, 
+                    n_annotations : int = 0,
+                    seed : float = None):
+    '''
+        Function generates a set of graphs based on the given
+        parameters and saves them in the given filepath
+    '''
+
+    rand = Random()
+
+    rand.seed(seed)
+
+    for i in range(n_graphs):
+
+        graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
+
+        if graph_generation_approach == 1:
+            graph = generate_graph_approach_1(graph_size, add_annotations=True, n_annotations=n_annotations)
+
+        elif graph_generation_approach == 2:
+            graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
+
+        pickle.dump(graph, open(f'{graph_filepath}/graph_{i}.p', "wb"))
 
 def main():
   
@@ -268,26 +318,6 @@ def main():
     nx.draw(G, with_labels=True)
     plt.show()
     pickle.dump(G, open("graphs/graph_test.p", "wb"))
-
-def make_simple_graph(i):
-
-    base = 'fuzzing/cil/cil_test_210723'
-    graph_path = f'{base}/graphs'
-
-    G = generate_graph_approach_presets(i)
-    pickle.dump(G, open(f'{graph_path}/graph_test.p', "wb"))
-
-def list_graph(filepath):
-
-    graph = pickle.load(open(filepath, "rb"))
-
-    print("all edges")
-    print(graph.edges())
-    print("edges from node 3")
-    print(graph.edges(3))
-
-
-    
 
 if __name__=="__main__":
     #explore_atlas()

@@ -3,6 +3,7 @@ import sys
 import random
 from random import Random
 from queue import Queue
+import pickle
 
 class Path():
 
@@ -18,6 +19,31 @@ class CFG():
         self.doomed : list[int] = []
         self.not_doomed : list[int] = []
         self.exit_nodes : list[int] = self.find_exit_nodes()
+
+    def generate_paths(self, n_graphs, n_paths, max_path_length, seed=None):
+
+        for i in range(n_graphs):
+            
+            graph = pickle.load(open(f'{self.graph_filepath}/graph_{i}.p', 'rb'))
+
+            cfg = CFG(graph)
+
+            if cfg.is_valid():
+
+                for j in range(n_paths):
+
+                    print(f'new path for graph {i}, path {j}')
+
+                    path = cfg.find_path(max_path_length, seed)
+
+                    with open(f'{self.path_filepath}/input_graph_{i}_path{j}.txt', 'w') as f:
+                        f.write(str(len(path.directions))+'\n')
+                        f.write(str(len(path.expected_output))+'\n')
+                        f.write(str(self.spaces(path.directions))+'\n')
+                        f.write(str(self.spaces(path.expected_output)))
+
+            else:
+                print("cfg is not valid")
 
     def find_exit_nodes(self) -> list[int]:
         ''' 
