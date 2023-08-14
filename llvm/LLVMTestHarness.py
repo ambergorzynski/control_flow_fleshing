@@ -24,11 +24,11 @@ def main():
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
     parser.add_argument("-c", type=str, default="default",
-                        help="Specifies which compiler to use")
+                        help="specifies which compiler to use [NOT IN USE]")
     parser.add_argument("-dir", type=str, default="unknown",
-                        help="Specifies whether directions array is known or unknown at compile time")
+                        help="specifies whether directions array is known or unknown at compile time")
     parser.add_argument("-opt", type=str, default="random_level",
-                        help="Specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
+                        help="specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
 
     args = parser.parse_args()
 

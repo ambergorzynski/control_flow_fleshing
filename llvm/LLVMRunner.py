@@ -116,7 +116,7 @@ class LLVMRunner():
 
                 optimisations_str = self.parse_opts()
                 print(f'optimisation: {optimisations_str}')
-                
+
                 self.compile_test(f'run_cfg_{i}', optimisations_str)
                 
                 for j in range(self.params.n_paths):
@@ -164,7 +164,7 @@ class LLVMRunner():
 
     def execute(self, test_name, path_name):
         
-        cmd = [f'./{self.filepaths.output_filepath}/{test_name}_out {self.filepaths.program_filepath}/{path_name}.txt {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
+        cmd = [f'./{self.filepaths.output_filepath}/{test_name}_out {self.filepaths.path_filepath}/{path_name}.txt {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
         result = subprocess.run(cmd, shell=True)    
 
     def parse_opts(self) -> str:
@@ -173,9 +173,7 @@ class LLVMRunner():
             
             #TODO: pass n_optimisations instead of just setting to 1; issues with sequencing of optimisations
             optimisations_index = [random.randint(0, len(self.cfg_preset_optimisations) - 1) for i in range(1)]
-            
-            print(f'optimisation indices: {optimisations_index}')
-            
+                        
             opt_list = [self.cfg_preset_optimisations[i] for i in optimisations_index]
 
             return ','.join(opt_list)
