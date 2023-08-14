@@ -1,5 +1,14 @@
+import argparse
+import sys
 from datetime import datetime
+
+#TODO: convert graph generator etc to package
+
+sys.path.append('../control_flow_fleshing')
+
 from GraphGenerator import *
+from CFG import *
+
 
 class FilePaths():
 
@@ -9,16 +18,18 @@ class FilePaths():
 
     def __init__(self,
                  base : str,
-                 graph_path : str,
-                 program_path : str,
-                 output_path : str,
+                 graph_filepath : str,
+                 program_filepath : str,
+                 path_filepath : str,
+                 output_filepath : str,
                  results_name : str,
                  bug_results_name : str):
         
         self.base : str = base
-        self.graph_path : str = graph_path
-        self.program_path : str = program_path
-        self.output_path : str = output_path
+        self.graph_filepath : str = graph_filepath
+        self.program_filepath : str = program_filepath
+        self.path_filepath : str = path_filepath
+        self.output_filepath : str = output_filepath
         self.results_name : str = results_name
         self.bug_results_name : str = bug_results_name
 
@@ -48,13 +59,28 @@ class FuzzingParams():
         self.max_path_length : int = max_path_length
         self.n_optimisations : int = n_optimisations
 
+def main():
 
+    # parse args
+    parser = argparse.ArgumentParser()
 
-def llvm_test(n_tests, folder):
+    parser.add_argument("n_graphs", type=int)
+    parser.add_argument("n_paths", type=int)
+    parser.add_argument("folder", type=str)
+    parser.add_argument("-c", type=str, default="llvm",
+                        help="Specifies which compiler to use")
+    parser.add_argument("-dir", type=str, default="unknown",
+                        help="Specifies whether directions array is known or unknown at compile time")
+    parser.add_argument("-opt", type=str, default="random_level",
+                        help="Specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
 
+    args = parser.parse_args()
+
+    #TODO: add argument validator
+    
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'llvm/fuzzing/{folder}'
+    basePath = f'llvm/fuzzing/{args.folder}'
     
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
@@ -64,8 +90,8 @@ def llvm_test(n_tests, folder):
                             results_name = f'results_{time}',
                             bad_results_name = f'bad_results_{time}')
 
-    params = FuzzingParams(n_graphs = n_tests,
-                            n_paths = 1,
+    params = FuzzingParams(n_graphs = args.n_graphs,
+                            n_paths = args.n_paths,
                             min_graph_size = 10,
                             max_graph_size = 15,
                             min_successors = 1,
@@ -86,13 +112,27 @@ def llvm_test(n_tests, folder):
                     seed = None)
 
     # Step 2 : generate paths for each graph
+    for i in range(params.n_graphs):
+        generate_path(graph_filepath = filepaths.graph_filepath, 
+                        output_filepath = filepaths.output_filepath,
+                        graph_name = f'graph_{i}.p', 
+                        n_paths = params.n_paths, 
+                        max_path_length = params.max_path_length, 
+                        seed = None)
+
+
+    # Step 3 : flesh graphs
+
+    '''
+        NOTES - fleshing depends on program generation method
+    '''
+    if(args.dir == 'known'):
+        flesh_graph()
     
-
-    # Step 2 : flesh graphs
-    fuzzer.flesh_graphs(n_graphs)
-
-    # Step 3 : generate paths for each graph
-    fuzzer.generate_paths(n_graphs, n_paths, max_path_length)
+    elif(args.dir == 'unknown'):
+        pass
 
     # Step 4 : run tests
-    fuzzer.run_tests_llvm(n_graphs, n_paths, n_optimisations)
+
+if __name__ == "__main__":
+    main()
