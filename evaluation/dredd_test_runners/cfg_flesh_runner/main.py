@@ -7,7 +7,8 @@ import random
 import tempfile
 import time
 
-from dredd_test_runners.csmith_runner.prepare_csmith_program import prepare_csmith_program
+#TODO: replace with cfg fleshed test program
+#from dredd_test_runners.csmith_runner.prepare_csmith_program import prepare_csmith_program 
 from dredd_test_runners.common.run_process_with_timeout import ProcessResult, run_process_with_timeout
 from dredd_test_runners.common.run_test_with_mutants import run_test_with_mutants, KillStatus
 from dredd_test_runners.common.mutation_tree import MutationTree
@@ -97,7 +98,7 @@ def main():
 
     if args.seed is not None:
         random.seed(args.seed)
-
+'''
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
@@ -289,6 +290,6 @@ def main():
                            "skipped_mutants": already_killed_by_other_tests,
                            "survived_mutants": covered_but_not_killed_by_this_test}, outfile)
 
-
+'''
 if __name__ == '__main__':
     main()
