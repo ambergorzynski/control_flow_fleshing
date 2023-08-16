@@ -7,6 +7,7 @@ class FilePaths():
     def __init__(self,
                  base : str,
                  graph_filepath : str,
+                 src_filepath : str,
                  program_filepath : str,
                  path_filepath : str,
                  output_filepath : str,
@@ -15,6 +16,7 @@ class FilePaths():
         
         self.base : str = base
         self.graph_filepath : str = graph_filepath
+        self.src_filepath : str = src_filepath
         self.program_filepath : str = program_filepath
         self.path_filepath : str = path_filepath
         self.output_filepath : str = output_filepath

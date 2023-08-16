@@ -24,37 +24,36 @@ def main():
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
     parser.add_argument("-c", type=str, default="default",
-                        help="specifies which compiler to use [NOT IN USE]")
+                        help="specifies which compiler to use: 'eclipse', 'graalvm' [NOT IN USE]")
     parser.add_argument("-dir", type=str, default="unknown",
-                        help="specifies whether directions array is known or unknown at compile time")
-    parser.add_argument("-opt", type=str, default="random_level",
-                        help="specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
-
+                        help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
+    parser.add_argument("-ref", type=str, default="off",
+                        help="specifies whether to use dynamic class loading of each test case in the wrapper (off = classes are static, on = test cases are dynamically loaded)")
     args = parser.parse_args()
 
     #TODO: add argument validator
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'llvm/fuzzing/{args.folder}'
+    basePath = f'javabc/fuzzing/{args.folder}'
     
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
-                            program_filepath = f'{basePath}/llvm',
-                            path_filepath = f'{basePath}/input',
-                            output_filepath = f'{basePath}/running',
+                            src_filepath = f'{basePath}/src',
+                            program_filepath= f'{basePath}/src/testing',
+                            path_filepath = f'{basePath}/src/paths',
+                            output_filepath = f'{basePath}/output',
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}')
 
     params = FuzzingParams(n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
                             min_graph_size = 10,
-                            max_graph_size = 15,
+                            max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 3,
                             graph_approach = 2, # can be 1 or 2
-                            max_path_length = 900,
-                            n_optimisations = 1)
+                            max_path_length = 900)
     
     # Setup
     create_folders(args.folder)
@@ -82,11 +81,13 @@ def main():
 
 
     # Step 3 : flesh graphs
-    program_generator = LLVMProgramGenerator()
+    program_generator = JavaBCProgramGenerator()
 
     # directions are known at compile time - means we flesh n_graphs*m_paths programs
     if(args.dir == 'known'):
         
+        # TODO: create java bc program generator with known directions array
+        '''
         for i in range(params.n_graphs):
         
             # load graph                    
@@ -101,6 +102,7 @@ def main():
                 program_generator.fleshout_static(cfg, directions)
 
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
+        '''
 
     # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
     elif(args.dir == 'unknown'):
@@ -111,13 +113,13 @@ def main():
 
                 cfg = CFG(graph)
 
-                program_generator.fleshout(cfg, i)
+                program_generator.fleshout_no_reflection(cfg, i)
 
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.ll')
 
 
     # Step 4 : run tests
-    test = LLVMRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
+    test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
     
     test.run()
 
@@ -137,11 +139,12 @@ def create_folders(folder_name : str) -> None:
 
     print('Setting up folders...')
 
-    cmd = f'mkdir llvm/fuzzing/{folder_name}'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/graphs'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/input'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/llvm'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/running'
+    cmd = f'mkdir javabc/fuzzing/{folder_name}'
+    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/graphs'
+    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src'
+    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/output'
+    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/paths'
+    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/testing'
 
     result = subprocess.run(cmd, shell=True)
 
