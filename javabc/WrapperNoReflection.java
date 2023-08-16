@@ -16,6 +16,8 @@ class Wrapper{
 		String badOutputFilename = args[2];
 		int nFunctionRepeats = Integer.parseInt(args[3]);
 
+		boolean result = true;
+
 		// get direction size and expected output size from file
 		Scanner reader = new Scanner(new File(inputFilename));
 
@@ -35,11 +37,21 @@ class Wrapper{
 
 		// repeat function to induce JIT
 		for(int i = 0; i < nFunctionRepeats; i++){
+
 			test.testCase(dir, actualOutput);
+
+			// compare each expected and actual and write out if any are inconsistent
+			result = compare(expectedOutput, actualOutput, outputSize);
+
+			// record bad output in separate file
+			if (!result){
+				recordOutput(badOutputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
+			}
+
 		}
 
-		// compare expected and actual
-		boolean result = compare(expectedOutput, actualOutput, outputSize);
+		// compare final expected and actual
+		result = compare(expectedOutput, actualOutput, outputSize);
 
 		// record all output
 		recordOutput(outputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
