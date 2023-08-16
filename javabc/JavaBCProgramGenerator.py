@@ -3,6 +3,10 @@ from ProgramGenerator import ProgramGenerator
 
 class JavaBCProgramGenerator(ProgramGenerator):
 
+    def __init__(self, dirs_known_at_compile : bool = False):
+        self.dirs_known_at_compile : bool = dirs_known_at_compile
+
+
     def fleshout_no_reflection(self, cfg : CFG, prog_number=None):
 
         ''' 
@@ -61,6 +65,52 @@ class JavaBCProgramGenerator(ProgramGenerator):
     .limit locals 5
 
 block_0:
+    ; set up counter in local variable 3
+    iconst_0
+    istore_3
+
+    ; set up directions counter in local variable 4
+    iconst_0
+    istore 4    
+'''
+
+        return code       
+    
+    def flesh_program_start_known_dirs(self, directions : list(int)) -> str:
+        code = '''
+.class public TestCase
+.super java/lang/Object
+
+; default constructor
+.method public <init>()V
+    aload_0
+    invokespecial java/lang/Object/<init>()V
+    return
+.end method
+
+.method public testCase([I[I)V
+    .limit stack 5
+    .limit locals 6
+
+block_0:
+    ; set up directions array in local variable 5
+    bipush {dir_length}
+    newarray int
+
+'''.format(dir_length=len(directions))
+        # fill out directions array
+        for i, d in enumerate(directions):
+            code += '''
+    dup
+    bipush {index}
+    bipush {direction}
+    iastore
+'''.format(index = i, direction = d)
+
+        code += '''
+    ; store array ref in local variable 5
+    astore 5
+
     ; set up counter in local variable 3
     iconst_0
     istore_3
@@ -153,9 +203,15 @@ block_{i}: '''.format(i = n)
             note this does not deal with switch statements where
             there are > 2 successor nodes
         '''
+
+        # directions array stored in different local variable 
+        # depending on whether they are known at compile time or not
+        #TODO: switch dir and output in passing function so dirs is always var 2
+        dir_local_var = 5 if self.dirs_known_at_compile else 1
+
         code = '''
     ; get directions for node
-    aload_1
+    aload_{dir_local_var}
     iload 4
     iaload
 
@@ -165,7 +221,7 @@ block_{i}: '''.format(i = n)
     ; branch
     ifeq block_{successor_true}
     goto block_{successor_false}
-            '''.format(i = n,
+            '''.format(dir_local_var = dir_local_var
                        successor_false = list(self.cfg.graph.adj[n])[1],
                        successor_true = list(self.cfg.graph.adj[n])[0])
         
@@ -176,9 +232,12 @@ block_{i}: '''.format(i = n)
             returns code for node with > 2 successors
             e.g. a switch statement
         '''
+
+        dir_local_var = 5 if self.dirs_known_at_compile else 1
+
         code = '''
     ; get directions for node
-    aload_1
+    aload_{dir_local_var}
     iload 4
     iaload
 
@@ -186,7 +245,7 @@ block_{i}: '''.format(i = n)
     iinc 4 1
 
     ; switch
-    lookupswitch'''
+    lookupswitch'''.foramt(dir_local_var=dir_local_var)
         
         for j in range(n_successors):
              code += '''
