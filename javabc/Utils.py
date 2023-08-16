@@ -36,7 +36,8 @@ class FuzzingParams():
                 min_successors : int,
                 max_successors : int,
                 graph_approach : int, # can be 1 or 2
-                max_path_length : int):
+                max_path_length : int,
+                n_function_repeats : int):
         
         self.n_graphs : int = n_graphs
         self.n_paths : int = n_paths
@@ -46,3 +47,4 @@ class FuzzingParams():
         self.max_successors : int = max_successors
         self.graph_approach : int = graph_approach # can be 1 or 2
         self.max_path_length : int = max_path_length
+        self.n_function_repeats : int = n_function_repeats

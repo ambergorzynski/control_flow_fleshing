@@ -27,8 +27,6 @@ def main():
                         help="specifies which compiler to use: 'eclipse', 'graalvm' [NOT IN USE]")
     parser.add_argument("-dir", type=str, default="unknown",
                         help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
-    parser.add_argument("-ref", type=str, default="off",
-                        help="specifies whether to use dynamic class loading of each test case in the wrapper (off = classes are static, on = test cases are dynamically loaded)")
     args = parser.parse_args()
 
     #TODO: add argument validator
@@ -53,7 +51,8 @@ def main():
                             min_successors = 1,
                             max_successors = 3,
                             graph_approach = 2, # can be 1 or 2
-                            max_path_length = 900)
+                            max_path_length = 900,
+                            n_function_repeats=1024)
     
     # Setup
     create_folders(args.folder)
@@ -109,17 +108,22 @@ def main():
 
         for i in range(params.n_graphs):
                 
-                graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
+            graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
 
-                cfg = CFG(graph)
+            cfg = CFG(graph)
 
-                program_generator.fleshout_no_reflection(cfg, i)
+            program_generator.fleshout_no_reflection(cfg, i)
 
-                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.ll')
+            # make directory for test case 
+            subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}', shell=True)
+
+            # save in separate folder for classpath
+            program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}/run_cfg_{i}.j')
+    
 
 
     # Step 4 : run tests
-    test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
+    test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir)
     
     test.run()
 
@@ -146,6 +150,10 @@ def create_folders(folder_name : str) -> None:
     cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/paths'
     cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/testing'
 
+    result = subprocess.run(cmd, shell=True)
+
+    # copy the wrapper and test case interface to the relevant folder
+    cmd = [f'''cp javabc/WrapperNoReflection.java javabc/fuzzing/{folder_name}/src/testing/WrapperNoReflection.java''']
     result = subprocess.run(cmd, shell=True)
 
     
