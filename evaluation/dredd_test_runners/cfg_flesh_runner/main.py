@@ -1,5 +1,6 @@
 import argparse
 import shutil
+import subprocess
 
 import json
 import os
@@ -77,6 +78,10 @@ def main():
                         help="Cease testing if a kill has not occurred for this length of time. Default is 24 hours. "
                              "To test indefinitely, pass 0.",
                         type=int)
+    parser.add_argument("--optimisations",
+                        default='default<O3>',
+                        help="Invoke specific LLVM optimisation passes. Default is level O3.",
+                        type=str)
     args = parser.parse_args()
 
     assert args.mutation_info_file != args.mutation_info_file_for_mutant_coverage_tracking
@@ -98,9 +103,9 @@ def main():
 
     if args.seed is not None:
         random.seed(args.seed)
-'''
+
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
-        csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
+        fleshing_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.ll')
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
@@ -122,27 +127,35 @@ def main():
                             time_of_last_kill=time_of_last_kill):
             if dredd_covered_mutants_path.exists():
                 os.remove(dredd_covered_mutants_path)
-            if csmith_generated_program.exists():
-                os.remove(csmith_generated_program)
+            if fleshing_generated_program.exists():
+                os.remove(fleshing_generated_program)
             if generated_program_exe_compiled_with_no_mutants.exists():
                 os.remove(generated_program_exe_compiled_with_no_mutants)
             if generated_program_exe_compiled_with_mutant_tracking.exists():
                 os.remove(generated_program_exe_compiled_with_mutant_tracking)
 
-            # Generate a Csmith program
-            csmith_seed = random.randint(0, 2 ** 32 - 1)
+            # TODO:Generate a CFG fleshing program here. For now, just cp a test .ll program directly
+            # into the folder fleshing_generated_program
+            cmd = [f'''cp test.ll {fleshing_generated_program}''']
+            subprocess.run(cmd, shell=True)
+
+            
+            fleshing_seed = random.randint(0, 2 ** 32 - 1)
+            '''
             csmith_cmd = [str(args.csmith_root / "build" / "src" / "csmith"), "--seed", str(csmith_seed), "-o",
                           str(csmith_generated_program)]
+            
 
             if run_process_with_timeout(cmd=csmith_cmd, timeout_seconds=args.generator_timeout) is None:
                 print(f"Csmith timed out (seed {csmith_seed})")
                 continue
 
+            
             # Inline some immediate header files into the Csmith-generated program
             prepare_csmith_program(original_program=csmith_generated_program,
                                    prepared_program=csmith_generated_program,
                                    csmith_root=args.csmith_root)
-
+            
             compiler_args = ["-O3",
                              "-I",
                              args.csmith_root / "runtime",
@@ -150,6 +163,12 @@ def main():
                              args.csmith_root / "build" / "runtime",
                              csmith_generated_program]
 
+            '''
+
+            # Don't compile program without mutation for now (since we have test oracle baked in)
+            # But might consider it later to compare the hash
+
+            '''
             # Compile the program without mutation.
             regular_compile_cmd = [args.mutated_compiler_executable]\
                 + compiler_args\
@@ -171,6 +190,7 @@ def main():
                 continue
 
             regular_hash = hash_file(str(generated_program_exe_compiled_with_no_mutants))
+            
 
             run_time_start: float = time.time()
             regular_execution_result: ProcessResult = run_process_with_timeout(
@@ -185,35 +205,50 @@ def main():
                 print("Execution of generated program failed without mutants.")
                 continue
 
+            '''
+
+            # Args for opt tool; this is what we are mutating and testing
+            compiler_args = [f'-passes={args.optimisations}',
+                    "-S",
+                    fleshing_generated_program]
+
+
             # Compile the program with the mutant tracking compiler.
             tracking_environment = os.environ.copy()
             tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
             tracking_compile_cmd = [args.mutant_tracking_compiler_executable]\
                 + compiler_args\
                 + ["-o", generated_program_exe_compiled_with_mutant_tracking]
+            
+            
             if run_process_with_timeout(cmd=tracking_compile_cmd, timeout_seconds=args.compile_timeout,
                                         env=tracking_environment) is None:
                 print("Mutant tracking compilation timed out.")
                 continue
-
-            # Try to create a directory for this Csmith test. It is very unlikely that it already exists, but this could
+            
+            
+            # Try to create a directory for this test. It is very unlikely that it already exists, but this could
             # happen if two test workers pick the same seed. If that happens, this worker will skip the test.
-            csmith_test_name: str = "csmith_" + str(csmith_seed)
-            test_output_directory: Path = Path("work/tests/" + csmith_test_name)
+            fleshing_test_name: str = "fleshing_" + str(fleshing_seed)
+            test_output_directory: Path = Path("work/tests/" + fleshing_test_name)
             try:
                 test_output_directory.mkdir()
+                print(f'Directory created at: {test_output_directory}')
             except FileExistsError:
-                print(f"Skipping seed {csmith_seed} as a directory for it already exists")
+                print(f"Skipping seed {fleshing_seed} as a directory for it already exists")
                 continue
-            shutil.copy(src=csmith_generated_program, dst=test_output_directory / "prog.c")
+            shutil.copy(src=fleshing_generated_program, dst=test_output_directory / "prog.ll")
 
+            
+            
             # Load file contents into a list. We go from list to set to list to eliminate duplicates.
             covered_by_this_test: List[int] = list(set([int(line.strip()) for line in
                                                         open(dredd_covered_mutants_path, 'r').readlines()]))
             covered_by_this_test.sort()
             candidate_mutants_for_this_test: List[int] = ([m for m in covered_by_this_test if m not in killed_mutants])
             print("Number of mutants to try: " + str(len(candidate_mutants_for_this_test)))
-
+            break
+            '''
             already_killed_by_other_tests: List[int] = ([m for m in covered_by_this_test if m in killed_mutants])
             killed_by_this_test: List[int] = []
             covered_but_not_killed_by_this_test: List[int] = []
