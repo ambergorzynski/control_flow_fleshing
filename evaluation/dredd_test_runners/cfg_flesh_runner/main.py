@@ -109,6 +109,8 @@ def main():
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
+        mutant_program : Path = Path(temp_dir_for_generated_code, '__mutant.ll')
+        mutant_obj : Path = Path(temp_dir_for_generated_code, '__mutant.o')
         mutant_exe = Path(temp_dir_for_generated_code, '__mutant.exe')
 
         killed_mutants: Set[int] = set()
@@ -247,8 +249,8 @@ def main():
             covered_by_this_test.sort()
             candidate_mutants_for_this_test: List[int] = ([m for m in covered_by_this_test if m not in killed_mutants])
             print("Number of mutants to try: " + str(len(candidate_mutants_for_this_test)))
-            break
-            '''
+            
+            
             already_killed_by_other_tests: List[int] = ([m for m in covered_by_this_test if m in killed_mutants])
             killed_by_this_test: List[int] = []
             covered_but_not_killed_by_this_test: List[int] = []
@@ -262,12 +264,16 @@ def main():
                     break
 
                 mutant_path = Path("work/killed_mutants/" + str(mutant))
+                
                 if mutant_path.exists():
                     print("Skipping mutant " + str(mutant) + " as it is noted as already killed.")
                     unkilled_mutants.remove(mutant)
                     killed_mutants.add(mutant)
                     already_killed_by_other_tests.append(mutant)
                     continue
+            
+                print(compiler_args)
+                break
                 print("Trying mutant " + str(mutant))
                 mutant_result = run_test_with_mutants(mutants=[mutant],
                                                       compiler_path=str(args.mutated_compiler_executable),
@@ -276,8 +282,14 @@ def main():
                                                       run_time=run_time,
                                                       binary_hash_non_mutated=regular_hash,
                                                       execution_result_non_mutated=regular_execution_result,
+                                                      mutant_program_path = mutant_program,
+                                                      mutant_obj_path = mutant_obj,
                                                       mutant_exe_path=mutant_exe)
                 print("Mutant result: " + str(mutant_result))
+
+                break
+            break
+        '''
                 if mutant_result == KillStatus.SURVIVED_IDENTICAL \
                         or mutant_result == KillStatus.SURVIVED_BINARY_DIFFERENCE:
                     covered_but_not_killed_by_this_test.append(mutant)

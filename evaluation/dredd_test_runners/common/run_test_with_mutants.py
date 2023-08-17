@@ -25,12 +25,18 @@ def run_test_with_mutants(mutants: List[int],
                           run_time: float,
                           binary_hash_non_mutated: str,
                           execution_result_non_mutated: ProcessResult,
+                          mutant_program_path : Path,
+                          mutant_obj_path : Path,
                           mutant_exe_path: Path) -> KillStatus:
+
+
+    # Use opt with specific mutant enabled to go from prog.ll -> optimised prog.ll
     mutated_environment = os.environ.copy()
     mutated_environment["DREDD_ENABLED_MUTATION"] = ','.join([str(m) for m in mutants])
     if mutant_exe_path.exists():
         os.remove(mutant_exe_path)
     mutated_cmd = [compiler_path] + compiler_args + ['-o', str(mutant_exe_path)]
+
     mutated_result: ProcessResult = run_process_with_timeout(cmd=mutated_cmd,
                                                              timeout_seconds=int(max(1.0, 5.0 * compile_time)),
                                                              env=mutated_environment)
@@ -42,7 +48,12 @@ def run_test_with_mutants(mutants: List[int],
 
     if binary_hash_non_mutated == hash_file(str(mutant_exe_path)):
         return KillStatus.SURVIVED_IDENTICAL
+    
+    # Go from optimised prog.ll -> prog.exe by compiling prog.ll and linking with wrapper
+    #TODO: create function to perform the rest of the compilation process
 
+    # Run the executable and check results
+    # TODO: check whether actual/expected output are the same within run_process_with_timeout
     mutated_execution_result: ProcessResult = run_process_with_timeout(cmd=[str(mutant_exe_path)],
                                                                        timeout_seconds=int(max(1.0, 5.0 * run_time)))
     if mutated_execution_result is None:
