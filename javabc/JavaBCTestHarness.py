@@ -52,7 +52,7 @@ def main():
                             max_successors = 3,
                             graph_approach = 2, # can be 1 or 2
                             max_path_length = 900,
-                            n_function_repeats=1024)
+                            n_function_repeats=5000)
     
     # Setup
     create_folders(args.folder)
