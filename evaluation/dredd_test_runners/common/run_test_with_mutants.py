@@ -53,9 +53,35 @@ def run_test_with_mutants(mutants: List[int],
     '''
     # Go from optimised prog.ll -> prog.exe by compiling prog.ll and linking with wrapper
     #TODO: create function to perform the rest of the compilation process
-
     
+    # prog.ll -> prog.o
+    cmd = ['/Users/ambergorzynski/dev/llvm-project-mutated/build/bin/llc', 
+                 '-filetype=obj',
+                 "-o", 
+                 mutant_obj_path]
 
+    mutated_obj_result : ProcessResult = run_process_with_timeout(cmd=cmd, timeout_seconds=5)
+
+    # link prog.o and wrapper.o -> prog.exe
+    cmd = ["clang++", 
+                 "Wrapper.o",
+                 mutant_obj_path, 
+                 "-o",
+                 mutant_exe_path]
+    
+    if mutated_obj_result is None:
+        return KillStatus.KILL_COMPILER_TIMEOUT
+
+    if mutated_obj_result.returncode != 0:
+        return KillStatus.KILL_COMPILER_CRASH
+    
+    mutated_link_result : ProcessResult = run_process_with_timeout(cmd = cmd, timeout_seconds=5)
+
+    if mutated_link_result is None:
+        return KillStatus.KILL_COMPILER_TIMEOUT
+
+    if mutated_link_result.returncode != 0:
+        return KillStatus.KILL_COMPILER_CRASH
 
     '''
 
