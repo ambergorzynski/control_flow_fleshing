@@ -61,7 +61,7 @@ def run_test_with_mutants(mutants: List[int],
                  "-o", 
                  mutant_obj_path]
 
-    mutated_obj_result : ProcessResult = run_process_with_timeout(cmd=cmd, timeout_seconds=1)
+    mutated_obj_result : ProcessResult = run_process_with_timeout(cmd=cmd, timeout_seconds=int(max(1.0, 5.0 * compile_time)))
 
     if mutated_obj_result is None:
         return KillStatus.KILL_COMPILER_TIMEOUT
@@ -77,7 +77,7 @@ def run_test_with_mutants(mutants: List[int],
                  "-o",
                  mutant_exe_path]
 
-    mutated_link_result : ProcessResult = run_process_with_timeout(cmd = cmd, timeout_seconds=1)
+    mutated_link_result : ProcessResult = run_process_with_timeout(cmd = cmd, timeout_seconds=int(max(1.0, 5.0 * compile_time)))
 
     if mutated_link_result is None:
         return KillStatus.KILL_COMPILER_TIMEOUT
@@ -90,9 +90,9 @@ def run_test_with_mutants(mutants: List[int],
     # TODO: check whether actual/expected output are the same within run_process_with_timeout
     print('Executing...')
     cmd = [mutant_exe_path, 
-                 "path.txt",
-                 "results.txt",
-                 "bugs.txt"]
+                 "path_static.txt",
+                 "results_n.txt",
+                 "bugs_n.txt"]
         
     mutated_execution_result: ProcessResult = run_process_with_timeout(cmd=cmd,
                                                                        timeout_seconds=int(max(1.0, 5.0 * run_time)))

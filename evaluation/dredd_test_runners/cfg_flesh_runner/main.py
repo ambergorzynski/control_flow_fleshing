@@ -143,7 +143,7 @@ def main():
 
             # TODO:Generate a CFG fleshing program here. For now, just cp a test .ll program directly
             # into the folder fleshing_generated_program
-            cmd = [f'''cp test.ll {fleshing_generated_program}''']
+            cmd = [f'''cp test_static.ll {fleshing_generated_program}''']
             subprocess.run(cmd, shell=True)
 
             
@@ -232,9 +232,9 @@ def main():
 
             # execute unmutated program
             execution_cmd = [generated_program_exe_compiled_with_no_mutants, 
-                 "path.txt",
-                 "results.txt",
-                 "bugs.txt"]
+                 "path_static.txt",
+                 "results_n.txt",
+                 "bugs_n.txt"]
             
             run_time_start: float = time.time()
             regular_execution_result: ProcessResult = run_process_with_timeout(
@@ -315,12 +315,7 @@ def main():
                     killed_mutants.add(mutant)
                     already_killed_by_other_tests.append(mutant)
                     continue
-            
-                #TODO: placeholders for compilation without mutation
-                compile_time : float = 1
-                run_time : float = 1
-                regular_hash : str = None
-                regular_execution_result = None
+        
 
                 print("Trying mutant " + str(mutant))
                 mutant_result = run_test_with_mutants(mutants=[mutant],
