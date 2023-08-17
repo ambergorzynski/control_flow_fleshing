@@ -86,7 +86,7 @@ def main():
     if(args.dir == 'known'):
         
         # TODO: create java bc program generator with known directions array
-        '''
+        
         for i in range(params.n_graphs):
         
             # load graph                    
@@ -98,10 +98,13 @@ def main():
 
                 directions = read_in_dirs(i, p, filepaths)
 
-                program_generator.fleshout_static(cfg, directions)
+                program_generator.fleshout_dirs_known(cfg, directions)
 
-                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
-        '''
+                # make directory for test case 
+                subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}_path{p}', shell=True)
+
+                program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}_path{p}/run_cfg_{i}_path_{p}.ll')
+        
 
     # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
     elif(args.dir == 'unknown'):
@@ -121,11 +124,13 @@ def main():
             program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}/run_cfg_{i}.j')
     
 
+    '''
 
     # Step 4 : run tests
     test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir)
     
     test.run()
+    '''
 
 
 def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:

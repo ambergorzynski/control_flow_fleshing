@@ -47,6 +47,45 @@ class JavaBCProgramGenerator(ProgramGenerator):
 
         return self.fleshed_graph
 
+    def fleshout_dirs_known(self, cfg : CFG, directions : list[int]):
+
+        ''' 
+            converts control flow graph to LLVM IR 
+            returns str containing LLVM IR program
+            and saves as member variable
+        '''
+
+        # clear previously stored graph
+        self.fleshed_graph = None
+        self.cfg = cfg
+
+        # all programs have common start
+        self.fleshed_graph = self.flesh_program_start_known_dirs(directions)
+
+        for n in self.cfg.graph:
+
+            # store node label in output array for every node visited
+            self.fleshed_graph += self.flesh_start_of_node(n)
+
+            # write remaining block code based on number of successor nodes
+            n_successors = self.cfg.successors(n)
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n)
+
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+
+        # add closing phrase to program
+        self.fleshed_graph += self.flesh_end()
+
+        return self.fleshed_graph
 
     def flesh_program_start_no_reflection(self) -> str:
         code = '''
@@ -76,7 +115,8 @@ block_0:
 
         return code       
     
-    def flesh_program_start_known_dirs(self, directions : list(int)) -> str:
+    def flesh_program_start_known_dirs(self, directions : list[int]) -> str:
+
         code = '''
 .class public TestCase
 .super java/lang/Object
@@ -221,7 +261,7 @@ block_{i}: '''.format(i = n)
     ; branch
     ifeq block_{successor_true}
     goto block_{successor_false}
-            '''.format(dir_local_var = dir_local_var
+            '''.format(dir_local_var = dir_local_var,
                        successor_false = list(self.cfg.graph.adj[n])[1],
                        successor_true = list(self.cfg.graph.adj[n])[0])
         
@@ -245,7 +285,7 @@ block_{i}: '''.format(i = n)
     iinc 4 1
 
     ; switch
-    lookupswitch'''.foramt(dir_local_var=dir_local_var)
+    lookupswitch'''.format(dir_local_var=dir_local_var)
         
         for j in range(n_successors):
              code += '''
