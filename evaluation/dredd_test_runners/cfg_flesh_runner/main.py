@@ -272,8 +272,12 @@ def main():
                     already_killed_by_other_tests.append(mutant)
                     continue
             
-                print(compiler_args)
-                break
+                #TODO: placeholders for compilation without mutation
+                compile_time : float = 1
+                run_time : float = 1
+                regular_hash : str = None
+                regular_execution_result = None
+
                 print("Trying mutant " + str(mutant))
                 mutant_result = run_test_with_mutants(mutants=[mutant],
                                                       compiler_path=str(args.mutated_compiler_executable),
@@ -285,6 +289,7 @@ def main():
                                                       mutant_program_path = mutant_program,
                                                       mutant_obj_path = mutant_obj,
                                                       mutant_exe_path=mutant_exe)
+                
                 print("Mutant result: " + str(mutant_result))
 
                 break

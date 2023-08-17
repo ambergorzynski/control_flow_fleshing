@@ -17,17 +17,17 @@ class KillStatus(Enum):
     KILL_DIFFERENT_STDOUT = 7
     KILL_DIFFERENT_STDERR = 8
 
-
+#TODO: added None defaults for args coming from compiling the unmutated test case for now
 def run_test_with_mutants(mutants: List[int],
                           compiler_path: str,
                           compiler_args: List[str],
-                          compile_time: float,
-                          run_time: float,
-                          binary_hash_non_mutated: str,
-                          execution_result_non_mutated: ProcessResult,
                           mutant_program_path : Path,
                           mutant_obj_path : Path,
-                          mutant_exe_path: Path) -> KillStatus:
+                          mutant_exe_path: Path,
+                          compile_time: float = None,
+                          run_time: float = None,
+                          binary_hash_non_mutated: str = None,
+                          execution_result_non_mutated: ProcessResult = None,) -> KillStatus:
 
 
     # Use opt with specific mutant enabled to go from prog.ll -> optimised prog.ll
@@ -35,7 +35,7 @@ def run_test_with_mutants(mutants: List[int],
     mutated_environment["DREDD_ENABLED_MUTATION"] = ','.join([str(m) for m in mutants])
     if mutant_exe_path.exists():
         os.remove(mutant_exe_path)
-    mutated_cmd = [compiler_path] + compiler_args + ['-o', str(mutant_exe_path)]
+    mutated_cmd = [compiler_path] + compiler_args + ['-o', str(mutant_program_path)]
 
     mutated_result: ProcessResult = run_process_with_timeout(cmd=mutated_cmd,
                                                              timeout_seconds=int(max(1.0, 5.0 * compile_time)),
@@ -45,12 +45,19 @@ def run_test_with_mutants(mutants: List[int],
 
     if mutated_result.returncode != 0:
         return KillStatus.KILL_COMPILER_CRASH
-
+    
+    print(mutated_result.returncode)
+    '''
     if binary_hash_non_mutated == hash_file(str(mutant_exe_path)):
         return KillStatus.SURVIVED_IDENTICAL
-    
+    '''
     # Go from optimised prog.ll -> prog.exe by compiling prog.ll and linking with wrapper
     #TODO: create function to perform the rest of the compilation process
+
+    
+
+
+    '''
 
     # Run the executable and check results
     # TODO: check whether actual/expected output are the same within run_process_with_timeout
@@ -69,3 +76,5 @@ def run_test_with_mutants(mutants: List[int],
         return KillStatus.KILL_DIFFERENT_STDERR
 
     return KillStatus.SURVIVED_BINARY_DIFFERENCE
+
+    '''
