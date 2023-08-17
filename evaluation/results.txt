@@ -1,0 +1,15 @@
+path.txt
+	Results: Expected and actual output are the same
+	Expected output: 0 12
+	Actual output:   0 12 -1 -1
+
+path.txt
+	Results: Expected and actual output are the same
+	Expected output: 0 12
+	Actual output:   0 12 -1 -1
+
+path.txt
+	Results: Expected and actual output are the same
+	Expected output: 0 12
+	Actual output:   0 12 -1 -1
+

@@ -45,13 +45,16 @@ def main():
                              "regular mutation info file to ensure that tracked mutants match applied mutants.",
                         type=Path)
     parser.add_argument("mutated_compiler_executable",
-                        help="Path to the executable for the Dredd-mutated compiler.",
+                        help="Path to the executable for the Dredd-mutated compiler opt.",
                         type=Path)
     parser.add_argument("mutant_tracking_compiler_executable",
                         help="Path to the executable for the compiler instrumented to track mutants.",
                         type=Path)
     parser.add_argument("csmith_root", help="Path to a checkout of Csmith, assuming that it has been built under "
                                             "'build' beneath this directory.",
+                        type=Path)
+    parser.add_argument("mutated_llc_executable",
+                        help="Path to the executable for the Dredd-mutated compiler llc.",
                         type=Path)
     parser.add_argument("--generator_timeout",
                         default=20,
@@ -107,6 +110,8 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         fleshing_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.ll')
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
+        unmutated_program : Path = Path(temp_dir_for_generated_code, '__regular.ll')
+        unmutated_obj : Path = Path(temp_dir_for_generated_code, '__regular.o')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
         mutant_program : Path = Path(temp_dir_for_generated_code, '__mutant.ll')
@@ -164,21 +169,41 @@ def main():
                              "-I",
                              args.csmith_root / "build" / "runtime",
                              csmith_generated_program]
-
             '''
 
-            # Don't compile program without mutation for now (since we have test oracle baked in)
-            # But might consider it later to compare the hash
+            
 
-            '''
             # Compile the program without mutation.
+            # Args for opt tool; this is what we are mutating and testing
+            compiler_args = [f'-passes={args.optimisations}',
+                    "-S",
+                    fleshing_generated_program]
+
+            # Run un-mutated opt on .ll program 
             regular_compile_cmd = [args.mutated_compiler_executable]\
                 + compiler_args\
-                + ["-o", generated_program_exe_compiled_with_no_mutants]
-
+                + ["-o", unmutated_program]
+            
             compile_time_start: float = time.time()
-            regular_compile_result: ProcessResult = run_process_with_timeout(cmd=regular_compile_cmd,
+            regular_opt_result: ProcessResult = run_process_with_timeout(cmd=regular_compile_cmd,
                                                                              timeout_seconds=args.compile_timeout)
+            
+            print(f'opt result is: {regular_opt_result.returncode}')
+            subprocess.run(f'cp {unmutated_program} test/unmutated.ll',shell=True)
+
+            
+            regular_llc_cmd = [args.mutated_llc_executable,
+                               "-filetype=obj",
+                               unmutated_program,
+                               "-o", unmutated_obj]
+            
+            regular_compile_result: ProcessResult = run_process_with_timeout(cmd=regular_llc_cmd,
+                                                                             timeout_seconds=args.compile_timeout)
+            
+            print(f'llc result is: {regular_compile_result.returncode}')
+            subprocess.run(f'cp {unmutated_obj} test/unmutated.o',shell=True)
+
+
             compile_time_end: float = time.time()
             compile_time = compile_time_end - compile_time_start
 
@@ -191,14 +216,33 @@ def main():
                 print(f"stderr: {regular_compile_result.stderr.decode('utf-8')}")
                 continue
 
-            regular_hash = hash_file(str(generated_program_exe_compiled_with_no_mutants))
-            
+            regular_hash = hash_file(str(unmutated_program))
 
+            # link unmutated test and wrapper
+            linking_cmd = ["/usr/bin/clang++", 
+                            "Wrapper.o",
+                            unmutated_obj, 
+                            "-o",
+                            generated_program_exe_compiled_with_no_mutants]
+            
+            regular_linking_result: ProcessResult = run_process_with_timeout(
+                cmd=linking_cmd, timeout_seconds=args.run_timeout)
+            
+            print(f'linking result is: {regular_linking_result.returncode}')
+
+            # execute unmutated program
+            execution_cmd = [generated_program_exe_compiled_with_no_mutants, 
+                 "path.txt",
+                 "results.txt",
+                 "bugs.txt"]
+            
             run_time_start: float = time.time()
             regular_execution_result: ProcessResult = run_process_with_timeout(
-                cmd=[str(generated_program_exe_compiled_with_no_mutants)], timeout_seconds=args.run_timeout)
+                cmd=execution_cmd, timeout_seconds=args.run_timeout)
             run_time_end: float = time.time()
             run_time = run_time_end - run_time_start
+
+            print(f'unmutated execution result is: {regular_execution_result.returncode}')
 
             if regular_execution_result is None:
                 print("Runtime timeout.")
@@ -207,7 +251,7 @@ def main():
                 print("Execution of generated program failed without mutants.")
                 continue
 
-            '''
+            
 
             # Args for opt tool; this is what we are mutating and testing
             compiler_args = [f'-passes={args.optimisations}',
@@ -292,8 +336,8 @@ def main():
                 
                 print("Mutant result: " + str(mutant_result))
 
-                break
-            break
+                
+            
         '''
                 if mutant_result == KillStatus.SURVIVED_IDENTICAL \
                         or mutant_result == KillStatus.SURVIVED_BINARY_DIFFERENCE:

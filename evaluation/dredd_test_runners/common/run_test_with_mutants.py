@@ -37,6 +37,7 @@ def run_test_with_mutants(mutants: List[int],
         os.remove(mutant_exe_path)
     mutated_cmd = [compiler_path] + compiler_args + ['-o', str(mutant_program_path)]
 
+    print('Optimising with opt...')
     mutated_result: ProcessResult = run_process_with_timeout(cmd=mutated_cmd,
                                                              timeout_seconds=int(max(1.0, 5.0 * compile_time)),
                                                              env=mutated_environment)
@@ -46,7 +47,6 @@ def run_test_with_mutants(mutants: List[int],
     if mutated_result.returncode != 0:
         return KillStatus.KILL_COMPILER_CRASH
     
-    print(mutated_result.returncode)
     '''
     if binary_hash_non_mutated == hash_file(str(mutant_exe_path)):
         return KillStatus.SURVIVED_IDENTICAL
@@ -55,27 +55,29 @@ def run_test_with_mutants(mutants: List[int],
     #TODO: create function to perform the rest of the compilation process
     
     # prog.ll -> prog.o
+    print('Compiling with llc...')
     cmd = ['/Users/ambergorzynski/dev/llvm-project-mutated/build/bin/llc', 
-                 '-filetype=obj',
+                 "-filetype=obj",
                  "-o", 
                  mutant_obj_path]
 
-    mutated_obj_result : ProcessResult = run_process_with_timeout(cmd=cmd, timeout_seconds=5)
+    mutated_obj_result : ProcessResult = run_process_with_timeout(cmd=cmd, timeout_seconds=1)
 
-    # link prog.o and wrapper.o -> prog.exe
-    cmd = ["clang++", 
-                 "Wrapper.o",
-                 mutant_obj_path, 
-                 "-o",
-                 mutant_exe_path]
-    
     if mutated_obj_result is None:
         return KillStatus.KILL_COMPILER_TIMEOUT
 
     if mutated_obj_result.returncode != 0:
         return KillStatus.KILL_COMPILER_CRASH
-    
-    mutated_link_result : ProcessResult = run_process_with_timeout(cmd = cmd, timeout_seconds=5)
+   
+    # link prog.o and wrapper.o -> prog.exe
+    print('Linking...')
+    cmd = ["clang++", 
+                 "Wrapper.o",
+                 mutant_obj_path, 
+                 "-o",
+                 mutant_exe_path]
+
+    mutated_link_result : ProcessResult = run_process_with_timeout(cmd = cmd, timeout_seconds=1)
 
     if mutated_link_result is None:
         return KillStatus.KILL_COMPILER_TIMEOUT
@@ -83,11 +85,16 @@ def run_test_with_mutants(mutants: List[int],
     if mutated_link_result.returncode != 0:
         return KillStatus.KILL_COMPILER_CRASH
 
-    '''
 
     # Run the executable and check results
     # TODO: check whether actual/expected output are the same within run_process_with_timeout
-    mutated_execution_result: ProcessResult = run_process_with_timeout(cmd=[str(mutant_exe_path)],
+    print('Executing...')
+    cmd = [mutant_exe_path, 
+                 "path.txt",
+                 "results.txt",
+                 "bugs.txt"]
+        
+    mutated_execution_result: ProcessResult = run_process_with_timeout(cmd=cmd,
                                                                        timeout_seconds=int(max(1.0, 5.0 * run_time)))
     if mutated_execution_result is None:
         return KillStatus.KILL_RUNTIME_TIMEOUT
@@ -103,4 +110,4 @@ def run_test_with_mutants(mutants: List[int],
 
     return KillStatus.SURVIVED_BINARY_DIFFERENCE
 
-    '''
+    
