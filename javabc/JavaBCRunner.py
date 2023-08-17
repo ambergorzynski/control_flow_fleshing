@@ -33,7 +33,7 @@ class JavaBCRunner():
 
                 for j in range(self.params.n_paths):
 
-                    self.execute_no_ref(test_number=i, path_name=f'input_graph_{i}_path{j}')
+                    self.execute_no_ref(test_id=i, path_name=f'input_graph_{i}_path{j}')
 
         # directions are known at compile time then compile each graph-path pair
         elif (self.directions=='known'):
@@ -45,7 +45,7 @@ class JavaBCRunner():
                     self.compile_no_ref(f'{i}_path_{j}')
 
                     # execute
-                    self.execute(f'{i}_path_{j}', f'input_graph_{i}_path{j}')
+                    self.execute_no_ref(test_id=f'{i}_path_{j}', path_name=f'input_graph_{i}_path{j}')
 
 
 

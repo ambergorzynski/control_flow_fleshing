@@ -101,9 +101,9 @@ def main():
                 program_generator.fleshout_dirs_known(cfg, directions)
 
                 # make directory for test case 
-                subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}_path{p}', shell=True)
+                subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}_path_{p}', shell=True)
 
-                program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}_path{p}/run_cfg_{i}_path_{p}.ll')
+                program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}_path_{p}/run_cfg_{i}_path_{p}.j')
         
 
     # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
@@ -124,13 +124,13 @@ def main():
             program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}/run_cfg_{i}.j')
     
 
-    '''
+    
 
     # Step 4 : run tests
     test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir)
     
     test.run()
-    '''
+    
 
 
 def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:
