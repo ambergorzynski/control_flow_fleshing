@@ -83,7 +83,7 @@ def main():
 
 
     # Step 3 : flesh graphs
-    program_generator = LLVMProgramGenerator()
+    program_generator = LLVMProgramGenerator(params)
 
     # directions are known at compile time - means we flesh n_graphs*m_paths programs
     if(args.dir == 'known'):

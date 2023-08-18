@@ -1,7 +1,62 @@
 from CFG import CFG
 from ProgramGenerator import ProgramGenerator
+from Utils import *
 
 class LLVMProgramGenerator(ProgramGenerator):
+
+    def __init__(self, params : FuzzingParams):
+        self.params = params
+        self.cfg = None
+        self.fleshed_graph = None
+
+    def fleshout(self, cfg : CFG) -> str:
+
+        ''' 
+            converts control flow graph to LLVM IR 
+            returns str containing LLVM IR program
+        '''
+
+        self.cfg = cfg
+        self.fleshed_graph = None
+
+        # all programs have common start
+        self.fleshed_graph = self.flesh_program_start()
+
+        for n in cfg.graph:
+
+            # store node label in output array for every node visited
+            self.fleshed_graph += self.flesh_start_of_node(n)
+
+            # write remaining block code based on number of successor nodes
+            n_successors = self.cfg.successors(n)
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n)
+
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+
+        # add closing phrase to program
+        self.fleshed_graph += self.flesh_end()
+
+        return self.fleshed_graph
+    
+    def flesh_start_of_node(self, n):
+
+        if self.params.directions == Directions.DYNAMIC:
+            return self.flesh_program_start_dynamic(n)
+        
+        elif self.params.directions == Directions.STATIC_PTR:
+            return self.flesh_program_start_static(n, directions)
+        
+        elif self.params.directions == Directions.STATIC_ARR:
+            return self.flesh_program_start_static_arr(n, directions)
 
     def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
 
@@ -98,7 +153,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return prog_start
     
-    def flesh_program_start(self, prog_number : int = None) -> str:
+    def flesh_program_start_dynamic(self) -> str:
 
         prog_start = '''
 

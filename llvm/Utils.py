@@ -1,3 +1,9 @@
+from enum import Enum
+
+class Directions(Enum):
+    DYNAMIC = 1
+    STATIC_PTR = 2
+    STATIC_ARR = 3 
 
 class FilePaths():
 
@@ -28,6 +34,7 @@ class FuzzingParams():
         Parameter struct to keep track of parameters
     '''
     def __init__(self,
+                directions : Directions,
                 n_graphs : int,
                 n_paths : int,
                 min_graph_size : int,
@@ -38,6 +45,7 @@ class FuzzingParams():
                 max_path_length : int,
                 n_optimisations : int):
         
+        self.directions : Directions = directions
         self.n_graphs : int = n_graphs
         self.n_paths : int = n_paths
         self.min_graph_size : int = min_graph_size
