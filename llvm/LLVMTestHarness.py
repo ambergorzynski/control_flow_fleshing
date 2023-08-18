@@ -47,7 +47,8 @@ def main():
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}')
 
-    params = FuzzingParams(n_graphs = args.n_graphs,
+    params = FuzzingParams(directions=dir(args.dir),
+                            n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
                             min_graph_size = 10,
                             max_graph_size = 15,
@@ -99,7 +100,7 @@ def main():
 
                 directions = read_in_dirs(i, p, filepaths)
 
-                program_generator.fleshout_static(cfg, directions)
+                program_generator.fleshout(cfg=cfg, directions=directions)
 
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
 
@@ -112,7 +113,7 @@ def main():
 
                 cfg = CFG(graph)
 
-                program_generator.fleshout(cfg)
+                program_generator.fleshout(cfg=cfg)
 
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.ll')
 
@@ -146,6 +147,11 @@ def create_folders(basePath : str) -> None:
 
     result = subprocess.run(cmd, shell=True)
 
-    
+def dir(dir : str) -> Directions:
+     if dir == 'unknown':
+          return Directions.DYNAMIC
+     elif dir == 'known':
+          return Directions.STATIC_PTR
+         
 if __name__ == "__main__":
     main()

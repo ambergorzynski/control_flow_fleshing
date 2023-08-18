@@ -20,12 +20,12 @@ class LLVMProgramGenerator(ProgramGenerator):
         self.fleshed_graph = None
 
         # all programs have common start
-        self.fleshed_graph = self.flesh_program_start()
+        self.fleshed_graph = self.flesh_program_start(directions)
 
         for n in cfg.graph:
 
             # store node label in output array for every node visited
-            self.fleshed_graph += self.flesh_start_of_node(n, directions)
+            self.fleshed_graph += self.flesh_start_of_node(n)
 
             # write remaining block code based on number of successor nodes
             n_successors = self.cfg.successors(n)
@@ -47,13 +47,13 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         return self.fleshed_graph
     
-    def flesh_start_of_node(self, n : int, directions : list[int]):
+    def flesh_program_start(self, directions : list[int]):
 
         if self.params.directions == Directions.DYNAMIC:
-            return self.flesh_program_start_dynamic(n)
+            return self.flesh_program_start_dynamic()
         
         elif self.params.directions == Directions.STATIC_PTR:
-            return self.flesh_program_start_static(n, directions)
+            return self.flesh_program_start_static(directions)
 
        #TODO: add static arr that works on lab computer
         ''' 
@@ -72,10 +72,10 @@ class LLVMProgramGenerator(ProgramGenerator):
             return self.flesh_conditional_node_stat(n, directions)
         '''
 
-    def flesh_switch_node(self, n : int, directions : list[int]):
+    def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
         
         if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
-            return self.flesh_switch_node_dynamic(n)
+            return self.flesh_switch_node_dynamic(n, n_successors)
         
         #TODO: add static arr that works on lab computer
         '''
@@ -83,10 +83,10 @@ class LLVMProgramGenerator(ProgramGenerator):
             return self.flesh_switch_node_static(n, directions)
         '''
 
-
+    """
     def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
 
-        ''' 
+        '''
             converts control flow graph to LLVM IR 
             returns str containing LLVM IR program
             and saves as member variable
@@ -123,7 +123,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         self.fleshed_graph += self.flesh_end()
 
         return self.fleshed_graph
-    
+    """
 
     def flesh_program_start_static(self, directions : list[int]) -> str:
 
