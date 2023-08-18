@@ -1,3 +1,4 @@
+run_javabc.sh
 *.p
 *.bc
 *.o
