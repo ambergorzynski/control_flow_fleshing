@@ -48,11 +48,11 @@ class JavaBCRunner():
 
 
     def compile_wrapper(self) -> None:
-        cmd = [f'''./javabc/compile_wrapper_java.sh {self.filepaths.src_filepath}''']
+        cmd = [f'''./javabc/compile_wrapper_java.sh {self.filepaths.src_filepath} {self.filepaths.jvm}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test(self, test_name : str) -> None:
-        cmd = [f'''./javabc/compile_test_java.sh {self.filepaths.src_filepath} {test_name}''']
+        cmd = [f'''./javabc/compile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_no_ref(self, test_id : int) -> None:
@@ -60,9 +60,9 @@ class JavaBCRunner():
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_id : str, path_name : str, n_function_repeats : int) -> None:
-        cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {n_function_repeats}''']
+        cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {n_function_repeats} {self.filepaths.jvm}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute_no_ref(self, test_id : str, path_name : str) -> None:
-        cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats}''']
+        cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
         result = subprocess.run(cmd, shell=True)

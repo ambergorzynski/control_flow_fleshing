@@ -4,8 +4,6 @@ test_number=$2
 jvm=$3
 jasmin=$4
 
-#jvm=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/
-
 # compile test
 cd $src
 ${jvm}/java -jar ${jasmin}/jasmin.jar testing/test$test_number/run_cfg_$test_number.j -d testing/test$test_number
