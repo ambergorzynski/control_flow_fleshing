@@ -153,7 +153,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         #fill in directions array
         for i, d in enumerate(directions):
             prog_start += '''
-            %v{index}_1 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 {i}
+            %v{index}_1 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 {index}
             store i32 {dir}, i32* %v{index}_2
         '''.format(index=i, dir_size = l, dir=d)
         
@@ -377,7 +377,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return code
     
-    def flesh_switch_node_static(self, n : int, n_successors : int) -> str:
+    def flesh_switch_node_static(self, n : int, n_successors : int, directions : list[int]) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
@@ -396,7 +396,8 @@ class LLVMProgramGenerator(ProgramGenerator):
             ; switch
             switch i32 %dir_{i}_value, label %{default} [ 
             '''.format(i = n,
-                    default = list(self.cfg.graph.adj[n])[0])
+                       dir_size = len(directions),
+                        default = list(self.cfg.graph.adj[n])[0])
         
         for j in range(n_successors):
             code += ''' i32 {i}, label %{successor}
