@@ -5,6 +5,8 @@ class FilePaths():
     '''
 
     def __init__(self,
+                 jvm : str,
+                 jasmin : str,
                  base : str,
                  graph_filepath : str,
                  src_filepath : str,
@@ -14,6 +16,8 @@ class FilePaths():
                  results_name : str,
                  bug_results_name : str):
         
+        self.jvm : str = jvm
+        self.jasmin : str = jasmin
         self.base : str = base
         self.graph_filepath : str = graph_filepath
         self.src_filepath : str = src_filepath

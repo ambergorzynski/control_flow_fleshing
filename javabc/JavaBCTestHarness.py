@@ -23,8 +23,10 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
-    parser.add_argument("-c", type=str, default="default",
-                        help="specifies which compiler to use: 'eclipse', 'graalvm' [NOT IN USE]")
+    parser.add_argument("jvm", type=str,
+                        help="path to JVM to be used")
+    parser.add_argument("jasmin", type=str,
+                        help="path to Jasmin to be used")
     parser.add_argument("-dir", type=str, default="unknown",
                         help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
     parser.add_argument("-lab", type=bool, default=False,
@@ -37,7 +39,9 @@ def main():
     time = datetime.now().timestamp()
     basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzzing/{args.folder}' 
     
-    filepaths = FilePaths(base = basePath,
+    filepaths = FilePaths(jvm = args.jvm,
+                            jasmin = args.jasmin,
+                            base = basePath,
                             graph_filepath = f'{basePath}/graphs',
                             src_filepath = f'{basePath}/src',
                             program_filepath= f'{basePath}/src/testing',
@@ -46,7 +50,8 @@ def main():
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}')
 
-    params = FuzzingParams(n_graphs = args.n_graphs,
+    params = FuzzingParams(
+                            n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
                             min_graph_size = 10,
                             max_graph_size = 500,
@@ -129,7 +134,7 @@ def main():
     
 
     # Step 4 : run tests
-    test = JavaBCRunner(filepaths, params, compiler = args.c, directions = args.dir)
+    test = JavaBCRunner(filepaths, params, directions = args.dir)
     
     test.run()
     

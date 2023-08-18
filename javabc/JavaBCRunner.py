@@ -7,12 +7,10 @@ class JavaBCRunner():
     def __init__(self,
                  filepaths : FilePaths,
                  params : FuzzingParams,
-                 compiler : str = 'default',
                  directions : str = 'unknown'):
         
         self.filepaths : FilePaths = filepaths
         self.params : FuzzingParams = params
-        self.compiler : str = compiler
         self.directions : str = directions
 
     def run(self) -> None:
@@ -58,7 +56,7 @@ class JavaBCRunner():
         result = subprocess.run(cmd, shell=True)
 
     def compile_no_ref(self, test_id : int) -> None:
-        cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_id}''']
+        cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_id} {self.filepaths.jvm} {self.filepaths.jasmin}''']
         result = subprocess.run(cmd, shell=True)
 
     def execute(self, test_id : str, path_name : str, n_function_repeats : int) -> None:
