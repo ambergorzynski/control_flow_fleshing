@@ -9,7 +9,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         self.cfg = None
         self.fleshed_graph = None
 
-    def fleshout(self, cfg : CFG) -> str:
+    def fleshout(self, cfg : CFG, directions : list[int] = None) -> str:
 
         ''' 
             converts control flow graph to LLVM IR 
@@ -25,7 +25,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         for n in cfg.graph:
 
             # store node label in output array for every node visited
-            self.fleshed_graph += self.flesh_start_of_node(n)
+            self.fleshed_graph += self.flesh_start_of_node(n, directions)
 
             # write remaining block code based on number of successor nodes
             n_successors = self.cfg.successors(n)
@@ -37,26 +37,52 @@ class LLVMProgramGenerator(ProgramGenerator):
                 self.fleshed_graph += self.flesh_unconditional_node(n)
 
             elif(n_successors == 2):
-                self.fleshed_graph += self.flesh_conditional_node(n)
+                self.fleshed_graph += self.flesh_conditional_node(n, directions)
 
             elif(n_successors > 2):
-                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors, directions)
 
         # add closing phrase to program
         self.fleshed_graph += self.flesh_end()
 
         return self.fleshed_graph
     
-    def flesh_start_of_node(self, n):
+    def flesh_start_of_node(self, n : int, directions : list[int]):
 
         if self.params.directions == Directions.DYNAMIC:
             return self.flesh_program_start_dynamic(n)
         
         elif self.params.directions == Directions.STATIC_PTR:
             return self.flesh_program_start_static(n, directions)
-        
+
+       #TODO: add static arr that works on lab computer
+        ''' 
         elif self.params.directions == Directions.STATIC_ARR:
             return self.flesh_program_start_static_arr(n, directions)
+        '''
+
+    def flesh_conditional_node(self, n : int, directions : list[int]):
+        
+        if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
+            return self.flesh_conditional_node_dynamic(n)
+        
+        #TODO: add static arr that works on lab computer
+        '''
+        elif self.params.directions == Directions.STATIC_PTR:
+            return self.flesh_conditional_node_stat(n, directions)
+        '''
+
+    def flesh_switch_node(self, n : int, directions : list[int]):
+        
+        if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
+            return self.flesh_switch_node_dynamic(n)
+        
+        #TODO: add static arr that works on lab computer
+        '''
+        elif self.params.directions == Directions.STATIC_PTR:
+            return self.flesh_switch_node_static(n, directions)
+        '''
+
 
     def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
 
@@ -230,7 +256,7 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         return code
 
-    def flesh_conditional_node(self, n : int) -> str:
+    def flesh_conditional_node_dynamic(self, n : int) -> str:
         ''' 
             returns code for node n with two successors, one of
             which may be self (e.g. in case of loop)
@@ -257,7 +283,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return code
     
-    def flesh_switch_node(self, n : int, n_successors : int) -> str:
+    def flesh_switch_node_dynamic(self, n : int, n_successors : int) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement

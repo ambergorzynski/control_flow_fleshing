@@ -112,7 +112,7 @@ def main():
 
                 cfg = CFG(graph)
 
-                program_generator.fleshout(cfg, i)
+                program_generator.fleshout(cfg)
 
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.ll')
 
