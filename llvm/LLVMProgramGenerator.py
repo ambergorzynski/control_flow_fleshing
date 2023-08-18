@@ -55,33 +55,28 @@ class LLVMProgramGenerator(ProgramGenerator):
         elif self.params.directions == Directions.STATIC_PTR:
             return self.flesh_program_start_static(directions)
 
-       #TODO: add static arr that works on lab computer
-        ''' 
         elif self.params.directions == Directions.STATIC_ARR:
-            return self.flesh_program_start_static_arr(n, directions)
-        '''
+            return self.flesh_program_start_static_arr(directions)
+     
 
     def flesh_conditional_node(self, n : int, directions : list[int]):
+
+        #TODO: make 'get directions' function that is static or dynamic; the branching condition is the same 
+        # for conditional and switch, so can extract this
         
         if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
             return self.flesh_conditional_node_dynamic(n)
         
-        #TODO: add static arr that works on lab computer
-        '''
-        elif self.params.directions == Directions.STATIC_PTR:
+        elif self.params.directions == Directions.STATIC_ARR:
             return self.flesh_conditional_node_stat(n, directions)
-        '''
 
     def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
         
         if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
             return self.flesh_switch_node_dynamic(n, n_successors)
         
-        #TODO: add static arr that works on lab computer
-        '''
-        elif self.params.directions == Directions.STATIC_PTR:
+        elif self.params.directions == Directions.STATIC_ARR:
             return self.flesh_switch_node_static(n, directions)
-        '''
 
     """
     def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
@@ -125,6 +120,46 @@ class LLVMProgramGenerator(ProgramGenerator):
         return self.fleshed_graph
     """
 
+    def flesh_program_start_static_arr(self, directions : list[int]) -> str:
+
+        """
+            Sets up the program start in which the directions
+            array is statically known. This version codes the array via a 
+            simple int array that is initialised at the beginning of the program.
+        """
+
+        l = len(directions)
+
+        prog_start = ''' ; 
+
+
+        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
+
+        0:
+            ; create array to store output
+            %output = alloca i32*
+            store i32* %in_output, i32** %output
+
+            %counter = alloca i32
+            store i32 0, i32* %counter
+
+            %dir_counter = alloca i32
+            store i32 0, i32* %dir_counter;
+
+            ; set up direction array and pointer
+            %dirs = alloca [{dir_size} x i32]
+        '''.format(dir_size = l)
+
+        #fill in directions array
+        for i, d in enumerate(directions):
+            prog_start += '''
+            %v{index}_1 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 {i}
+            store i32 {dir}, i32* %v{index}_2
+        '''.format(index=i, dir_size = l, dir=d)
+        
+        
+        return prog_start
+    
     def flesh_program_start_static(self, directions : list[int]) -> str:
 
         """
@@ -283,6 +318,34 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return code
     
+
+    def flesh_conditional_node_static(self, n : int) -> str:
+        ''' 
+            returns code for node n with two successors, one of
+            which may be self (e.g. in case of loop)
+            note this does not deal with switch statements where
+            there are > 2 successor nodes
+        '''
+        code = '''
+            ; get directions for node
+            %index_dir_{i} = load i32, i32* %dir_counter
+            %dir_{i} = sext i32 %index_dir_{i} to i64
+            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dir, i64 0, i64 %dir_{i}
+            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
+
+            ; increment directions counter
+            %temp_{i}_2 = add i32 %index_dir_{i}, 1
+            store i32 %temp_{i}_2, i32* %dir_counter
+
+            ; branch
+            %condition_{i} = icmp eq i32 %dir_{i}_value, 0
+            br i1 %condition_{i}, label %{successor_true}, label %{successor_false}
+            '''.format(i = n,
+                       successor_false = list(self.cfg.graph.adj[n])[1],
+                       successor_true = list(self.cfg.graph.adj[n])[0])
+        
+        return code
+    
     def flesh_switch_node_dynamic(self, n : int, n_successors : int) -> str:
         '''
             returns code for node with > 2 successors
@@ -308,6 +371,37 @@ class LLVMProgramGenerator(ProgramGenerator):
              code += ''' i32 {i}, label %{successor}
             '''.format(i = j,
                        successor = list(self.cfg.graph.adj[n])[j])
+        
+        
+        code += ''']''' 
+        
+        return code
+    
+    def flesh_switch_node_static(self, n : int, n_successors : int) -> str:
+        '''
+            returns code for node with > 2 successors
+            e.g. a switch statement
+        '''
+        code = '''
+            ; get directions for node
+            %index_dir_{i} = load i32, i32* %dir_counter
+            %dir_{i} = sext i32 %index_dir_{i} to i64
+            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dir, i64 0, i64 %dir_{i}
+            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
+
+            ; increment directions counter
+            %temp_{i}_2 = add i32 %index_dir_{i}, 1
+            store i32 %temp_{i}_2, i32* %dir_counter
+
+            ; switch
+            switch i32 %dir_{i}_value, label %{default} [ 
+            '''.format(i = n,
+                    default = list(self.cfg.graph.adj[n])[0])
+        
+        for j in range(n_successors):
+            code += ''' i32 {i}, label %{successor}
+            '''.format(i = j,
+                    successor = list(self.cfg.graph.adj[n])[j])
         
         
         code += ''']''' 
