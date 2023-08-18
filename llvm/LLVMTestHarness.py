@@ -151,7 +151,7 @@ def dir(dir : str) -> Directions:
      if dir == 'unknown':
           return Directions.DYNAMIC
      elif dir == 'known':
-          return Directions.STATIC_PTR
+          return Directions.STATIC_ARR
          
 if __name__ == "__main__":
     main()

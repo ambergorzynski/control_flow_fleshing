@@ -68,7 +68,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             return self.flesh_conditional_node_dynamic(n)
         
         elif self.params.directions == Directions.STATIC_ARR:
-            return self.flesh_conditional_node_stat(n, directions)
+            return self.flesh_conditional_node_static(n, dir_size=len(directions))
 
     def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
         
@@ -76,7 +76,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             return self.flesh_switch_node_dynamic(n, n_successors)
         
         elif self.params.directions == Directions.STATIC_ARR:
-            return self.flesh_switch_node_static(n, directions)
+            return self.flesh_switch_node_static(n, n_successors, dir_size=len(directions))
 
     """
     def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
@@ -154,7 +154,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         for i, d in enumerate(directions):
             prog_start += '''
             %v{index}_1 = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 {index}
-            store i32 {dir}, i32* %v{index}_2
+            store i32 {dir}, i32* %v{index}_1
         '''.format(index=i, dir_size = l, dir=d)
         
         
@@ -319,7 +319,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         return code
     
 
-    def flesh_conditional_node_static(self, n : int) -> str:
+    def flesh_conditional_node_static(self, n : int, dir_size : int) -> str:
         ''' 
             returns code for node n with two successors, one of
             which may be self (e.g. in case of loop)
@@ -330,7 +330,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             ; get directions for node
             %index_dir_{i} = load i32, i32* %dir_counter
             %dir_{i} = sext i32 %index_dir_{i} to i64
-            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dir, i64 0, i64 %dir_{i}
+            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
             %dir_{i}_value = load i32, i32* %dir_{i}_ptr
 
             ; increment directions counter
@@ -341,6 +341,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             %condition_{i} = icmp eq i32 %dir_{i}_value, 0
             br i1 %condition_{i}, label %{successor_true}, label %{successor_false}
             '''.format(i = n,
+                       dir_size = dir_size,
                        successor_false = list(self.cfg.graph.adj[n])[1],
                        successor_true = list(self.cfg.graph.adj[n])[0])
         
@@ -377,7 +378,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return code
     
-    def flesh_switch_node_static(self, n : int, n_successors : int, directions : list[int]) -> str:
+    def flesh_switch_node_static(self, n : int, n_successors : int, dir_size : int) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
@@ -386,7 +387,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             ; get directions for node
             %index_dir_{i} = load i32, i32* %dir_counter
             %dir_{i} = sext i32 %index_dir_{i} to i64
-            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dir, i64 0, i64 %dir_{i}
+            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
             %dir_{i}_value = load i32, i32* %dir_{i}_ptr
 
             ; increment directions counter
@@ -396,7 +397,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             ; switch
             switch i32 %dir_{i}_value, label %{default} [ 
             '''.format(i = n,
-                       dir_size = len(directions),
+                       dir_size = dir_size,
                         default = list(self.cfg.graph.adj[n])[0])
         
         for j in range(n_successors):
