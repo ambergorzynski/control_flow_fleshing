@@ -387,7 +387,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             ; get directions for node
             %index_dir_{i} = load i32, i32* %dir_counter
             %dir_{i} = sext i32 %index_dir_{i} to i64
-            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i21], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
+            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
             %dir_{i}_value = load i32, i32* %dir_{i}_ptr
 
             ; increment directions counter
