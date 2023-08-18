@@ -164,7 +164,7 @@ class LLVMRunner():
 
     def execute(self, test_name, path_name):
         
-        cmd = [f'./{self.filepaths.output_filepath}/{test_name}_out {self.filepaths.path_filepath}/{path_name}.txt {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
+        cmd = [f'.{self.filepaths.output_filepath}/{test_name}_out {self.filepaths.path_filepath}/{path_name}.txt {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
         result = subprocess.run(cmd, shell=True)    
 
     def parse_opts(self) -> str:
