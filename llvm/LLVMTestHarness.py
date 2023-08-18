@@ -29,15 +29,16 @@ def main():
                         help="specifies whether directions array is known or unknown at compile time")
     parser.add_argument("-opt", type=str, default="random_level",
                         help="specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
-
+    parser.add_argument("-lab", type=bool, default=False,
+                        help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     args = parser.parse_args()
 
     #TODO: add argument validator
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'llvm/fuzzing/{args.folder}'
-    
+    basePath = f'llvm/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/llvm/fuzzing/{args.folder}'
+
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
                             program_filepath = f'{basePath}/llvm',
@@ -57,7 +58,7 @@ def main():
                             n_optimisations = 1)
     
     # Setup
-    create_folders(args.folder)
+    create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -133,15 +134,15 @@ def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> 
         # convert str to int
         return [eval(i) for i in dirs]
 
-def create_folders(folder_name : str) -> None:
+def create_folders(basePath : str) -> None:
 
     print('Setting up folders...')
 
-    cmd = f'mkdir llvm/fuzzing/{folder_name}'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/graphs'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/input'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/llvm'
-    cmd += f' ;mkdir llvm/fuzzing/{folder_name}/running'
+    cmd = f'mkdir {basePath}'
+    cmd += f' ;mkdir {basePath}/graphs'
+    cmd += f' ;mkdir {basePath}/input'
+    cmd += f' ;mkdir {basePath}/llvm'
+    cmd += f' ;mkdir {basePath}/running'
 
     result = subprocess.run(cmd, shell=True)
 

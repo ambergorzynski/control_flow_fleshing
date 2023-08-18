@@ -27,13 +27,15 @@ def main():
                         help="specifies which compiler to use: 'eclipse', 'graalvm' [NOT IN USE]")
     parser.add_argument("-dir", type=str, default="unknown",
                         help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
+    parser.add_argument("-lab", type=bool, default=False,
+                        help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     args = parser.parse_args()
 
     #TODO: add argument validator
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'javabc/fuzzing/{args.folder}'
+    basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzzing/{args.folder}' 
     
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
@@ -55,7 +57,7 @@ def main():
                             n_function_repeats=5000)
     
     # Setup
-    create_folders(args.folder)
+    create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -144,21 +146,21 @@ def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> 
         # convert str to int
         return [eval(i) for i in dirs]
 
-def create_folders(folder_name : str) -> None:
+def create_folders(basePath : str) -> None:
 
     print('Setting up folders...')
 
-    cmd = f'mkdir javabc/fuzzing/{folder_name}'
-    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/graphs'
-    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src'
-    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/output'
-    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/paths'
-    cmd += f' ;mkdir javabc/fuzzing/{folder_name}/src/testing'
+    cmd = f'mkdir {basePath}'
+    cmd += f' ;mkdir {basePath}/graphs'
+    cmd += f' ;mkdir {basePath}/src'
+    cmd += f' ;mkdir {basePath}/src/output'
+    cmd += f' ;mkdir {basePath}/src/paths'
+    cmd += f' ;mkdir {basePath}/src/testing'
 
     result = subprocess.run(cmd, shell=True)
 
-    # copy the wrapper and test case interface to the relevant folder
-    cmd = [f'''cp javabc/WrapperNoReflection.java javabc/fuzzing/{folder_name}/src/testing/WrapperNoReflection.java''']
+    # copy the wrapper to the relevant folder
+    cmd = [f'''cp javabc/WrapperNoReflection.java {basePath}/src/testing/WrapperNoReflection.java''']
     result = subprocess.run(cmd, shell=True)
 
     
