@@ -6,6 +6,13 @@ import random
 from random import Random
 from queue import Queue
 
+from graph_gen.graph_gen import sample_graph
+
+def sample_xml_graph() -> nx.MultiDiGraph:
+
+    ''' returns sample graph from test_0.xml '''
+    return sample_graph()
+
 
 def preset_graph_1() -> nx.MultiDiGraph:
     
