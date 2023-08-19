@@ -16,6 +16,8 @@ from collections import defaultdict, deque
 from random import Random
 from typing import Deque, DefaultDict, Dict, List, Set
 
+import networkx as nx
+import pickle
 from fleshout import *
 
 START_ID = 0
@@ -43,7 +45,33 @@ def xml_to_cfg(xml_file : str) -> CFG:
               get_switch_blocks(instance))
     
     return cfg
+
+def cfg_to_graph(cfg : CFG) -> nx.MultiDiGraph:
     
+    # get list of nodes as ints
+    int_blocks = nodes_to_ids(cfg)
+
+    # get list of edges as int tuples
+    (jump, merge, cont) = all_edges_to_ids(cfg)
+
+    # create graph object
+    G = nx.MultiDiGraph()
+
+    G.add_nodes_from(int_blocks)
+
+    # jump is list of tuples
+    for i in jump:
+        if len(i) == 1:
+            G.add_edge(i[0][0], i[0][1])
+        else:
+            G.add_edges_from(i)
+        
+    G.add_edges_from(merge)
+    G.add_edges_from(cont)
+
+    return G
+
+ 
 def view_cfg(cfg : CFG) -> None:
 
     print('\nCFG blocks:')
@@ -67,22 +95,25 @@ def nodes_to_ids(cfg : CFG) -> list[int]:
 
     return [int(cfg.get_block_id(b)) - START_ID for b in cfg.topological_ordering]
 
-def all_edges_to_ids(cfg : CFG) -> (Dict[int, list[int]], Dict[int, int], Dict[int, int]):
+def all_edges_to_ids(cfg : CFG) -> (list[tuple(int, int)], list[tuple(int, int)], list[tuple(int, int)]):
 
     # blocks to ids
     nodes = nodes_to_ids(cfg)
 
     # jump relation
-    jump_edges = relation_to_id_dict(cfg.jump_relation, cfg.label_to_id)
+    jump_edges_dict = relation_to_id_dict(cfg.jump_relation, cfg.label_to_id)
+    jump_edges = []
+    for k in jump_edges_dict.keys():
+        tups = [(k, end) for end in jump_edges_dict[k]]
+        jump_edges.append(tups)
 
     # merge relation
-    merge_edges = relation_to_id_str(cfg.merge_relation, cfg.label_to_id)
+    merge_edges_dict = relation_to_id_str(cfg.merge_relation, cfg.label_to_id)
+    merge_edges = [(k, v) for k, v in merge_edges_dict.items()]
 
     # continue relation
-    continue_edges = relation_to_id_str(cfg.continue_relation, cfg.label_to_id)
-    
-    # combine into single dict of all relations
-    all_edges = defaultdict(list)
+    continue_edges_dict = relation_to_id_str(cfg.continue_relation, cfg.label_to_id)
+    continue_edges = [(k, v) for k, v in continue_edges_dict.items()]
 
     return (jump_edges, merge_edges, continue_edges)
 
@@ -102,27 +133,15 @@ def get_edges(edges : list[str], label_to_id : Dict[str, str]) -> list[int]:
 
     return [(int(label_to_id[end]) - START_ID) for end in edges]
 
+
 def main():
 
     cfg = xml_to_cfg('graph_gen/test_0.xml')
     
-    '''
-    view_cfg(cfg)
-    view_topological_ordering(cfg)
+    graph = cfg_to_graph(cfg)
 
-    print('\nListing blocks from id list')
-    int_blocks = nodes_to_ids(cfg)
+    print([e for e in graph.edges()])
 
-    for i in int_blocks:
-        print(i)
-    '''
-
-    (jump, merge, cont) = all_edges_to_ids(cfg)
-
-    print('edges')
-
-    for e, v in cont.items():
-        print(f'{e} : {v}')
 
 if __name__=="__main__":
     main()
