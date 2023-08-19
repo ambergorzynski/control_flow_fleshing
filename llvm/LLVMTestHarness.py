@@ -51,7 +51,7 @@ def main():
                             n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
                             min_graph_size = 10,
-                            max_graph_size = 15,
+                            max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 3,
                             graph_approach = 2, # can be 1 or 2
