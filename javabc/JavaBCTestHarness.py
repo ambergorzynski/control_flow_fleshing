@@ -31,9 +31,10 @@ def main():
                         help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
     parser.add_argument("-lab", type=bool, default=False,
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
+    parser.add_argument("-graph", type=str, default="default",
+                        help="specifies graph generation approach from 'default' or 'xml'.")
     args = parser.parse_args()
 
-    #TODO: add argument validator
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
@@ -57,7 +58,7 @@ def main():
                             max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 3,
-                            graph_approach = 2, # can be 1 or 2
+                            graph_approach = 2 if args.graph == 'default' else 3,
                             max_path_length = 900,
                             n_function_repeats=5000)
     
