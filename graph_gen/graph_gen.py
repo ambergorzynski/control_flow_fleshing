@@ -133,6 +133,14 @@ def get_edges(edges : list[str], label_to_id : Dict[str, str]) -> list[int]:
 
     return [(int(label_to_id[end]) - START_ID) for end in edges]
 
+def sample_graph() -> nx.MultiDiGraph:
+    
+    cfg = xml_to_cfg('graph_gen/test_0.xml')
+    
+    graph = cfg_to_graph(cfg)
+
+    return graph
+
 
 def main():
 
