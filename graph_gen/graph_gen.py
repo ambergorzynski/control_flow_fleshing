@@ -18,9 +18,9 @@ from typing import Deque, DefaultDict, Dict, List, Set
 
 import networkx as nx
 import pickle
-from fleshout import *
+from graph_gen.fleshout import *
 
-START_ID = 0
+START_ID = 8
 
 def xml_to_cfg(xml_file : str) -> CFG:
 
@@ -50,6 +50,7 @@ def cfg_to_graph(cfg : CFG) -> nx.MultiDiGraph:
     
     # get list of nodes as ints
     int_blocks = nodes_to_ids(cfg)
+    print(int_blocks)
 
     # get list of edges as int tuples
     (jump, merge, cont) = all_edges_to_ids(cfg)
@@ -127,7 +128,7 @@ def relation_to_id_str(relation : Dict[str, str], label_to_id : Dict[str, str]) 
 
 def get_node(key : str, label_to_id : Dict[str, str]) -> int:
     
-    return int(label_to_id[key]) - START_ID
+    return (int(label_to_id[key]) - START_ID)
 
 def get_edges(edges : list[str], label_to_id : Dict[str, str]) -> list[int]:
 
