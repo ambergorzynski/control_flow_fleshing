@@ -11,6 +11,6 @@ bad_results=$8
 export JAVA_HOME=$jvm
 export LLVM_TOOLCHAIN=$($JAVA_HOME/bin/lli --print-toolchain-path)
 $LLVM_TOOLCHAIN/clang++ -c $llvm_path/${prog_name}.ll -o $llvm_path/${prog_name}.o
-$LLVM_TOOLCHAIN/clang++ -c llvm/WrapperStatic.cpp -o $output_path/wrapper.o
+$LLVM_TOOLCHAIN/clang++ -c llvm/WrapperGraalvm.cpp -o $output_path/wrapper.o
 $LLVM_TOOLCHAIN/clang++ $llvm_path/${prog_name}.o $output_path/wrapper.o -o $output_path/${prog_name}_out
 $JAVA_HOME/bin/lli $output_path/${prog_name}_out "${path_path}/${path_name}.txt" "${output_path}/${results}.txt" "${output_path}/${bad_results}.txt"
