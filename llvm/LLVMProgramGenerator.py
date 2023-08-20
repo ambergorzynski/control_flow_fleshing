@@ -133,7 +133,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         prog_start = ''' ; 
 
 
-        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
+        define void @_Z7run_cfgPi(ptr %in_output) #0 {{
 
         0:
             ; create array to store output
@@ -178,7 +178,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         prog_start = ''' ; 
 
 
-        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
+        define void @_Z7run_cfgPi(ptr %in_output) #0 {{
 
         0:
             ; create array to store output
@@ -220,7 +220,7 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         ; 
 
-        define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
+        define void @_Z7run_cfgPiS_(ptr %in_directions, ptr %in_output) #0 {
 
         0:
             ; create arrays to store directions & output
