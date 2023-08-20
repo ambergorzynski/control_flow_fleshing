@@ -107,6 +107,7 @@ class LLVMRunner():
         elif(self.directions=='known'):
             subprocess.run(f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath}''', shell=True)
 
+
     def compile_tests_overall(self):
 
         # compile each graph once (n total)
@@ -125,7 +126,9 @@ class LLVMRunner():
 
 
         # compile each graph-path pair once (n*m total)
-        elif(self.directions == 'known'):
+        else:
+
+            print('here')
             
             for i in range(self.params.n_graphs):
 
@@ -134,12 +137,20 @@ class LLVMRunner():
                     optimisations_str = self.parse_opts()
                     print(f'optimisation: {optimisations_str}')
 
-                    self.compile_test(f'run_cfg_{i}_path_{j}', optimisations_str)
+                    if(self.filepaths.graalvm_path is not None):
+                        self.graalvm(f'run_cfg_{i}_path_{j}', f'input_graph_{i}_path{j}')
 
-                    # execute
-                    self.execute(f'run_cfg_{i}_path_{j}', f'input_graph_{i}_path{j}')
+                    else:
+                        self.compile_test(f'run_cfg_{i}_path_{j}', optimisations_str)
+
+                        # execute
+                        self.execute(f'run_cfg_{i}_path_{j}', f'input_graph_{i}_path{j}')
 
 
+    def graalvm(self, test_name, path_name):
+        print("here!!!")
+        subprocess.run(f'''./llvm/compile_test_llvm_graalvm_native.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {test_name} {path_name} {self.filepaths.graalvm_path} {self.filepaths.results_name} {self.filepaths.bug_results_name}''', shell=True)
+    
     def compile_wrapper(self):
         cmd = [f'''./llvm/compile_wrapper_llvm.sh {self.filepaths.output_filepath}''']
         result = subprocess.run(cmd, shell=True)
@@ -148,8 +159,8 @@ class LLVMRunner():
         cmd = [f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath}''']
         result = subprocess.run(cmd, shell=True)
 
-    def compile_wrapper_graalvm(self):
-        cmd = [f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.filepaths.output_filepath}''']
+    def compile_wrapper_graalvm(self, test_name):
+        cmd = [f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {test_name}''']
         result = subprocess.run(cmd, shell=True)
 
     def compile_test(self, test_name, optimisation_list):
@@ -158,7 +169,6 @@ class LLVMRunner():
         result = subprocess.run(cmd, shell=True)
 
     def compile_test_graalvm(self, test_name, optimisation_list):
-
         cmd = [f'''./llvm/compile_test_llvm_graalvm.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {test_name} "{optimisation_list}"''']
         result = subprocess.run(cmd, shell=True)
 

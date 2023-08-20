@@ -27,7 +27,7 @@ def main():
                         help="specifies which compiler to use from 'llvm' or 'graalvm'")
     parser.add_argument("-graalvm", type=str, default=None,
                         help="specifies graalvm path")
-    parser.add_argument("-dir", type=str, default="unknown",
+    parser.add_argument("-dir", type=str, default="known",
                         help="specifies whether directions array is known or unknown at compile time")
     parser.add_argument("-opt", type=str, default="random_level",
                         help="specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
