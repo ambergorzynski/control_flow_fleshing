@@ -18,7 +18,8 @@ class FilePaths():
                  path_filepath : str,
                  output_filepath : str,
                  results_name : str,
-                 bug_results_name : str):
+                 bug_results_name : str,
+                 graalvm_path : str):
         
         self.base : str = base
         self.graph_filepath : str = graph_filepath
@@ -27,6 +28,7 @@ class FilePaths():
         self.output_filepath : str = output_filepath
         self.results_name : str = results_name
         self.bug_results_name : str = bug_results_name
+        self.graalvm_path : str = graalvm_path
 
         if output_filepath[0] == '/':
             self.exe_filepath : str = output_filepath

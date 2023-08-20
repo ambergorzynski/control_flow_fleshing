@@ -23,8 +23,10 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
-    parser.add_argument("-c", type=str, default="default",
-                        help="specifies which compiler to use [NOT IN USE]")
+    parser.add_argument("-c", type=str, default="llvm",
+                        help="specifies which compiler to use from 'llvm' or 'graalvm'")
+    parser.add_argument("-graalvm", type=str, default=None,
+                        help="specifies graalvm path")
     parser.add_argument("-dir", type=str, default="unknown",
                         help="specifies whether directions array is known or unknown at compile time")
     parser.add_argument("-opt", type=str, default="random_level",
@@ -47,7 +49,8 @@ def main():
                             path_filepath = f'{basePath}/input',
                             output_filepath = f'{basePath}/running',
                             results_name = f'results_{time}',
-                            bug_results_name = f'bugs_{time}')
+                            bug_results_name = f'bugs_{time}',
+                            graalvm_path=args.graalvm)
 
     params = FuzzingParams(directions=dir(args.dir),
                             n_graphs = args.n_graphs,
