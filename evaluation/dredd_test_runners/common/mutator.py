@@ -76,13 +76,14 @@ LLVM_OPTS : Dict[str, str] = {'loop-unroll' : 'Scalar/LoopUnrollPass.cpp',
                               'lcssa' : 'Utils/LCSSA.cpp',
                               'loop-deletion' : 'Scalar/LoopDeletion.cpp' ,
                               'loop-extract' : 'IPO/LoopExtractor.cpp',
-                              'loop-reduce' : 'Scalar/LoopStrengthReduce.cpp',
                               'loop-rotate' : 'Scalar/LoopRotation.cpp',
-                              'licm' : 'Scalar/LICM.cpp',
                               'structurizecfg' : 'Scalar/StructurizeCFG.cpp',
-                              'mergereturn' : 'Utils/UnifyFunctionExitNodes.cpp',
-                              'simplifycfg' : 'Utils/SimplifyCFG.cpp'}
-                    
+                              'mergereturn' : 'Utils/UnifyFunctionExitNodes.cpp'}
+#                              'simplifycfg' : 'Utils/SimplifyCFG.cpp'} # couldn't build - took too long
+#                              'loop-reduce' : 'Scalar/LoopStrengthReduce.cpp', # couldn't build - took too long
+#                              'licm' : 'Scalar/LICM.cpp', # errors when building
+
+
 def main():
 
     llvm_base : Path = Path('/Users/ambergorzynski/dev')
@@ -98,10 +99,10 @@ def main():
     # apply mutations
     for mutation in LLVM_OPTS.keys():
         
-        #mutation : str = 'loop-unroll'
-        
-        print(f'Applying mutation {mutation}...')
+        #mutation : str = 'mergereturn' # for applying single mutation in testing
     
+        print(f'Applying mutation {mutation}...')
+
         pass_for_mutation : Path = Path(mutated_transforms_path, LLVM_OPTS[mutation])
         mutation_info_file : Path = Path(mutated_info_path,f'{mutation}_mutation_info.json')
         pass_for_tracking : Path = Path(tracked_transforms_path, LLVM_OPTS[mutation])
@@ -116,6 +117,7 @@ def main():
                     '-mutation-info-file',
                     mutation_info_file]
         '''
+        
         mutate_cmd = f'{dredd_exe}'
         mutate_cmd += f' -p {compilation_db_mutated} '
         mutate_cmd += f'{pass_for_mutation}'
@@ -128,7 +130,7 @@ def main():
         else:
             print(f'Mutation {mutation} already exists!')
 
-
+        
         # track
         track_cmd = f'{dredd_exe}'
         track_cmd += f' -p {compilation_db_tracked} '
@@ -142,9 +144,10 @@ def main():
             print(f'Mutation tracking return code: {tracking_result.returncode}')
         else:
             print(f'Mutation {mutation} tracking already exists!')
-
-    rebuild(f'{llvm_base}/llvm-project-mutated')
-    rebuild(f'{llvm_base}/llvm-project-tracking')
+        
+        # rebuild after each mutation because otherwise mac runs out of RAM...
+        rebuild(f'{llvm_base}/llvm-project-mutated')
+        rebuild(f'{llvm_base}/llvm-project-tracking')
 
 def rebuild(home_path : str):
 
