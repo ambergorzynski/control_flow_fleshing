@@ -103,6 +103,8 @@ def main():
     assert mutation_tree.num_nodes == mutation_tree_for_coverage_tracking.num_nodes
     assert mutation_tree.num_mutations == mutation_tree_for_coverage_tracking.num_mutations
     print("Check complete!")
+    print(f'Total number of mutations is: {mutation_tree.num_mutations}')
+    
 
     if args.seed is not None:
         random.seed(args.seed)
@@ -143,7 +145,7 @@ def main():
 
             # TODO:Generate a CFG fleshing program here. For now, just cp a test .ll program directly
             # into the folder fleshing_generated_program
-            cmd = [f'''cp test_static.ll {fleshing_generated_program}''']
+            cmd = [f'''cp test/test_single_loop.ll {fleshing_generated_program}''']
             subprocess.run(cmd, shell=True)
 
             
@@ -218,9 +220,11 @@ def main():
 
             regular_hash = hash_file(str(unmutated_program))
 
+            
+
             # link unmutated test and wrapper
             linking_cmd = ["/usr/bin/clang++", 
-                            "Wrapper.o",
+                            "dynamic_wrapper/Wrapper.o",
                             unmutated_obj, 
                             "-o",
                             generated_program_exe_compiled_with_no_mutants]
@@ -232,9 +236,9 @@ def main():
 
             # execute unmutated program
             execution_cmd = [generated_program_exe_compiled_with_no_mutants, 
-                 "path_static.txt",
-                 "results_n.txt",
-                 "bugs_n.txt"]
+                 "test/path_static.txt",
+                 "test/results_n.txt",
+                 "test/bugs_n.txt"]
             
             run_time_start: float = time.time()
             regular_execution_result: ProcessResult = run_process_with_timeout(
@@ -243,6 +247,8 @@ def main():
             run_time = run_time_end - run_time_start
 
             print(f'unmutated execution result is: {regular_execution_result.returncode}')
+
+            
 
             if regular_execution_result is None:
                 print("Runtime timeout.")
@@ -287,7 +293,7 @@ def main():
 
             
             
-            # Load file contents into a list. We go from list to set to list to eliminate duplicates.
+            # Load file contents into a list. We go from list to set to list to eliminate duplicates.            
             covered_by_this_test: List[int] = list(set([int(line.strip()) for line in
                                                         open(dredd_covered_mutants_path, 'r').readlines()]))
             covered_by_this_test.sort()
@@ -330,10 +336,8 @@ def main():
                                                       mutant_exe_path=mutant_exe)
                 
                 print("Mutant result: " + str(mutant_result))
-
-                
             
-        '''
+        
                 if mutant_result == KillStatus.SURVIVED_IDENTICAL \
                         or mutant_result == KillStatus.SURVIVED_BINARY_DIFFERENCE:
                     covered_but_not_killed_by_this_test.append(mutant)
@@ -348,7 +352,7 @@ def main():
                     mutant_path.mkdir()
                     print("Writing kill info to file.")
                     with open(mutant_path / "kill_info.json", "w") as outfile:
-                        json.dump({"killing_test": csmith_test_name,
+                        json.dump({"killing_test": fleshing_test_name,
                                    "kill_type": str(mutant_result)}, outfile)
                 except FileExistsError:
                     print(f"Mutant {mutant} was independently discovered to be killed.")
@@ -381,6 +385,6 @@ def main():
                            "skipped_mutants": already_killed_by_other_tests,
                            "survived_mutants": covered_but_not_killed_by_this_test}, outfile)
 
-'''
+
 if __name__ == '__main__':
     main()
