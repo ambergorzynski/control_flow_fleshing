@@ -16,3 +16,4 @@ java/
 jasmin/
 work/
 evaluation/test/
+*.json
