@@ -145,7 +145,7 @@ def main():
 
             # TODO:Generate a CFG fleshing program here. For now, just cp a test .ll program directly
             # into the folder fleshing_generated_program
-            cmd = [f'''cp test/test_single_loop.ll {fleshing_generated_program}''']
+            cmd = [f'''cp test/test_static.ll {fleshing_generated_program}''']
             subprocess.run(cmd, shell=True)
 
             
@@ -185,12 +185,15 @@ def main():
             regular_compile_cmd = [args.mutated_compiler_executable]\
                 + compiler_args\
                 + ["-o", unmutated_program]
-            
+            print(regular_compile_cmd)
             compile_time_start: float = time.time()
             regular_opt_result: ProcessResult = run_process_with_timeout(cmd=regular_compile_cmd,
                                                                              timeout_seconds=args.compile_timeout)
             
             print(f'opt result is: {regular_opt_result.returncode}')
+
+            break
+
             subprocess.run(f'cp {unmutated_program} test/unmutated.ll',shell=True)
 
             
