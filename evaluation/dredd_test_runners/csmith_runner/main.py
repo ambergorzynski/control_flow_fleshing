@@ -109,9 +109,12 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
+        unmutated_ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
+        unmutated_program = Path(temp_dir_for_generated_code, '__regular_opt.ll')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
         mutant_exe = Path(temp_dir_for_generated_code, '__mutant.exe')
+
 
         killed_mutants: Set[int] = set()
         unkilled_mutants: Set[int] = set(range(0, mutation_tree.num_mutations))
