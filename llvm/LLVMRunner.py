@@ -128,7 +128,6 @@ class LLVMRunner():
         # compile each graph-path pair once (n*m total)
         else:
 
-            print('here')
             
             for i in range(self.params.n_graphs):
 
@@ -148,7 +147,6 @@ class LLVMRunner():
 
 
     def graalvm(self, test_name, path_name):
-        print("here!!!")
         subprocess.run(f'''./llvm/compile_test_llvm_graalvm_native.sh {self.filepaths.output_filepath} {self.filepaths.program_filepath} {self.filepaths.path_filepath} {test_name} {path_name} {self.filepaths.graalvm_path} {self.filepaths.results_name} {self.filepaths.bug_results_name}''', shell=True)
     
     def compile_wrapper(self):
