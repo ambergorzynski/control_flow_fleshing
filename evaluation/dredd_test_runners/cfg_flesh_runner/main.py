@@ -107,8 +107,6 @@ def main():
     print(f'Total number of mutations is: {mutation_tree.num_mutations}')
 
 
-    
-
     if args.seed is not None:
         random.seed(args.seed)
 
@@ -133,10 +131,16 @@ def main():
         Path(f'work_{args.optimisations}/tests').mkdir(exist_ok=True)
         Path(f'work_{args.optimisations}/killed_mutants').mkdir(exist_ok=True)
 
+        '''
         while still_testing(total_test_time=args.total_test_time,
                             maximum_time_since_last_kill=args.maximum_time_since_last_kill,
                             start_time_for_overall_testing=start_time_for_overall_testing,
                             time_of_last_kill=time_of_last_kill):
+        '''    
+
+        # loop over set number of test cases rather than testing for a certain time period
+        for n in range(1):
+
             if dredd_covered_mutants_path.exists():
                 os.remove(dredd_covered_mutants_path)
             if fleshing_generated_program.exists():
@@ -153,31 +157,7 @@ def main():
 
             
             fleshing_seed = random.randint(0, 2 ** 32 - 1)
-            '''
-            csmith_cmd = [str(args.csmith_root / "build" / "src" / "csmith"), "--seed", str(csmith_seed), "-o",
-                          str(csmith_generated_program)]
-            
-
-            if run_process_with_timeout(cmd=csmith_cmd, timeout_seconds=args.generator_timeout) is None:
-                print(f"Csmith timed out (seed {csmith_seed})")
-                continue
-
-            
-            # Inline some immediate header files into the Csmith-generated program
-            prepare_csmith_program(original_program=csmith_generated_program,
-                                   prepared_program=csmith_generated_program,
-                                   csmith_root=args.csmith_root)
-            
-            compiler_args = ["-O3",
-                             "-I",
-                             args.csmith_root / "runtime",
-                             "-I",
-                             args.csmith_root / "build" / "runtime",
-                             csmith_generated_program]
-            '''
-
-            
-
+        
             # Compile the program without mutation.
             # Args for opt tool; this is what we are mutating and testing
             compiler_args = [f'-passes={args.optimisations}',
@@ -225,9 +205,7 @@ def main():
                 continue
 
             regular_hash = hash_file(str(unmutated_program))
-
             
-
             # link unmutated test and wrapper
             linking_cmd = ["/usr/bin/clang++", 
                             "Wrapper.o",
