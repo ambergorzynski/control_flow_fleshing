@@ -6,6 +6,7 @@ import os
 import random
 import tempfile
 import time
+import subprocess
 
 from dredd_test_runners.csmith_runner.prepare_csmith_program import prepare_csmith_program
 from dredd_test_runners.common.run_process_with_timeout import ProcessResult, run_process_with_timeout
@@ -48,8 +49,13 @@ def main():
     parser.add_argument("mutant_tracking_compiler_executable",
                         help="Path to the executable for the compiler instrumented to track mutants.",
                         type=Path)
+    parser.add_argument("mutated_llc_executable",
+                        help="Path to the executable for the Dredd-mutated compiler llc.",
+                        type=Path)
     parser.add_argument("csmith_root", help="Path to a checkout of Csmith, assuming that it has been built under "
                                             "'build' beneath this directory.",
+                        type=Path)
+    parser.add_argument("csmith_include", help="Path to Csmith include location",
                         type=Path)
     parser.add_argument("--generator_timeout",
                         default=20,
@@ -111,6 +117,7 @@ def main():
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
         unmutated_ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
         unmutated_program = Path(temp_dir_for_generated_code, '__regular_opt.ll')
+        unmutated_program_obj = Path(temp_dir_for_generated_code, '__regular_opt.o')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
         mutant_exe = Path(temp_dir_for_generated_code, '__mutant.exe')
@@ -142,13 +149,16 @@ def main():
 
             # Generate a Csmith program
             csmith_seed = random.randint(0, 2 ** 32 - 1)
-            csmith_cmd = [str(args.csmith_root / "build" / "src" / "csmith"), "--seed", str(csmith_seed), "-o",
+            #csmith_cmd = [str(args.csmith_root / "build" / "src" / "csmith"), "--seed", str(csmith_seed), "-o",
+            #              str(csmith_generated_program)]
+            
+            csmith_cmd = ["csmith", "--seed", str(csmith_seed), "-o",
                           str(csmith_generated_program)]
 
             if run_process_with_timeout(cmd=csmith_cmd, timeout_seconds=args.generator_timeout) is None:
                 print(f"Csmith timed out (seed {csmith_seed})")
                 continue
-
+            subprocess.run(f'cp {csmith_generated_program} test/csmith_prog.c',shell=True)
             '''    
             # Inline some immediate header files into the Csmith-generated program
             prepare_csmith_program(original_program=csmith_generated_program,
@@ -173,6 +183,9 @@ def main():
             c_to_ll_cmd = ['clang',
                            '-S',
                            '-emit-llvm',
+                           csmith_generated_program,
+                           '-I',
+                           args.csmith_include,
                            '-o',
                            unmutated_ll_unoptimised]
             
@@ -192,12 +205,27 @@ def main():
                                                                              timeout_seconds=args.compile_timeout)
             
             print(f'opt result is {opt_result.returncode}')
+            subprocess.run(f'cp {unmutated_program} test/csmith_unmutated.ll',shell=True)
             
-            # use clang to create executable from optimised .ll
+            # use llc to compile .ll to .o
+            llc_compile_cmd = [args.mutated_llc_executable,
+                                '-filetype=obj',
+                                unmutated_program,
+                                '-o',
+                                unmutated_program_obj]
+
+            # execute
+            compile_time_start: float = time.time()
+            llc_compile_result: ProcessResult = run_process_with_timeout(cmd=llc_compile_cmd,
+                                                                             timeout_seconds=args.compile_timeout)
+
+            print(f'llc result is {llc_compile_result.returncode}')
+
+            # use clang to generate executable from .o
             regular_compile_cmd = ['clang',
-                           unmutated_program,
-                           '-o',
-                           generated_program_exe_compiled_with_no_mutants]
+                                unmutated_program_obj,
+                                '-o',
+                                generated_program_exe_compiled_with_no_mutants]
 
             # execute
             compile_time_start: float = time.time()
@@ -205,6 +233,11 @@ def main():
                                                                              timeout_seconds=args.compile_timeout)
             compile_time_end: float = time.time()
             compile_time = compile_time_end - compile_time_start
+
+            print(f'regular compile result is {regular_compile_result.returncode}')
+
+            break
+
 
             if regular_compile_result is None:
                 print("Compiler timeout.")
@@ -215,6 +248,8 @@ def main():
                 print(f"stderr: {regular_compile_result.stderr.decode('utf-8')}")
                 continue
 
+            break
+        
             regular_hash = hash_file(str(generated_program_exe_compiled_with_no_mutants))
 
             run_time_start: float = time.time()
