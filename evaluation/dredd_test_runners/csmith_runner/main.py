@@ -8,9 +8,10 @@ import tempfile
 import time
 import subprocess
 
+from dredd_test_runners.csmith_runner.run_test_with_mutants_csmith import run_test_with_mutants_csmith, KillStatus
 from dredd_test_runners.csmith_runner.prepare_csmith_program import prepare_csmith_program
 from dredd_test_runners.common.run_process_with_timeout import ProcessResult, run_process_with_timeout
-from dredd_test_runners.common.run_test_with_mutants import run_test_with_mutants, KillStatus
+#from dredd_test_runners.common.run_test_with_mutants import run_test_with_mutants, KillStatus
 from dredd_test_runners.common.mutation_tree import MutationTree
 from dredd_test_runners.common.hash_file import hash_file
 
@@ -115,10 +116,12 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
         dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
-        unmutated_ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
+        ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
         unmutated_program = Path(temp_dir_for_generated_code, '__regular_opt.ll')
         unmutated_program_obj = Path(temp_dir_for_generated_code, '__regular_opt.o')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
+        mutant_program = Path(temp_dir_for_generated_code, '__tracking_opt.ll')
+        mutant_obj = Path(temp_dir_for_generated_code, '__tracking_opt.o')
         generated_program_exe_compiled_with_mutant_tracking = Path(temp_dir_for_generated_code, '__tracking.exe')
         mutant_exe = Path(temp_dir_for_generated_code, '__mutant.exe')
 
@@ -137,7 +140,8 @@ def main():
         while still_testing(total_test_time=args.total_test_time,
                             maximum_time_since_last_kill=args.maximum_time_since_last_kill,
                             start_time_for_overall_testing=start_time_for_overall_testing,
-                            time_of_last_kill=time_of_last_kill):
+                            time_of_last_kill=time_of_last_kill):    
+            
             if dredd_covered_mutants_path.exists():
                 os.remove(dredd_covered_mutants_path)
             if csmith_generated_program.exists():
@@ -187,7 +191,7 @@ def main():
                            '-I',
                            args.csmith_include,
                            '-o',
-                           unmutated_ll_unoptimised]
+                           ll_unoptimised]
             
             c_to_ll_result : ProcessResult = run_process_with_timeout(cmd=c_to_ll_cmd,
                                                                              timeout_seconds=args.compile_timeout)
@@ -195,11 +199,11 @@ def main():
             print(f'c to ll result is {c_to_ll_result.returncode}')
 
             # run unmutated opt on program
-            opt_cmd = [args.mutated_compiler_executable,
-                       f'-passes={args.optimisations}',
+            opt_args = [f'-passes={args.optimisations}',
                        '-S',
-                       unmutated_ll_unoptimised,
-                       "-o", unmutated_program]
+                       ll_unoptimised]
+            
+            opt_cmd = [args.mutated_compiler_executable] + opt_args + ["-o", unmutated_program]
             
             opt_result : ProcessResult = run_process_with_timeout(cmd=opt_cmd,
                                                                              timeout_seconds=args.compile_timeout)
@@ -214,7 +218,6 @@ def main():
                                 '-o',
                                 unmutated_program_obj]
 
-            # execute
             compile_time_start: float = time.time()
             llc_compile_result: ProcessResult = run_process_with_timeout(cmd=llc_compile_cmd,
                                                                              timeout_seconds=args.compile_timeout)
@@ -236,8 +239,6 @@ def main():
 
             print(f'regular compile result is {regular_compile_result.returncode}')
 
-            break
-
 
             if regular_compile_result is None:
                 print("Compiler timeout.")
@@ -248,8 +249,6 @@ def main():
                 print(f"stderr: {regular_compile_result.stderr.decode('utf-8')}")
                 continue
 
-            break
-        
             regular_hash = hash_file(str(generated_program_exe_compiled_with_no_mutants))
 
             run_time_start: float = time.time()
@@ -264,17 +263,29 @@ def main():
             if regular_execution_result.returncode != 0:
                 print("Execution of generated program failed without mutants.")
                 continue
+            
+            print(f'regular execution result is {regular_execution_result.returncode}')
+        
 
-            # Compile the program with the mutant tracking compiler.
+            ### Compile the program with the mutant tracking compiler. ###
+
+
             tracking_environment = os.environ.copy()
             tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
-            tracking_compile_cmd = [args.mutant_tracking_compiler_executable]\
-                + compiler_args\
-                + ["-o", generated_program_exe_compiled_with_mutant_tracking]
-            if run_process_with_timeout(cmd=tracking_compile_cmd, timeout_seconds=args.compile_timeout,
-                                        env=tracking_environment) is None:
+
+            # use mutated with tracking opt to optimise .ll -> .ll
+            tracking_compile_cmd = [args.mutant_tracking_compiler_executable] + opt_args + ["-o", generated_program_exe_compiled_with_mutant_tracking]
+            
+            tracking_result = run_process_with_timeout(cmd=tracking_compile_cmd, timeout_seconds=args.compile_timeout,
+                                        env=tracking_environment) 
+            if tracking_result is None:
                 print("Mutant tracking compilation timed out.")
                 continue
+
+            print(f'tracking result is {tracking_result.returncode}')
+            subprocess.run(f'cp {dredd_covered_mutants_path} test/dredd_mutants',shell=True)
+            
+            
 
             # Try to create a directory for this Csmith test. It is very unlikely that it already exists, but this could
             # happen if two test workers pick the same seed. If that happens, this worker will skip the test.
@@ -314,15 +325,21 @@ def main():
                     already_killed_by_other_tests.append(mutant)
                     continue
                 print("Trying mutant " + str(mutant))
-                mutant_result = run_test_with_mutants(mutants=[mutant],
+                mutant_result = run_test_with_mutants_csmith(mutants=[mutant],
                                                       compiler_path=str(args.mutated_compiler_executable),
-                                                      compiler_args=compiler_args,
+                                                      compiler_args=opt_args,
                                                       compile_time=compile_time,
                                                       run_time=run_time,
                                                       binary_hash_non_mutated=regular_hash,
                                                       execution_result_non_mutated=regular_execution_result,
+                                                      mutant_program_path = mutant_program,
+                                                      mutant_obj_path = mutant_obj,
                                                       mutant_exe_path=mutant_exe)
+                
                 print("Mutant result: " + str(mutant_result))
+
+                
+
                 if mutant_result == KillStatus.SURVIVED_IDENTICAL \
                         or mutant_result == KillStatus.SURVIVED_BINARY_DIFFERENCE:
                     covered_but_not_killed_by_this_test.append(mutant)
@@ -343,6 +360,7 @@ def main():
                     print(f"Mutant {mutant} was independently discovered to be killed.")
                     continue
 
+            
             terminating_test_process: bool = not still_testing(
                 total_test_time=args.total_test_time,
                 maximum_time_since_last_kill=args.maximum_time_since_last_kill,

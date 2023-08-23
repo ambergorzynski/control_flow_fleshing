@@ -8,7 +8,7 @@ def main():
     # for each optimisation, call the test runner and pass the relevant arguments
     for mutation in LLVM_OPTS.keys():
         
-        #mutation = 'loop-unroll'
+        mutation = 'loop-unroll'
 
         result = subprocess.run(f'./run_test {mutation}')
         print(f'Result is {result.returncode}')
