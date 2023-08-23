@@ -290,6 +290,13 @@ def main():
                 number_mutants_covered_by_this_test = len(covered_by_this_test)
                 candidate_mutants_for_this_test: List[int] = ([m for m in covered_by_this_test if m not in killed_mutants])
                 print("Number of mutants to try: " + str(len(candidate_mutants_for_this_test)))
+
+                # write mutant summary info to output file
+                with open(f'{workdir}/mutant_summary_{fleshing_test_name}.json', 'w') as outfile:
+                    json.dump({"test_name" : fleshing_test_name,
+                            "total_mutants" : total_mutations,
+                            "n_covered_mutants" : number_mutants_covered_by_this_test},
+                            outfile)
                 
                 
                 already_killed_by_other_tests: List[int] = ([m for m in covered_by_this_test if m in killed_mutants])
