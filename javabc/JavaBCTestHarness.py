@@ -31,8 +31,8 @@ def main():
                         help="specifies whether directions array is known or unknown at compile time [NOT IN USE]")
     parser.add_argument("-lab", type=bool, default=False,
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
-    parser.add_argument("-graph", type=str, default="default",
-                        help="specifies graph generation approach from 'default' or 'xml'.")
+    parser.add_argument("-graph", type=str, default="2",
+                        help="specifies graph generation approach from '1', '2' or 'xml'.")
     args = parser.parse_args()
 
     
@@ -40,6 +40,11 @@ def main():
     time = datetime.now().timestamp()
     basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzzing/{args.folder}' 
     
+    if(args.graph == 'xml'):
+        g = 3
+    else:
+        g = int(args.graph)
+
     filepaths = FilePaths(jvm = args.jvm,
                             jasmin = args.jasmin,
                             base = basePath,
@@ -57,8 +62,8 @@ def main():
                             min_graph_size = 10,
                             max_graph_size = 500,
                             min_successors = 1,
-                            max_successors = 3,
-                            graph_approach = 2 if args.graph == 'default' else 3,
+                            max_successors = 2,
+                            graph_approach = g,
                             max_path_length = 900,
                             n_function_repeats=5000)
     
@@ -73,7 +78,6 @@ def main():
                     min_successors = params.min_successors, 
                     max_successors = params.max_successors, 
                     graph_generation_approach = params.graph_approach, 
-                    n_annotations = None,
                     seed = None)
 
     # Step 2 : generate paths for each graph

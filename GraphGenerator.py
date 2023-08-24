@@ -123,9 +123,12 @@ def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
     return G
 
-def generate_graph_approach_1(n_nodes : int, seed=None, min_successors : int = 1,
-                            max_successors : int = 10, add_annotations : bool =False,
-                            n_annotations : int = 0) -> nx.MultiDiGraph:
+def generate_graph_approach_1(n_nodes : int, 
+                              min_successors : int,
+                              max_successors : int, 
+                              add_annotations : bool =False,
+                              seed=None, 
+                              n_annotations : int = 0) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -162,7 +165,9 @@ def generate_graph_approach_1(n_nodes : int, seed=None, min_successors : int = 1
 
         # randomly choose number of successor nodes
         # default 1 to 10 (to be flexed)
-        n_successors = rand.choice(list(range(min_successors, max_successors)))
+        n_successors = rand.choice(list(range(min_successors, max_successors + 1)))
+        print(f'node successors: {n_successors}')
+
 
         # add successor nodes as children
         # and add to back of queue
@@ -308,9 +313,10 @@ def generate_graphs(graph_filepath : str,
     for i in range(n_graphs):
 
         graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
+        print(f'max successors is {max_successors}')
 
         if graph_generation_approach == 1:
-            graph = generate_graph_approach_1(graph_size, add_annotations=True, n_annotations=n_annotations)
+            graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations=False, n_annotations=n_annotations)
 
         elif graph_generation_approach == 2:
             graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
