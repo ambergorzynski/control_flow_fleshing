@@ -112,7 +112,8 @@ def main():
 
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         fleshing_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.ll')
-        dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
+        #dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
+        dredd_covered_mutants_path: Path = Path('/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/evaluation/__dredd_covered_mutants')
         unmutated_program : Path = Path(temp_dir_for_generated_code, '__regular.ll')
         unmutated_obj : Path = Path(temp_dir_for_generated_code, '__regular.o')
         generated_program_exe_compiled_with_no_mutants = Path(temp_dir_for_generated_code, '__regular.exe')
@@ -123,6 +124,9 @@ def main():
 
         killed_mutants: Set[int] = set()
         unkilled_mutants: Set[int] = set(range(0, mutation_tree.num_mutations))
+
+        print('\nunkilled mutants')
+        print(unkilled_mutants)
 
         # Make a work directory in which information about the mutant killing process will be stored. If this already
         # exists that's OK - there may be other processes working on mutant killing, or we may be continuing a job that
@@ -290,6 +294,9 @@ def main():
                 number_mutants_covered_by_this_test = len(covered_by_this_test)
                 candidate_mutants_for_this_test: List[int] = ([m for m in covered_by_this_test if m not in killed_mutants])
                 print("Number of mutants to try: " + str(len(candidate_mutants_for_this_test)))
+
+                print('\ncovered mutants')
+                print(covered_by_this_test)
 
                 # write mutant summary info to output file
                 with open(f'{workdir}/mutant_summary_{fleshing_test_name}.json', 'w') as outfile:

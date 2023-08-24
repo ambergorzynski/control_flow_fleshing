@@ -115,7 +115,7 @@ def main():
 
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
-        dredd_covered_mutants_path: Path = Path(temp_dir_for_generated_code, '__dredd_covered_mutants')
+        dredd_covered_mutants_path: Path = Path('/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/evaluation/__csmith_dredd_covered_mutants')
         ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
         unmutated_program = Path(temp_dir_for_generated_code, '__regular_opt.ll')
         unmutated_program_obj = Path(temp_dir_for_generated_code, '__regular_opt.o')
@@ -137,10 +137,14 @@ def main():
         Path(f'{workdir}/tests').mkdir(exist_ok=True)
         Path(f'{workdir}/killed_mutants').mkdir(exist_ok=True)
 
+        '''
         while still_testing(total_test_time=args.total_test_time,
                             maximum_time_since_last_kill=args.maximum_time_since_last_kill,
                             start_time_for_overall_testing=start_time_for_overall_testing,
                             time_of_last_kill=time_of_last_kill):    
+        '''
+
+        for n in range(1000):
             
             if dredd_covered_mutants_path.exists():
                 os.remove(dredd_covered_mutants_path)
@@ -269,9 +273,23 @@ def main():
 
             ### Compile the program with the mutant tracking compiler. ###
 
+            # check if covered mutants file exists - if not, then there are no covered mutants
+            # TODO: double check that this is correct
+            csmith_test_name: str = "csmith_" + str(csmith_seed)
 
             tracking_environment = os.environ.copy()
-            tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
+
+            if dredd_covered_mutants_path.exists():
+                tracking_environment = os.environ.copy()
+                tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
+            else:
+                print('There appear to be 0 mutants covered by this test!')
+                with open(f'{workdir}/mutant_summary_{csmith_test_name}.json', 'w') as outfile:
+                    json.dump({"test_name" : csmith_test_name,
+                            "total_mutants" : total_mutations,
+                            "n_covered_mutants" : 0},
+                            outfile)
+                continue
 
             # use mutated with tracking opt to optimise .ll -> .ll
             tracking_compile_cmd = [args.mutant_tracking_compiler_executable] + opt_args + ["-o", generated_program_exe_compiled_with_mutant_tracking]
@@ -289,7 +307,6 @@ def main():
 
             # Try to create a directory for this Csmith test. It is very unlikely that it already exists, but this could
             # happen if two test workers pick the same seed. If that happens, this worker will skip the test.
-            csmith_test_name: str = "csmith_" + str(csmith_seed)
             test_output_directory: Path = Path(f'{workdir}/tests/{csmith_test_name}')
             try:
                 test_output_directory.mkdir()

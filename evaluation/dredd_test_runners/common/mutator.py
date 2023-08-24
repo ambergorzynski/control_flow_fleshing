@@ -100,9 +100,9 @@ def main():
     # apply mutations
     #for mutation in LLVM_OPTS.keys():
         
-    mutation : str = 'default' # for applying single mutation in testing
+    mutation : str = 'lcssa' # for applying single mutation in testing
 
-    print(f'Applying mutation {mutation}...')
+    print(f'Applying mutation {mutation} at {LLVM_OPTS[mutation]}...')
 
     pass_for_mutation : Path = Path(mutated_transforms_path, LLVM_OPTS[mutation])
     mutation_info_file : Path = Path(mutated_info_path,f'{mutation}_mutation_info.json')
