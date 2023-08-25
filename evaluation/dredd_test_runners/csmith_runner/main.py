@@ -167,6 +167,7 @@ def main():
                 print(f"Csmith timed out (seed {csmith_seed})")
                 continue
             subprocess.run(f'cp {csmith_generated_program} test/csmith_prog.c',shell=True)
+            #subprocess.run(f'cp test/helloworld.ll {unmutated_program}',shell=True)
             '''    
             # Inline some immediate header files into the Csmith-generated program
             prepare_csmith_program(original_program=csmith_generated_program,
@@ -186,8 +187,8 @@ def main():
                 + ["-o", generated_program_exe_compiled_with_no_mutants]
 
             '''
-
-            # use clang to get LLVM IR representation of csmith program
+            
+            # use clang to get LLVM IR representation of csmith program: .c -> .ll
             c_to_ll_cmd = ['clang',
                            '-S',
                            '-emit-llvm',
@@ -201,8 +202,8 @@ def main():
                                                                              timeout_seconds=args.compile_timeout)
 
             print(f'c to ll result is {c_to_ll_result.returncode}')
-
-            # run unmutated opt on program
+            
+            # run unmutated opt on program: .ll -> .ll
             opt_args = [f'-passes={args.optimisations}',
                        '-S',
                        ll_unoptimised]
@@ -213,6 +214,7 @@ def main():
                                                                              timeout_seconds=args.compile_timeout)
             
             print(f'opt result is {opt_result.returncode}')
+            
             subprocess.run(f'cp {unmutated_program} test/csmith_unmutated.ll',shell=True)
             
             # use llc to compile .ll to .o
@@ -273,25 +275,13 @@ def main():
 
             ### Compile the program with the mutant tracking compiler. ###
 
-            # check if covered mutants file exists - if not, then there are no covered mutants
-            # TODO: double check that this is correct
             csmith_test_name: str = "csmith_" + str(csmith_seed)
 
             tracking_environment = os.environ.copy()
-
-            if dredd_covered_mutants_path.exists():
-                tracking_environment = os.environ.copy()
-                tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
-            else:
-                print('There appear to be 0 mutants covered by this test!')
-                with open(f'{workdir}/mutant_summary_{csmith_test_name}.json', 'w') as outfile:
-                    json.dump({"test_name" : csmith_test_name,
-                            "total_mutants" : total_mutations,
-                            "n_covered_mutants" : 0},
-                            outfile)
-                continue
+            tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)
 
             # use mutated with tracking opt to optimise .ll -> .ll
+            # this step should generate a mutant tracking file, if any mutants are covered
             tracking_compile_cmd = [args.mutant_tracking_compiler_executable] + opt_args + ["-o", generated_program_exe_compiled_with_mutant_tracking]
             
             tracking_result = run_process_with_timeout(cmd=tracking_compile_cmd, timeout_seconds=args.compile_timeout,
@@ -301,8 +291,18 @@ def main():
                 continue
 
             print(f'tracking result is {tracking_result.returncode}')
-            subprocess.run(f'cp {dredd_covered_mutants_path} test/dredd_mutants',shell=True)
             
+            if not dredd_covered_mutants_path.exists():
+                print('There appear to be 0 mutants covered by this test!')
+                with open(f'{workdir}/mutant_summary_{csmith_test_name}.json', 'w') as outfile:
+                    json.dump({"test_name" : csmith_test_name,
+                            "total_mutants" : total_mutations,
+                            "n_covered_mutants" : 0},
+                            outfile)
+                continue
+            else:
+                subprocess.run(f'cp {dredd_covered_mutants_path} test/dredd_mutants',shell=True)
+
             
 
             # Try to create a directory for this Csmith test. It is very unlikely that it already exists, but this could

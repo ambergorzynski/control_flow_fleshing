@@ -68,18 +68,20 @@ LLVM_OTHER_OPTS : list[str] = ['always-inline',
                     'tailcallelim',
                             ]
 
-LLVM_OPTS : Dict[str, str] = {'loop-unroll' : 'Scalar/LoopUnrollPass.cpp',
-                              'loop-unroll-and-jam' : 'Scalar/LoopUnrollAndJamPass.cpp',
-                              'loop-simplifycfg' : 'Scalar/LoopSimplifyCFG.cpp',
-                              'break-crit-edges' : 'Utils/BreakCriticalEdges.cpp' ,
-                              'adce' : 'Scalar/ADCE.cpp',
-                              'lcssa' : 'Utils/LCSSA.cpp',
-                              'loop-deletion' : 'Scalar/LoopDeletion.cpp' ,
-                              'loop-extract' : 'IPO/LoopExtractor.cpp',
-                              'loop-rotate' : 'Scalar/LoopRotation.cpp',
-                              'structurizecfg' : 'Scalar/StructurizeCFG.cpp',
-                              'mergereturn' : 'Utils/UnifyFunctionExitNodes.cpp',
-                              'default' : 'Utils/BasicBlockUtils.cpp'}
+LLVM_OPTS : Dict[str, str] = {'loop-unroll' : 'Transforms/Scalar/LoopUnrollPass.cpp',
+                              'loop-unroll-and-jam' : 'Transforms/Scalar/LoopUnrollAndJamPass.cpp',
+                              'loop-simplifycfg' : 'Transforms/Scalar/LoopSimplifyCFG.cpp',
+                              'break-crit-edges' : 'Transforms/Utils/BreakCriticalEdges.cpp' ,
+                              'adce' : 'Transforms/Scalar/ADCE.cpp',
+                              'lcssa' : 'Transforms/Utils/LCSSA.cpp',
+                              'loop-deletion' : 'Transforms/Scalar/LoopDeletion.cpp' ,
+                              'loop-extract' : 'Transforms/IPO/LoopExtractor.cpp',
+                              'loop-rotate' : 'Transforms/Scalar/LoopRotation.cpp',
+                              'structurizecfg' : 'Transforms/Scalar/StructurizeCFG.cpp',
+                              'mergereturn' : 'Transforms/Utils/UnifyFunctionExitNodes.cpp',
+                              'basic_blocks' : 'Transforms/Utils/BasicBlockUtils.cpp',
+                              'instcombine' : 'Transforms/InstCombine/InstructionCombining.cpp',
+                              'instcount' : 'Analysis/InstCount.cpp'}
 #                              'simplifycfg' : 'Utils/SimplifyCFG.cpp'} # couldn't build - took too long
 #                              'loop-reduce' : 'Scalar/LoopStrengthReduce.cpp', # couldn't build - took too long
 #                              'licm' : 'Scalar/LICM.cpp', # errors when building
@@ -89,8 +91,8 @@ def main():
 
     llvm_base : Path = Path('/Users/ambergorzynski/dev')
     dredd_exe : Path = Path('/Users/ambergorzynski/dredd-src/dredd/third_party/clang+llvm/bin/dredd')
-    mutated_transforms_path : Path = Path(llvm_base, 'llvm-project-mutated/llvm/lib/Transforms')
-    tracked_transforms_path : Path = Path(llvm_base, 'llvm-project-tracking/llvm/lib/Transforms')
+    mutated_transforms_path : Path = Path(llvm_base, 'llvm-project-mutated/llvm/lib/')
+    tracked_transforms_path : Path = Path(llvm_base, 'llvm-project-tracking/llvm/lib/')
     compilation_db_mutated : Path = Path(llvm_base, 'llvm-project-mutated/build/compile_commands.json')
     compilation_db_tracked : Path = Path(llvm_base, 'llvm-project-tracking/build/compile_commands.json')
     mutated_info_path : Path = Path(llvm_base, 'llvm-project-mutated/llvm/mutation_info')
@@ -100,7 +102,7 @@ def main():
     # apply mutations
     #for mutation in LLVM_OPTS.keys():
         
-    mutation : str = 'lcssa' # for applying single mutation in testing
+    mutation : str = 'instcount' # for applying single mutation in testing
 
     print(f'Applying mutation {mutation} at {LLVM_OPTS[mutation]}...')
 

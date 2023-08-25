@@ -159,6 +159,7 @@ def main():
                 # TODO:Generate a CFG fleshing program here. For now, just cp a test .ll program directly
                 # into the folder fleshing_generated_program
                 cmd = [f'''cp dredd_test_runners/cfg_flesh_runner/fleshing_progs/llvm/run_cfg_{graph}_path_{path}.ll {fleshing_generated_program}''']
+
                 subprocess.run(cmd, shell=True)
 
                 
