@@ -12,7 +12,7 @@ sys.path.append('../control_flow_fleshing')
 from GraphGenerator import *
 from CFG import *
 from LLVMProgramGenerator import *
-from LLVMRunner import *
+from LLVMRunner_tidy import *
 from Utils import *
 
 def main():
@@ -126,7 +126,7 @@ def main():
     # Step 4 : run tests
     test = LLVMRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
     
-    test.run()
+    test.run('run_cfg_0_path_0','input_graph_0_path_0')
 
 
 def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:
