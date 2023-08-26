@@ -83,7 +83,7 @@ class LLVMRunner():
                                     'tailcallelim',
                                     ]
 
-    def run(self, test_name : str, path_name : str) -> None:
+    def run(self, test_name : str, path_name : str) -> int:
         '''
             Function runs the compilation and execution process for the given
             parameters and filepaths
@@ -93,7 +93,7 @@ class LLVMRunner():
 
         if wrapper_result != 0:
             print('Wrapper compilation failed!')
-            return
+            return 1
 
         print('Wrapper compilation succeeded!')
 
@@ -101,7 +101,7 @@ class LLVMRunner():
 
         if compilation_result != 0:
             print('Compilation failed!')
-            return
+            return 1
         
         print('Test compilation succeeded!')
         
@@ -109,9 +109,10 @@ class LLVMRunner():
 
         if exe_result != 0:
             print('Execution failed!')
-            return
+            return 1
         
         print('Execution succeeded!')
+        return 0
 
 
     def compile_wrapper(self) -> int:
