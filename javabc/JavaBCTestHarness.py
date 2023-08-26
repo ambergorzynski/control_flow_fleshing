@@ -113,9 +113,9 @@ def main():
                 program_generator.fleshout_dirs_known(cfg, directions)
 
                 # make directory for test case 
-                subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}_path_{p}', shell=True)
+                subprocess.run(f'mkdir {filepaths.program_filepath}/run_cfg_{i}_path_{p}', shell=True)
 
-                program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}_path_{p}/run_cfg_{i}_path_{p}.j')
+                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}/run_cfg_{i}_path_{p}.j')
         
 
     # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
@@ -130,10 +130,10 @@ def main():
             program_generator.fleshout_no_reflection(cfg, i)
 
             # make directory for test case 
-            subprocess.run(f'mkdir {filepaths.program_filepath}/test{i}', shell=True)
+            subprocess.run(f'mkdir {filepaths.program_filepath}/run_cfg_{i}', shell=True)
 
             # save in separate folder for classpath
-            program_generator.save_to_file(f'{filepaths.program_filepath}/test{i}/run_cfg_{i}.j')
+            program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}/run_cfg_{i}.j')
     
 
     
