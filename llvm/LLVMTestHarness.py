@@ -12,7 +12,7 @@ sys.path.append('../control_flow_fleshing')
 from GraphGenerator import *
 from CFG import *
 from LLVMProgramGenerator import *
-from LLVMRunner_tidy2 import *
+from LLVMRunner import *
 from Utils import *
 
 def main():
