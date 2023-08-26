@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 	output_file_differences.open(argv[3], ios::app);
 
 	// directions are not passed to fn because they are hard-coded already
-    for(int i = 0; i <1; i++){
+    for(int i = 0; i <2000; i++){
         
 	    run_cfg(actual_output);
 	    result = cmp(expected_output, actual_output, size);

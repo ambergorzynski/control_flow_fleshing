@@ -1,4 +1,6 @@
 #!/bin/sh
 output=$1
-clang++ -emit-llvm -S llvm/Wrapper.cpp -o $output/Wrapper.ll
-llvm-as $output/Wrapper.ll -o $output/Wrapper.bc
+jvm=$2
+export JAVA_HOME=$jvm
+export LLVM_TOOLCHAIN=$($JAVA_HOME/bin/lli --print-toolchain-path)
+$LLVM_TOOLCHAIN/clang++ -c llvm/WrapperGraalvm.cpp -o $output_path/Wrapper.o
