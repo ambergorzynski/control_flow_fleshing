@@ -12,7 +12,7 @@ sys.path.append('../control_flow_fleshing')
 from GraphGenerator import *
 from CFG import *
 from JavaBCProgramGenerator import *
-from JavaBCRunner import *
+from JavaBCRunner_tidy import *
 from Utils import *
 
 def main():
@@ -33,6 +33,8 @@ def main():
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="2",
                         help="specifies graph generation approach from '1', '2' or 'xml'.")
+    parser.add_argument("-ref", type=bool, default=False,
+                        help="specifies whether the test cases should use reflection or be statically compiled")
     args = parser.parse_args()
 
     
@@ -65,7 +67,8 @@ def main():
                             max_successors = 2,
                             graph_approach = g,
                             max_path_length = 900,
-                            n_function_repeats=5000)
+                            n_function_repeats=5000,
+                            with_reflection=args.ref)
     
     # Setup
     create_folders(basePath)
@@ -118,7 +121,7 @@ def main():
                 program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}/run_cfg_{i}_path_{p}.j')
         
 
-    # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
+    # directions are unknown at compile time - means we flesh n_graphs programs (1 for each graph)
     elif(args.dir == 'unknown'):
 
         for i in range(params.n_graphs):
@@ -140,10 +143,53 @@ def main():
 
     # Step 4 : run tests
     test = JavaBCRunner(filepaths, params, directions = args.dir)
-    
-    test.run()
-    
 
+    if args.dir == 'known':
+    
+        for i in range(params.n_graphs):
+            
+            graph_passed_tests = True
+
+            for j in range(params.n_paths):
+
+                test_name = f'run_cfg_{i}_path_{j}'
+        
+                test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
+
+                # remove files if test passed
+                if test_result == 0:
+                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+                    clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
+                else:
+                    graph_passed_tests=False
+
+            if graph_passed_tests:
+                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+
+    else:
+        for i in range(params.n_graphs):
+
+            graph_passed_tests = True
+            test_name = f'run_cfg_{i}'
+
+            for j in range(params.n_paths):
+        
+                test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
+
+                if test_result == 0:
+                    clean_up(f'{filepaths.path_filepath}/input_graph{i}_path{j}.txt')
+                else:
+                    graph_passed_tests = False
+
+            if graph_passed_tests:
+                clean_up(f'{filepaths.program_filepath}/{test_name}*')
+                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+
+def clean_up(filepath : str):
+    subprocess.run(f'rm {filepath}', shell=True)
+
+def clean_up_folder(folderpath : str):
+    subprocess.run(f'rm -rf {folderpath}', shell=True)
 
 def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:
         
