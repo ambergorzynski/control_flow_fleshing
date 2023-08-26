@@ -32,9 +32,17 @@ int main(int argc, char** argv) {
 	    run_cfg(actual_output);
 	    result = cmp(expected_output, actual_output, size);
 
-        // record output if a difference between expected and actual was found
+        // record output and return if a difference between expected and actual was found
         if(!result){
             record_output(output_file_differences, argv[1], result, expected_output, actual_output, size);
+			
+			// deallocate memory for dynamic arrays
+			delete [] directions;
+			delete [] actual_output;
+			delete [] expected_output;
+
+			// return 1 if difference found - change this to exception
+			return 1;
         }
     }
 
@@ -42,11 +50,6 @@ int main(int argc, char** argv) {
 
 	// record all output
 	record_output(output_file, argv[1], result, expected_output, actual_output, size);
-
-	// record output if a difference between expected and actual was found
-	if(!result){
-		record_output(output_file_differences, argv[1], result, expected_output, actual_output, size);
-	}
 
 	output_file.close();
 	output_file_differences.close();

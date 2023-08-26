@@ -46,7 +46,12 @@ int main(int argc, char** argv) {
 	delete [] directions;
 	delete [] actual_output;
 	delete [] expected_output;
-
+	
+	// return 1 if difference found - change to execption
+	if(!result){
+		return 1;
+	}
+	
 	return 0;
 }
 

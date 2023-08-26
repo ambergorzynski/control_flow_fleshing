@@ -93,16 +93,26 @@ class LLVMRunner():
 
         if wrapper_result != 0:
             print('Wrapper compilation failed!')
+            return
+
+        print('Wrapper compilation succeeded!')
 
         compilation_result = self.compile_test(test_name)
 
         if compilation_result != 0:
             print('Compilation failed!')
-
+            return
+        
+        print('Test compilation succeeded!')
+        
         exe_result = self.execute_test(test_name, path_name)
 
         if exe_result != 0:
             print('Execution failed!')
+            return
+        
+        print('Execution succeeded!')
+
 
     def compile_wrapper(self) -> int:
 
