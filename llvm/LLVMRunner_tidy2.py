@@ -99,7 +99,7 @@ class LLVMRunner():
         if compilation_result != 0:
             print('Compilation failed!')
 
-        exe_result = self.execute_test()
+        exe_result = self.execute_test(test_name, path_name)
 
         if exe_result != 0:
             print('Execution failed!')
@@ -169,10 +169,10 @@ class LLVMRunner():
             
         else:
             
-            cmd = [f'{self.filepaths.exe_filepath}/{test_name}_out \
+            cmd = [f'''{self.filepaths.exe_filepath}/{test_name}_out \
                     {self.filepaths.path_filepath}/{path_name}.txt \
                     {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt \
-                    {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt']
+                    {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt''']
                     
         result = subprocess.run(cmd, shell=True)
         return result.returncode
