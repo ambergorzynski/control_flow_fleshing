@@ -1,15 +1,9 @@
 #!/bin/sh
-output=$1
-llvm=$2
-name=$3
-optimisations=$4
-graalvm=/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.8+9.1/Contents/Home
-
-# assemble optimised llvm ir file to llvm bc
-llvm-as $llvm/${name}.ll -o $llvm/${name}.bc
-
-# link wrapper with test program
-llvm-link $llvm/${name}.bc $output/Wrapper.bc -o $output/${name}_out.bc
-
-# execute using graal llvm runtime 
-${graalvm}/bin/lli $output/${name}_out.bc
+output_path=$1
+llvm_path=$2
+prog_name=$3
+jvm=$4
+export JAVA_HOME=$jvm
+export LLVM_TOOLCHAIN=$($JAVA_HOME/bin/lli --print-toolchain-path)
+$LLVM_TOOLCHAIN/clang++ -c $llvm_path/${prog_name}.ll -o $llvm_path/${prog_name}.o
+$LLVM_TOOLCHAIN/clang++ $llvm_path/${prog_name}.o $output_path/Wrapper.o -o $output_path/${prog_name}_out
