@@ -103,9 +103,8 @@ def main():
         for j in range(params.n_paths):
     
             test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
-
             if test_result == 0:
-                clean_up(f'{filepaths.path_filepath}/input_graph{i}_path{j}.txt')
+                clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
             else:
                 graph_passed_tests = False
 
