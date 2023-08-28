@@ -80,94 +80,38 @@ def main():
 
     # Step 3 : flesh graphs
     program_generator = CILProgramGenerator()
+   
+    for i in range(params.n_graphs):
+            
+        graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
 
-    # directions are known at compile time - means we flesh n_graphs*m_paths programs
-    if(args.dir == 'known'):
-        
-        # TODO: create java bc program generator with known directions array
-        
-        for i in range(params.n_graphs):
-        
-            # load graph                    
-            graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
+        cfg = CFG(graph)
 
-            cfg = CFG(graph)
+        program_generator.fleshout(cfg, i)
 
-            for p in range(params.n_paths):
+        program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.cil')
 
-                directions = read_in_dirs(i, p, filepaths)
-
-                program_generator.fleshout_dirs_known(cfg, directions)
-
-                # make directory for test case 
-                subprocess.run(f'mkdir {filepaths.program_filepath}/run_cfg_{i}_path_{p}', shell=True)
-
-                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}/run_cfg_{i}_path_{p}.j')
-        
-
-    # directions are unknown at compile time - means we flesh n_graphs programs (1 for each graph)
-    elif(args.dir == 'unknown'):
-
-        for i in range(params.n_graphs):
-                
-            graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
-
-            cfg = CFG(graph)
-
-            program_generator.fleshout_no_reflection(cfg, i)
-
-            # make directory for test case 
-            subprocess.run(f'mkdir {filepaths.program_filepath}/run_cfg_{i}', shell=True)
-
-            # save in separate folder for classpath
-            program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}/run_cfg_{i}.j')
-    
-
-    
 
     # Step 4 : run tests
-    test = JavaBCRunner(filepaths, params, directions = args.dir)
+    test = CILRunner(filepaths, params)
 
-    if args.dir == 'known':
+    for i in range(params.n_graphs):
+
+        graph_passed_tests = True
+        test_name = f'run_cfg_{i}'
+
+        for j in range(params.n_paths):
     
-        for i in range(params.n_graphs):
-            
-            graph_passed_tests = True
+            test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
 
-            for j in range(params.n_paths):
+            if test_result == 0:
+                clean_up(f'{filepaths.path_filepath}/input_graph{i}_path{j}.txt')
+            else:
+                graph_passed_tests = False
 
-                test_name = f'run_cfg_{i}_path_{j}'
-        
-                test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
-
-                # remove files if test passed
-                if test_result == 0:
-                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                    clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
-                else:
-                    graph_passed_tests=False
-
-            if graph_passed_tests:
-                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
-
-    else:
-        for i in range(params.n_graphs):
-
-            graph_passed_tests = True
-            test_name = f'run_cfg_{i}'
-
-            for j in range(params.n_paths):
-        
-                test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
-
-                if test_result == 0:
-                    clean_up(f'{filepaths.path_filepath}/input_graph{i}_path{j}.txt')
-                else:
-                    graph_passed_tests = False
-
-            if graph_passed_tests:
-                clean_up(f'{filepaths.program_filepath}/{test_name}*')
-                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+        if graph_passed_tests:
+            clean_up(f'{filepaths.program_filepath}/{test_name}*')
+            clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
 def clean_up(filepath : str):
     subprocess.run(f'rm {filepath}', shell=True)

@@ -10,7 +10,7 @@ class CILProgramGenerator(ProgramGenerator):
         self.cfg = None
         self.fleshed_graph = None
 
-    def fleshout(self, cfg : CFG, directions : list[int] = None) -> str:
+    def fleshout(self, cfg : CFG, prog_number : int) -> str:
 
         ''' 
             converts control flow graph to CIL
@@ -21,7 +21,7 @@ class CILProgramGenerator(ProgramGenerator):
         self.fleshed_graph = None
 
         # all programs have common start
-        self.fleshed_graph = self.flesh_program_start(directions)
+        self.fleshed_graph = self.flesh_program_start(prog_number)
 
         for n in cfg.graph:
 
@@ -38,10 +38,10 @@ class CILProgramGenerator(ProgramGenerator):
                 self.fleshed_graph += self.flesh_unconditional_node(n)
 
             elif(n_successors == 2):
-                self.fleshed_graph += self.flesh_conditional_node(n, directions)
+                self.fleshed_graph += self.flesh_conditional_node(n)
 
             elif(n_successors > 2):
-                self.fleshed_graph += self.flesh_switch_node(n, n_successors, directions)
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
 
         # add closing phrase to program
         self.fleshed_graph += self.flesh_end()
@@ -241,3 +241,16 @@ class CILProgramGenerator(ProgramGenerator):
         return '''
     }
 }'''
+
+    def save_to_file(self, filename : str) -> bool:
+        ''' 
+            writes CFG to given file 
+            returns true if file write is successful
+            false otherwise
+        '''
+
+        file = open(filename, "w")
+        file.write(self.fleshed_graph)
+        file.close()
+
+        return True
