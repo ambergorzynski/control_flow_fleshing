@@ -8,6 +8,7 @@ class FilePaths():
                  jvm : str,
                  jasmin : str,
                  base : str,
+                 absolute_filepath : str,
                  graph_filepath : str,
                  src_filepath : str,
                  program_filepath : str,
@@ -20,6 +21,7 @@ class FilePaths():
         self.jasmin : str = jasmin
         self.base : str = base
         self.graph_filepath : str = graph_filepath
+        self.absolute_filepath : str = absolute_filepath
         self.src_filepath : str = src_filepath
         self.program_filepath : str = program_filepath
         self.path_filepath : str = path_filepath
