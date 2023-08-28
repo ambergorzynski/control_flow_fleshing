@@ -1,6 +1,6 @@
 from CFG import CFG
 from ProgramGenerator import ProgramGenerator
-from Utils import *
+from llvm.Utils import *
 
 class LLVMProgramGenerator(ProgramGenerator):
 

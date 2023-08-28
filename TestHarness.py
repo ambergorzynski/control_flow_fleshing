@@ -9,8 +9,9 @@ from aux_tools.program_comparator import compare_optimised
 from enum import Enum
 import subprocess
 from llvm.LLVMProgramGenerator import *
-from cil.CILProgramGenerator import *
+#from cil.CILProgramGenerator import *
 from javabc.JavaBCProgramGenerator import *
+from ProgramGenerator import CILGenerator
 
 class Language(Enum):
     LLVM  = 0
@@ -129,7 +130,7 @@ class Fuzzer():
             filetype = 'j'
         
         elif(self.language == Language.CIL):
-            program_generator = CILProgramGenerator()
+            program_generator = CILGenerator()
             filetype = 'il'
         
         if not statically_known_directions:
@@ -171,7 +172,7 @@ class Fuzzer():
             filetype = 'j'
         
         elif(self.language == Language.CIL):
-            program_generator = CILProgramGenerator()
+            program_generator = CILGenerator()
             filetype = 'il'
         
 
@@ -846,6 +847,7 @@ def main():
 
     else:
         language = parse_lang(args[0])
+        print(language)
         n_tests = int(args[1])
         folder = args[2]
         

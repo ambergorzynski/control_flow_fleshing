@@ -43,7 +43,7 @@ class CILRunner():
         # check if wrapper has already been compiled; only need to compile once
         wrapper_path = Path(f'{self.filepaths.program_filepath}/Wrapper.cs')
 
-        if not wrapper_path.exists():
+        if wrapper_path.exists():
 
             wrapper_cmd = [f'''./cil/compile_wrapper_cil.sh {self.filepaths.src_filepath}''']
             
@@ -59,14 +59,14 @@ class CILRunner():
 
         return result.returncode
         
-    def execute_test(self, test_number : int, path_name : str, n_function_repeats : int) -> int:
+    def execute_test(self, test_number : int, path_name : str) -> int:
         
         exe_cmd = [f'''./cil/execute_test_cil.sh {self.filepaths.src_filepath} \
                     {test_number} \
                     {path_name} \
                     {self.filepaths.results_name} \
                     {self.filepaths.bug_results_name} \
-                    {n_function_repeats} \
+                    {self.params.n_function_repeats} \
                     {self.filepaths.absolute_filepath} ''']
         
         exe_result = subprocess.run(exe_cmd, shell=True)

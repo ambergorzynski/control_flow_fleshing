@@ -34,11 +34,11 @@ def main():
     basePath = f'cil/fuzzing/{args.folder}'
 
     filepaths = FilePaths(base = basePath,
-                            absolute_filepath=f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/src/testing',
+                            absolute_filepath=f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/{basePath}/proj/testing/',
                             graph_filepath = f'{basePath}/graphs',
-                            src_filepath = f'{basePath}/src',
-                            program_filepath= f'{basePath}/src/testing',
-                            path_filepath = f'{basePath}/src/paths',
+                            src_filepath = f'{basePath}/proj',
+                            program_filepath = f'{basePath}/proj/testing',
+                            path_filepath = f'{basePath}/proj/paths',
                             output_filepath = f'{basePath}/output',
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}')
@@ -50,7 +50,7 @@ def main():
                             max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 2,
-                            graph_approach = args.graph,
+                            graph_approach = int(args.graph),
                             max_path_length = 900,
                             n_function_repeats=5000)
     
@@ -79,7 +79,7 @@ def main():
 
 
     # Step 3 : flesh graphs
-    program_generator = CILProgramGenerator()
+    program_generator = CILProgramGenerator(params)
    
     for i in range(params.n_graphs):
             
@@ -89,7 +89,7 @@ def main():
 
         program_generator.fleshout(cfg, i)
 
-        program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.cil')
+        program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.il')
 
 
     # Step 4 : run tests
@@ -135,7 +135,7 @@ def create_folders(basePath : str, ) -> None:
     print('Setting up folders...')
 
     cmd = f'mkdir {basePath}'
-    cmd += f' ;mkdir{basePath}/graphs'
+    cmd += f' ;mkdir {basePath}/graphs'
     cmd += f' ;mkdir {basePath}/proj'
     cmd += f' ;mkdir {basePath}/proj/output'
     cmd += f' ;mkdir {basePath}/proj/paths'
