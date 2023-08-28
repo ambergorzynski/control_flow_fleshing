@@ -5,8 +5,6 @@ class FilePaths():
     '''
 
     def __init__(self,
-                 jvm : str,
-                 jasmin : str,
                  base : str,
                  absolute_filepath : str,
                  graph_filepath : str,
@@ -17,8 +15,6 @@ class FilePaths():
                  results_name : str,
                  bug_results_name : str):
         
-        self.jvm : str = jvm
-        self.jasmin : str = jasmin
         self.base : str = base
         self.graph_filepath : str = graph_filepath
         self.absolute_filepath : str = absolute_filepath
@@ -43,8 +39,7 @@ class FuzzingParams():
                 max_successors : int,
                 graph_approach : int, # can be 1 or 2
                 max_path_length : int,
-                n_function_repeats : int,
-                with_reflection : bool):
+                n_function_repeats : int):
         
         self.n_graphs : int = n_graphs
         self.n_paths : int = n_paths
@@ -55,4 +50,3 @@ class FuzzingParams():
         self.graph_approach : int = graph_approach # can be 1 or 2
         self.max_path_length : int = max_path_length
         self.n_function_repeats : int = n_function_repeats
-        self.with_reflection : bool = with_reflection
