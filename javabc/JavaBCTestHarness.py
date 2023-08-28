@@ -1,4 +1,4 @@
-import argparse
+import argparse 
 import sys
 import networkx as nx
 import subprocess
@@ -99,9 +99,7 @@ def main():
 
     # directions are known at compile time - means we flesh n_graphs*m_paths programs
     if(args.dir == 'known'):
-        
-        # TODO: create java bc program generator with known directions array
-        
+                
         for i in range(params.n_graphs):
         
             # load graph                    
