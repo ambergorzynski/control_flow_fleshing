@@ -1,7 +1,53 @@
+from CFG import CFG
 from ProgramGenerator import ProgramGenerator
+from Utils import *
 
 
 class CILProgramGenerator(ProgramGenerator):
+
+    def __init__(self, params : FuzzingParams):
+        self.params = params
+        self.cfg = None
+        self.fleshed_graph = None
+
+    def fleshout(self, cfg : CFG, directions : list[int] = None) -> str:
+
+        ''' 
+            converts control flow graph to CIL
+            returns str containing CIL program
+        '''
+
+        self.cfg = cfg
+        self.fleshed_graph = None
+
+        # all programs have common start
+        self.fleshed_graph = self.flesh_program_start(directions)
+
+        for n in cfg.graph:
+
+            # store node label in output array for every node visited
+            self.fleshed_graph += self.flesh_start_of_node(n)
+
+            # write remaining block code based on number of successor nodes
+            n_successors = self.cfg.successors(n)
+
+            if(n_successors == 0):
+                self.fleshed_graph += self.flesh_exit_node(n)
+            
+            elif(n_successors == 1):
+                self.fleshed_graph += self.flesh_unconditional_node(n)
+
+            elif(n_successors == 2):
+                self.fleshed_graph += self.flesh_conditional_node(n, directions)
+
+            elif(n_successors > 2):
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors, directions)
+
+        # add closing phrase to program
+        self.fleshed_graph += self.flesh_end()
+
+        return self.fleshed_graph
+
 
     def flesh_program_start(self, prog_number=None) -> str:
         code = """.assembly extern mscorlib
