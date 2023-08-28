@@ -13,56 +13,55 @@ class JavaBCRunner():
         self.params : FuzzingParams = params
         self.directions : str = directions
 
-    def run(self) -> None:
+    def run(self, test_name : str, test_id : int, path_name : str) -> int:
         '''
             Function runs the compilation and execution process for the given
             parameters and filepaths
         '''
 
-        #TODO: add different JVM options
+        compile_result = self.compile_test(test_name)
 
-        # directions are unknown at compile time then compile each graph (paths are passed as params)
-        if (self.directions=='unknown'):
+        if compile_result != 0:
+            print('Compilation failed!')
+            return 1
+        
+        exe_result = self.execute_test(test_name, test_id, path_name)
+        
+        if exe_result != 0:
+            print('Execution failed!')
+            return 1
+        
+        return 0
 
-            for i in range(self.params.n_graphs):
+    def compile_test(self, test_name : str) -> int:
 
-                # pre-compile wrapper and test together
-                self.compile_no_ref(f'{i}')
-
-                for j in range(self.params.n_paths):
-
-                    self.execute_no_ref(test_id=i, path_name=f'input_graph_{i}_path{j}')
-
-        # directions are known at compile time then compile each graph-path pair
-        elif (self.directions=='known'):
+        if self.params.with_reflection:
             
-            for i in range(self.params.n_graphs):
+            wrapper_cmd = [f'''./javabc/compile_wrapper_java.sh {self.filepaths.src_filepath} {self.filepaths.jvm}''']
+            wrapper_result = subprocess.run(wrapper_cmd, shell=True)
 
-                for j in range(self.params.n_paths):
+            if wrapper_result.returncode != 0:
+                return wrapper_result.returncode
 
-                    self.compile_no_ref(f'{i}_path_{j}')
+            compile_cmd = [f'''./javabc/compile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
+            compile_result = subprocess.run(compile_cmd, shell=True)
 
-                    # execute
-                    self.execute_no_ref(test_id=f'{i}_path_{j}', path_name=f'input_graph_{i}_path{j}')
+            return compile_result.returncode
+        
+        else:
+            compile_cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
+            compile_result = subprocess.run(compile_cmd, shell=True)
 
+            return compile_result.returncode
+            
+    def execute_test(self, test_name : str, test_id : int, path_name : str) -> int:
+        
+        if self.params.with_reflection:
+            exe_cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {n_function_repeats} {self.filepaths.jvm}''']
 
+        else:
+            exe_cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
+        
+        result = subprocess.run(exe_cmd, shell=True)
 
-    def compile_wrapper(self) -> None:
-        cmd = [f'''./javabc/compile_wrapper_java.sh {self.filepaths.src_filepath} {self.filepaths.jvm}''']
-        result = subprocess.run(cmd, shell=True)
-
-    def compile_test(self, test_name : str) -> None:
-        cmd = [f'''./javabc/compile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
-        result = subprocess.run(cmd, shell=True)
-
-    def compile_no_ref(self, test_id : int) -> None:
-        cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_id} {self.filepaths.jvm} {self.filepaths.jasmin}''']
-        result = subprocess.run(cmd, shell=True)
-
-    def execute(self, test_id : str, path_name : str, n_function_repeats : int) -> None:
-        cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {n_function_repeats} {self.filepaths.jvm}''']
-        result = subprocess.run(cmd, shell=True)
-
-    def execute_no_ref(self, test_id : str, path_name : str) -> None:
-        cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
-        result = subprocess.run(cmd, shell=True)
+        return result.returncode

@@ -12,7 +12,7 @@ sys.path.append('../control_flow_fleshing')
 from GraphGenerator import *
 from CFG import *
 from JavaBCProgramGenerator import *
-from JavaBCRunner_tidy import *
+from JavaBCRunner import *
 from Utils import *
 
 def main():
