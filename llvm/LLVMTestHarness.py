@@ -41,7 +41,7 @@ def main():
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'llvm/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/llvm/fuzzing/{args.folder}'
+    basePath = f'llvm/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/llvm/fuzz/{args.folder}'
 
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
