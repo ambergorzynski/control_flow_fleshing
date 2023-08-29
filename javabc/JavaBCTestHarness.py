@@ -33,15 +33,22 @@ def main():
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="2",
                         help="specifies graph generation approach from '1', '2' or 'xml'.")
+    parser.add_argument("-annotations", type = bool, default = True,
+                        help='specifies whether graph approach should include annotations')
+    parser.add_argument("-n_annotations", type = int, default = -1,
+                        help="specifies the number of annotations to add. Default is to add 1/5 of the number of nodes in the graph")
     parser.add_argument("-ref", type=bool, default=False,
                         help="specifies whether the test cases should use reflection or be statically compiled")
+    parser.add_argument("-decompiler_path", type=str, default=None,
+                        help="specifies the path to the decompiler")
     args = parser.parse_args()
 
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzzing/{args.folder}' 
+    basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzz/{args.folder}' 
     
+    # parsing args
     if(args.graph == 'xml'):
         g = 3
     else:
@@ -56,7 +63,8 @@ def main():
                             path_filepath = f'{basePath}/src/paths',
                             output_filepath = f'{basePath}/output',
                             results_name = f'results_{time}',
-                            bug_results_name = f'bugs_{time}')
+                            bug_results_name = f'bugs_{time}',
+                            decompiler_path= args.decompiler_path)
 
     params = FuzzingParams(
                             n_graphs = args.n_graphs,
@@ -66,6 +74,8 @@ def main():
                             min_successors = 1,
                             max_successors = 2,
                             graph_approach = g,
+                            add_annotations = args.add_annotations,
+                            n_annotations = args.n_annotations,
                             max_path_length = 900,
                             n_function_repeats=5000,
                             with_reflection=args.ref)
@@ -81,6 +91,8 @@ def main():
                     min_successors = params.min_successors, 
                     max_successors = params.max_successors, 
                     graph_generation_approach = params.graph_approach, 
+                    add_annotations= params.add_annotations,
+                    n_annotations=params.n_annotations,
                     seed = None)
 
     # Step 2 : generate paths for each graph

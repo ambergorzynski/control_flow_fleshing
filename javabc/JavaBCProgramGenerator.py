@@ -10,8 +10,8 @@ class JavaBCProgramGenerator(ProgramGenerator):
     def fleshout_no_reflection(self, cfg : CFG, prog_number=None):
 
         ''' 
-            converts control flow graph to LLVM IR 
-            returns str containing LLVM IR program
+            converts control flow graph to Java bytecode
+            returns str containing Java bytecode program
             and saves as member variable
         '''
 
