@@ -99,7 +99,7 @@ def main():
 
             program_generator.fleshout(cfg=cfg, directions=directions)
 
-            program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
+            program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.c')
 
     '''
 

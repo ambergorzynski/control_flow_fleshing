@@ -82,7 +82,7 @@ class CProgramGenerator(ProgramGenerator):
             int out_counter = 0;
             
             // set up directions array
-            int dir[{dir_size}]={{'''.format(dir_size = l)
+            int directions[{dir_size}]={{'''.format(dir_size = l)
 
         #fill in directions array
         for i, d in enumerate(directions):
@@ -166,7 +166,7 @@ class CProgramGenerator(ProgramGenerator):
         '''
         pass
         code = '''
-            switch(directions[dir_counter++]){{'''
+            switch(directions[dir_counter++]){'''
         
         for child in range(n_successors):
              code += '''
@@ -182,3 +182,17 @@ class CProgramGenerator(ProgramGenerator):
     def flesh_end(self) -> str:
         return '''
         }'''
+
+
+    def save_to_file(self, filename : str) -> bool:
+        ''' 
+            writes CFG to given file 
+            returns true if file write is successful
+            false otherwise
+        '''
+
+        file = open(filename, "w")
+        file.write(self.fleshed_graph)
+        file.close()
+
+        return True
