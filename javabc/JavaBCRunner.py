@@ -25,6 +25,21 @@ class JavaBCRunner():
             print('Compilation failed!')
             return 1
         
+        # if we are using a decompiler, then include additional step to de- and re- compile test
+        if self.filepaths.decompiler_path != None:
+            
+            decompile_result = self.decompile_test(test_name)
+
+            if decompile_result != 0:
+                print('Decompilation failed!')
+                return 1
+            
+            recompile_result = self.recompile_test(test_name)
+
+            if recompile_result != 0:
+                print('Recompilation failed!')
+                return 1
+        
         exe_result = self.execute_test(test_name, test_id, path_name)
         
         if exe_result != 0:
@@ -53,6 +68,12 @@ class JavaBCRunner():
             compile_result = subprocess.run(compile_cmd, shell=True)
 
             return compile_result.returncode
+        
+    def decompile_test(self, test_name : str) -> int:
+        pass
+
+    def recompile_test(self, test_name : str) -> int:
+        pass
             
     def execute_test(self, test_name : str, test_id : int, path_name : str) -> int:
         
