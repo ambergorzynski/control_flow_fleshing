@@ -41,6 +41,8 @@ def main():
                         help="specifies whether the test cases should use reflection or be statically compiled")
     parser.add_argument("-decompiler_path", type=str, default=None,
                         help="specifies the path to the decompiler")
+    parser.add_argument("-successors", type=int, default=3,
+                        help="max successor nodes added during graph generation")
     args = parser.parse_args()
 
     
@@ -72,7 +74,7 @@ def main():
                             min_graph_size = 10,
                             max_graph_size = 500,
                             min_successors = 1,
-                            max_successors = 2,
+                            max_successors = args.successors,
                             graph_approach = g,
                             add_annotations = args.add_annotations,
                             n_annotations = args.n_annotations,
@@ -168,15 +170,14 @@ def main():
 
                 # remove files if test passed
                 if test_result == 0:
-                    #clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                    #clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
-                    pass
+                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+                    clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
                 else:
                     graph_passed_tests=False
 
             if graph_passed_tests:
-                #clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
-                pass
+                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+
 
     else:
         for i in range(params.n_graphs):
