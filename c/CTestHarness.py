@@ -101,62 +101,35 @@ def main():
 
             program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.c')
 
-    '''
+    
 
     # Step 4 : run tests
-    test = CRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
+    test = CRunner(filepaths, params)
 
-    # if dirs are known at compile time, then loop over all graph*path combinations 
-    if args.dir == 'known':
+    for i in range(params.n_graphs):
 
-        for i in range(params.n_graphs):
+        # use bool to keep track of whether we need to store the graph or can delete
+        graph_passed_tests = True
 
-            # use bool to keep track of whether we need to store the graph or can delete
-            graph_passed_tests = True
+        for j in range(params.n_paths):
 
-            for j in range(params.n_paths):
+            test_name = f'run_cfg_{i}_path_{j}' 
 
-                test_name = f'run_cfg_{i}_path_{j}' 
+            test_result = test.run(test_name,f'input_graph_{i}_path{j}')
 
-                test_result = test.run(test_name,f'input_graph_{i}_path{j}')
-
-                # clean up and delete files if test compiled end executed OK
-                if test_result == 0:
-                     clean_up(f'{filepaths.program_filepath}/{test_name}.*')
-                     clean_up(f'{filepaths.output_filepath}/{test_name}*')
-                     clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                else:
-                     graph_passed_tests = False
-                     
-            # if all tests passed for this graph, then remove graph
-            if graph_passed_tests:
-                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+            # clean up and delete files if test compiled end executed OK
+            if test_result == 0:
+                    clean_up(f'{filepaths.program_filepath}/{test_name}.*')
+                    clean_up(f'{filepaths.output_filepath}/{test_name}*')
+                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+            else:
+                    graph_passed_tests = False
+                    
+        # if all tests passed for this graph, then remove graph
+        if graph_passed_tests:
+            clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
 
-    else:
-        for i in range(params.n_graphs):
-
-            graph_passed_tests = True
-            
-            test_name = f'run_cfg_{i}'
-            
-            for j in range(params.n_paths):
-
-                test_result = test.run(test_name,f'input_graph_{i}_path{j}')
-
-                # clean up and delete path if test compiled end executed OK
-                if test_result == 0:
-                     clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                else:
-                     graph_passed_tests = False
-
-            # if all tests passed for this graph, then remove graph and corresponding test case
-            if graph_passed_tests:
-                clean_up(f'{filepaths.program_filepath}/{test_name}*')
-                clean_up(f'{filepaths.output_filepath}/{test_name}*')
-                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
-
-    '''
 
 
 def clean_up(filepath : str):
@@ -184,6 +157,10 @@ def create_folders(basePath : str) -> None:
     cmd += f' ;mkdir {basePath}/running'
 
     result = subprocess.run(cmd, shell=True)
+
+    cp_cmd = f'cp c/WrapperStatic.cpp {basePath}/running/Wrapper.cpp'
+
+    result = subprocess.run(cp_cmd, shell=True)
 
 def dir(dir : str) -> Directions:
      if dir == 'unknown':
