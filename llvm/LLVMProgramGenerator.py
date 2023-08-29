@@ -49,14 +49,15 @@ class LLVMProgramGenerator(ProgramGenerator):
     
     def flesh_program_start(self, directions : list[int]):
 
-        if self.params.directions == Directions.DYNAMIC:
+        if self.params.directions.value == Directions.DYNAMIC.value:
             return self.flesh_program_start_dynamic()
-        
-        elif self.params.directions == Directions.STATIC_PTR:
-            return self.flesh_program_start_static(directions)
 
-        elif self.params.directions == Directions.STATIC_ARR:
+        elif self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_program_start_static_arr(directions)
+        
+        elif self.params.directions.value == Directions.STATIC_PTR.value:
+            return self.flesh_program_start_static(directions)
+        
      
 
     def flesh_conditional_node(self, n : int, directions : list[int]):
@@ -64,18 +65,18 @@ class LLVMProgramGenerator(ProgramGenerator):
         #TODO: make 'get directions' function that is static or dynamic; the branching condition is the same 
         # for conditional and switch, so can extract this
         
-        if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
+        if self.params.directions.value == Directions.DYNAMIC.value or self.params.directions.value == Directions.STATIC_PTR.value:
             return self.flesh_conditional_node_dynamic(n)
         
-        elif self.params.directions == Directions.STATIC_ARR:
+        elif self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_conditional_node_static(n, dir_size=len(directions))
 
     def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
         
-        if self.params.directions == Directions.DYNAMIC or self.params.directions == Directions.STATIC_PTR:
+        if self.params.directions.value == Directions.DYNAMIC.value or self.params.directions.value == Directions.STATIC_PTR.value:
             return self.flesh_switch_node_dynamic(n, n_successors)
         
-        elif self.params.directions == Directions.STATIC_ARR:
+        elif self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_switch_node_static(n, n_successors, dir_size=len(directions))
 
     """
@@ -128,12 +129,13 @@ class LLVMProgramGenerator(ProgramGenerator):
             simple int array that is initialised at the beginning of the program.
         """
 
+
         l = len(directions)
 
         prog_start = ''' ; 
 
 
-        define void @_Z7run_cfgPi(ptr %in_output) #0 {{
+        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
 
         0:
             ; create array to store output
@@ -157,7 +159,6 @@ class LLVMProgramGenerator(ProgramGenerator):
             store i32 {dir}, i32* %v{index}_1
         '''.format(index=i, dir_size = l, dir=d)
         
-        
         return prog_start
     
     def flesh_program_start_static(self, directions : list[int]) -> str:
@@ -178,7 +179,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         prog_start = ''' ; 
 
 
-        define void @_Z7run_cfgPi(ptr %in_output) #0 {{
+        define void @_Z7run_cfgPi(i32* %in_output) #0 {{
 
         0:
             ; create array to store output
@@ -220,7 +221,7 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         ; 
 
-        define void @_Z7run_cfgPiS_(ptr %in_directions, ptr %in_output) #0 {
+        define void @_Z7run_cfgPiS_(i32* %in_directions, i32* %in_output) #0 {
 
         0:
             ; create arrays to store directions & output

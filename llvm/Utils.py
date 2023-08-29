@@ -1,6 +1,10 @@
 from enum import Enum
 
 class Directions(Enum):
+
+    def __eq__(self, other):
+        return self.__class__ is other.__class__ and other.value == self.value
+    
     DYNAMIC = 1
     STATIC_PTR = 2
     STATIC_ARR = 3 

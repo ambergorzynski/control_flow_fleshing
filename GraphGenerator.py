@@ -298,8 +298,8 @@ def generate_graphs(graph_filepath : str,
                     min_successors : int, 
                     max_successors : int, 
                     graph_generation_approach : int, 
-                    add_annotations : bool,
-                    n_annotations : int,
+                    add_annotations : bool = True,
+                    n_annotations : int = -1,
                     seed : float = None):
     '''
         Function generates a set of graphs based on the given
