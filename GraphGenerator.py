@@ -299,12 +299,15 @@ def generate_graphs(graph_filepath : str,
                     min_successors : int, 
                     max_successors : int, 
                     graph_generation_approach : int, 
-                    n_annotations : int = 0,
+                    add_annotations : bool,
+                    n_annotations : int,
                     seed : float = None):
     '''
         Function generates a set of graphs based on the given
         parameters and saves them in the given filepath
     '''
+
+
 
     rand = Random()
 
@@ -315,8 +318,12 @@ def generate_graphs(graph_filepath : str,
         graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
         print(f'max successors is {max_successors}')
 
+        # parse arg for default annotations based on graph size
+        if add_annotations and n_annotations == -1:
+            n_annotations = graph_size // 5
+
         if graph_generation_approach == 1:
-            graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations=False, n_annotations=n_annotations)
+            graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations, n_annotations)
 
         elif graph_generation_approach == 2:
             graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
