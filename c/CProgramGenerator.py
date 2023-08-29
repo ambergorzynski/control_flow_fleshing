@@ -136,7 +136,7 @@ class CProgramGenerator(ProgramGenerator):
         '''
 
         code = '''
-            br label %{successor}
+            goto block_{successor};
         '''.format(successor = list(self.cfg.graph.adj[n])[0])
 
         return code
@@ -149,59 +149,24 @@ class CProgramGenerator(ProgramGenerator):
             there are > 2 successor nodes
         '''
         code = '''
-            ; get directions for node
-            %index_dir_{i} = load i32, i32* %dir_counter
-            %dir_{i} = load i32*, i32** %directions
-            %dir_{i}_ptr = getelementptr inbounds i32, i32* %dir_{i}, i32 %index_dir_{i}
-            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
-
-            ; increment directions counter
-            %temp_{i}_2 = add i32 %index_dir_{i}, 1
-            store i32 %temp_{i}_2, i32* %dir_counter
-
-            ; branch
-            %condition_{i} = icmp eq i32 %dir_{i}_value, 0
-            br i1 %condition_{i}, label %{successor_true}, label %{successor_false}
-            '''.format(i = n,
-                       successor_false = list(self.cfg.graph.adj[n])[1],
-                       successor_true = list(self.cfg.graph.adj[n])[0])
+            if(directions[dir_counter++] == 0){
+                goto block_{successor_false};
+            }
+            else{
+                goto block_{successor_true};
+            }
+            '''.format(successor_false = list(self.cfg.graph.adj[n])[0],
+                       successor_true = list(self.cfg.graph.adj[n])[1])
         
         return code
     
-
-    def flesh_conditional_node_static(self, n : int, dir_size : int) -> str:
-        ''' 
-            returns code for node n with two successors, one of
-            which may be self (e.g. in case of loop)
-            note this does not deal with switch statements where
-            there are > 2 successor nodes
-        '''
-        code = '''
-            ; get directions for node
-            %index_dir_{i} = load i32, i32* %dir_counter
-            %dir_{i} = sext i32 %index_dir_{i} to i64
-            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
-            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
-
-            ; increment directions counter
-            %temp_{i}_2 = add i32 %index_dir_{i}, 1
-            store i32 %temp_{i}_2, i32* %dir_counter
-
-            ; branch
-            %condition_{i} = icmp eq i32 %dir_{i}_value, 0
-            br i1 %condition_{i}, label %{successor_true}, label %{successor_false}
-            '''.format(i = n,
-                       dir_size = dir_size,
-                       successor_false = list(self.cfg.graph.adj[n])[1],
-                       successor_true = list(self.cfg.graph.adj[n])[0])
-        
-        return code
     
     def flesh_switch_node_dynamic(self, n : int, n_successors : int) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
         '''
+        pass
         code = '''
             ; get directions for node
             %index_dir_{i} = load i32, i32* %dir_counter
@@ -228,37 +193,6 @@ class CProgramGenerator(ProgramGenerator):
         
         return code
     
-    def flesh_switch_node_static(self, n : int, n_successors : int, dir_size : int) -> str:
-        '''
-            returns code for node with > 2 successors
-            e.g. a switch statement
-        '''
-        code = '''
-            ; get directions for node
-            %index_dir_{i} = load i32, i32* %dir_counter
-            %dir_{i} = sext i32 %index_dir_{i} to i64
-            %dir_{i}_ptr = getelementptr inbounds [{dir_size} x i32], [{dir_size} x i32]* %dirs, i64 0, i64 %dir_{i}
-            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
-
-            ; increment directions counter
-            %temp_{i}_2 = add i32 %index_dir_{i}, 1
-            store i32 %temp_{i}_2, i32* %dir_counter
-
-            ; switch
-            switch i32 %dir_{i}_value, label %{default} [ 
-            '''.format(i = n,
-                       dir_size = dir_size,
-                        default = list(self.cfg.graph.adj[n])[0])
-        
-        for j in range(n_successors):
-            code += ''' i32 {i}, label %{successor}
-            '''.format(i = j,
-                    successor = list(self.cfg.graph.adj[n])[j])
-        
-        
-        code += ''']''' 
-        
-        return code
                 
     def flesh_end(self) -> str:
         return '''
