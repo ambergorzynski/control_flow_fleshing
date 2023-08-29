@@ -19,15 +19,18 @@ class JavaBCRunner():
             parameters and filepaths
         '''
 
+        print('Compiling...')
         compile_result = self.compile_test(test_name)
 
         if compile_result != 0:
             print('Compilation failed!')
             return 1
+        print('Compilation succeeded!')
         
         # if we are using a decompiler, then include additional step to de- and re- compile test
         if self.filepaths.decompiler_path != None:
             
+            print('Decompiling...')
             decompile_result = self.decompile_test(test_name)
 
             if decompile_result != 0:
@@ -35,6 +38,7 @@ class JavaBCRunner():
                 return 1
             print('Decompilation produced file!')
             
+            print('Recompiling...')
             recompile_result = self.recompile_test(test_name)
 
             if recompile_result != 0:
@@ -42,12 +46,14 @@ class JavaBCRunner():
                 return 1
             print('Recompilation succeeded!')
         
+        print('Executing...')
         exe_result = self.execute_test(test_name, test_id, path_name)
         
         if exe_result != 0:
             print('Execution failed!')
             return 1
         
+        print('Execution succeeded!')
         return 0
 
     def compile_test(self, test_name : str) -> int:
@@ -73,7 +79,7 @@ class JavaBCRunner():
         
     def decompile_test(self, test_name : str) -> int:
             
-            decompile_cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            decompile_cmd = [f'''./javabc/decompile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
             decompile_result = subprocess.run(decompile_cmd, shell=True)
 
             # if decompilation cmd failed or decompilation threw exception

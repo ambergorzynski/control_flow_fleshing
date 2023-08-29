@@ -168,13 +168,15 @@ def main():
 
                 # remove files if test passed
                 if test_result == 0:
-                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                    clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
+                    #clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+                    #clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
+                    pass
                 else:
                     graph_passed_tests=False
 
             if graph_passed_tests:
-                clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+                #clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+                pass
 
     else:
         for i in range(params.n_graphs):
