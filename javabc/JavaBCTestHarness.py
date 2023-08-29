@@ -33,7 +33,7 @@ def main():
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="2",
                         help="specifies graph generation approach from '1', '2' or 'xml'.")
-    parser.add_argument("-annotations", type = bool, default = True,
+    parser.add_argument("-add_annotations", type = bool, default = True,
                         help='specifies whether graph approach should include annotations')
     parser.add_argument("-n_annotations", type = int, default = -1,
                         help="specifies the number of annotations to add. Default is to add 1/5 of the number of nodes in the graph")

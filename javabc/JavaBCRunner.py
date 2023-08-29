@@ -33,12 +33,14 @@ class JavaBCRunner():
             if decompile_result != 0:
                 print('Decompilation failed!')
                 return 1
+            print('Decompilation produced file!')
             
             recompile_result = self.recompile_test(test_name)
 
             if recompile_result != 0:
                 print('Recompilation failed!')
                 return 1
+            print('Recompilation succeeded!')
         
         exe_result = self.execute_test(test_name, test_id, path_name)
         
@@ -70,15 +72,28 @@ class JavaBCRunner():
             return compile_result.returncode
         
     def decompile_test(self, test_name : str) -> int:
-        pass
+            
+            decompile_cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            decompile_result = subprocess.run(decompile_cmd, shell=True)
+
+            # if decompilation cmd failed or decompilation threw exception
+            if decompile_result.returncode != 0:
+                return 1
+            
+            return 0
+
 
     def recompile_test(self, test_name : str) -> int:
-        pass
+            
+            compile_cmd = [f'''./javabc/recompile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm}''']
+            compile_result = subprocess.run(compile_cmd, shell=True)
+
+            return compile_result.returncode
             
     def execute_test(self, test_name : str, test_id : int, path_name : str) -> int:
         
         if self.params.with_reflection:
-            exe_cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {n_function_repeats} {self.filepaths.jvm}''']
+            exe_cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
 
         else:
             exe_cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']

@@ -166,7 +166,6 @@ def generate_graph_approach_1(n_nodes : int,
         # randomly choose number of successor nodes
         # default 1 to 10 (to be flexed)
         n_successors = rand.choice(list(range(min_successors, max_successors + 1)))
-        print(f'node successors: {n_successors}')
 
 
         # add successor nodes as children
