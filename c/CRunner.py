@@ -49,9 +49,9 @@ class CRunner():
     def execute_test(self, test_name : int, path_name : str) -> int:
         
         exe_cmd = [f'''./{self.filepaths.output_filepath}/{test_name}_out \
-                    {path_name}.txt \
-                    {self.filepaths.results_name}.txt \
-                    {self.filepaths.bug_results_name}.txt ''']
+                    {self.filepaths.path_filepath}/{path_name}.txt \
+                    {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt \
+                    {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt ''']
         
         exe_result = subprocess.run(exe_cmd, shell=True)
 
