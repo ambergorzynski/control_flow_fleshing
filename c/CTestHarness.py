@@ -23,29 +23,19 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
-    parser.add_argument("-c", type=str, default="llvm",
-                        help="specifies which compiler to use from 'llvm' or 'graalvm'")
     parser.add_argument("-graalvm", type=str, default=None,
-                        help="specifies graalvm path")
-    parser.add_argument("-dir", type=str, default="known",
-                        help="specifies whether directions array is known or unknown at compile time")
-    parser.add_argument("-opt", type=str, default="random_level",
-                        help="specifies the optimisation, which can be 'random_level' or a specific string list of optimisations e.g. 'breakcritedges', 'breakcritedges,adce'")
-    parser.add_argument("-lab", type=bool, default=False,
-                        help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
-    parser.add_argument("-graph", type=str, default="default",
-                        help="specifies graph generation approach from 'default' or 'xml'.")
+                        help='specifies path to graalvm')
+    parser.add_argument("-graph", type=str, default='default',
+                        help='''specifies graph generation approach from '1' or '2'. default is 2''')
     args = parser.parse_args()
-
-    #TODO: add argument validator
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'llvm/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/llvm/fuzz/{args.folder}'
+    basePath = f'c/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/c/fuzz/{args.folder}'
 
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
-                            program_filepath = f'{basePath}/llvm',
+                            program_filepath = f'{basePath}/c',
                             path_filepath = f'{basePath}/input',
                             output_filepath = f'{basePath}/running',
                             results_name = f'results_{time}',
@@ -60,8 +50,7 @@ def main():
                             min_successors = 1,
                             max_successors = 3,
                             graph_approach = 2 if args.graph == 'default' else 3,
-                            max_path_length = 900,
-                            n_optimisations = 1)
+                            max_path_length = 900)
     
     # Setup
     create_folders(basePath)
@@ -89,42 +78,28 @@ def main():
 
 
     # Step 3 : flesh graphs
-    program_generator = LLVMProgramGenerator(params)
+    program_generator = CProgramGenerator(params)
 
     # directions are known at compile time - means we flesh n_graphs*m_paths programs
-    if(args.dir == 'known'):
-        
-        for i in range(params.n_graphs):
-        
-            # load graph                    
-            graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
+    for i in range(params.n_graphs):
+    
+        # load graph                    
+        graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
 
-            cfg = CFG(graph)
+        cfg = CFG(graph)
 
-            for p in range(params.n_paths):
+        for p in range(params.n_paths):
 
-                directions = read_in_dirs(i, p, filepaths)
+            directions = read_in_dirs(i, p, filepaths)
 
-                program_generator.fleshout(cfg=cfg, directions=directions)
+            program_generator.fleshout(cfg=cfg, directions=directions)
 
-                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
+            program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.ll')
 
-    # directions are unknown at compile time - means we compile n_graphs programs (1 for each graph)
-    elif(args.dir == 'unknown'):
-
-        for i in range(params.n_graphs):
-                
-                graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
-
-                cfg = CFG(graph)
-
-                program_generator.fleshout(cfg=cfg)
-
-                program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.ll')
-
+    '''
 
     # Step 4 : run tests
-    test = LLVMRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
+    test = CRunner(filepaths, params, compiler = args.c, directions = args.dir, optimisations = args.opt)
 
     # if dirs are known at compile time, then loop over all graph*path combinations 
     if args.dir == 'known':
@@ -176,7 +151,7 @@ def main():
                 clean_up(f'{filepaths.output_filepath}/{test_name}*')
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
-
+    '''
 
 
 def clean_up(filepath : str):
@@ -200,7 +175,7 @@ def create_folders(basePath : str) -> None:
     cmd = f'mkdir {basePath}'
     cmd += f' ;mkdir {basePath}/graphs'
     cmd += f' ;mkdir {basePath}/input'
-    cmd += f' ;mkdir {basePath}/llvm'
+    cmd += f' ;mkdir {basePath}/c'
     cmd += f' ;mkdir {basePath}/running'
 
     result = subprocess.run(cmd, shell=True)
