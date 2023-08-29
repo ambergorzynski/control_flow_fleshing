@@ -62,3 +62,7 @@ class FuzzingParams():
         self.min_graph_size : int = min_graph_size
         self.max_graph_size : int = max_graph_size
         self.min_successors : int = min_successors
+        self.max_successors : int = max_successors
+        self.graph_approach : int = graph_approach # can be 1 or 2
+        self.max_path_length : int = max_path_length
+        self.n_optimisations : int = n_optimisations

@@ -37,7 +37,7 @@ class CProgramGenerator(ProgramGenerator):
                 self.fleshed_graph += self.flesh_unconditional_node(n)
 
             elif(n_successors == 2):
-                self.fleshed_graph += self.flesh_conditional_node(n, directions)
+                self.fleshed_graph += self.flesh_conditional_node(n)
 
             elif(n_successors > 2):
                 self.fleshed_graph += self.flesh_switch_node(n, n_successors, directions)
@@ -50,17 +50,17 @@ class CProgramGenerator(ProgramGenerator):
     def flesh_program_start(self, directions : list[int]):
 
         if self.params.directions.value == Directions.STATIC_ARR.value:
-            return self.fles_program_start_static_arr(directions)
+            return self.flesh_program_start_static_arr(directions)
     
 
-    def flesh_conditional_node(self, n : int, directions : list[int]):
+    def flesh_conditional_node(self, n : int):
         if self.params.directions.value == Directions.STATIC_ARR.value:
-            return self.flesh_conditional_node_static(n, dir_size=len(directions))
+            return self.flesh_conditional_node_static(n)
 
     def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
         
         if self.params.directions.value == Directions.STATIC_ARR.value:
-            return self.flesh_switch_node_static(n, n_successors, dir_size=len(directions))
+            return self.flesh_switch_node_static(n, n_successors)
 
     def flesh_program_start_static_arr(self, directions : list[int]) -> str:
 
@@ -73,9 +73,7 @@ class CProgramGenerator(ProgramGenerator):
 
         l = len(directions)
 
-        prog_start = ''' ; 
-
-
+        prog_start = ''' 
         void run_cfg(int* actual_output) {{
 
         block_0:
@@ -88,11 +86,11 @@ class CProgramGenerator(ProgramGenerator):
 
         #fill in directions array
         for i, d in enumerate(directions):
-            prog_start += '''{d},'''.format(dir=d)
+            prog_start += '''{dir},'''.format(dir=d)
 
         # remove final comma and close bracket
         prog_start = prog_start[:-1]
-        prot_start += '}};'
+        prog_start += '};'
         
         return prog_start
     
@@ -141,7 +139,7 @@ class CProgramGenerator(ProgramGenerator):
 
         return code
 
-    def flesh_conditional_node_dynamic(self, n : int) -> str:
+    def flesh_conditional_node_static(self, n : int) -> str:
         ''' 
             returns code for node n with two successors, one of
             which may be self (e.g. in case of loop)
@@ -149,47 +147,34 @@ class CProgramGenerator(ProgramGenerator):
             there are > 2 successor nodes
         '''
         code = '''
-            if(directions[dir_counter++] == 0){
+            if(directions[dir_counter++] == 0){{
                 goto block_{successor_false};
-            }
-            else{
+            }}
+            else{{
                 goto block_{successor_true};
-            }
+            }}
             '''.format(successor_false = list(self.cfg.graph.adj[n])[0],
                        successor_true = list(self.cfg.graph.adj[n])[1])
         
         return code
     
     
-    def flesh_switch_node_dynamic(self, n : int, n_successors : int) -> str:
+    def flesh_switch_node_static(self, n : int, n_successors : int) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
         '''
         pass
         code = '''
-            ; get directions for node
-            %index_dir_{i} = load i32, i32* %dir_counter
-            %dir_{i} = load i32*, i32** %directions
-            %dir_{i}_ptr = getelementptr inbounds i32, i32* %dir_{i}, i32 %index_dir_{i}
-            %dir_{i}_value = load i32, i32* %dir_{i}_ptr
-
-            ; increment directions counter
-            %temp_{i}_2 = add i32 %index_dir_{i}, 1
-            store i32 %temp_{i}_2, i32* %dir_counter
-
-            ; switch
-            switch i32 %dir_{i}_value, label %{default} [ 
-            '''.format(i = n,
-                       default = list(self.cfg.graph.adj[n])[0])
+            switch(directions[dir_counter++]){{'''
         
-        for j in range(n_successors):
-             code += ''' i32 {i}, label %{successor}
-            '''.format(i = j,
-                       successor = list(self.cfg.graph.adj[n])[j])
+        for child in range(n_successors):
+             code += '''
+                case {i}: goto block_{successor}; break;'''.format(i = child,
+                       successor = list(self.cfg.graph.adj[n])[child])
         
         
-        code += ''']''' 
+        code += '''}''' 
         
         return code
     

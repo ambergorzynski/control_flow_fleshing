@@ -23,15 +23,19 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
+    parser.add_argument("base", type=str, default='c/fuzzing',
+                        help='base path for folders')
     parser.add_argument("-graalvm", type=str, default=None,
                         help='specifies path to graalvm')
     parser.add_argument("-graph", type=str, default='default',
                         help='''specifies graph generation approach from '1' or '2'. default is 2''')
+    parser.add_argument("-dir",type=str,default='known',
+                        help='specifies whether directions are known at compile time or not')
     args = parser.parse_args()
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
-    basePath = f'c/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/c/fuzz/{args.folder}'
+    basePath = f'{args.base}/{args.folder}'
 
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
@@ -46,11 +50,12 @@ def main():
                             n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
                             min_graph_size = 10,
-                            max_graph_size = 500,
+                            max_graph_size = 15,
                             min_successors = 1,
-                            max_successors = 3,
+                            max_successors = 2,
                             graph_approach = 2 if args.graph == 'default' else 3,
-                            max_path_length = 900)
+                            max_path_length = 900,
+                            n_optimisations=1)
     
     # Setup
     create_folders(basePath)
