@@ -3,6 +3,7 @@ import sys
 import random
 from random import Random
 from queue import Queue
+from typing import List, Tuple
 import pickle
 
 class Path():
@@ -16,11 +17,11 @@ class CFG():
     def __init__(self, graph : nx.MultiDiGraph):
         self.graph : nx.MultiDiGraph = graph
         self.fleshed_graph : str = None 
-        self.doomed : list[int] = []
-        self.not_doomed : list[int] = []
-        self.exit_nodes : list[int] = self.find_exit_nodes()
+        self.doomed : List[int] = []
+        self.not_doomed : List[int] = []
+        self.exit_nodes : List[int] = self.find_exit_nodes()
 
-    def find_exit_nodes(self) -> list[int]:
+    def find_exit_nodes(self) -> List[int]:
         ''' 
             returns a list of all exit nodes in the graph
             defined as nodes with no successors 
@@ -107,7 +108,7 @@ class CFG():
         '''
         return len(list(self.graph.adj[current_node]))
     
-    def choose_next_node(self, current_node, rand) -> tuple[int, int]:
+    def choose_next_node(self, current_node, rand) -> Tuple[int, int]:
         '''
             randomly chooses next node and returns a 
             tuple (node, direction)
@@ -190,7 +191,7 @@ class CFG():
 
             
 
-    def find_shortest_path_to_exit(self, current_node) -> tuple[list[int], list[int]]:
+    def find_shortest_path_to_exit(self, current_node) -> Tuple[List[int], List[int]]:
         '''
             finds shortest path to exit and 
             returns tuple (shortest_path, shortest_dirs)
