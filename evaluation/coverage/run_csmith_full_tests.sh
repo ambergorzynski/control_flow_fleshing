@@ -1,26 +1,33 @@
 #!/bin/sh
+
+# filepaths
 base=/home/user42/amber-demo
 gfauto=/home/user42/amber-demo/graphicsfuzz/gfauto
 compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
-cov_name=coverage_cfg_tests
+
+# test-specific filepaths
+cov_name=coverage_csmith_tests
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
-# activate venv for CFG fleshing
-cd $working_folder/repo
-source /home/user42/amber-demo/cfg/repo/venv/bin/activate
+csmith_tests=csmith_tests
 
 # set gcov prefix
 export GCOV_PREFIX=$gcda_folder
 
 echo 'Running tests...'
 
-# run tests
-python llvm/LLVMTestHarness.py 100 10 fuzzing_run /home/user42/amber-demo/llvm-project/build/bin -dir 'known'
+source /home/user42/amber-demo/cfg/repo/venv/bin/activate
+
+# generate tests
+mkdir -p $csmith_tests
+
+python run_csmith_tests.py 1000 $csmith_tests $llvm_path
+
 # unset
 unset GCOV_PREFIX
 
@@ -47,5 +54,4 @@ cd $working_folder
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
-
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
