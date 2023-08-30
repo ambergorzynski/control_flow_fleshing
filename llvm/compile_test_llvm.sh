@@ -1,9 +1,10 @@
 #!/bin/sh
 output=$1
-llvm=$2
-name=$3
-optimisations=$4
-opt -passes=$optimisations -S $llvm/${name}.ll -o $output/${name}_opt.ll
-llc -filetype=obj $output/${name}_opt.ll
-clang++ -no-pie $output/Wrapper.o $output/${name}_opt.o -o $output/${name}_out
+program=$2
+llvm_path=$3
+name=$4
+optimisations=$5
+$llvm_path/opt -passes=$optimisations -S $program/${name}.ll -o $output/${name}_opt.ll
+$llvm_path/llc -filetype=obj $output/${name}_opt.ll
+$llvm_path/clang++ -no-pie $output/Wrapper.o $output/${name}_opt.o -o $output/${name}_out
 

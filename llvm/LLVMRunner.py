@@ -129,10 +129,10 @@ class LLVMRunner():
                 result = subprocess.run(f'''./llvm/compile_wrapper_llvm_graalvm.sh {self.filepaths.output_filepath} {self.filepaths.graalvm_path}''', shell=True)
 
             elif(self.filepaths.graalvm_path == None and self.directions=='unknown'):
-                result = subprocess.run(f'''./llvm/compile_wrapper_llvm.sh {self.filepaths.output_filepath}''', shell=True)
+                result = subprocess.run(f'''./llvm/compile_wrapper_llvm.sh {self.filepaths.output_filepath} {self.filepaths.llvm_filepath}''', shell=True)
 
             elif(self.filepaths.graalvm_path == None and self.directions=='known'):
-                result = subprocess.run(f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath}''', shell=True)
+                result = subprocess.run(f'''./llvm/compile_wrapper_llvm_static.sh {self.filepaths.output_filepath} {self.filepaths.llvm_filepath}''', shell=True)
 
             return result.returncode
         
@@ -156,6 +156,7 @@ class LLVMRunner():
             cmd = [f'''./llvm/compile_test_llvm.sh \
                     {self.filepaths.output_filepath} \
                     {self.filepaths.program_filepath} \
+                    {self.filepaths.llvm_filepath} \
                     {test_name} \
                     "{optimisations_str}"''']
             
