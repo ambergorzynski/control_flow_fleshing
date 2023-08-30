@@ -23,6 +23,7 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
+    parser.add_argument("llvm_path",type=str)
     parser.add_argument("-c", type=str, default="llvm",
                         help="specifies which compiler to use from 'llvm' or 'graalvm'")
     parser.add_argument("-graalvm", type=str, default=None,
@@ -50,7 +51,8 @@ def main():
                             output_filepath = f'{basePath}/running',
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}',
-                            graalvm_path=args.graalvm)
+                            graalvm_path=args.graalvm,
+                            llvm_path=args.llvm_path)
 
     params = FuzzingParams(directions=dir(args.dir),
                             n_graphs = args.n_graphs,
