@@ -2,6 +2,7 @@ import argparse
 import sys
 import networkx as nx
 import subprocess
+from typing import List
 
 from datetime import datetime
 
@@ -36,6 +37,8 @@ def main():
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="default",
                         help="specifies graph generation approach from 'default' or 'xml'.")
+    parser.add_argument("-clean_as_you_go",type=bool,default=True,
+                        help="specifies whether to remove non-bug-triggering files automatically")
     args = parser.parse_args()
 
     #TODO: add argument validator
@@ -52,7 +55,7 @@ def main():
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}',
                             graalvm_path=args.graalvm,
-                            llvm_path=args.llvm_path)
+                            llvm_filepath=args.llvm_path)
 
     params = FuzzingParams(directions=dir(args.dir),
                             n_graphs = args.n_graphs,
@@ -143,7 +146,7 @@ def main():
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
 
                 # clean up and delete files if test compiled end executed OK
-                if test_result == 0:
+                if test_result == 0 and args.clean_as_you_go:
                      clean_up(f'{filepaths.program_filepath}/{test_name}.*')
                      clean_up(f'{filepaths.output_filepath}/{test_name}*')
                      clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
@@ -151,7 +154,7 @@ def main():
                      graph_passed_tests = False
                      
             # if all tests passed for this graph, then remove graph
-            if graph_passed_tests:
+            if graph_passed_tests and args.clean_as_you_go:
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
 
@@ -167,13 +170,13 @@ def main():
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
 
                 # clean up and delete path if test compiled end executed OK
-                if test_result == 0:
+                if test_result == 0 and args.clean_as_you_go:
                      clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
                 else:
                      graph_passed_tests = False
 
             # if all tests passed for this graph, then remove graph and corresponding test case
-            if graph_passed_tests:
+            if graph_passed_tests and args.clean_as_you_go:
                 clean_up(f'{filepaths.program_filepath}/{test_name}*')
                 clean_up(f'{filepaths.output_filepath}/{test_name}*')
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
@@ -184,7 +187,7 @@ def main():
 def clean_up(filepath : str):
      subprocess.run(f'rm {filepath}', shell=True)
 
-def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:
+def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> List[int]:
         
         with open(f'{filepaths.path_filepath}/input_graph_{graph}_path{path}.txt', 'r') as f:
             lines = f.readlines()

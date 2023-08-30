@@ -1,6 +1,7 @@
 from CFG import CFG
 from ProgramGenerator import ProgramGenerator
 from llvm.Utils import *
+from typing import List
 
 class LLVMProgramGenerator(ProgramGenerator):
 
@@ -9,7 +10,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         self.cfg = None
         self.fleshed_graph = None
 
-    def fleshout(self, cfg : CFG, directions : list[int] = None) -> str:
+    def fleshout(self, cfg : CFG, directions : List[int] = None) -> str:
 
         ''' 
             converts control flow graph to LLVM IR 
@@ -47,7 +48,7 @@ class LLVMProgramGenerator(ProgramGenerator):
 
         return self.fleshed_graph
     
-    def flesh_program_start(self, directions : list[int]):
+    def flesh_program_start(self, directions : List[int]):
 
         if self.params.directions.value == Directions.DYNAMIC.value:
             return self.flesh_program_start_dynamic()
@@ -60,7 +61,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
      
 
-    def flesh_conditional_node(self, n : int, directions : list[int]):
+    def flesh_conditional_node(self, n : int, directions : List[int]):
 
         #TODO: make 'get directions' function that is static or dynamic; the branching condition is the same 
         # for conditional and switch, so can extract this
@@ -71,7 +72,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         elif self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_conditional_node_static(n, dir_size=len(directions))
 
-    def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
+    def flesh_switch_node(self, n : int, n_successors : int, directions : List[int]):
         
         if self.params.directions.value == Directions.DYNAMIC.value or self.params.directions.value == Directions.STATIC_PTR.value:
             return self.flesh_switch_node_dynamic(n, n_successors)
@@ -80,7 +81,7 @@ class LLVMProgramGenerator(ProgramGenerator):
             return self.flesh_switch_node_static(n, n_successors, dir_size=len(directions))
 
     """
-    def fleshout_static(self, cfg: CFG, directions: list[int]) -> str:
+    def fleshout_static(self, cfg: CFG, directions: List[int]) -> str:
 
         '''
             converts control flow graph to LLVM IR 
@@ -121,7 +122,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         return self.fleshed_graph
     """
 
-    def flesh_program_start_static_arr(self, directions : list[int]) -> str:
+    def flesh_program_start_static_arr(self, directions : List[int]) -> str:
 
         """
             Sets up the program start in which the directions
@@ -161,7 +162,7 @@ class LLVMProgramGenerator(ProgramGenerator):
         
         return prog_start
     
-    def flesh_program_start_static(self, directions : list[int]) -> str:
+    def flesh_program_start_static(self, directions : List[int]) -> str:
 
         """
             Sets up the program start in which the directions
