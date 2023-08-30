@@ -1,3 +1,4 @@
+csmith_tests/
 run_javabc.sh
 *.p
 *.bc
