@@ -9,8 +9,8 @@ working_folder=$base/cfg
 
 # test-specific filepaths
 cov_name=coverage_csmith_ll_opt_tests
-info_name=${cov_name}_output.info
-out_name=${cov_name}_out
+info_name=${cov_name}_output2.info
+out_name=${cov_name}_out2
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
@@ -30,7 +30,7 @@ python run_csmith_ll_opt_tests.py $llvm_path
 unset GCOV_PREFIX
 
 deactivate
-com
+
 echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
@@ -47,8 +47,9 @@ gfauto_cov_from_gcov --out run_gcov2cov.cov $compiler_build --gcov_prefix_dir $g
 deactivate
 
 # create the coverage report with lcov
+com
 cd $working_folder
-/home/user42/my_lcov/bin/lcov --capture --directory $cov_name --output-file $info_name 
+/home/user42/my_lcov/bin/lcov --capture --directory ${cov_name}/home/user42/amber-demo/llvm-project/build/lib/Transforms/Utils --output-file $info_name 
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
