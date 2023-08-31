@@ -52,7 +52,8 @@ class FuzzingParams():
                 n_annotations : int,
                 max_path_length : int,
                 n_function_repeats : int,
-                with_reflection : bool):
+                with_reflection : bool,
+                decompiler : Decompiler):
         
         self.n_graphs : int = n_graphs
         self.n_paths : int = n_paths
@@ -66,3 +67,4 @@ class FuzzingParams():
         self.max_path_length : int = max_path_length
         self.n_function_repeats : int = n_function_repeats
         self.with_reflection : bool = with_reflection
+        self.decompiler : Decompiler = decompiler
