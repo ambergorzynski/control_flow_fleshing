@@ -102,7 +102,7 @@ def main():
     # apply mutations
     #for mutation in LLVM_OPTS.keys():
         
-    mutation : str = 'instcount' # for applying single mutation in testing
+    mutation : str = 'basic_blocks' # for applying single mutation in testing
 
     print(f'Applying mutation {mutation} at {LLVM_OPTS[mutation]}...')
 
