@@ -1,3 +1,9 @@
+from enum import Enum
+
+class Decompiler(Enum):
+    CFR=1
+    FERNFLOWER=2
+
 class FilePaths():
 
     '''
