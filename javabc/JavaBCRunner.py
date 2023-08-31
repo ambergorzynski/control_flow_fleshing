@@ -79,10 +79,19 @@ class JavaBCRunner():
         
     def decompile_test(self, test_name : str) -> int:
             
-            decompile_cmd = [f'''./javabc/decompile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            # decompilation syntax varies depending on which decompiler toolchain is used
+
+            if self.params.decompiler.value == Decompiler.CFR.value:
+            
+                decompile_cmd = [f'''./javabc/decompile_test_cfr.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            
+            elif self.params.decompiler.value == Decompiler.FERNFLOWER.value:
+
+                decompile_cmd = [f'''./javabc/decompile_test_fernflower.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            
+            # if decompilation cmd failed or decompilation threw exception
             decompile_result = subprocess.run(decompile_cmd, shell=True)
 
-            # if decompilation cmd failed or decompilation threw exception
             if decompile_result.returncode != 0:
                 return 1
             

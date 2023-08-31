@@ -39,6 +39,8 @@ def main():
                         help="specifies the number of annotations to add. Default is to add 1/5 of the number of nodes in the graph")
     parser.add_argument("-ref", type=bool, default=False,
                         help="specifies whether the test cases should use reflection or be statically compiled")
+    parser.add_argument("-decompiler", type=str, default=None,
+                        help="specifies which decompiler is in use from 'cfr', 'fernflower'")
     parser.add_argument("-decompiler_path", type=str, default=None,
                         help="specifies the path to the decompiler")
     parser.add_argument("-successors", type=int, default=3,
@@ -55,6 +57,13 @@ def main():
         g = 3
     else:
         g = int(args.graph)
+
+    if args.decompiler == 'cfr':
+        decompiler = Decompiler.CFR
+    elif args.decompiler == 'fernflower':
+        decompiler = Decompiler.FERNFLOWER
+    else:
+        decompiler = None
 
     filepaths = FilePaths(jvm = args.jvm,
                             jasmin = args.jasmin,
@@ -80,7 +89,8 @@ def main():
                             n_annotations = args.n_annotations,
                             max_path_length = 900,
                             n_function_repeats=5000,
-                            with_reflection=args.ref)
+                            with_reflection=args.ref,
+                            decompiler = decompiler)
     
     # Setup
     create_folders(basePath)
