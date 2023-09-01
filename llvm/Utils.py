@@ -56,7 +56,8 @@ class FuzzingParams():
                 max_successors : int,
                 graph_approach : int, # can be 1 or 2
                 max_path_length : int,
-                n_optimisations : int):
+                n_optimisations : int,
+                opt_only : bool):
         
         self.directions : Directions = directions
         self.n_graphs : int = n_graphs
@@ -68,3 +69,4 @@ class FuzzingParams():
         self.graph_approach : int = graph_approach # can be 1 or 2
         self.max_path_length : int = max_path_length
         self.n_optimisations : int = n_optimisations
+        self.opt_only : bool = opt_only

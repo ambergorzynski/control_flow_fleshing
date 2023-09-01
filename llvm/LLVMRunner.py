@@ -89,13 +89,14 @@ class LLVMRunner():
             parameters and filepaths
         '''
 
-        wrapper_result = self.compile_wrapper()
+        if not self.params.opt_only:
+            wrapper_result = self.compile_wrapper()
 
-        if wrapper_result != 0:
-            print('Wrapper compilation failed!')
-            return 1
+            if wrapper_result != 0:
+                print('Wrapper compilation failed!')
+                return 1
 
-        print('Wrapper compilation succeeded!')
+            print('Wrapper compilation succeeded!')
 
         compilation_result = self.compile_test(test_name)
 
@@ -105,13 +106,15 @@ class LLVMRunner():
         
         print('Test compilation succeeded!')
         
-        exe_result = self.execute_test(test_name, path_name)
+        if not self.params.opt_only:
+            exe_result = self.execute_test(test_name, path_name)
 
-        if exe_result != 0:
-            print('Execution failed!')
-            return 1
+            if exe_result != 0:
+                print('Execution failed!')
+                return 1
+            
+            print('Execution succeeded!')
         
-        print('Execution succeeded!')
         return 0
 
 
@@ -153,14 +156,25 @@ class LLVMRunner():
             optimisations_str = self.parse_opts()
             print(f'optimisation: {optimisations_str}')
 
-            cmd = [f'''./llvm/compile_test_llvm.sh \
+            opt_cmd = [f'''./llvm/opt_test_llvm.sh \
                     {self.filepaths.output_filepath} \
                     {self.filepaths.program_filepath} \
                     {self.filepaths.llvm_filepath} \
                     {test_name} \
                     "{optimisations_str}"''']
             
-            result = subprocess.run(cmd, shell=True)
+            result = subprocess.run(opt_cmd, shell=True)
+
+            # compile to object file with static compiler unless opt-only flag is set
+            if not self.params.opt_only:
+
+                cmd = [f'''./llvm/compile_test_llvm.sh \
+                        {self.filepaths.output_filepath} \
+                        {self.filepaths.program_filepath} \
+                        {self.filepaths.llvm_filepath} \
+                        {test_name}''']
+                
+                result = subprocess.run(cmd, shell=True)
 
         return result.returncode
     

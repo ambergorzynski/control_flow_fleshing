@@ -37,8 +37,10 @@ def main():
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="default",
                         help="specifies graph generation approach from 'default' or 'xml'.")
-    parser.add_argument("-clean_as_you_go",type=bool,default=True,
+    parser.add_argument("-clean_as_you_go",type=int,default=1,
                         help="specifies whether to remove non-bug-triggering files automatically")
+    parser.add_argument("-opt_only",type=bool,default=False,
+                        help="if set to true, will only run opt on the fleshing programs and will not compile to .o or executable")
     args = parser.parse_args()
 
     #TODO: add argument validator
@@ -66,7 +68,8 @@ def main():
                             max_successors = 3,
                             graph_approach = 2 if args.graph == 'default' else 3,
                             max_path_length = 900,
-                            n_optimisations = 1)
+                            n_optimisations = 1,
+                            opt_only=args.opt_only)
     
     # Setup
     create_folders(basePath)
@@ -147,6 +150,7 @@ def main():
 
                 # clean up and delete files if test compiled end executed OK
                 if test_result == 0 and args.clean_as_you_go:
+                     print(f'here! {args.clean_as_you_go}')
                      clean_up(f'{filepaths.program_filepath}/{test_name}.*')
                      clean_up(f'{filepaths.output_filepath}/{test_name}*')
                      clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
