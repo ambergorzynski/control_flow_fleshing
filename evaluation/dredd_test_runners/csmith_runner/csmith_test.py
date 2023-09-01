@@ -30,7 +30,7 @@ def main():
     ll_opt_with_tracking = Path(csmith_temp_dir_for_generated_code, '__tracking.exe')
 
     # generate csmith progs
-    for i in range(1):
+    for i in range(1000):
         csmith_generated_program: Path = Path(csmith_temp_dir_for_generated_code, f'prog{i}.c')
         ll_unoptimised = Path(csmith_temp_dir_for_generated_code, f'csmith_unopt_{i}.ll')
         csmith_seed = random.randint(0, 2 ** 32 - 1)
@@ -50,6 +50,7 @@ def main():
         c_to_ll_result = subprocess.run(c_to_ll_cmd, shell=True)
         print(f'c to ll result is {c_to_ll_result.returncode}')
     
+    return
     # optimise .ll with tracking on to generate mutant tracking file
     tracking_environment = os.environ.copy()
     tracking_environment["DREDD_MUTANT_TRACKING_FILE"] = str(dredd_covered_mutants_path)

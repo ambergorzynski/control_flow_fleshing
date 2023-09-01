@@ -13,7 +13,7 @@ def main():
 
     test_folder = '/home/user42/amber-demo/csmith_temp'
 
-    for i in range(100):
+    for i in range(1000):
         
         #choose random optimisation level
 
