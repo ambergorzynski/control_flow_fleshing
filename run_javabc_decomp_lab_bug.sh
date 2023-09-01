@@ -8,5 +8,7 @@ python javabc/JavaBCTestHarness.py 1 1 ${folder} \
 	-lab True \
 	-decompiler_path /vol/bitbucket/agg22/cfr-0.152.jar \
 	-decompiler cfr \
-        -successors 3 \
-	-add_annotations False 
+	-successors 2
+#        -successors 3 \
+#	-graph '1' \
+#	-add_annotations False 
