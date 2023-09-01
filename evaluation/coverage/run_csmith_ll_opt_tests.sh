@@ -8,12 +8,14 @@ llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
 
 # test-specific filepaths
-cov_name=coverage_csmith_ll_opt_tests
-info_name=${cov_name}_output2.info
-out_name=${cov_name}_out2
+cov_name=coverage_csmith_ll_without_optnone
+info_name=${cov_name}_output.info
+out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
+# lcov baseline before tests are run
+/home/user42/my_lcov/bin/lcov --no-external --capture --initial --directory ${compiler_build} --output-file ${working_folder}/baseline_${info_name}
 <<com
 # set gcov prefix
 export GCOV_PREFIX=$gcda_folder
@@ -47,10 +49,10 @@ gfauto_cov_from_gcov --out run_gcov2cov.cov $compiler_build --gcov_prefix_dir $g
 deactivate
 
 # create the coverage report with lcov
-com
-cd $working_folder
-/home/user42/my_lcov/bin/lcov --capture --directory ${cov_name}/home/user42/amber-demo/llvm-project/build/lib/Transforms/Utils --output-file $info_name 
-genhtml $info_name --output-directory $out_name
 
+cd $working_folder
+/home/user42/my_lcov/bin/lcov --capture --directory ${cov_name} --output-file $info_name 
+genhtml $info_name --output-directory $out_name
+com
 echo 'Coverage complete!'
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage

@@ -11,7 +11,7 @@ def main():
     
     args = parser.parse_args()
 
-    test_folder = '/home/user42/amber-demo/csmith_temp'
+    test_folder = '/home/user42/amber-demo/csmith_progs_without_optnone'
 
     for i in range(1000):
         
