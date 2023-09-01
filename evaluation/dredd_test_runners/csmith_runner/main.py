@@ -189,14 +189,8 @@ def main():
             '''
             
             # use clang to get LLVM IR representation of csmith program: .c -> .ll
-            c_to_ll_cmd = ['clang',
-                           '-S',
-                           '-emit-llvm',
-                           csmith_generated_program,
-                           '-I',
-                           args.csmith_include,
-                           '-o',
-                           ll_unoptimised]
+            c_to_ll_cmd = f'clang -S -emit-llvm {csmith_generated_program} -I'
+            c_to_ll_cmd += f' {args.csmith_include} -o {ll_unoptimised} -Xclang -disable-O0-optnone'
             
             c_to_ll_result : ProcessResult = run_process_with_timeout(cmd=c_to_ll_cmd,
                                                                              timeout_seconds=args.compile_timeout)
