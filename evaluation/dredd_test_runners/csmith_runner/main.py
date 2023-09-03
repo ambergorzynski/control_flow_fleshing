@@ -115,7 +115,7 @@ def main():
 
     with tempfile.TemporaryDirectory() as temp_dir_for_generated_code:
         csmith_generated_program: Path = Path(temp_dir_for_generated_code, '__prog.c')
-        dredd_covered_mutants_path: Path = Path('/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/evaluation/__csmith_dredd_covered_mutants')
+        dredd_covered_mutants_path: Path = Path('__dredd_covered_mutants')
         ll_unoptimised = Path(temp_dir_for_generated_code, '__regular_unopt.ll')
         unmutated_program = Path(temp_dir_for_generated_code, '__regular_opt.ll')
         unmutated_program_obj = Path(temp_dir_for_generated_code, '__regular_opt.o')
@@ -168,6 +168,7 @@ def main():
                 continue
             subprocess.run(f'cp {csmith_generated_program} test/csmith_prog.c',shell=True)
             #subprocess.run(f'cp test/helloworld.ll {unmutated_program}',shell=True)
+            
             '''    
             # Inline some immediate header files into the Csmith-generated program
             prepare_csmith_program(original_program=csmith_generated_program,
@@ -189,11 +190,13 @@ def main():
             '''
             
             # use clang to get LLVM IR representation of csmith program: .c -> .ll
-            c_to_ll_cmd = f'clang -S -emit-llvm {csmith_generated_program} -I'
-            c_to_ll_cmd += f' {args.csmith_include} -o {ll_unoptimised} -Xclang -disable-O0-optnone'
+            c_to_ll_cmd = f'clang -S -emit-llvm {csmith_generated_program} -I {args.csmith_include} -o {ll_unoptimised} -Xclang -disable-O0-optnone'
             
-            c_to_ll_result : ProcessResult = run_process_with_timeout(cmd=c_to_ll_cmd,
-                                                                             timeout_seconds=args.compile_timeout)
+            try:
+                c_to_ll_result = subprocess.run(c_to_ll_cmd, shell=True, timeout=3)
+            except(TimeoutError):
+                print('c to ll timed out')
+                continue
 
             print(f'c to ll result is {c_to_ll_result.returncode}')
             
@@ -329,6 +332,8 @@ def main():
 
             for mutant in candidate_mutants_for_this_test:
 
+                print(candidate_mutants_for_this_test)
+
                 if not still_testing(total_test_time=args.total_test_time,
                                      maximum_time_since_last_kill=args.maximum_time_since_last_kill,
                                      start_time_for_overall_testing=start_time_for_overall_testing,
@@ -408,8 +413,8 @@ def main():
                            "skipped_mutants": already_killed_by_other_tests,
                            "survived_mutants": covered_but_not_killed_by_this_test}, outfile)
         
-            if covered_but_not_killed_by_this_test == []:
-                break
+            #if covered_but_not_killed_by_this_test == []:
+            #    break
 
 if __name__ == '__main__':
     main()
