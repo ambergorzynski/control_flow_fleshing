@@ -1,33 +1,28 @@
 #!/bin/sh
-
-# filepaths
 base=/home/user42/amber-demo
 gfauto=/home/user42/amber-demo/graphicsfuzz/gfauto
 compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
 
-# test-specific filepaths
-cov_name=coverage_csmith_ll_without_optnone
+cov_name=coverage_cfg_opt_tests
+
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
-# lcov baseline before tests are run
-#/home/user42/my_lcov/bin/lcov --no-external --capture --initial --directory ${compiler_build} --output-file ${working_folder}/baseline_${info_name}
+# activate venv for CFG fleshing
+cd $working_folder/repo
+source /home/user42/amber-demo/cfg/repo/venv/bin/activate
 
 # set gcov prefix
 export GCOV_PREFIX=$gcda_folder
 
 echo 'Running tests...'
 
-source /home/user42/amber-demo/cfg/repo/venv/bin/activate
-
 # run tests
-
-python run_csmith_ll_opt_tests.py $llvm_path
-
+python llvm/LLVMTestHarness.py 100 10 fuzzing_run_opt /home/user42/amber-demo/llvm-project/build/bin -dir 'known' -clean_as_you_go 0 -opt_only True
 # unset
 unset GCOV_PREFIX
 
@@ -49,10 +44,10 @@ gfauto_cov_from_gcov --out run_gcov2cov.cov $compiler_build --gcov_prefix_dir $g
 deactivate
 
 # create the coverage report with lcov
-
 cd $working_folder
-/home/user42/my_lcov/bin/lcov --capture --directory ${cov_name} --output-file $info_name 
+/home/user42/my_lcov/bin/lcov --capture --directory $cov_name --output-file $info_name 
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
+
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
