@@ -98,7 +98,7 @@ class CILRunner():
 
         # set absolute filepath to the test case based on whether it has be de- and re- compiled or not
         if self.filepaths.decompiler_path != None:
-            full_path = f'self.filepaths.absolute_filepath/{test_name}_decomp'
+            full_path = f'{self.filepaths.absolute_filepath}{test_name}_decomp/'
         else:
             full_path = self.filepaths.absolute_filepath
         
