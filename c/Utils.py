@@ -34,6 +34,10 @@ class FilePaths():
         self.bug_results_name : str = bug_results_name
         self.compiler_path : str = compiler_path
 
+        if output_filepath[0] == '/':
+            self.exe_filepath : str = output_filepath
+        else:
+            self.exe_filepath : str = f'./{output_filepath}'
 
 class FuzzingParams():
 

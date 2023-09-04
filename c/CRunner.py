@@ -49,7 +49,7 @@ class CRunner():
         
     def execute_test(self, test_name : int, path_name : str) -> int:
         
-        exe_cmd = [f'''./{self.filepaths.output_filepath}/{test_name}_out \
+        exe_cmd = [f'''{self.filepaths.exe_filepath}/{test_name}_out \
                     {self.filepaths.path_filepath}/{path_name}.txt \
                     {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt \
                     {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt ''']
