@@ -36,7 +36,7 @@ def main():
     basePath = f'cil/fuzzing/{args.folder}'
 
     filepaths = FilePaths(base = basePath,
-                            decopmiler_path= {args.decompiler_path},
+                            decopmiler_path= args.decompiler_path,
                             absolute_filepath=f'/Users/ambergorzynski/Documents/cfg/repo/control_flow_fleshing/{basePath}/proj/testing/',
                             graph_filepath = f'{basePath}/graphs',
                             src_filepath = f'{basePath}/proj',
