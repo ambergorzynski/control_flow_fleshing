@@ -35,12 +35,13 @@ class CRunner():
         
     def compile_test(self, test_name : str) -> int:
 
-        #TODO: convert c++ wrapper to c so using clang instead of clang++
         cmd = [f'''./c/compile_test_c.sh \
                 {self.filepaths.output_filepath} \
                 {self.filepaths.program_filepath} \
                 {test_name} \
-                "-O3"''']
+                "-O3" \
+                {self.filepaths.compiler_path} \
+                {self.params.compiler}''']
 
         result = subprocess.run(cmd, shell=True)
 

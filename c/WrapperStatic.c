@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-extern void run_cfg(int* actual_output);
+extern "C" void run_cfg(int* actual_output);
 
 bool cmp(int* expected, int* actual, int size);
 

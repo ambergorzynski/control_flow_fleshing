@@ -23,14 +23,15 @@ def main():
     parser.add_argument("n_graphs", type=int)
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
-    parser.add_argument("base", type=str, default='c/fuzzing',
+    parser.add_argument("compiler", type=str,
+                        help="specifies compiler toolchain, can be 'clang++' or 'g++'")
+    parser.add_argument("compiler_path", type=str)
+    parser.add_argument("-base", type=str, default='c/fuzzing',
                         help='base path for folders')
-    parser.add_argument("-graalvm", type=str, default=None,
-                        help='specifies path to graalvm')
     parser.add_argument("-graph", type=str, default='default',
                         help='''specifies graph generation approach from '1' or '2'. default is 2''')
     parser.add_argument("-dir",type=str,default='known',
-                        help='specifies whether directions are known at compile time or not')
+                        help='specifies whether directions are known at compile time or not. can be "known" or "known_const')
     args = parser.parse_args()
     
     # Set up parameter inputs for fuzzing run
@@ -44,7 +45,7 @@ def main():
                             output_filepath = f'{basePath}/running',
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}',
-                            graalvm_path=args.graalvm)
+                            compiler_path=args.compiler_path)
 
     params = FuzzingParams(directions=dir(args.dir),
                             n_graphs = args.n_graphs,
@@ -55,7 +56,8 @@ def main():
                             max_successors = 2,
                             graph_approach = 2 if args.graph == 'default' else 3,
                             max_path_length = 900,
-                            n_optimisations=1)
+                            n_optimisations=1,
+                            compiler = args.compiler)
     
     # Setup
     create_folders(basePath)
@@ -167,6 +169,8 @@ def dir(dir : str) -> Directions:
           return Directions.DYNAMIC
      elif dir == 'known':
           return Directions.STATIC_ARR
+     elif dir == 'known_const':
+          return Directions.CONST_STATIC_ARR
          
 if __name__ == "__main__":
     main()
