@@ -6,6 +6,7 @@ class FilePaths():
 
     def __init__(self,
                  base : str,
+                 decopmiler_path : str,
                  absolute_filepath : str,
                  graph_filepath : str,
                  src_filepath : str,
@@ -16,6 +17,7 @@ class FilePaths():
                  bug_results_name : str):
         
         self.base : str = base
+        self.decompiler_path : str = decopmiler_path
         self.graph_filepath : str = graph_filepath
         self.absolute_filepath : str = absolute_filepath
         self.src_filepath : str = src_filepath
