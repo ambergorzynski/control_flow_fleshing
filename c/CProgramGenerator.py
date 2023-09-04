@@ -40,7 +40,7 @@ class CProgramGenerator(ProgramGenerator):
                 self.fleshed_graph += self.flesh_conditional_node(n)
 
             elif(n_successors > 2):
-                self.fleshed_graph += self.flesh_switch_node(n, n_successors, directions)
+                self.fleshed_graph += self.flesh_switch_node(n, n_successors)
 
         # add closing phrase to program
         self.fleshed_graph += self.flesh_end()
@@ -49,17 +49,18 @@ class CProgramGenerator(ProgramGenerator):
     
     def flesh_program_start(self, directions : list[int]):
 
+        print(self.params.directions)
+
         if self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_program_start_static_arr(directions)
-    
+        
+        if self.params.directions.value == Directions.CONST_STATIC_ARR.value:
+            return self.flesh_program_start_const_arr(directions)    
 
     def flesh_conditional_node(self, n : int):
-        if self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_conditional_node_static(n)
 
-    def flesh_switch_node(self, n : int, n_successors : int, directions : list[int]):
-        
-        if self.params.directions.value == Directions.STATIC_ARR.value:
+    def flesh_switch_node(self, n : int, n_successors : int):
             return self.flesh_switch_node_static(n, n_successors)
 
     def flesh_program_start_static_arr(self, directions : list[int]) -> str:
@@ -94,6 +95,38 @@ class CProgramGenerator(ProgramGenerator):
         
         return prog_start
     
+
+    def flesh_program_start_const_arr(self, directions : list[int]) -> str:
+
+        """
+            Sets up the program start in which the directions
+            array is statically known. This version codes the array via a 
+            simple int array that is initialised at the beginning of the program.
+        """
+
+
+        l = len(directions)
+
+        prog_start = ''' 
+        void run_cfg(int* actual_output) {{
+
+        block_0:
+            // set up counters
+            int dir_counter = 0;
+            int out_counter = 0;
+            
+            // set up directions array
+            const int directions[{dir_size}]={{'''.format(dir_size = l)
+
+        #fill in directions array
+        for i, d in enumerate(directions):
+            prog_start += '''{dir},'''.format(dir=d)
+
+        # remove final comma and close bracket
+        prog_start = prog_start[:-1]
+        prog_start += '};'
+        
+        return prog_start
     
     def flesh_start_of_node(self, n : int) -> str:
         '''
@@ -164,7 +197,7 @@ class CProgramGenerator(ProgramGenerator):
             returns code for node with > 2 successors
             e.g. a switch statement
         '''
-        pass
+
         code = '''
             switch(directions[dir_counter++]){'''
         
