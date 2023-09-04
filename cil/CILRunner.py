@@ -80,7 +80,7 @@ class CILRunner():
     
     def decompile_test(self, test_name : str) -> int:
         
-        cmd = [f'''./cil/decompile_test_cil.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.decompiler_path}''']
+        cmd = [f'''./cil/decompile_test_cil.sh {self.filepaths.src_filepath}/testing {test_name} {self.filepaths.decompiler_path}''']
 
         result = subprocess.run(cmd, shell=True)
 
@@ -88,7 +88,7 @@ class CILRunner():
     
     def recompile_test(self, test_name : str) -> int:
 
-        cmd = [f'''./cil/recompile_test_cil.sh {self.filepaths.src_filepath} {test_name}''']
+        cmd = [f'''./cil/recompile_test_cil.sh {self.filepaths.src_filepath}/testing {test_name}''']
 
         result = subprocess.run(cmd, shell=True)
 
