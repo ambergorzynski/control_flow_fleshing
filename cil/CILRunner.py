@@ -50,7 +50,7 @@ class CILRunner():
             print('Recompilation succeeded!')
 
         # execute test
-        exe_result = self.execute_test(test_number=test_id, path_name=path_name)
+        exe_result = self.execute_test(test_name=test_name, test_number=test_id, path_name=path_name)
         if exe_result != 0:
             print('Execution failed!')
             return 1
@@ -80,7 +80,7 @@ class CILRunner():
     
     def decompile_test(self, test_name : str) -> int:
         
-        cmd = [f'''./cil/decompile_test_cil.sh {self.filepaths.src_filepath} {test_name}''']
+        cmd = [f'''./cil/decompile_test_cil.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.decompiler_path}''']
 
         result = subprocess.run(cmd, shell=True)
 
