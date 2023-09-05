@@ -69,7 +69,7 @@ def main():
                     max_successors = params.max_successors, 
                     graph_generation_approach = params.graph_approach, 
                     seed = None)
-
+    
     # Step 2 : generate paths for each graph
     for i in range(params.n_graphs):
         generate_path(graph_number = i,
@@ -80,12 +80,11 @@ def main():
                         max_path_length = params.max_path_length, 
                         seed = None)
 
-
+    
     # Step 3 : flesh graphs
     program_generator = CILProgramGenerator(params)
    
     for i in range(params.n_graphs):
-            
         graph = pickle.load(open(f'{filepaths.graph_filepath}/graph_{i}.p', "rb"))
 
         cfg = CFG(graph)
@@ -94,12 +93,11 @@ def main():
 
         program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}.il')
 
-
+    
     # Step 4 : run tests
     test = CILRunner(filepaths, params)
 
     for i in range(params.n_graphs):
-
         graph_passed_tests = True
         test_name = f'run_cfg_{i}'
 
