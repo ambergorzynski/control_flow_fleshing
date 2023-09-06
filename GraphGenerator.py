@@ -81,6 +81,22 @@ def preset_graph_4() -> nx.MultiDiGraph:
     
     return G
 
+
+def preset_graph_for_report() -> nx.MultiDiGraph:
+
+    ''' returns simplified graph for report '''
+
+    G = nx.MultiDiGraph()
+
+    G.add_nodes_from([0,1,2,3,4])
+
+    G.add_edges_from([(0, 1), (0,3),
+        (1,1), (1,2),
+        (2,3),
+        (3,1),(3,2),(3,4)])
+    
+    return G
+
 def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
     ''' 
@@ -257,6 +273,8 @@ def generate_graph_approach_presets(i : int) -> nx.MultiDiGraph:
         return preset_graph_3()
     if i == 3:
         return preset_graph_4()
+    if i == -1:
+        return preset_graph_for_report()
 
 
     
@@ -329,6 +347,9 @@ def generate_graphs(graph_filepath : str,
 
         elif graph_generation_approach == 3:
             graph = sample_xml_graph()
+
+        elif graph_generation_approach == -1:
+            graph = generate_graph_approach_presets(-1)
 
         pickle.dump(graph, open(f'{graph_filepath}/graph_{i}.p', "wb"))
 
