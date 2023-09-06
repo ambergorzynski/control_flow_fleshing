@@ -55,6 +55,8 @@ def main():
     # parsing args
     if(args.graph == 'xml'):
         g = 3
+    elif(args.graph == 'preset'):
+        g = -1
     else:
         g = int(args.graph)
 
