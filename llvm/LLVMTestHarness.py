@@ -36,7 +36,7 @@ def main():
     parser.add_argument("-lab", type=bool, default=False,
                         help="True for lab computer, False for mac; used for different folder set-ups and compilation cmds")
     parser.add_argument("-graph", type=str, default="default",
-                        help="specifies graph generation approach from 'default' or 'xml'.")
+                        help="specifies graph generation approach from 'default', 'preset', 'xml'.")
     parser.add_argument("-clean_as_you_go",type=int,default=1,
                         help="specifies whether to remove non-bug-triggering files automatically")
     parser.add_argument("-opt_only",type=bool,default=False,
@@ -49,6 +49,13 @@ def main():
     time = datetime.now().timestamp()
     basePath = f'llvm/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/llvm/fuzz/{args.folder}'
 
+    if args.graph == 'default':
+         graph=2
+    elif args.graph == 'preset':
+         graph=-1
+    else:
+         graph=3
+    
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
                             program_filepath = f'{basePath}/llvm',
@@ -66,7 +73,7 @@ def main():
                             max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 3,
-                            graph_approach = 2 if args.graph == 'default' else 3,
+                            graph_approach = graph,
                             max_path_length = 900,
                             n_optimisations = 1,
                             opt_only=args.opt_only)
