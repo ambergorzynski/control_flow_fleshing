@@ -8,7 +8,7 @@ from datetime import datetime
 
 #TODO: convert graph generator etc to package
 
-sys.path.append('../repo')
+sys.path.append('../control_flow_fleshing')
 
 from GraphGenerator import *
 from CFG import *
