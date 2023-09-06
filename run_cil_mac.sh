@@ -1,1 +1,1 @@
-python cil/CILTestHarness.py 1 2 test_folder
+python cil/CILTestHarness.py 1 1 report_test -graph '-1'

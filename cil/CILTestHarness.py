@@ -24,7 +24,7 @@ def main():
     parser.add_argument("n_paths", type=int)
     parser.add_argument("folder", type=str)
     parser.add_argument("-graph", type=str, default="2",
-                        help="specifies graph generation approach from '1', '2' or 'xml'.")
+                        help="specifies graph generation approach from '-1' (for report graph), '1', '2' or 'xml'.")
     parser.add_argument("-decompiler_path", type = str, default = None,
                         help = "specifies decompiler path to ilspy exe")
     args = parser.parse_args()
