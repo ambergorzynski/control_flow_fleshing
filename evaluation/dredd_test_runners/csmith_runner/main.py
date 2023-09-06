@@ -332,8 +332,6 @@ def main():
 
             for mutant in candidate_mutants_for_this_test:
 
-                print(candidate_mutants_for_this_test)
-
                 if not still_testing(total_test_time=args.total_test_time,
                                      maximum_time_since_last_kill=args.maximum_time_since_last_kill,
                                      start_time_for_overall_testing=start_time_for_overall_testing,
