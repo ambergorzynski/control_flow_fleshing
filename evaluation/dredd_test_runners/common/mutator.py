@@ -81,7 +81,8 @@ LLVM_OPTS : Dict[str, str] = {'loop-unroll' : 'Transforms/Scalar/LoopUnrollPass.
                               'mergereturn' : 'Transforms/Utils/UnifyFunctionExitNodes.cpp',
                               'basic_blocks' : 'Transforms/Utils/BasicBlockUtils.cpp',
                               'instcombine' : 'Transforms/InstCombine/InstructionCombining.cpp',
-                              'instcount' : 'Analysis/InstCount.cpp'}
+                              'instcount' : 'Analysis/InstCount.cpp',
+                              'loop-rotate' : 'Transforms/Scalar/LoopRotation.cpp'}
 #                              'simplifycfg' : 'Utils/SimplifyCFG.cpp'} # couldn't build - took too long
 #                              'loop-reduce' : 'Scalar/LoopStrengthReduce.cpp', # couldn't build - took too long
 #                              'licm' : 'Scalar/LICM.cpp', # errors when building
@@ -102,7 +103,7 @@ def main():
     # apply mutations
     #for mutation in LLVM_OPTS.keys():
         
-    mutation : str = 'loop-unroll-and-jam' # for applying single mutation in testing
+    mutation : str = 'loop-rotate' # for applying single mutation in testing
 
     print(f'Applying mutation {mutation} at {LLVM_OPTS[mutation]}...')
 
