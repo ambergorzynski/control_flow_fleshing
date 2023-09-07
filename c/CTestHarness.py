@@ -38,6 +38,13 @@ def main():
     time = datetime.now().timestamp()
     basePath = f'{args.base}/{args.folder}'
 
+    if args.graph=='default':
+         graph=2
+    elif args.graph=='preset':
+         graph=-1
+    else:
+         graph=3
+
     filepaths = FilePaths(base = basePath,
                             graph_filepath = f'{basePath}/graphs',
                             program_filepath = f'{basePath}/c',
@@ -54,7 +61,7 @@ def main():
                             max_graph_size = 500,
                             min_successors = 1,
                             max_successors = 3,
-                            graph_approach = 2 if args.graph == 'default' else 3,
+                            graph_approach = graph,
                             max_path_length = 900,
                             n_optimisations=1,
                             compiler = args.compiler)
