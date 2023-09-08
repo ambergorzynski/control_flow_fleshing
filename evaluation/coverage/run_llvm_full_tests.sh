@@ -21,7 +21,7 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python llvm/LLVMTestHarness.py 1 10 fuzzing_run_unknown /home/user42/amber-demo/llvm-project/build/bin -dir 'unknown'
+python llvm/LLVMTestHarness.py 100 10 fuzzing_run_unknown_v2 /home/user42/amber-demo/llvm-project/build/bin -clean_as_you_go 0 -dir 'unknown'
 # unset
 unset GCOV_PREFIX
 

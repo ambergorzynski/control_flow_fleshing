@@ -8,7 +8,7 @@ from datetime import datetime
 
 #TODO: convert graph generator etc to package
 
-sys.path.append('../control_flow_fleshing')
+sys.path.append('../repo')
 
 from GraphGenerator import *
 from CFG import *
@@ -153,7 +153,7 @@ def main():
 
                 test_name = f'run_cfg_{i}_path_{j}' 
 
-                test_result = test.compile(test_name,f'input_graph_{i}_path{j}')
+                test_result = test.compile(test_name)
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
 
                 # clean up and delete files if test compiled end executed OK
