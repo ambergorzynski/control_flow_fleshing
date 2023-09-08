@@ -1,51 +1,35 @@
 #!/bin/sh
-
-# filepaths
 base=/home/user42/amber-demo
 gfauto=/home/user42/amber-demo/graphicsfuzz/gfauto
 compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
 
-# test-specific filepaths
-cov_name=coverage_llvm_test_suite
+cov_name=coverage_llvm_regression_tests_v2
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
-# test suite paths
-path_to_test=/home/user42/amber-demo/corpus/llvm-tests/test-suite
-path_to_test_build=/home/user42/amber-demo/corpus/llvm-tests/test-suite-build
+# activate venv for CFG fleshing
+cd $working_folder/repo
+source /home/user42/amber-demo/cfg/repo/venv/bin/activate
 
-<<com
-# go to build directory for the test suite
-cd $path_to_test_build
-
-Ccompiler="${llvm_path}/clang"
-CXXcompiler="${llvm_path}/clang++"
-
-cmake -DCMAKE_C_COMPILER=${llvm_path}/clang \
-	-DCMAKE_CXX_COMPILER=${llvm_path}/clang++ \
-	-DLLVM_TARGETS_TO_BUILD="X86" \
-	-C ${path_to_test}/cmake/caches/O3.cmake \
-	../test-suite
-
-# run compiler and save coverage data
-mkdir $gcda_folder
-
+# set gcov prefix
 export GCOV_PREFIX=$gcda_folder
 
-make
-
-unset GCOV_PREFIX
-unset Ccompiler
-unset CXXcompiler
+echo 'Running tests...'
 
 # run tests
-###
+cd ${compiler_build}
+make check-all
 
-com
+# unset
+unset GCOV_PREFIX
+
+deactivate
+
+echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
 # TODO: extract script to do this from gfauto source code
@@ -66,4 +50,5 @@ cd $working_folder
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
+
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
