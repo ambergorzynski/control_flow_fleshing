@@ -10,7 +10,7 @@ info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
-
+<<com
 # activate venv for CFG fleshing
 cd $working_folder/repo
 source /home/user42/amber-demo/cfg/repo/venv/bin/activate
@@ -26,7 +26,7 @@ python llvm/LLVMTestHarness.py 100 10 fuzzing_run_unknown_v2 /home/user42/amber-
 unset GCOV_PREFIX
 
 deactivate
-<<com
+com
 echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
@@ -48,5 +48,5 @@ cd $working_folder
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
-com
+
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
