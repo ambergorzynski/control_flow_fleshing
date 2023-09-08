@@ -4,7 +4,8 @@ gfauto=/home/user42/amber-demo/graphicsfuzz/gfauto
 compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
-cov_name=coverage_cfg_tests
+
+cov_name=coverage_cfgf_dirs_unknown
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
@@ -20,7 +21,7 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python llvm/LLVMTestHarness.py 100 10 fuzzing_run /home/user42/amber-demo/llvm-project/build/bin -dir 'known'
+python llvm/LLVMTestHarness.py 100 10 fuzzing_run_unknown /home/user42/amber-demo/llvm-project/build/bin -dir 'known'
 # unset
 unset GCOV_PREFIX
 
