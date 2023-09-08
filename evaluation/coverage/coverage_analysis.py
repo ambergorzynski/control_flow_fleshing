@@ -14,55 +14,75 @@ def main():
     
     base_folder = 'llvm/lib/Transforms'
 
-    files = ['AggressiveInstCombine',
+    transforms = ['AggressiveInstCombine',
              'IPO',
              'InstCombine',
              'Scalar',
              'Utils',
              'Vectorize']
     
-    # for test in test_set:
-    test = 'cfgf'
-
     cfgf_frames = {}
+    csmith_frames = {}
+    llvm_frames = {}
 
-    for file in files:
+    all_frames = {'cfgf': cfgf_frames, 
+                  'csmith': csmith_frames, 
+                  'llvm' :llvm_frames}
 
-        html_doc = f'{base}/{test_set[test]}/{base_folder}/{file}/index.html'
+    for test in test_set.keys():
 
-        with open(html_doc, "r") as f:
-            page = f.read()
-        tree = html.fromstring(page)
+        for transform in transforms:
 
-        # get all coverage file names
-        coverFilesElems = tree.xpath('//td[@class="coverFile"]')
-        files = [i[0].text for i in coverFilesElems]
+            print(transform)
 
-        # get all coverage percentages
-        rowElems = tree.xpath('//td[contains(@class, "coverPer")]')
-        rows=[i.text for i in rowElems]
+            html_doc = f'{base}/{test_set[test]}/{base_folder}/{transform}/index.html'
 
-        # make dataframe from rows
-        lines = [rows[i] for i in range(len(rows)) if i%2 == 0]
-        functions = [rows[i] for i in range(len(rows)) if i%2 == 1]
+            with open(html_doc, "r") as f:
+                page = f.read()
+            tree = html.fromstring(page)
 
-        df = pd.DataFrame(
-        {'file': files,
-        'line_cov_pct': lines,
-        'function_cov_pct': functions
-        })
+            # get all coverage file names
+            coverFilesElems = tree.xpath('//td[@class="coverFile"]')
+            files = [i[0].text for i in coverFilesElems]
 
-        # convert line and coverage data from string to num
+            # get all coverage percentages
+            rowElems = tree.xpath('//td[contains(@class, "coverPer")]')
+            rows=[i.text for i in rowElems]
 
-        for c in ['line_cov_pct', 'function_cov_pct']:
-            df[c] = np.where(df[c].str.contains("%"), df[c].str[:-2], df[c])
-            df[c] = np.where(df[c].str.contains("-"), '0', df[c])
-            df[c] = df[c].astype(float)
+            # make dataframe from rows
+            lines = [rows[i] for i in range(len(rows)) if i%2 == 0]
+            functions = [rows[i] for i in range(len(rows)) if i%2 == 1]
 
-        # put dataframe into dictionary
-        cfgf_frames[file] = df
+            df = pd.DataFrame(
+            {'transform' : transform,
+            'file': files,
+            f'line_cov_pct_{test}': lines,
+            f'function_cov_pct_{test}': functions
+            })
+
+            # convert line and coverage data from string to num
+
+            for c in [f'line_cov_pct_{test}', f'function_cov_pct_{test}']:
+                df[c] = np.where(df[c].str.contains("%"), df[c].str[:-2], df[c])
+                df[c] = np.where(df[c].str.contains("-"), '0', df[c])
+                df[c] = df[c].astype(float)
+
+            # put dataframe into dictionary
+            all_frames[test][transform] = df
+
+    cfgf_frames['All']      = pd.concat([i for i in cfgf_frames.values()])
+    csmith_frames['All']    = pd.concat([i for i in csmith_frames.values()])
+    llvm_frames['All']      = pd.concat([i for i in llvm_frames.values()])
 
     print((cfgf_frames['Scalar']).head)
+
+    # create dataframe for each transform - all files match, they are present in all dfs
+    df_join = pd.merge(cfgf_frames['All'], csmith_frames['All'], how='left', on=['file','transform'])
+    big_df = pd.merge(df_join, llvm_frames['All'], how='left', on=['transform', 'file'])
+    print(big_df)
+
+    # subset the files for which cfgf 
+
 
 
 if __name__=="__main__":
