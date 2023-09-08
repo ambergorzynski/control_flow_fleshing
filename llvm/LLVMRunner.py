@@ -83,7 +83,7 @@ class LLVMRunner():
                                     'tailcallelim',
                                     ]
 
-    def compile(self, test_name : str, path_name : str) -> int:
+    def compile(self, test_name : str) -> int:
         '''
             Function runs the compilation and execution process for the given
             parameters and filepaths
