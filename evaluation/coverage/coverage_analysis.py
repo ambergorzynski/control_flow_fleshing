@@ -74,15 +74,28 @@ def main():
     csmith_frames['All']    = pd.concat([i for i in csmith_frames.values()])
     llvm_frames['All']      = pd.concat([i for i in llvm_frames.values()])
 
-    print((cfgf_frames['Scalar']).head)
-
     # create dataframe for each transform - all files match, they are present in all dfs
     df_join = pd.merge(cfgf_frames['All'], csmith_frames['All'], how='left', on=['file','transform'])
     big_df = pd.merge(df_join, llvm_frames['All'], how='left', on=['transform', 'file'])
-    print(big_df)
+    #print(big_df)
 
-    # subset the files for which cfgf 
+    # subset the files for which cfgf has higher line or function coverage than either csmith or llvm 
+    # only one file... SimplifyCFG.pass... :(
+    query_str = '(line_cov_pct_cfgf > line_cov_pct_csmith) or '
+    query_str += '(line_cov_pct_cfgf > line_cov_pct_llvm) or '
+    query_str += '(function_cov_pct_cfgf > function_cov_pct_csmith) or '
+    query_str += '(function_cov_pct_cfgf > function_cov_pct_llvm)'
+    
+    query_str = 'line_cov_pct_cfgf > line_cov_pct_llvm'
 
+    cfgf_bigger_df = big_df.query(query_str)
+
+    print(cfgf_bigger_df)
+
+    # sort to see files for which cfgf has the highest coverage
+    print(big_df.columns)
+    sorted_df = big_df.sort_values(by=['line_cov_pct_cfgf'], ascending=False)
+    print(sorted_df.head(15))
 
 
 if __name__=="__main__":
