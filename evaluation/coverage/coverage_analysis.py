@@ -4,7 +4,22 @@ import pandas as pd
 import numpy as np
 
 def main():
+
+    base = '/Users/ambergorzynski/Documents/cfg/coverage_results'
     html_doc = '/Users/ambergorzynski/Documents/cfg/coverage_results/coverage_fleshing_tests_clang/index.html'
+
+    tests = {'cfgf':'coverage_fleshing_tests_clang',
+             'csmith' : 'coverage_csmith_tests_clang',
+             'llvm' : 'coverage_llvm_test_suite_out'}
+    
+    base_folder = 'llvm/lib/Transforms'
+    
+    files = [f'{base_folder}/AggressiveInstCombine',
+             f'{base_folder}/IPO',
+             f'{base_folder}/InstCombine',
+             f'{base_folder}/Scalar',
+             f'{base_folder}/Utils',
+             f'{base_folder}/Vectorize']
 
     with open(html_doc, "r") as f:
         page = f.read()
