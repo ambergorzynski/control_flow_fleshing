@@ -153,6 +153,7 @@ def main():
 
                 test_name = f'run_cfg_{i}_path_{j}' 
 
+                test_result = test.compile(test_name,f'input_graph_{i}_path{j}')
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
 
                 # clean up and delete files if test compiled end executed OK
@@ -175,7 +176,9 @@ def main():
             graph_passed_tests = True
             
             test_name = f'run_cfg_{i}'
-            
+
+            test_result = test.compile(test_name,f'input_graph_{i}_path{j}')
+
             for j in range(params.n_paths):
 
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')

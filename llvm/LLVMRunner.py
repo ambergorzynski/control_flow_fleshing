@@ -83,7 +83,7 @@ class LLVMRunner():
                                     'tailcallelim',
                                     ]
 
-    def run(self, test_name : str, path_name : str) -> int:
+    def compile(self, test_name : str, path_name : str) -> int:
         '''
             Function runs the compilation and execution process for the given
             parameters and filepaths
@@ -105,6 +105,8 @@ class LLVMRunner():
             return 1
         
         print('Test compilation succeeded!')
+
+    def run(self, test_name : str, path_name : str) -> int:
         
         if not self.params.opt_only:
             exe_result = self.execute_test(test_name, path_name)
