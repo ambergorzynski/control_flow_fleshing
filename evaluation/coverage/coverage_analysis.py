@@ -95,7 +95,7 @@ def main():
     # sort to see files for which cfgf has the highest coverage
     print(big_df.columns)
     sorted_df = big_df.sort_values(by=['line_cov_pct_cfgf'], ascending=False)
-    print(sorted_df.head(15))
+    print(sorted_df.head(10))
 
 
 if __name__=="__main__":
