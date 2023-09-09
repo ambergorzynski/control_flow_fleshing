@@ -1,6 +1,7 @@
 from CFG import CFG
 from ProgramGenerator import ProgramGenerator
 from Utils import *
+from typing import List
 
 class CProgramGenerator(ProgramGenerator):
 
@@ -9,7 +10,7 @@ class CProgramGenerator(ProgramGenerator):
         self.cfg = None
         self.fleshed_graph = None
 
-    def fleshout(self, cfg : CFG, directions : list[int] = None) -> str:
+    def fleshout(self, cfg : CFG, directions : List[int] = None) -> str:
 
         ''' 
             converts control flow graph to C 
@@ -47,7 +48,7 @@ class CProgramGenerator(ProgramGenerator):
 
         return self.fleshed_graph
     
-    def flesh_program_start(self, directions : list[int]):
+    def flesh_program_start(self, directions : List[int]):
 
         print(self.params.directions)
 
@@ -63,7 +64,7 @@ class CProgramGenerator(ProgramGenerator):
     def flesh_switch_node(self, n : int, n_successors : int):
             return self.flesh_switch_node_static(n, n_successors)
 
-    def flesh_program_start_static_arr(self, directions : list[int]) -> str:
+    def flesh_program_start_static_arr(self, directions : List[int]) -> str:
 
         """
             Sets up the program start in which the directions
@@ -96,7 +97,7 @@ class CProgramGenerator(ProgramGenerator):
         return prog_start
     
 
-    def flesh_program_start_const_arr(self, directions : list[int]) -> str:
+    def flesh_program_start_const_arr(self, directions : List[int]) -> str:
 
         """
             Sets up the program start in which the directions

@@ -4,6 +4,7 @@ import networkx as nx
 import subprocess
 
 from datetime import datetime
+from typing import List
 
 #TODO: convert graph generator etc to package
 
@@ -144,7 +145,7 @@ def main():
 def clean_up(filepath : str):
      subprocess.run(f'rm {filepath}', shell=True)
 
-def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> list[int]:
+def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> List[int]:
         
         with open(f'{filepaths.path_filepath}/input_graph_{graph}_path{path}.txt', 'r') as f:
             lines = f.readlines()
