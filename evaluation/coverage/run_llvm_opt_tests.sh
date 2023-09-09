@@ -22,12 +22,11 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python llvm/LLVMTestHarness.py 100 10 fuzzing_run_opt_u /home/user42/amber-demo/llvm-project/build/bin -dir 'unknown' -clean_as_you_go 0 -opt_only True
+python llvm/LLVMTestHarness.py 1 10 fuzzing_run_opt_u /home/user42/amber-demo/llvm-project/build/bin -dir 'unknown' -clean_as_you_go 0 -opt_only True
 # unset
 unset GCOV_PREFIX
 
 deactivate
-
 echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
@@ -49,5 +48,4 @@ cd $working_folder
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
-
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
