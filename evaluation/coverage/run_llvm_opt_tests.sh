@@ -5,7 +5,7 @@ compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
 
-cov_name=coverage_cfg_opt_tests
+cov_name=coverage_cfg_opt_tests_unknown_dir
 
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
@@ -22,7 +22,7 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python llvm/LLVMTestHarness.py 100 10 fuzzing_run_opt /home/user42/amber-demo/llvm-project/build/bin -dir 'known' -clean_as_you_go 0 -opt_only True
+python llvm/LLVMTestHarness.py 100 10 fuzzing_run_opt_u /home/user42/amber-demo/llvm-project/build/bin -dir 'unknown' -clean_as_you_go 0 -opt_only True
 # unset
 unset GCOV_PREFIX
 
