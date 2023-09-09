@@ -5,8 +5,7 @@ compiler_build=$base/llvm-project/
 llvm_path=$base/llvm-project/build/bin
 working_folder=$base/cfg
 
-cov_name=coverage_cfg_opt_tests_unknown_dir
-
+cov_name=coverage_c_dirs_known_clang
 info_name=${cov_name}_output.info
 out_name=${cov_name}_out
 gcda_folder=$base/cfg/$cov_name/
@@ -22,11 +21,13 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python llvm/LLVMTestHarness.py 100 10 fuzzing_run_opt_u /home/user42/amber-demo/llvm-project/build/bin -dir 'unknown' -clean_as_you_go 0 -opt_only True
+python c/CTestHarness.py 1 10 fuzzing_run clang++ /home/user42/amber-demo/llvm-project/build/bin -dir 'known_const' -base '${working_folder}/repo/c/fuzz'
+
 # unset
 unset GCOV_PREFIX
 
 deactivate
+<<com
 echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
@@ -48,4 +49,5 @@ cd $working_folder
 genhtml $info_name --output-directory $out_name
 
 echo 'Coverage complete!'
+
 cd /home/user42/amber-demo/cfg/repo/evaluation/coverage
