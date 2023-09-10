@@ -21,6 +21,7 @@ def run_process(cmd, outname):
             process_stdout, process_stderr = process.communicate(timeout=timeout_seconds)
 
             counter += 1
+            print(f'throughput counter: {counter}')
         except subprocess.TimeoutExpired:
             print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
             
@@ -40,6 +41,13 @@ def javabc():
 
     cmd = './run_javabc_lab.sh throughput'
     outname = 'javabc'
+
+    run_process(cmd, outname)
+
+def javabc_unknown():
+
+    cmd = './run_javabc_lab_unknown.sh throughput_unknown'
+    outname = 'javabc_unknown'
 
     run_process(cmd, outname)
 
@@ -71,7 +79,7 @@ def c():
     run_process(cmd, outname)
 
 def main():
-    javabc()
+    c()
 
 if __name__=="__main__":
     main()
