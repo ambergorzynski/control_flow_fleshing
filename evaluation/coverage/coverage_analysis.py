@@ -73,15 +73,18 @@ def get_overall_coverage_clang():
 
 
     test_set = {'cfgf':'coverage_fleshing_tests_clang',
+                'cfgf_c' : 'coverage_c_dirs_known_clang_out',
              'csmith' : 'coverage_csmith_tests_clang',
              'llvm' : 'coverage_llvm_test_suite_out'}
 
         
     cfgf_frames = {}
+    cfgf_c_frames = {}
     csmith_frames = {}
     llvm_frames = {}
 
     all_frames = {'cfgf': cfgf_frames, 
+                  'cfgf_c' : cfgf_c_frames,
                   'csmith': csmith_frames, 
                   'llvm' :llvm_frames}
 
@@ -122,8 +125,9 @@ def get_overall_coverage_clang():
         all_frames[test] = df
 
     # create dataframe for each transform - all files match, they are present in all dfs
-    df_join = pd.merge(all_frames['cfgf'], all_frames['csmith'], how='left', on=['folder'])
-    big_df = pd.merge(df_join, all_frames['llvm'], how='left', on=['folder'])
+    df_join = pd.merge(all_frames['cfgf'], all_frames['cfgf_c'], how='left', on=['folder'])
+    big_df = pd.merge(df_join, all_frames['csmith'], how='left', on=['folder'])
+    big_df = pd.merge(big_df, all_frames['llvm'], how='left', on=['folder'])
 
     print(big_df)
 
@@ -133,7 +137,7 @@ def get_overall_coverage_clang():
 
 
     print(filtered_df)
-    filtered_df.to_csv('/Users/ambergorzynski/Documents/cfg/results/clang.csv')
+    filtered_df.to_csv('/Users/ambergorzynski/Documents/cfg/results/clang_extra.csv')
 
 
 def get_overall_coverage_opt():
@@ -146,9 +150,14 @@ def get_overall_coverage_opt():
              'llvm' : 'coverage_llvm_test_suite_out'}
     '''
     
+    '''
     test_set = {'cfgf':'coverage_cfg_opt_tests',
              'csmith' : 'coverage_csmith_ll_without_optnone',
              'llvm' : 'coverage_llvm_test_suite_out'}
+    '''
+    test_set = {'cfgf':'coverage_cfg_opt_tests',
+            'csmith' : 'coverage_csmith_ll_without_optnone',
+            'llvm' : 'coverage_llvm_test_suite_out'}
         
     cfgf_frames = {}
     csmith_frames = {}
@@ -214,11 +223,15 @@ def get_all_coverage():
 
     base = '/Users/ambergorzynski/Documents/cfg/coverage_results'
     html_doc = '/Users/ambergorzynski/Documents/cfg/coverage_results/coverage_fleshing_tests_clang/index.html'
-
+    '''
     test_set = {'cfgf':'coverage_fleshing_tests_clang',
              'csmith' : 'coverage_csmith_tests_clang',
              'llvm' : 'coverage_llvm_test_suite_out'}
-    
+    '''
+    test_set = {'cfgf':'coverage_c_dirs_known_clang_out',
+             'csmith' : 'coverage_csmith_tests_clang',
+             'llvm' : 'coverage_llvm_test_suite_out'}
+
     base_folder = 'llvm/lib/Transforms'
 
     transforms = ['AggressiveInstCombine',
@@ -284,7 +297,7 @@ def get_all_coverage():
     # create dataframe for each transform - all files match, they are present in all dfs
     df_join = pd.merge(cfgf_frames['All'], csmith_frames['All'], how='left', on=['file','transform'])
     big_df = pd.merge(df_join, llvm_frames['All'], how='left', on=['transform', 'file'])
-    #print(big_df)
+    print(big_df)
 
     # subset the files for which cfgf has higher line or function coverage than either csmith or llvm 
     # only one file... SimplifyCFG.pass... :(
@@ -302,7 +315,12 @@ def get_all_coverage():
     # sort to see files for which cfgf has the highest coverage
     print(big_df.columns)
     sorted_df = big_df.sort_values(by=['line_cov_pct_cfgf'], ascending=False)
-    print(sorted_df.head(10))
+    print(sorted_df.head(15))
+
+    filtered_df = sorted_df.head(20)
+
+    filtered_df.to_csv('/Users/ambergorzynski/Documents/cfg/results/clang_top_covered.csv')
+
 
 
 
@@ -311,10 +329,10 @@ def get_all_coverage_unknown():
     base = '/Users/ambergorzynski/Documents/cfg/coverage_results'
     html_doc = '/Users/ambergorzynski/Documents/cfg/coverage_results/coverage_fleshing_tests_clang/index.html'
 
-    test_set = {'cfgf':'coverage_cfg_opt_tests',
-             'csmith' : 'coverage_cfg_opt_tests_unknown_dir_out'}
+    test_set = {'known':'coverage_cfg_opt_tests',
+             'unknown' :'coverage_cfg_opt_tests_unknown_dir_out'}
         
-    base_folder = 'llvm/lib/Transforms'
+    base_folder = 'lib/Transforms'
 
     transforms = ['AggressiveInstCombine',
              'IPO',
@@ -378,6 +396,7 @@ def get_all_coverage_unknown():
     big_df = pd.merge(cfgf_frames['All'], unknown_frames['All'], how='left', on=['file','transform'])
     #print(big_df)
 
+    '''
     # subset the files for which cfgf has higher line or function coverage than either csmith or llvm 
     # only one file... SimplifyCFG.pass... :(
     query_str = '(line_cov_pct_cfgf > line_cov_pct_csmith) or '
@@ -390,14 +409,15 @@ def get_all_coverage_unknown():
     cfgf_bigger_df = big_df.query(query_str)
 
     print(cfgf_bigger_df)
+    '''
 
     # sort to see files for which cfgf has the highest coverage
     print(big_df.columns)
     sorted_df = big_df.sort_values(by=['line_cov_pct_known'], ascending=False)
-    print(sorted_df.head(10))
+    print(sorted_df.head(20))
 
 def main():
-    get_overall_coverage_opt_unknown()
+    get_all_coverage_unknown()
 
 if __name__=="__main__":
     main()
