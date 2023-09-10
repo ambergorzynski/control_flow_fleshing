@@ -32,6 +32,7 @@ def main():
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
+    counter = 0
     
     basePath = f'cil/fuzzing/{args.folder}'
 
@@ -104,6 +105,9 @@ def main():
         for j in range(params.n_paths):
     
             test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
+            counter += 1
+            print(f'counter: {counter}')
+            
             if test_result == 0:
                 clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
             else:

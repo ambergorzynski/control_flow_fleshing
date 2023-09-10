@@ -1,1 +1,1 @@
-python cil/CILTestHarness.py 1 1 report_test -graph '-1'
+python cil/CILTestHarness.py 1 100 throughput 
