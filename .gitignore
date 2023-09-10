@@ -21,3 +21,4 @@ evaluation/test/
 work*/
 fleshing_progs/
 csmith_temp/
+coverage_analysis.py
