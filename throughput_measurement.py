@@ -79,7 +79,7 @@ def c():
     run_process(cmd, outname)
 
 def main():
-    c()
+    cil()
 
 if __name__=="__main__":
     main()
