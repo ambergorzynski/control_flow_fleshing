@@ -8,7 +8,7 @@ from typing import List
 
 #TODO: convert graph generator etc to package
 
-sys.path.append('../repo')
+sys.path.append('../control_flow_fleshing')
 
 from GraphGenerator import *
 from CFG import *
@@ -38,6 +38,7 @@ def main():
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
     basePath = f'{args.base}/{args.folder}'
+    counter = 0
 
     if args.graph=='default':
          graph=2
@@ -126,6 +127,8 @@ def main():
             test_name = f'run_cfg_{i}_path_{j}' 
 
             test_result = test.run(test_name,f'input_graph_{i}_path{j}')
+            counter += 1
+            print(f'counter: {counter}')
 
             # clean up and delete files if test compiled end executed OK
             if test_result == 0:

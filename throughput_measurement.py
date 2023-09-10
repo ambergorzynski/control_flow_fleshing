@@ -7,7 +7,7 @@ def run_process(cmd):
         
     counter = 0
 
-    stop_time = datetime.now().timestamp() + 5
+    stop_time = datetime.now().timestamp() + (60*60)
 
     print(stop_time)
 
@@ -23,8 +23,10 @@ def run_process(cmd):
             counter += 1
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+        
+        print(f'total number of executions of 1 graph and 100 paths is: {counter}')
 
-    print(f'total number of executions of 1 graph and 100 paths is: {counter}')
+    print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
 
 def javabc():
 
@@ -33,18 +35,19 @@ def javabc():
     run_process(cmd)
 
 
-
 def llvm():
-    pass
+    cmd = './run_llvm.sh'
+    run_process(cmd)
 
 def cil():
     pass
 
 def c():
-    pass
+    cmd = './run_c_clang.sh'
+    run_process(cmd)
 
 def main():
-    javabc()
+    c()
 
 if __name__=="__main__":
     main()

@@ -8,7 +8,7 @@ from datetime import datetime
 
 #TODO: convert graph generator etc to package
 
-sys.path.append('../repo')
+sys.path.append('../control_flow_fleshing')
 
 from GraphGenerator import *
 from CFG import *
@@ -44,6 +44,7 @@ def main():
     args = parser.parse_args()
 
     #TODO: add argument validator
+    counter = 0
     
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
@@ -155,6 +156,8 @@ def main():
 
                 test_result = test.compile(test_name)
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
+                counter += 1
+                print(f'counter: {counter}')
 
                 # clean up and delete files if test compiled end executed OK
                 if test_result == 0 and args.clean_as_you_go:
@@ -182,6 +185,8 @@ def main():
             for j in range(params.n_paths):
 
                 test_result = test.run(test_name,f'input_graph_{i}_path{j}')
+                counter += 1
+                print(f'counter: {counter}')
 
                 # clean up and delete path if test compiled end executed OK
                 if test_result == 0 and args.clean_as_you_go:
