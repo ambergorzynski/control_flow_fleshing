@@ -22,12 +22,17 @@ def run_process(cmd, outname):
 
             counter += 1
         except subprocess.TimeoutExpired:
+            print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
+            
+            with open(f'{outname}.txt', 'w') as f:
+                f.write(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
+
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
         
         print(f'total number of executions of 1 graph and 100 paths is: {counter}')
 
     print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
-    with open('{outname}.txt', 'w') as f:
+    with open(f'{outname}.txt', 'w') as f:
         f.write(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
 
 
@@ -66,7 +71,7 @@ def c():
     run_process(cmd, outname)
 
 def main():
-    graalvmllvm()
+    javabc()
 
 if __name__=="__main__":
     main()
