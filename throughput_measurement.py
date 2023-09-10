@@ -28,7 +28,7 @@ def run_process(cmd, outname):
 
     print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
     with open('{outname}.txt', 'w') as f:
-        f.write('readme')
+        f.write(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
 
 
 def javabc():
@@ -45,8 +45,19 @@ def llvm():
 
     run_process(cmd, outname)
 
+def graalvmllvm():
+
+    cmd = './run_llvm_graalvm_mac.sh throughput'
+    outname = 'graalvmllvm'
+
+    run_process(cmd, outname)
+
 def cil():
-    pass
+    cmd = './run_cil_mac.sh'
+    outname = 'cil'
+
+    run_process(cmd, outname)
+
 
 def c():
     cmd = './run_c_clang.sh'
@@ -55,7 +66,7 @@ def c():
     run_process(cmd, outname)
 
 def main():
-    c()
+    graalvmllvm()
 
 if __name__=="__main__":
     main()
