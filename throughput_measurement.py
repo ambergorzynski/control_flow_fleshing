@@ -3,7 +3,7 @@ import os
 import signal
 from datetime import datetime, timedelta
 
-def run_process(cmd):
+def run_process(cmd, outname):
         
     counter = 0
 
@@ -27,24 +27,32 @@ def run_process(cmd):
         print(f'total number of executions of 1 graph and 100 paths is: {counter}')
 
     print(f'FINAL number of executions of 1 graph and 100 paths is: {counter}')
+    with open('{outname}.txt', 'w') as f:
+        f.write('readme')
+
 
 def javabc():
 
     cmd = './run_javabc_lab.sh throughput'
+    outname = 'javabc'
 
-    run_process(cmd)
+    run_process(cmd, outname)
 
 
 def llvm():
     cmd = './run_llvm.sh'
-    run_process(cmd)
+    outname = 'llvm'
+
+    run_process(cmd, outname)
 
 def cil():
     pass
 
 def c():
     cmd = './run_c_clang.sh'
-    run_process(cmd)
+    outname = 'c'
+
+    run_process(cmd, outname)
 
 def main():
     c()
