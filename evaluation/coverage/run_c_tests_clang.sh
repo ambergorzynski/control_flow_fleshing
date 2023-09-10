@@ -12,6 +12,7 @@ gcda_folder=$base/cfg/$cov_name/
 coverage_folder=$base/cfg/${cov_name}_gfauto
 
 # activate venv for CFG fleshing
+<<com
 cd $working_folder/repo
 source /home/user42/amber-demo/cfg/repo/venv/bin/activate
 
@@ -21,13 +22,13 @@ export GCOV_PREFIX=$gcda_folder
 echo 'Running tests...'
 
 # run tests
-python c/CTestHarness.py 1 10 fuzzing_run clang++ /home/user42/amber-demo/llvm-project/build/bin -dir 'known_const' -base '${working_folder}/repo/c/fuzz'
+python c/CTestHarness.py 100 10 fuzzing_run clang++ /home/user42/amber-demo/llvm-project/build/bin -dir 'known_const' -base '/home/user42/amber-demo/cfg/repo/c/fuzz'
 
 # unset
 unset GCOV_PREFIX
 
 deactivate
-<<com
+com
 echo 'Finished running tests. Starting coverage...'
 
 # run gfauto to create symlinks
