@@ -46,8 +46,9 @@ def main():
     parser.add_argument("-successors", type=int, default=3,
                         help="max successor nodes added during graph generation")
     args = parser.parse_args()
-
     
+    counter = 0
+
     # Set up parameter inputs for fuzzing run
     time = datetime.now().timestamp()
     basePath = f'javabc/fuzzing/{args.folder}' if not args.lab else f'/vol/bitbucket/agg22/cfg/javabc/fuzz/{args.folder}' 
@@ -95,7 +96,7 @@ def main():
                             decompiler = decompiler)
     
     # Setup
-    create_folders(basePath)
+    #create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -180,6 +181,9 @@ def main():
         
                 test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
 
+                counter += 1
+                print(f'counter is {counter}')
+
                 # remove files if test passed
                 if test_result == 0:
                     clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
@@ -201,6 +205,9 @@ def main():
         
                 test_result = test.run(test_name=test_name, test_id=i, path_name=f'input_graph_{i}_path{j}')
 
+                counter += 1
+                print(f'counter is {counter}')
+
                 if test_result == 0:
                     clean_up(f'{filepaths.path_filepath}/input_graph{i}_path{j}.txt')
                 else:
@@ -209,6 +216,7 @@ def main():
             if graph_passed_tests:
                 clean_up(f'{filepaths.program_filepath}/{test_name}*')
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+
 
 def clean_up(filepath : str):
     subprocess.run(f'rm {filepath}', shell=True)

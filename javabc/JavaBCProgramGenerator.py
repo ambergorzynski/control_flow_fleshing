@@ -134,7 +134,7 @@ block_0:
 
 block_0:
     ; set up directions array in local variable 5
-    bipush {dir_length}
+    sipush {dir_length}
     newarray int
 
 '''.format(dir_length=len(directions))
@@ -142,8 +142,8 @@ block_0:
         for i, d in enumerate(directions):
             code += '''
     dup
-    bipush {index}
-    bipush {direction}
+    sipush {index}
+    sipush {direction}
     iastore
 '''.format(index = i, direction = d)
 
