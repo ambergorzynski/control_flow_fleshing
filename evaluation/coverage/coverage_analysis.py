@@ -296,7 +296,8 @@ def get_all_coverage():
 
     # create dataframe for each transform - all files match, they are present in all dfs
     df_join = pd.merge(cfgf_frames['All'], csmith_frames['All'], how='left', on=['file','transform'])
-    big_df = pd.merge(df_join, llvm_frames['All'], how='left', on=['transform', 'file'])
+    big_df = pd.merge(df_join, llvm_frames['All'], how='left', on=['file','transform'])
+
     print(big_df)
 
     # subset the files for which cfgf has higher line or function coverage than either csmith or llvm 
@@ -311,16 +312,16 @@ def get_all_coverage():
     cfgf_bigger_df = big_df.query(query_str)
 
     print(cfgf_bigger_df)
-
+    
     # sort to see files for which cfgf has the highest coverage
     print(big_df.columns)
     sorted_df = big_df.sort_values(by=['line_cov_pct_cfgf'], ascending=False)
-    print(sorted_df.head(15))
+    print(sorted_df.head(200))
 
-    filtered_df = sorted_df.head(20)
+    filtered_df = sorted_df.head(200)
 
-    filtered_df.to_csv('/Users/ambergorzynski/Documents/cfg/results/clang_top_covered.csv')
-
+    sorted_df.to_csv('/Users/ambergorzynski/Documents/cfg/results/clang_all_covered.csv')
+    
 
 
 
@@ -417,7 +418,7 @@ def get_all_coverage_unknown():
     print(sorted_df.head(20))
 
 def main():
-    get_all_coverage_unknown()
+    get_all_coverage()
 
 if __name__=="__main__":
     main()

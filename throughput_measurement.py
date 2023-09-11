@@ -7,7 +7,7 @@ def run_process(cmd, outname):
         
     counter = 0
 
-    stop_time = datetime.now().timestamp() + (60*30)
+    stop_time = datetime.now().timestamp() + (60*60)
 
     print(stop_time)
 
@@ -97,6 +97,12 @@ def cil():
 
     run_process(cmd, outname)
 
+def ilspy():
+    cmd = './run_cil_decompile_mac.sh'
+    outname = 'cil_decomp'
+
+    run_process(cmd, outname)
+
 
 def c_clang():
     cmd = './run_c_clang.sh'
@@ -111,7 +117,7 @@ def c_gcc():
     run_process(cmd, outname)
 
 def main():
-    c_gcc()
+    ilspy()
 
 if __name__=="__main__":
     main()

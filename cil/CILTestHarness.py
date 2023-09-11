@@ -59,7 +59,7 @@ def main():
                             n_function_repeats=5000)
     
     # Setup
-    create_folders(basePath)
+    #create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,

@@ -1,3 +1,3 @@
-python cil/CILTestHarness.py 1000 50 \
-	fuzzing_decompilation_040923 \
+python cil/CILTestHarness.py 1 100 \
+	fuzzing_decompilation_throughput \
 	-decompiler_path '/Users/ambergorzynski/.dotnet/tools'
