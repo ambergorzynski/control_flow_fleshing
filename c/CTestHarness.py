@@ -33,6 +33,9 @@ def main():
                         help='''specifies graph generation approach from '1' or '2'. default is 2''')
     parser.add_argument("-dir",type=str,default='known',
                         help='specifies whether directions are known at compile time or not. can be "known" or "known_const')
+    parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
+                        help="specifies whether to remove files if test passes")
+
     args = parser.parse_args()
     
     # Set up parameter inputs for fuzzing run
@@ -131,14 +134,15 @@ def main():
 
             # clean up and delete files if test compiled end executed OK
             if test_result == 0:
-                    clean_up(f'{filepaths.program_filepath}/{test_name}.*')
-                    clean_up(f'{filepaths.output_filepath}/{test_name}*')
-                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+                    if not args.no_tidy:
+                         clean_up(f'{filepaths.program_filepath}/{test_name}.*')
+                         clean_up(f'{filepaths.output_filepath}/{test_name}*')
+                         clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
             else:
                     graph_passed_tests = False
                     
         # if all tests passed for this graph, then remove graph
-        if graph_passed_tests:
+        if graph_passed_tests and not args.no_tidy:
             clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
 
