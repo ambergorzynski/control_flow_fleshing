@@ -45,6 +45,10 @@ def main():
                         help="specifies the path to the decompiler")
     parser.add_argument("-successors", type=int, default=3,
                         help="max successor nodes added during graph generation")
+    parser.add_argument("-size",type=int, default=500,
+                        help="maximum graphp size" )
+    parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
+                        help="specifies whether to remove files if test passes")
     args = parser.parse_args()
     
     counter = 0
@@ -65,6 +69,8 @@ def main():
         decompiler = Decompiler.CFR
     elif args.decompiler == 'fernflower':
         decompiler = Decompiler.FERNFLOWER
+    elif args.decompiler == 'procyon':
+        decompiler = Decompiler.PROCYON
     else:
         decompiler = None
 
@@ -83,8 +89,8 @@ def main():
     params = FuzzingParams(
                             n_graphs = args.n_graphs,
                             n_paths = args.n_paths,
-                            min_graph_size = 10,
-                            max_graph_size = 500,
+                            min_graph_size = 3,
+                            max_graph_size = args.size,
                             min_successors = 1,
                             max_successors = args.successors,
                             graph_approach = g,
@@ -96,7 +102,7 @@ def main():
                             decompiler = decompiler)
     
     # Setup
-    #create_folders(basePath)
+    create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -165,7 +171,7 @@ def main():
     
 
     
-
+    
     # Step 4 : run tests
     test = JavaBCRunner(filepaths, params, directions = args.dir)
 
@@ -185,11 +191,13 @@ def main():
                 print(f'counter is {counter}')
 
                 # remove files if test passed
-                if test_result == 0:
-                    clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
-                    clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
-                else:
-                    graph_passed_tests=False
+                if not args.no_tidy:
+
+                    if test_result == 0:
+                        clean_up(f'{filepaths.path_filepath}/input_graph_{i}_path{j}.txt')
+                        clean_up_folder(f'{filepaths.program_filepath}/{test_name}')
+                    else:
+                        graph_passed_tests=False
 
             if graph_passed_tests:
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
@@ -217,7 +225,7 @@ def main():
                 clean_up(f'{filepaths.program_filepath}/{test_name}*')
                 clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
 
-
+    
 def clean_up(filepath : str):
     subprocess.run(f'rm {filepath}', shell=True)
 

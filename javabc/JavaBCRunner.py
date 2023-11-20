@@ -28,7 +28,7 @@ class JavaBCRunner():
         print('Compilation succeeded!')
         
         # if we are using a decompiler, then include additional step to de- and re- compile test
-        if self.filepaths.decompiler_path != None:
+        if self.params.decompiler != None:
             
             print('Decompiling...')
             decompile_result = self.decompile_test(test_name)
@@ -88,6 +88,9 @@ class JavaBCRunner():
             elif self.params.decompiler.value == Decompiler.FERNFLOWER.value:
 
                 decompile_cmd = [f'''./javabc/decompile_test_fernflower.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+            
+            elif self.params.decompiler.value == Decompiler.PROCYON.value:
+                decompile_cmd = [f'''./javabc/decompile_test_procyon.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
             
             # if decompilation cmd failed or decompilation threw exception
             decompile_result = subprocess.run(decompile_cmd, shell=True)

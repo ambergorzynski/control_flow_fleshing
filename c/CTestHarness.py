@@ -113,7 +113,6 @@ def main():
             program_generator.save_to_file(f'{filepaths.program_filepath}/run_cfg_{i}_path_{p}.c')
 
     
-
     # Step 4 : run tests
     test = CRunner(filepaths, params)
 
@@ -141,7 +140,6 @@ def main():
         # if all tests passed for this graph, then remove graph
         if graph_passed_tests:
             clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
-
 
 
 

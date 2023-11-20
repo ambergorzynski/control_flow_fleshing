@@ -59,7 +59,7 @@ def main():
                             n_function_repeats=5000)
     
     # Setup
-    #create_folders(basePath)
+    create_folders(basePath)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -116,6 +116,7 @@ def main():
         if graph_passed_tests:
             clean_up(f'{filepaths.program_filepath}/{test_name}*')
             clean_up(f'{filepaths.graph_filepath}/graph_{i}.p')
+    
 
 def clean_up(filepath : str):
     subprocess.run(f'rm {filepath}', shell=True)

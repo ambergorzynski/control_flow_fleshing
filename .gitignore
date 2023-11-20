@@ -23,3 +23,4 @@ fleshing_progs/
 csmith_temp/
 coverage_analysis.py
 *.txt
+CODE_THAT_WORKS/

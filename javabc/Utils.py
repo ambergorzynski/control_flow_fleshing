@@ -3,6 +3,7 @@ from enum import Enum
 class Decompiler(Enum):
     CFR=1
     FERNFLOWER=2
+    PROCYON=3
 
 class FilePaths():
 

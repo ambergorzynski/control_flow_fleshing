@@ -73,8 +73,8 @@ def preset_graph_4() -> nx.MultiDiGraph:
 
     G.add_nodes_from([0, 1, 2, 3, 4, 5])
 
-    G.add_edges_from([(0, 1),
-        (1, 2), (1, 3), (1, 4),
+    G.add_edges_from([(0, 1), (0,2)
+        (1, 1), (1, 3),
         (2, 5),
         (3, 5),
         (4, 5)])
@@ -88,12 +88,11 @@ def preset_graph_for_report() -> nx.MultiDiGraph:
 
     G = nx.MultiDiGraph()
 
-    G.add_nodes_from([0,1,2,3,4])
+    G.add_nodes_from([0,1,2,3])
 
-    G.add_edges_from([(0, 1), (0,3),
-        (1,1), (1,2),
-        (2,3),
-        (3,1),(3,2),(3,4)])
+    G.add_edges_from([(0, 1), (0,2),
+        (1,1), (1,3),
+        (2,3)])
     
     return G
 
