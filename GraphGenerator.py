@@ -198,20 +198,58 @@ def generate_graph_approach_1(n_nodes : int,
 
     if add_annotations:
 
-        # choose pairs of nodes randomly to add edges between
-        # do not include node 0 as the destination node, since it has some 
-        # set-up code that should not be repeated
-        for i in range(n_annotations):
-            
-            start = rand.choice(list(range(0, n_nodes)))
-
-            end = rand.choice(list(range(1, n_nodes)))
-
-            G.add_edge(start, end)
-
+        # randomly decide whether to add random edges or loops
+        if(rand.randrange(0, 10) > 4):
+            G = add_random_edges(G, n_annotations, rand)
+        else:
+            G = add_loops(G, n_annotations, rand)
 
 
     return G
+
+def add_random_edges(graph : nx.MultiDiGraph,
+             n_edges : int, 
+             rand : Random) -> nx.MultiDiGraph:
+    '''
+        adds random edge to the given graph and returns it 
+        random edges are defined by randomly choosing a node and then adding 
+        an edge to another randomly chosen node (could be parent, self, or unrelated)
+        does not include node 0 as end node, since it has some set up code that 
+        should not be repeated
+    '''
+
+    for i in range(n_edges):
+            
+        start = rand.choice(list(range(1, graph.number_of_nodes())))
+
+        end = rand.choice(list(range(1, graph.number_of_nodes())))
+
+        graph.add_edge(start, end)
+
+    return graph
+
+
+def add_loops(graph : nx.MultiDiGraph,
+             n_loops : int, 
+             rand : Random) -> nx.MultiDiGraph:
+    '''
+        adds loops to the given graph and returns it with loops
+        loops are defined by randomly choosing a node and then adding 
+        an edge to one of its parent nodes (not necessarily the immediate parent)
+    '''
+
+    for i in range(n_loops):
+
+        end = rand.choice(list(range(1, graph.number_of_nodes())))
+        
+        ancestors = list(nx.ancestors(graph, end))
+
+        start = rand.choice(ancestors)
+
+        graph.add_edge(start, end)
+
+    return graph
+
     
 def generate_graph_approach_2(n_nodes : int, 
                               seed : float = None, 
@@ -355,15 +393,32 @@ def generate_graphs(graph_filepath : str,
 def main():
   
     #G = generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
-    G = generate_graph_approach_presets()
+    G = generate_graph_approach_presets(2)
+
+    rand = Random()
+
+    rand.seed(100)
+
+    print("without loops")
+    for e in G.edges:
+        print(e)
+    
+    add_loop(G, 3, rand)
+
+    print("with loops")
+    for e in G.edges:
+        print(e)
+
+    
+
     #nx.draw_networkx(G)
-    nx.draw(G, with_labels=True)
-    plt.show()
-    pickle.dump(G, open("graphs/graph_test.p", "wb"))
+    #nx.draw(G, with_labels=True)
+    #plt.show()
+    #pickle.dump(G, open("graphs/graph_test.p", "wb"))
 
 if __name__=="__main__":
     #explore_atlas()
     #view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
-    #main()
-    make_simple_graph(3)
+    main()
+    #make_simple_graph(3)
     #list_graph('fuzzing/java/fuzzing_180723/graphs/graph_84.p')
