@@ -72,7 +72,7 @@ def main():
                             compiler = args.compiler)
     
     # Setup
-    create_folders(basePath)
+    create_folders(basePath, params.directions)
   
     # Step 1 : generate graphs
     generate_graphs(graph_filepath = filepaths.graph_filepath,
@@ -161,7 +161,7 @@ def read_in_dirs(graph : nx.MultiDiGraph, path : int, filepaths : FilePaths) -> 
         # convert str to int
         return [eval(i) for i in dirs]
 
-def create_folders(basePath : str) -> None:
+def create_folders(basePath : str, dirs : Directions) -> None:
 
     print('Setting up folders...')
 
@@ -172,8 +172,11 @@ def create_folders(basePath : str) -> None:
     cmd += f' ;mkdir {basePath}/running'
 
     result = subprocess.run(cmd, shell=True)
-
-    cp_cmd = f'cp c/WrapperStatic.cpp {basePath}/running/Wrapper.cpp'
+ 
+    if(dirs == Directions.DYNAMIC.value):
+          cp_cmd = f'cp c/Wrapper.c {basePath}/running/Wrapper.cpp'
+    else:
+          cp_cmd = f'cp c/WrapperStatic.cpp {basePath}/running/Wrapper.cpp'
 
     result = subprocess.run(cp_cmd, shell=True)
 
