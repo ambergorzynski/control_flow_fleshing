@@ -89,7 +89,8 @@ def main():
                     min_successors = params.min_successors, 
                     max_successors = params.max_successors, 
                     graph_generation_approach = params.graph_approach, 
-                    n_annotations = args,
+                    add_annotations= params.add_annotations,
+                    n_annotations=params.n_annotations,
                     seed = None)
 
     # Step 2 : generate paths for each graph
