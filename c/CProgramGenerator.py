@@ -134,7 +134,7 @@ class CProgramGenerator(ProgramGenerator):
         """
 
         prog_start = ''' 
-        void run_cfg(int* actual_output, int* directions) {{
+        void run_cfg(int* actual_output, int* directions) {
 
         block_0:
             // set up counters
