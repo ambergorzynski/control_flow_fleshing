@@ -35,6 +35,11 @@ def main():
                         help='specifies whether directions are known at compile time or not. can be "known", "known_const" or "unknown"')
     parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
                         help="specifies whether to remove files if test passes")
+    parser.add_argument("-add_annotations", type = bool, default = True,
+                        help='specifies whether graph approach should include annotations')
+    parser.add_argument("-n_annotations", type = int, default = -1,
+                         help="specifies the number of annotations to add. Default is to add 1/5 of the number of nodes in the graph")
+
 
     args = parser.parse_args()
     
@@ -67,6 +72,8 @@ def main():
                             min_successors = 1,
                             max_successors = 3,
                             graph_approach = graph,
+                            add_annotations = args.add_annotations,
+                            n_annotations = args.n_annotations,
                             max_path_length = 900,
                             n_optimisations=1,
                             compiler = args.compiler)
@@ -82,7 +89,7 @@ def main():
                     min_successors = params.min_successors, 
                     max_successors = params.max_successors, 
                     graph_generation_approach = params.graph_approach, 
-                    n_annotations = None,
+                    n_annotations = args,
                     seed = None)
 
     # Step 2 : generate paths for each graph

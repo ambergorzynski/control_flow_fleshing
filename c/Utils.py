@@ -6,7 +6,7 @@ class Directions(Enum):
         return self.__class__ is other.__class__ and other.value == self.value
     
     DYNAMIC = 1
-    STATIC_ARR = 2
+    STATIC_ARR = 2 
     CONST_STATIC_ARR = 3 
 
 class FilePaths():
@@ -34,6 +34,7 @@ class FilePaths():
         self.bug_results_name : str = bug_results_name
         self.compiler_path : str = compiler_path
 
+
         if output_filepath[0] == '/':
             self.exe_filepath : str = output_filepath
         else:
@@ -53,6 +54,8 @@ class FuzzingParams():
                 min_successors : int,
                 max_successors : int,
                 graph_approach : int, # can be 1 or 2
+                add_annotations : bool, # for graph approach
+                n_annotations : int,
                 max_path_length : int,
                 n_optimisations : int,
                 compiler : str):
@@ -68,3 +71,6 @@ class FuzzingParams():
         self.max_path_length : int = max_path_length
         self.n_optimisations : int = n_optimisations
         self.compiler : str = compiler
+        self.add_annotations : bool = add_annotations
+        self.n_annotations : int = n_annotations
+
