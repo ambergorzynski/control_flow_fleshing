@@ -198,6 +198,7 @@ def generate_graph_approach_1(n_nodes : int,
 
     if add_annotations:
 
+        print('adding annotations now!')
         # randomly decide whether to add random edges or loops
         if(rand.randrange(0, 10) > 4):
             G = add_random_edges(G, n_annotations, rand)
