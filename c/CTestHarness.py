@@ -32,7 +32,7 @@ def main():
     parser.add_argument("-graph", type=str, default='default',
                         help='''specifies graph generation approach from '1' or '2'. default is 2''')
     parser.add_argument("-dir",type=str,default='known',
-                        help='specifies whether directions are known at compile time or not. can be "known" or "known_const')
+                        help='specifies whether directions are known at compile time or not. can be "known", "known_const" or "unknown"')
     parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
                         help="specifies whether to remove files if test passes")
 
