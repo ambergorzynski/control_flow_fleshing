@@ -221,6 +221,8 @@ def add_random_edges(graph : nx.MultiDiGraph,
         should not be repeated
     '''
 
+    print('random!')
+
     for i in range(n_edges):
             
         start = rand.choice(list(range(1, graph.number_of_nodes())))
@@ -240,6 +242,8 @@ def add_loops(graph : nx.MultiDiGraph,
         loops are defined by randomly choosing a node and then adding 
         an edge to one of its parent nodes (not necessarily the immediate parent)
     '''
+
+    print('loops!')
 
     for i in range(n_loops):
 
