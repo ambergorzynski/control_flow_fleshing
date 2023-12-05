@@ -56,13 +56,10 @@ class CProgramGenerator(ProgramGenerator):
             return self.flesh_program_start_static_arr(directions)
         
         if self.params.directions.value == Directions.CONST_STATIC_ARR.value:
-            return self.flesh_program_start_const_arr(directions)    
+            return self.flesh_program_start_const_arr(directions)
 
-    def flesh_conditional_node(self, n : int):
-            return self.flesh_conditional_node_static(n)
-
-    def flesh_switch_node(self, n : int, n_successors : int):
-            return self.flesh_switch_node_static(n, n_successors)
+        if self.params.directions.value == Directions.DYNAMIC.value:
+            return self.flesh_program_start_dynamic()    
 
     def flesh_program_start_static_arr(self, directions : List[int]) -> str:
 
@@ -129,6 +126,24 @@ class CProgramGenerator(ProgramGenerator):
         
         return prog_start
     
+    def flesh_program_start_dynamic(self) -> str:
+
+        """
+            Sets up the program start in which the directions
+            array is dynamically passed to the function. 
+        """
+
+        prog_start = ''' 
+        void run_cfg(int* actual_output) {{
+
+        block_0:
+            // set up counters
+            int dir_counter = 0;
+            int out_counter = 0;
+        '''
+
+        return prog_start
+    
     def flesh_start_of_node(self, n : int) -> str:
         '''
             returns code to store node n in output array
@@ -173,7 +188,7 @@ class CProgramGenerator(ProgramGenerator):
 
         return code
 
-    def flesh_conditional_node_static(self, n : int) -> str:
+    def flesh_conditional_node(self, n : int) -> str:
         ''' 
             returns code for node n with two successors, one of
             which may be self (e.g. in case of loop)
@@ -193,7 +208,7 @@ class CProgramGenerator(ProgramGenerator):
         return code
     
     
-    def flesh_switch_node_static(self, n : int, n_successors : int) -> str:
+    def flesh_switch_node(self, n : int, n_successors : int) -> str:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
