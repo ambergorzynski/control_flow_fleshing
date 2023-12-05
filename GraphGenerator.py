@@ -198,7 +198,9 @@ def generate_graph_approach_1(n_nodes : int,
 
     if add_annotations:
 
-        print('adding annotations now!')
+        n_annotations = G.number_of_nodes() // 5 # default for now: add 20% of graph size
+
+        print(f'adding {n_annotations} annotations now!')
         # randomly decide whether to add random edges or loops
         if(rand.randrange(0, 10) > 4):
             G = add_random_edges(G, n_annotations, rand)
@@ -255,7 +257,8 @@ def add_loops(graph : nx.MultiDiGraph,
 def generate_graph_approach_2(n_nodes : int, 
                               seed : float = None, 
                               min_successors : int = 1, 
-                              max_successors : int = 10) -> nx.MultiDiGraph:
+                              max_successors : int = 10,
+                              add_annotations : bool = True) -> nx.MultiDiGraph:
 
         ''' 
             variant on approach 1: use same initial approach and then append
@@ -280,7 +283,6 @@ def generate_graph_approach_2(n_nodes : int,
         for node in range(0, n_nodes - 1):
 
             # randomly choose number of successor nodes
-            # up to 3 for now - to update later
             n_successors = rand.choice(list(range(min_successors, max_successors)))
 
             for j in range(n_successors):
@@ -288,6 +290,17 @@ def generate_graph_approach_2(n_nodes : int,
                 successor = rand.choice(list(range(1, n_nodes)))
 
                 G.add_edge(node, successor)
+
+        if add_annotations:
+
+            n_annotations = G.number_of_nodes() // 5 # default for now: add 20% of graph size
+
+            print(f'adding {n_annotations} annotations now!')
+            # randomly decide whether to add random edges or loops
+            if(rand.randrange(0, 10) > 4):
+                G = add_random_edges(G, n_annotations, rand)
+            else:
+                G = add_loops(G, n_annotations, rand)
 
         # randomly append exit nodes to a sample of nodes
         nodes = rand.choices(list(range(0, n_nodes)), k=n_nodes//5)
@@ -362,7 +375,7 @@ def generate_graphs(graph_filepath : str,
         parameters and saves them in the given filepath
     '''
 
-
+    print(f'annotation param is: {add_annotations}')
 
     rand = Random()
 
@@ -404,7 +417,7 @@ def main():
     for e in G.edges:
         print(e)
     
-    add_loop(G, 3, rand)
+    add_loops(G, 3, rand)
 
     print("with loops")
     for e in G.edges:
