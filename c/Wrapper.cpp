@@ -1,6 +1,7 @@
 #include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include<fstream>
+#include<iostream>
+using namespace std;
 
 extern "C" void run_cfg(int* actual_output, int* directions);
 

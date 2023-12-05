@@ -174,7 +174,7 @@ def create_folders(basePath : str, dirs : Directions) -> None:
     result = subprocess.run(cmd, shell=True)
  
     if(dirs.value == Directions.DYNAMIC.value):
-          cp_cmd = f'cp c/Wrapper.c {basePath}/running/Wrapper.cpp'
+          cp_cmd = f'cp c/Wrapper.cpp {basePath}/running/Wrapper.cpp'
     else:
           cp_cmd = f'cp c/WrapperStatic.cpp {basePath}/running/Wrapper.cpp'
 
