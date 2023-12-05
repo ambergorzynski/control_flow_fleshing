@@ -3,7 +3,7 @@
 #include<iostream>
 using namespace std;
 
-extern "C" void run_cfg(int* actual_output, int* directions);
+extern void run_cfg(int* actual_output, int* directions);
 
 bool cmp(int* expected, int* actual, int size);
 
