@@ -7,6 +7,7 @@ from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 
+from CFG import CFG
 from c import CProgramGenerator, Utils
 
 def parse_args():
@@ -16,10 +17,21 @@ def parse_args():
     parser.add_argument("--script") # optional for now
     return parser.parse_args()
 
+def gen_program(filename : str) -> str:
+
+    # load cfg as nx object
+    cfg = CFG(filename=filename)
+
+    # flesh cfg to program
+
+    return 'hello'
+
 def main():
 
     args = parse_args()
-    
+
+    program : str = gen_program(args.graph)
+
 if __name__==("__main__"):
     main()
 

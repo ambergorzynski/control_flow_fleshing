@@ -6,6 +6,10 @@ from queue import Queue
 from typing import List, Tuple
 import pickle
 
+def load_graph(filename : str) -> nx.MultiDiGraph:
+         
+    return  pickle.load(open(filename, 'rb'))
+
 class Path():
 
     def __init__(self) -> None:
@@ -14,7 +18,11 @@ class Path():
 
 class CFG():
 
-    def __init__(self, graph : nx.MultiDiGraph):
+    def __init__(self, graph : nx.MultiDiGraph = None, filename : str = None):
+        
+        if graph == None:
+            graph = load_graph(filename)
+        
         self.graph : nx.MultiDiGraph = graph
         self.fleshed_graph : str = None 
         self.doomed : List[int] = []

@@ -73,7 +73,7 @@ def preset_graph_4() -> nx.MultiDiGraph:
 
     G.add_nodes_from([0, 1, 2, 3, 4, 5])
 
-    G.add_edges_from([(0, 1), (0,2)
+    G.add_edges_from([(0, 1), (0,2),
         (1, 1), (1, 3),
         (2, 5),
         (3, 5),
@@ -413,6 +413,7 @@ def main():
     #G = generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
     G = generate_graph_approach_presets(2)
 
+    '''
     rand = Random()
 
     rand.seed(100)
@@ -426,7 +427,8 @@ def main():
     print("with loops")
     for e in G.edges:
         print(e)
-
+    '''
+    pickle.dump(G, open("graphs/graph_test.p", "wb"))
     
 
     #nx.draw_networkx(G)
