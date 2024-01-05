@@ -7,6 +7,7 @@ from pathlib import Path
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("graph")
+    parser.add_argument("--language", default="c")
     parser.add_argument("--script") # optional for now
     return parser.parse_args()
 
