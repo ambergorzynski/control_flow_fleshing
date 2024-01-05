@@ -1,6 +1,6 @@
 from CFG import CFG
 from ProgramGenerator import ProgramGenerator
-from Utils import *
+from c.Utils import *
 from typing import List
 
 class CProgramGenerator(ProgramGenerator):

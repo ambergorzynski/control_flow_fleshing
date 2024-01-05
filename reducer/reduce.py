@@ -1,8 +1,13 @@
 import os
+import sys
 import argparse
 import subprocess
 
 from pathlib import Path
+
+sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+
+from c import CProgramGenerator, Utils
 
 def parse_args():
     parser = argparse.ArgumentParser()
