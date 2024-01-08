@@ -30,7 +30,7 @@ class CFG():
         self.exit_nodes : List[int] = self.find_exit_nodes()
 
     def get_nodes(self) -> List[int]:
-        return self.graph.nodes
+        return list(self.graph.nodes)
 
     def find_exit_nodes(self) -> List[int]:
         ''' 
