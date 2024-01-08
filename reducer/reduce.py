@@ -2,6 +2,8 @@ import os
 import sys
 import argparse
 import subprocess
+import random
+import time
 
 from pathlib import Path
 
@@ -17,23 +19,91 @@ def parse_args():
     parser.add_argument("--script") # optional for now
     return parser.parse_args()
 
-def gen_program(filename : str) -> str:
+def load_cfg(filename : str) -> CFG:
+    return  CFG(filename=filename)
 
-    # load cfg as nx object
-    cfg = CFG(filename=filename)
+def flesh_cfg(cfg : CFG) -> str:
 
-    # flesh cfg to program
     generator = CProgramGenerator()
 
     program = generator.fleshout(cfg)
 
     return program 
 
+class Reducer():
+
+    def __init__(self, cfg : CFG):
+        self.interesting_cfg : CFG = cfg
+        self.timeout : int = None
+    
+    def reduce(self) -> None:
+
+        modified_cfg : CFG = self.interesting_cfg
+
+        n = 0
+
+        while self.is_interesting(modified_cfg):
+           
+            print(f'Modification round {n}')
+
+            self.interesting_cfg = modified_cfg
+
+            self.merge(modified_cfg)
+
+            n = n + 1
+
+            time.sleep(3)
+
+
+    def merge(self, cfg : CFG, nodes : tuple[int, int] = None) -> None:
+        '''
+            merge operation combines two nodes in the given
+            CFG. By default the nodes are randomly selected,
+            or they can optionally be specified. 
+            The two nodes are replaced  with a single merged
+            node. All directed edges pointing to either node 
+            are directed to the merged node. All edges 
+            originating from either node will originate
+            from the merged node. Any edges between the two
+            nodes are removed.
+        '''
+
+        if nodes is None:
+
+            nodes = self.get_random_nodes(cfg)
+
+        print(f'nodes are: {nodes}')
+
+        return
+
+    def get_random_nodes(self, cfg : CFG) -> tuple[int, int]:
+        
+        all_nodes = cfg.get_nodes()
+
+        selected = random.sample(all_nodes,2)
+
+        return tuple(selected)
+
+    def is_interesting(self, cfg : CFG) -> bool:
+        '''
+            runs interestingness test to check whether current
+            modified cfg is interesting
+        '''
+
+        #TODO: implement interestingness check
+        return True
+
 def main():
 
     args = parse_args()
 
-    program : str = gen_program(args.graph)
+    cfg : CFG = load_cfg(args.graph)
+    
+    reducer = Reducer(cfg)
+
+    reducer.reduce()
+
+
 
     #TODO: change to tmp folder
     file = open("/data/work/fuzzflesh/graphs/graph.c", "w")
