@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 
 from CFG import CFG
-from c import CProgramGenerator, Utils
+from c.CProgramGenerator import CProgramGenerator
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -23,6 +23,11 @@ def gen_program(filename : str) -> str:
     cfg = CFG(filename=filename)
 
     # flesh cfg to program
+    generator = CProgramGenerator()
+
+    program = generator.fleshout(cfg)
+
+    print(program)
 
     return 'hello'
 
