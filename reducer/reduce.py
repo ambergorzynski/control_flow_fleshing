@@ -27,15 +27,18 @@ def gen_program(filename : str) -> str:
 
     program = generator.fleshout(cfg)
 
-    print(program)
-
-    return 'hello'
+    return program 
 
 def main():
 
     args = parse_args()
 
     program : str = gen_program(args.graph)
+
+    #TODO: change to tmp folder
+    file = open("/data/work/fuzzflesh/graphs/graph.c", "w")
+    file.write(program)
+    file.close()
 
 if __name__==("__main__"):
     main()
