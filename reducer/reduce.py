@@ -16,8 +16,8 @@ from c.CProgramGenerator import CProgramGenerator
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("graph")
+    parser.add_argument("script")
     parser.add_argument("--language", default="c")
-    parser.add_argument("--script") # optional for now
     return parser.parse_args()
 
 def load_cfg(filename : str) -> CFG:
@@ -33,27 +33,27 @@ def flesh_cfg(cfg : CFG) -> str:
 
 class Reducer():
 
-    def __init__(self, cfg : CFG):
+    def __init__(self, cfg : CFG, script_filepath : str):
         self.interesting_cfg : CFG = cfg
+        self.script_filepath : str = script_filepath
         self.timeout : int = None
     
     def reduce(self) -> None:
-
-        modified_cfg : CFG = self.interesting_cfg
 
         counter = 0
 
         #TODO: include timeout stopping condition
         #TODO: include stoppping condition once all operations tried
-        while self.is_interesting(modified_cfg):
+        while True:
 
-            print(f'Nodes: {modified_cfg.get_nodes()}')
+            print(f'Nodes: {self.interesting_cfg.get_nodes()}')
            
             print(f'Modification round {counter}')
 
-            self.interesting_cfg = modified_cfg
-
-            modified_cfg = self.merge(modified_cfg)
+            modified_cfg = self.merge(self.interesting_cfg)
+            
+            if self.is_interesting(modified_cfg):
+                self.interesting_cfg = modified_cfg
 
             counter += 1
 
@@ -83,7 +83,7 @@ class Reducer():
 
         (node1, node2) = nodes
 
-        merged_graph = (nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True) 
+        merged_graph = (nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True)) 
         
         return CFG(merged_graph)
 
@@ -101,8 +101,21 @@ class Reducer():
             modified cfg is interesting
         '''
 
-        #TODO: implement interestingness check
-        return True
+        program = flesh_cfg(cfg)
+        
+        #TODO: change to tmp folder
+        file = open("/data/work/fuzzflesh/graphs/graph.c", "w")
+        file.write(program)
+        file.close()
+
+        # run interestingness test
+        cmd = ['sh', f'/{self.script_filepath}']
+
+        result = subprocess.run(cmd)
+        
+        print(f'Result of interestingness test is: {result.returncode}')
+
+        return True if result.returncode == 0 else False
 
 def main():
 
@@ -110,16 +123,18 @@ def main():
 
     cfg : CFG = load_cfg(args.graph)
     
-    reducer = Reducer(cfg)
+    reducer : Reducer = Reducer(cfg, args.script)
 
-    reducer.reduce()
+    reduced_cfg : CFG = reducer.reduce()
 
-
+    '''
+    program : str = flesh_cfg(reduced_cfg)
 
     #TODO: change to tmp folder
     file = open("/data/work/fuzzflesh/graphs/graph.c", "w")
     file.write(program)
     file.close()
+    '''
 
 if __name__==("__main__"):
     main()
