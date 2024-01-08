@@ -5,7 +5,7 @@ from typing import List
 
 class CProgramGenerator(ProgramGenerator):
 
-    def __init__(self, params : FuzzingParams):
+    def __init__(self, params : FuzzingParams = None):
         self.params = params
         self.cfg = None
         self.fleshed_graph = None
@@ -50,16 +50,14 @@ class CProgramGenerator(ProgramGenerator):
     
     def flesh_program_start(self, directions : List[int]):
 
-        print(self.params.directions)
+        if self.params == None or self.params.directions.value == Directions.DYNAMIC.value:
+            return self.flesh_program_start_dynamic()
 
         if self.params.directions.value == Directions.STATIC_ARR.value:
             return self.flesh_program_start_static_arr(directions)
         
         if self.params.directions.value == Directions.CONST_STATIC_ARR.value:
             return self.flesh_program_start_const_arr(directions)
-
-        if self.params.directions.value == Directions.DYNAMIC.value:
-            return self.flesh_program_start_dynamic()    
 
     def flesh_program_start_static_arr(self, directions : List[int]) -> str:
 
