@@ -4,6 +4,7 @@ import argparse
 import subprocess
 import random
 import time
+import networkx as nx
 
 from pathlib import Path
 
@@ -40,19 +41,25 @@ class Reducer():
 
         modified_cfg : CFG = self.interesting_cfg
 
-        n = 0
+        counter = 0
 
+        #TODO: include timeout stopping condition
+        #TODO: include stoppping condition once all operations tried
         while self.is_interesting(modified_cfg):
+
+            print(f'Nodes: {modified_cfg.get_nodes()}')
            
-            print(f'Modification round {n}')
+            print(f'Modification round {counter}')
 
             self.interesting_cfg = modified_cfg
 
-            self.merge(modified_cfg)
+            modified_cfg = self.merge(modified_cfg)
 
-            n = n + 1
+            counter += 1
 
             time.sleep(3)
+
+        print('Finished!')
 
 
     def merge(self, cfg : CFG, nodes : tuple[int, int] = None) -> None:
@@ -74,7 +81,9 @@ class Reducer():
 
         print(f'nodes are: {nodes}')
 
-        return
+        (node1, node2) = nodes
+
+        return CFG(nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True)) 
 
     def get_random_nodes(self, cfg : CFG) -> tuple[int, int]:
         
