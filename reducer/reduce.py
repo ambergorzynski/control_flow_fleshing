@@ -83,7 +83,9 @@ class Reducer():
 
         (node1, node2) = nodes
 
-        return CFG(nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True)) 
+        merged_graph = (nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True) 
+        
+        return CFG(merged_graph)
 
     def get_random_nodes(self, cfg : CFG) -> tuple[int, int]:
         
