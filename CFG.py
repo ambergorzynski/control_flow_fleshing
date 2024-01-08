@@ -29,7 +29,7 @@ class CFG():
         self.not_doomed : List[int] = []
         self.exit_nodes : List[int] = self.find_exit_nodes()
 
-    def nodes(self) -> List[int]:
+    def get_nodes(self) -> List[int]:
         return self.graph.nodes
 
     def find_exit_nodes(self) -> List[int]:
