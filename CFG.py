@@ -12,9 +12,9 @@ def load_graph(filename : str) -> nx.MultiDiGraph:
 
 class Path():
 
-    def __init__(self) -> None:
-        self.expected_output = []
-        self.directions = []
+    def __init__(self, expected_output = [], directions = []) -> None:
+        self.expected_output = expected_output
+        self.directions = directions
 
 class CFG():
 

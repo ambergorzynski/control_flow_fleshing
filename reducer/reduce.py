@@ -10,12 +10,13 @@ from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 
-from CFG import CFG
+from CFG import CFG, Path
 from c.CProgramGenerator import CProgramGenerator
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("graph")
+    parser.add_argument("input")
     parser.add_argument("script")
     parser.add_argument("--language", default="c")
     return parser.parse_args()
@@ -31,17 +32,34 @@ def flesh_cfg(cfg : CFG) -> str:
 
     return program 
 
+def get_path(filename : str) -> Path:
+    
+    f = open(filename, "r")
+
+    content = f.readlines()
+
+    f.close()
+
+    directions = [int(i) for i in content[2].split()]
+
+    expected_output = [int(i) for i in content[3].split()]
+
+    return Path(directions, expected_output)
+
 class Reducer():
 
-    def __init__(self, cfg : CFG, script_filepath : str):
+    def __init__(self, cfg : CFG, input_filepath : str, script_filepath : str):
         self.interesting_cfg : CFG = cfg
         self.script_filepath : str = script_filepath
         self.timeout : int = None
+        self.path : Path = get_path(input_filepath)
     
     def reduce(self) -> None:
 
         counter = 0
 
+        print(f'path is: {self.path.expected_output} and {self.path.directions}')
+        exit
         #TODO: include timeout stopping condition
         #TODO: include stoppping condition once all operations tried
         while True:
@@ -84,7 +102,9 @@ class Reducer():
         (node1, node2) = nodes
 
         merged_graph = (nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True)) 
-        
+
+        #path = update_path(merged_graph, path)
+
         return CFG(merged_graph)
 
     def get_random_nodes(self, cfg : CFG) -> tuple[int, int]:
@@ -104,7 +124,7 @@ class Reducer():
         program = flesh_cfg(cfg)
         
         #TODO: change to tmp folder
-        file = open("/data/work/fuzzflesh/graphs/graph.c", "w")
+        file = open("/data/work/fuzzflesh/graphs/test_graph.c", "w")
         file.write(program)
         file.close()
 
@@ -123,7 +143,7 @@ def main():
 
     cfg : CFG = load_cfg(args.graph)
     
-    reducer : Reducer = Reducer(cfg, args.script)
+    reducer : Reducer = Reducer(cfg, args.input, args.script)
 
     reduced_cfg : CFG = reducer.reduce()
 
