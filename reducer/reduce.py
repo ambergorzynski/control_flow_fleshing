@@ -44,7 +44,86 @@ def get_path(filename : str) -> Path:
 
     expected_output = [int(i) for i in content[3].split()]
 
-    return Path(directions, expected_output)
+    return Path(expected_output = expected_output, directions = directions)
+
+def update_path_after_merge(original : nx.MultiDiGraph, updated : nx.MultiDiGraph, node1 : int, node2 : int, original_path : Path) -> Path:
+    
+    '''
+        Walk the graph following the directions and update the new path & directions
+        as we go.
+
+        Everything relating to node1 in the original graph is unchanged, because we 
+        merged node2 into node1.
+        
+        Whenever we encounter node2 in the path, we need to update the new expected
+        output to be node1 (since node2 is renamed to node1).
+        
+        Whenever we take an edge FROM node2, we need to renumber this direction as
+        n + j, where n is the number of edges originally leading from node1, and 
+        j is the specific direction that we previously took from node2. This is because
+        the edges from node2 are appended to the edges from node1. (#TODO: double check this)
+    '''
+
+    # Initialise updated directions and expected output arrays
+    dirs = original_path.directions
+    path = original_path.expected_output
+
+    dir_index = 0
+    path_index = 0
+
+    while path_index < len(path):
+
+        # update path and direction if we encounter node2 on our path
+        if path[path_index] == node2:
+
+            n_node1_edges = len(original.out_edges(node1))
+            n_node2_edges = len(original.out_edges(node2))
+
+            # node2 is renamed to node1 during merge operation
+            path[path_index] = node1
+
+            # if node1 had more than one child, then a dir already existed
+            # we need to update this dir for node2 by adding the number of
+            # edges that node1 has (e.g. if we want to take branch 2 from
+            # node2, and node1 had 3 edges, then we need direction 2 + 3 = 5)
+            if n_node1_edges > 1:
+                dirs[dir_index] = dirs[dir_index] + n_node1_edges
+
+            # otherwise, we must insert new direction into list at the dir index
+            elif n_node1_edges == 1:
+                dirs.insert(dir_index, dirs[dir_index] + 1)
+
+            else:
+                print("Error! Trying to merge an exit node, which is not yet supported")
+                exit(1)
+
+            # must also replace preceding direction if the node has changed name
+            # since the node contract operation changes the ordering of the edges
+            if original.out_degree(path[path_index] - 1) > 0:
+                dirs[dir_index - 1] = original.out_degree(path[path_index - 1])
+
+        # increment dir counter if we are branching
+        if is_decision_node(original, path[path_index], node1, node2):
+            dir_index += 1
+
+        path_index += 1
+    
+    return Path(expected_output = path, directions = dirs)
+
+def is_decision_node(graph : nx.MultiDiGraph, current_node : int, node1 : int, node2 : int) -> bool:
+
+    '''
+        Checks whether current node involves a branch after
+        a merge operation
+    '''
+
+    if current_node != node1 and current_node != node2 and len(graph.out_edges(current_node)) > 1:
+        return True
+
+    if (current_node == node1 or current_node == node2) and len(graph.out_edges(node1)) + len(graph.out_edges(node2)) > 1:
+        return True
+
+    return False
 
 class Reducer():
 
@@ -58,29 +137,31 @@ class Reducer():
 
         counter = 0
 
-        print(f'path is: {self.path.expected_output} and {self.path.directions}')
-        exit
         #TODO: include timeout stopping condition
         #TODO: include stoppping condition once all operations tried
         while True:
 
-            print(f'Nodes: {self.interesting_cfg.get_nodes()}')
-           
-            print(f'Modification round {counter}')
+            print(f'\nModification round {counter}')
 
-            modified_cfg = self.merge(self.interesting_cfg)
+            print(f'Nodes: {self.interesting_cfg.get_nodes()}')
+            print(f'Dirs: {self.path.directions}')
+            print(f'Path: {self.path.expected_output}')
+
+            (modified_cfg, modified_path) = self.merge()
             
-            if self.is_interesting(modified_cfg):
+            if self.is_interesting(modified_cfg, modified_path):
                 self.interesting_cfg = modified_cfg
+                self.path = modified_path
 
             counter += 1
 
+            print('Sleeping...')
             time.sleep(3)
 
         print('Finished!')
 
 
-    def merge(self, cfg : CFG, nodes : tuple[int, int] = None) -> None:
+    def merge(self, nodes : tuple[int, int] = None) -> tuple[CFG, Path]:
         '''
             merge operation combines two nodes in the given
             CFG. By default the nodes are randomly selected,
@@ -93,29 +174,44 @@ class Reducer():
             nodes are removed.
         '''
 
+        #TODO: include condition checking for merge validity
+        # e.g. do not merge exit nodes (for now)
+
         if nodes is None:
 
-            nodes = self.get_random_nodes(cfg)
-
-        print(f'nodes are: {nodes}')
+            nodes = self.get_random_nodes(self.interesting_cfg)
 
         (node1, node2) = nodes
+        print(f'Merging nodes {node1} and {node2}')
 
-        merged_graph = (nx.contracted_nodes(cfg.get_graph(), node1, node2, copy=True)) 
+        merged_graph = (nx.contracted_nodes(self.interesting_cfg.get_graph(), 
+                        node1, node2, copy=True)) 
 
-        #path = update_path(merged_graph, path)
+        path = update_path_after_merge(self.interesting_cfg.get_graph(),
+                            merged_graph, 
+                            node1, 
+                            node2, 
+                            self.path)
 
-        return CFG(merged_graph)
+        print(f'Finished merging graph to give nodes: {merged_graph.nodes()}')
+        print(f'And edges: {merged_graph.edges()}')
+        print(f'And dirs: {path.directions}')
+        print(f'And path: {path.expected_output}')
+        return (CFG(merged_graph), path)
 
     def get_random_nodes(self, cfg : CFG) -> tuple[int, int]:
         
-        all_nodes = cfg.get_nodes()
+        # get list of all nodes except the starting node from which to choose
+        # also do not include end nodes
+        all_nodes = [x for x in cfg.nodes if x not in cfg.exit_nodes]
+
+        all_nodes.remove(0)
 
         selected = random.sample(all_nodes,2)
 
         return tuple(selected)
 
-    def is_interesting(self, cfg : CFG) -> bool:
+    def is_interesting(self, cfg : CFG, path : Path) -> bool:
         '''
             runs interestingness test to check whether current
             modified cfg is interesting
@@ -124,9 +220,16 @@ class Reducer():
         program = flesh_cfg(cfg)
         
         #TODO: change to tmp folder
-        file = open("/data/work/fuzzflesh/graphs/test_graph.c", "w")
+        file = open("/data/work/ghidra/reducer/test_graph.c", "w")
         file.write(program)
         file.close()
+
+        path_file = open("/data/work/ghidra/reducer/inputs.txt", "w")
+        path_file.write(str(len(path.directions)) + '\n')
+        path_file.write(str(len(path.expected_output)) + '\n')
+        path_file.writelines(' '.join([str(i) for i in path.directions]) + '\n')
+        path_file.writelines(' '.join([str(i) for i in path.expected_output]))
+        path_file.close()
 
         # run interestingness test
         cmd = ['sh', f'/{self.script_filepath}']
