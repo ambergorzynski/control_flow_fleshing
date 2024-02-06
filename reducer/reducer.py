@@ -17,22 +17,52 @@ from passes.merge import MergePass
 
 class Reducer():
 
-    pass_name_mapping = {
+    def __init__(self, cfg : CFG, path : Path, interestingness_test : str):
+        self.interestingness_test : str = interestingness_test
+        self.cfg : CFG = cfg
+        self.path : Path = path
+        self.pass_name_mapping = {
             'merge' : MergePass,
             }
 
-    def __init__(self, interestingness_test : str, cfg : CFG, path : Path):
-        interestingness_test : str = interestingness_test
-        cfg : CFG = cfg
-        path : Path = path
 
-    def reduce(self, passes : List[AbstractPass]):
+    def reduce(self, passes : list[AbstractPass]) -> None:
+        
+        if not self.valid_pass(passes):
+            print('Error! Invalid pass entered')
+            return
 
-        if !self.is_interesting(self.cfg, self.path):
+        else:
+            pass_instances = self.get_passes(passes)
+
+        if not self.is_interesting(cfg=self.cfg, path=self.path):
             print('Error! Initial test case is not interesting!') 
             return
 
+        for p in pass_instances:
+            print(f'Running pass {p}')
+            #self.run_pass(p)
+
         return
+
+    def get_passes(self, passes : list[str]) -> list[AbstractPass]:
+
+        pass_instances = []
+
+        for p in passes:
+            pass_class = self.pass_name_mapping[p]
+            pass_instance = pass_class()
+            pass_instances.append(pass_instance)
+
+        return pass_instances
+
+    def valid_pass(self, passes : list[str]) -> bool:
+
+        for p in passes:
+            if self.pass_name_mapping.get(p) == None:
+                return False
+
+        return True
 
     def is_interesting(self, cfg : CFG, path : Path) -> bool:
         '''
@@ -40,17 +70,17 @@ class Reducer():
             cfg is interesting
         '''
 
-        program = flesh_cfg(cfg)
+        program = self.flesh_cfg(cfg)
         
         #TODO: change to tmp folder
         with open("/data/work/ghidra/reducer/test_graph.c", "w") as f:
-            file.write(program)
+            f.write(program)
 
         with open("/data/work/ghidra/reducer/inputs.txt", "w") as f:
-        f.write(str(len(path.directions)) + '\n')
-        f.write(str(len(path.expected_output)) + '\n')
-        f.writelines(' '.join([str(i) for i in path.directions]) + '\n')
-        f.writelines(' '.join([str(i) for i in path.expected_output]))
+            f.write(str(len(path.directions)) + '\n')
+            f.write(str(len(path.expected_output)) + '\n')
+            f.writelines(' '.join([str(i) for i in path.directions]) + '\n')
+            f.writelines(' '.join([str(i) for i in path.expected_output]))
 
         # run interestingness test
         cmd = ['sh', f'/{self.interestingness_test}']
@@ -61,3 +91,17 @@ class Reducer():
 
         return True if result.returncode == 0 else False        
 
+    def flesh_cfg(self, cfg : CFG) -> str:
+    
+        generator = CProgramGenerator()
+
+        program = generator.fleshout(cfg)
+
+        return program 
+
+    def run_pass(self, p : AbstractPass) -> None:
+        pass
+
+if __name__=="__main__":
+
+    reducer = Reducer

@@ -1,3 +1,5 @@
+import os
+import sys
 from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__),'../..'))
@@ -8,6 +10,9 @@ class AbstractPass:
     
     def __init__(self):
         pass
+
+    def __str__(self):
+        return f'{type(self).__name__}'
 
     def check_prerequisites(self) -> bool:
         raise NotImplementedError(f"Class {type(self).__name__} has not implemented 'check_prerequisites'!")
