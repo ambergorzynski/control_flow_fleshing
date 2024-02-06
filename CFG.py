@@ -27,7 +27,8 @@ class CFG():
         self.fleshed_graph : str = None 
         self.doomed : List[int] = []
         self.not_doomed : List[int] = []
-        self.exit_nodes : List[int] = self.find_exit_nodes()
+        self.exit_nodes : List[int] = self.get_exit_nodes()
+        self.nodes : List[int] = self.get_nodes()
 
     def get_nodes(self) -> List[int]:
         return list(self.graph.nodes)
@@ -35,17 +36,15 @@ class CFG():
     def get_graph(self) -> nx.MultiDiGraph:
         return self.graph
 
-    def find_exit_nodes(self) -> List[int]:
+    def get_exit_nodes(self) -> List[int]:
         ''' 
             returns a list of all exit nodes in the graph
             defined as nodes with no successors 
         '''
 
-        exits = []
-
-        for node in self.graph:
-            if self.successors(node) == 0:
-                exits.append(node)
+        exits = [node for node in self.graph.nodes()
+                    if self.graph.in_degree(node) != 0
+                    and self.graph.out_degree(node) == 0]
 
         return exits
 
