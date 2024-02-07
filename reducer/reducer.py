@@ -41,7 +41,7 @@ class Reducer():
 
         for p in pass_instances:
             print(f'Running pass {p}')
-            #self.run_pass(p)
+            self.run_pass(p)
 
         return
 
@@ -100,7 +100,22 @@ class Reducer():
         return program 
 
     def run_pass(self, p : AbstractPass) -> None:
-        pass
+        
+        p.check_prerequisites(self.cfg, self.path)
+
+        #TODO: Add stopping condition
+        while True:
+
+            (modified_cfg, modified_path) = p.transform(self.cfg, self.path)
+
+            if self.is_interesting(modified_cfg, modified_path):
+                print('Updating cfg and path')
+                self.cfg = modified_cfg
+                self.path = modified_path
+
+            print('Completed round of pass')
+        
+        
 
 if __name__=="__main__":
 

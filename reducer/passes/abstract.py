@@ -14,8 +14,8 @@ class AbstractPass:
     def __str__(self):
         return f'{type(self).__name__}'
 
-    def check_prerequisites(self) -> bool:
+    def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         raise NotImplementedError(f"Class {type(self).__name__} has not implemented 'check_prerequisites'!")
 
-    def transform(self, cfg : CFG, path : Path) -> bool:
+    def transform(self, cfg : CFG, path : Path) -> tuple[CFG, Path]:
         raise NotImplementedError(f"Class {type(self).__name__} has not implemented 'transform'!")
