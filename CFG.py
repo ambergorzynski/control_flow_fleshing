@@ -48,6 +48,23 @@ class CFG():
 
         return exits
 
+    def get_path_neighbours(self, path : Path) -> List[int]:
+        '''
+            returns a list of all nodes that are connected
+            by at least one edge to the given path
+        '''
+       
+        path_nodes = set(path.expected_output)
+
+        path_pred_nodes = [[n for n in self.graph.predecessors(i)] for i in path_nodes]
+        path_succ_nodes = [[n for n in self.graph.successors(i)] for i in path_nodes]
+
+        path_neighbour_nodes = set([n for inner in (path_pred_nodes + path_succ_nodes)
+            for n in inner])
+
+        path_neighbour_nodes = list(set(path_neighbour_nodes))
+
+        return path_neighbour_nodes
 
     def get_root(self) -> int:
         '''
