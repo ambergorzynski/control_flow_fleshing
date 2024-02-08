@@ -23,7 +23,8 @@ class FilePaths():
                  output_filepath : str,
                  results_name : str,
                  bug_results_name : str,
-                 compiler_path : str,):
+                 compiler_path : str,
+                 decompiler_path : str):
         
         self.base : str = base
         self.graph_filepath : str = graph_filepath
@@ -33,6 +34,7 @@ class FilePaths():
         self.results_name : str = results_name
         self.bug_results_name : str = bug_results_name
         self.compiler_path : str = compiler_path
+        self.decompiler_path : str = decompiler_path
 
 
         if output_filepath[0] == '/':
@@ -58,7 +60,8 @@ class FuzzingParams():
                 n_annotations : int,
                 max_path_length : int,
                 n_optimisations : int,
-                compiler : str):
+                compiler : str,
+                decompiler : str):
         
         self.directions : Directions = directions
         self.n_graphs : int = n_graphs
@@ -73,4 +76,5 @@ class FuzzingParams():
         self.compiler : str = compiler
         self.add_annotations : bool = add_annotations
         self.n_annotations : int = n_annotations
+        self.decompiler : str = decompiler
 
