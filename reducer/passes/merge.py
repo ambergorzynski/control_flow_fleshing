@@ -17,32 +17,39 @@ class MergePass(AbstractPass):
     '''
 
     def __init__(self):
-        pass
+        self.chunk : float = 0.5
+        self.nodes : list[int] = []
+
+    def new(self, cfg : CFG, path : Path) -> None:
+        
+        self.nodes = self.get_merge_nodes(cfg, path)
 
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
+        
+        if len(self.nodes) < 2:
+            return False
+
         return True
 
-    #TODO: once we have found the set of available nodes, store
-    # these in the state. then pop them as we merge (i.e. pop the
-    # node that is vanishing). this means we don't re-merge next 
-    # time we perform the transormation. figure out when to add
-    # this to the state
     def transform(self, cfg : CFG, path : Path) -> tuple[CFG, Path]:
-        
-        all_nodes = [x for x in cfg.nodes if x not in cfg.get_exit_nodes()
-                and x not in cfg.get_path_neighbours(path)
-                and x not in path.expected_output]
-
-        print(f'nodes for selection: {all_nodes}')
-        
-        node1 = all_nodes.pop(0)
-        node2 = all_nodes.pop(0)
-
+      
+        node1 = self.nodes.pop(0)
+        node2 = self.nodes.pop(0)
+       
         print(f'nodes for merging: {node1} {node2}')
  
         modified_cfg = cfg.merge_nodes(node1, node2)
 
         modified_path = path
 
-        # return modified graph and path
         return (modified_cfg, modified_path)
+
+    def get_merge_nodes(self, cfg : CFG, path : Path) -> list[int]:
+
+        merge_nodes = [x for x in cfg.nodes if x not in cfg.get_exit_nodes()
+                and x not in cfg.get_path_neighbours(path)
+                and x not in path.expected_output]
+
+        return merge_nodes
+        
+

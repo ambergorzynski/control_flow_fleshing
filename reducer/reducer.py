@@ -100,11 +100,10 @@ class Reducer():
         return program 
 
     def run_pass(self, p : AbstractPass) -> None:
-        
-        p.check_prerequisites(self.cfg, self.path)
+       
+        p.new(self.cfg, self.path)
 
-        #TODO: Add stopping condition
-        while True:
+        while p.check_prerequisites(self.cfg, self.path):
 
             (modified_cfg, modified_path) = p.transform(self.cfg, self.path)
 
