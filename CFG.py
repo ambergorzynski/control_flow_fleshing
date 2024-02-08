@@ -47,6 +47,12 @@ class CFG():
                     and self.graph.out_degree(node) == 0]
 
         return exits
+    
+    def merge_nodes(self, node1 : int, node2 : int):
+
+        merged = nx.contracted_nodes(self.graph, node1, node2, copy=True) 
+
+        return CFG(graph = merged)
 
     def get_path_neighbours(self, path : Path) -> List[int]:
         '''
