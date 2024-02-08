@@ -39,6 +39,10 @@ def main():
                         help='specifies whether graph approach should include annotations')
     parser.add_argument("-n_annotations", type = int, default = -1,
                          help="specifies the number of annotations to add. Default is to add 1/5 of the number of nodes in the graph")
+    parser.add_argument("-decompiler", type=str, default=None,
+                        help="specifies which decompiler is in use from 'ghidra'")
+    parser.add_argument("-decompiler_path", type = str, default = None,
+                        help="specifies path to decompiler")
 
 
     args = parser.parse_args()
@@ -62,7 +66,8 @@ def main():
                             output_filepath = f'{basePath}/running',
                             results_name = f'results_{time}',
                             bug_results_name = f'bugs_{time}',
-                            compiler_path=args.compiler_path)
+                            compiler_path=args.compiler_path,
+                            decompiler_path=args.decompiler_path)
 
     params = FuzzingParams(directions=dir(args.dir),
                             n_graphs = args.n_graphs,
@@ -76,7 +81,8 @@ def main():
                             n_annotations = args.n_annotations,
                             max_path_length = 900,
                             n_optimisations=1,
-                            compiler = args.compiler)
+                            compiler = args.compiler,
+                            decompiler=args.decompiler)
     
     # Setup
     create_folders(basePath, params.directions)
