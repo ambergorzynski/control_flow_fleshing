@@ -42,6 +42,9 @@ class Reducer():
         for p in pass_instances:
             print(f'Running pass {p}')
             self.run_pass(p)
+            print(f'Finished pass {p}')
+
+        print('Finished all passes')
 
         return
 
@@ -108,7 +111,7 @@ class Reducer():
             (modified_cfg, modified_path) = p.transform(self.cfg, self.path)
 
             if self.is_interesting(modified_cfg, modified_path):
-                print(f'Updating cfg and path, cfg has type {type(modified_cfg)}')
+                print('Updating cfg and path')
                 self.cfg = modified_cfg
                 self.path = modified_path
 

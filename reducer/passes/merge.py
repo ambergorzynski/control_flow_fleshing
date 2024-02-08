@@ -17,12 +17,14 @@ class MergePass(AbstractPass):
     '''
 
     def __init__(self):
-        self.chunk : float = 0.5
+        self.chunk : int = 2 
         self.nodes : list[int] = []
 
     def new(self, cfg : CFG, path : Path) -> None:
         
         self.nodes = self.get_merge_nodes(cfg, path)
+
+        print(f'Nodes for merging: {self.nodes}')
 
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         
@@ -32,17 +34,23 @@ class MergePass(AbstractPass):
         return True
 
     def transform(self, cfg : CFG, path : Path) -> tuple[CFG, Path]:
-      
-        node1 = self.nodes.pop(0)
-        node2 = self.nodes.pop(0)
-       
-        print(f'nodes for merging: {node1} {node2}')
- 
-        modified_cfg = cfg.merge_nodes(node1, node2)
 
-        modified_path = path
+        n = len(self.nodes) // self.chunk if len(self.nodes) >= self.chunk else 1
 
-        return (modified_cfg, modified_path)
+        for i in range(n):
+            
+            # pop second node because it will be destroyed in the 
+            # merge, so we cannot merge on it again
+            node1 = self.nodes[0]
+            node2 = self.nodes.pop(1)
+           
+            print(f'nodes for merging: {node1} {node2}')
+     
+            cfg = cfg.merge_nodes(node1, node2)
+
+        # path is not modified here - we are only merging off-path nodes
+
+        return (cfg, path)
 
     def get_merge_nodes(self, cfg : CFG, path : Path) -> list[int]:
 
