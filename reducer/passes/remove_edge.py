@@ -22,8 +22,6 @@ class RemoveEdgePass(AbstractPass):
         
         self.edges = self.get_edges_for_removal(cfg, path)
 
-        print(f'Edges for removal: {self.edges}')
-
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         
         if len(self.edges) == 0:
@@ -37,7 +35,7 @@ class RemoveEdgePass(AbstractPass):
 
         for i in range(n):
 
-            edge = self.edges.pop[0]
+            edge = self.edges.pop(0)
 
             print(f'Remove edge {edge}')
             

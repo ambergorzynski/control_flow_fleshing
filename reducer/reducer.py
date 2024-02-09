@@ -14,6 +14,7 @@ from c.CProgramGenerator import CProgramGenerator
 
 from passes.abstract import AbstractPass
 from passes.merge import MergePass
+from passes.remove_edge import RemoveEdgePass
 
 class Reducer():
 
@@ -23,6 +24,7 @@ class Reducer():
         self.path : Path = path
         self.pass_name_mapping = {
             'merge' : MergePass,
+            'remove_edge' : RemoveEdgePass,
             }
 
 
@@ -76,14 +78,16 @@ class Reducer():
         program = self.flesh_cfg(cfg)
         
         #TODO: change to tmp folder
-        with open("/data/work/ghidra/reducer/test_graph.c", "w") as f:
+        with open("/data/work/ghidra/reducer/output/test_case.c", "w") as f:
             f.write(program)
 
-        with open("/data/work/ghidra/reducer/inputs.txt", "w") as f:
+        with open("/data/work/ghidra/reducer/output/inputs.txt", "w") as f:
             f.write(str(len(path.directions)) + '\n')
             f.write(str(len(path.expected_output)) + '\n')
             f.writelines(' '.join([str(i) for i in path.directions]) + '\n')
             f.writelines(' '.join([str(i) for i in path.expected_output]))
+
+        cfg.save_graph("/data/work/ghidra/reducer/output/test_graph.p")
 
         # run interestingness test
         cmd = ['sh', f'/{self.interestingness_test}']
@@ -101,6 +105,10 @@ class Reducer():
         program = generator.fleshout(cfg)
 
         return program 
+
+    def save_graph(self, cfg : CFG, filename : str) -> None:
+
+        cfg.save_graph(filename)
 
     def run_pass(self, p : AbstractPass) -> None:
        
