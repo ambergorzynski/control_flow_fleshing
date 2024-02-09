@@ -30,6 +30,9 @@ class CFG():
         self.exit_nodes : List[int] = self.get_exit_nodes()
         self.nodes : List[int] = self.get_nodes()
 
+    def get_edges(self) -> List[tuple[int,int]]:
+        return list(self.graph.edges)
+
     def get_nodes(self) -> List[int]:
         return list(self.graph.nodes)
 
