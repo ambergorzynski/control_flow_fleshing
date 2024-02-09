@@ -30,6 +30,9 @@ class CFG():
         self.exit_nodes : List[int] = self.get_exit_nodes()
         self.nodes : List[int] = self.get_nodes()
 
+    def save_graph(self, filename : str) -> None:
+        pickle.dump(self.graph, open(filename, "wb"))
+    
     def get_edges(self) -> List[tuple[int,int]]:
         return list(self.graph.edges)
 
@@ -50,7 +53,15 @@ class CFG():
                     and self.graph.out_degree(node) == 0]
 
         return exits
-    
+
+    def remove_edge(self, edge : tuple[int,int]):
+        
+        modified_graph = self.graph
+
+        modified_graph.remove_edge(*edge)
+
+        return CFG(graph = modified_graph)
+
     def merge_nodes(self, node1 : int, node2 : int):
 
         merged = nx.contracted_nodes(self.graph, node1, node2, copy=True) 
@@ -292,9 +303,7 @@ class CFG():
         # reverse the ordering to give path from start to end node
         # and remove start node since already in expected_output path
         return (path[::-1], dirs[::-1])
-            
-
-
+        
 def generate_path(graph_number : int,
                   graph_filepath : str, 
                    path_filepath : str,
