@@ -42,6 +42,9 @@ class CFG():
     def get_graph(self) -> nx.MultiDiGraph:
         return self.graph
 
+    def get_out_degree(self, node) -> int:
+        return self.graph.out_degree(node)
+
     def get_exit_nodes(self) -> List[int]:
         ''' 
             returns a list of all exit nodes in the graph
