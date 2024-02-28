@@ -4,6 +4,8 @@ import random
 from random import Random
 from queue import Queue
 from typing import List, Tuple
+from itertools import chain
+
 import pickle
 
 def load_graph(filename : str) -> nx.MultiDiGraph:
@@ -30,6 +32,15 @@ class CFG():
         self.exit_nodes : List[int] = self.get_exit_nodes()
         self.nodes : List[int] = self.get_nodes()
 
+    def get_parents(self, node : int) -> list[int]:
+        return list(self.graph.predecessors(node))
+
+    def total_nodes(self) -> int:
+        return self.graph.number_of_nodes()
+
+    def get_cfg_size(self) -> tuple[int, int]:
+        return (self.graph.number_of_nodes(), self.graph.number_of_edges())
+
     def save_graph(self, filename : str) -> None:
         pickle.dump(self.graph, open(filename, "wb"))
     
@@ -44,6 +55,9 @@ class CFG():
 
     def get_out_degree(self, node) -> int:
         return self.graph.out_degree(node)
+
+    def get_out_edges(self, node) -> List[int]:
+        return list(self.graph.out_edges(node))
 
     def get_exit_nodes(self) -> List[int]:
         ''' 
@@ -65,11 +79,30 @@ class CFG():
 
         return CFG(graph = modified_graph)
 
-    def merge_nodes(self, node1 : int, node2 : int):
+    def merge_nodes(self, node1 : int, node2 : int, self_loops=True):
 
-        merged = nx.contracted_nodes(self.graph, node1, node2, copy=True) 
+        ''' own implementation of contracted_nodes to control merging
+            behaviour
+        '''
+        #merged = nx.contracted_nodes(self.graph, node1, node2, copy=True) 
+        
+        H = self.graph.copy()
 
-        return CFG(graph = merged)
+        # remove self-loop from in edge to avoid duplicates (self loops 
+        # are listed as both in and out edges by the nx function
+        in_edges = [x for x in self.graph.in_edges(node2) if x[0] != x[1]]
+
+        in_edges = [(w, node1) for (w, x) in in_edges]
+        
+        out_edges = [(node1, w if w != node2 else node1) for x, w in self.graph.out_edges(node2)]
+
+        new_edges = in_edges + out_edges
+
+        H.remove_node(node2)
+
+        H.add_edges_from(new_edges)
+       
+        return CFG(graph = H)
 
     def get_path_neighbours(self, path : Path) -> List[int]:
         '''
@@ -155,6 +188,9 @@ class CFG():
 
         return path
     
+    def get_successors(self, node) -> list[int]:
+        return list(self.graph.adj[node])
+
     def successors(self, current_node) -> int:
         '''
             returns the number of successors for current_node 
