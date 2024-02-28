@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 
 from CFG import CFG, Path
-from passes.merge import MergePass
+from passes.merge import MergeOnPathPass, MergeOffPathPass
 
 def get_path(filename : str) -> Path:
     
@@ -26,9 +26,9 @@ def get_path(filename : str) -> Path:
 
 def show(cfg, path):
 
-    print(f'Nodes:\n{cfg.get_nodes()}')
+    #print(f'Nodes:\n{cfg.get_nodes()}')
     
-    print(f'Edges:\n{cfg.get_edges()}')
+    #print(f'Edges:\n{cfg.get_edges()}')
 
     print(f'Path:\n{path.expected_output}')
 
@@ -37,7 +37,7 @@ def show(cfg, path):
 
 if __name__==("__main__"):
 
-    folder = 'small_test_case_2'
+    folder = 'large_test_270224_v4'
 
     cfg = CFG(filename = f'/data/work/ghidra/reducer/{folder}/test_graph.p')
 
@@ -46,12 +46,18 @@ if __name__==("__main__"):
     show(cfg, path)
 
     # Test merge pass
-    merger = MergePass()
+    merger = MergeOnPathPass()
 
     merger.new(cfg=cfg, path=path)
 
-    new_cfg = cfg.merge_nodes(3,1)
+    node = 417
 
-    new_path = merger.update_path(cfg, path,3,1)
+    print(f'merging nodes 1, {node}')
+
+    new_cfg = cfg.merge_nodes(1,node)
+
+    new_path = merger.update_path(new_cfg, cfg, path,1,node)
 
     show(new_cfg, new_path)
+
+    

@@ -29,7 +29,7 @@ if __name__==("__main__"):
     parser.add_argument("graph")
     parser.add_argument("input")
     parser.add_argument("interestingness_test")
-    parser.add_argument("output_graph")
+    parser.add_argument("output_path")
     parser.add_argument("--language", default="c")
    
     args = parser.parse_args()
@@ -38,7 +38,12 @@ if __name__==("__main__"):
 
     path = get_path(args.input)
     
-    reducer = Reducer(cfg=cfg, path=path, interestingness_test=args.interestingness_test)
+    reducer = Reducer(cfg=cfg, 
+            path=path, 
+            interestingness_test=args.interestingness_test,
+            output_path=args.output_path)
     
-    reducer.reduce(['remove_edge', 'merge'])
+    #reducer.reduce(['remove_edge', 'merge'])
 
+    reducer.reduce(['merge_off_path','remove_edge','merge_on_path'])
+    
