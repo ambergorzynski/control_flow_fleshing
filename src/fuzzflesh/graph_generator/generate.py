@@ -296,9 +296,6 @@ def generate_graphs(graph_filepath : str,
         elif graph_generation_approach == 2:
             graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
 
-        elif graph_generation_approach == 3:
-            graph = sample_xml_graph()
-
         elif graph_generation_approach == -1:
             graph = generate_graph_approach_presets(-1)
 
