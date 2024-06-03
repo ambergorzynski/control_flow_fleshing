@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: fuzzflesh
+Version: 0.0.1
+Summary: Control flow graph based fuzzing tool
+Author-email: Amber Gorzynski <amber.gorzynski22@imperial.ac.uk>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown

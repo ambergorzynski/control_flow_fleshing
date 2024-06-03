@@ -6,7 +6,7 @@ import random
 from random import Random
 from queue import Queue
 
-import fuzzflesh.graph_generator.sample_graphs
+from fuzzflesh.graph_generator import sample_graphs
 
 def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
