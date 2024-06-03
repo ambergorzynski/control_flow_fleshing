@@ -13,7 +13,7 @@ from CFG import CFG, Path
 from c.CProgramGenerator import CProgramGenerator
 
 from passes.abstract import AbstractPass
-from passes.merge import MergeOnPathPass, MergeOffPathPass
+from passes.merge import MergeOnPathPass, MergeOffPathPass, MergeExitPass
 from passes.remove_edge import RemoveEdgePass
 
 class Reducer():
@@ -25,6 +25,7 @@ class Reducer():
         self.pass_name_mapping = {
             'merge_on_path' : MergeOnPathPass,
             'merge_off_path' : MergeOffPathPass,
+            'merge_exit' : MergeExitPass,
             'remove_edge' : RemoveEdgePass,
             }
         self.output_path = output_path

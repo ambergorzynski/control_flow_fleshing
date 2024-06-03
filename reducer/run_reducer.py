@@ -43,7 +43,6 @@ if __name__==("__main__"):
             interestingness_test=args.interestingness_test,
             output_path=args.output_path)
     
-    #reducer.reduce(['remove_edge', 'merge'])
-
-    reducer.reduce(['merge_off_path','remove_edge','merge_on_path'])
+    #reducer.reduce(['merge_off_path','remove_edge','merge_on_path'])
     
+    reducer.reduce(['merge_off_path', 'remove_edge', 'merge_on_path','merge_exit'])

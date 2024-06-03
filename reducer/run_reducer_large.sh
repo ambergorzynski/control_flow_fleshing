@@ -1,4 +1,4 @@
-DIR="large_test_280224_v2"
+DIR="large_test_280224_v3"
 
 python run_reducer.py \
     /data/work/ghidra/reducer/${DIR}/test_graph.p \
