@@ -6,95 +6,7 @@ import random
 from random import Random
 from queue import Queue
 
-from graph_gen.graph_gen import sample_graph
-
-def sample_xml_graph() -> nx.MultiDiGraph:
-
-    ''' returns sample graph from test_0.xml '''
-    return sample_graph()
-
-
-def preset_graph_1() -> nx.MultiDiGraph:
-    
-    ''' returns example graph 1 '''
-
-    G = nx.MultiDiGraph()
-
-    G.add_nodes_from([0, 1, 2, 3, 4])
-
-    G.add_edges_from([(0, 1), 
-        (1, 2), (1, 3), 
-        (2, 4), 
-        (3, 4)])
-    
-    return G
-
-def preset_graph_2() -> nx.MultiDiGraph:
-
-    ''' returns example graph 2 '''
-
-    G = nx.MultiDiGraph()
-
-    G.add_nodes_from([0, 1, 2, 3, 4])
-
-    G.add_edges_from([(0, 1), 
-        (1, 2), (1, 3), 
-        (2, 2), (2, 4),
-        (3, 4)])
-    
-    return G
-
-def preset_graph_3() -> nx.MultiDiGraph:
-
-    ''' returns example graph 3 '''
-
-    G = nx.MultiDiGraph()
-
-    G.add_nodes_from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-
-    G.add_edges_from([(0, 1),
-        (1, 2), (1, 3),
-        (2, 2), (2, 10),
-        (3, 4),
-        (4, 5), (4, 6),
-        (5, 5), (5, 7),
-        (6, 8),
-        (7, 8),
-        (8, 9), (8, 4),
-        (9, 10)])
-    
-    return G
-
-def preset_graph_4() -> nx.MultiDiGraph:
-
-    ''' returns example graph 4 with switch statement'''
-
-    G = nx.MultiDiGraph()
-
-    G.add_nodes_from([0, 1, 2, 3, 4, 5])
-
-    G.add_edges_from([(0, 1), (0,2),
-        (1, 1), (1, 3),
-        (2, 5),
-        (3, 5),
-        (4, 5)])
-    
-    return G
-
-
-def preset_graph_for_report() -> nx.MultiDiGraph:
-
-    ''' returns simplified graph for report '''
-
-    G = nx.MultiDiGraph()
-
-    G.add_nodes_from([0,1,2,3])
-
-    G.add_edges_from([(0, 1), (0,2),
-        (1,1), (1,3),
-        (2,3)])
-    
-    return G
+import fuzzflesh.graph_generator.sample_graphs
 
 def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
@@ -321,15 +233,15 @@ def generate_graph_approach_2(n_nodes : int,
 
 def generate_graph_approach_presets(i : int) -> nx.MultiDiGraph:
     if i == 0:
-        return preset_graph_1()
+        return sample_graphs.preset_graph_1()
     if i == 1:
-        return preset_graph_2()
+        return sample_graphs.preset_graph_2()
     if i == 2:
-        return preset_graph_3()
+        return sample_graphs.preset_graph_3()
     if i == 3:
-        return preset_graph_4()
+        return sample_graphs.preset_graph_4()
     if i == -1:
-        return preset_graph_for_report()
+        return sample_graphs.preset_graph_for_report()
 
 
     
@@ -338,22 +250,6 @@ def view_graph(filepath : str) -> None:
     graph = pickle.load(open(filepath, "rb"))
     nx.draw(graph, with_labels=True)
     plt.show()
-
-def explore_atlas() -> None:
-
-    ins = [1,3,4,5,3,5,6,7]
-    outs = [1,3,4,5,3,5,7,6]
-    graph = nx.random_k_out_graph(20, 5, 1)
-    nx.draw(graph, with_labels=True)
-    plt.show()
-
-def make_simple_graph(i : int) -> None:
-
-    base = 'fuzzing/cil/cil_test_210723'
-    graph_path = f'{base}/graphs'
-
-    G = generate_graph_approach_presets(i)
-    pickle.dump(G, open(f'{graph_path}/graph_test.p', "wb"))
 
 def list_graph(filepath : str) -> None:
 
@@ -407,38 +303,3 @@ def generate_graphs(graph_filepath : str,
             graph = generate_graph_approach_presets(-1)
 
         pickle.dump(graph, open(f'{graph_filepath}/graph_{i}.p', "wb"))
-
-def main():
-  
-    #G = generate_graph_approach_2(100, add_annotations=True, n_annotations=100)
-    G = generate_graph_approach_presets(2)
-
-    '''
-    rand = Random()
-
-    rand.seed(100)
-
-    print("without loops")
-    for e in G.edges:
-        print(e)
-    
-    add_loops(G, 3, rand)
-
-    print("with loops")
-    for e in G.edges:
-        print(e)
-    '''
-    pickle.dump(G, open("graphs/graph_test.p", "wb"))
-    
-
-    #nx.draw_networkx(G)
-    #nx.draw(G, with_labels=True)
-    #plt.show()
-    #pickle.dump(G, open("graphs/graph_test.p", "wb"))
-
-if __name__=="__main__":
-    #explore_atlas()
-    #view_graph('fuzzing/fuzzing_210623/graphs/graph_2.p')
-    main()
-    #make_simple_graph(3)
-    #list_graph('fuzzing/java/fuzzing_180723/graphs/graph_84.p')
