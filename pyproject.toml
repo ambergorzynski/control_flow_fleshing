@@ -1,0 +1,13 @@
+[project]
+name = "fuzzflesh"
+version = "0.0.1"
+authors = [
+    { name = "Amber Gorzynski", email = "amber.gorzynski22@imperial.ac.uk" },
+]
+description = "Control flow graph based fuzzing tool"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
