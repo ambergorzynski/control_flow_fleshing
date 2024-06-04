@@ -1,5 +1,5 @@
 import unittest
-from fuzzflesh.graph_generator.generate import generate_graph_approach_presets
+from fuzzflesh.graph_generator.generator import generate_graph_approach_presets
 
 class TestGraphGeneration(unittest.TestCase):
 
