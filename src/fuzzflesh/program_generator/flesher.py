@@ -21,7 +21,7 @@ class ProgramFlesher(ABC):
         except:
             return False
         
-    def fleshout(self, cfg : CFG, prog_number=None) -> List[InstructionBlock]:
+    def fleshout(self, cfg : CFG) -> List[InstructionBlock]:
 
         '''
         Converts control flow graph to target language.
@@ -32,6 +32,25 @@ class ProgramFlesher(ABC):
         program : List[InstructionBlock] = []
 
         program.append(self.flesh_program_start())
+
+        program.append(self.flesh_program_body(cfg))
+
+        program.append(self.flesh_program_end())
+
+        return program
+    
+    def fleshout_with_dirs(self, cfg : CFG, dirs : list[int]) -> List[InstructionBlock]:
+
+        '''
+        Converts control flow graph to target language.
+        Returns a list of instructions that constitue the
+        program.
+        Program directions are known at compile time.
+        '''
+
+        program : List[InstructionBlock] = []
+
+        program.append(self.flesh_program_start_with_dirs(dirs))
 
         program.append(self.flesh_program_body(cfg))
 
@@ -63,25 +82,29 @@ class ProgramFlesher(ABC):
         return body
     
     @abstractmethod
-    def flesh_program_start(self) -> List[InstructionBlock]:
+    def flesh_program_start(self) -> InstructionBlock:
+        pass
+
+    @abstractmethod
+    def flesh_program_start_with_dirs(self, dirs : list[int]) -> InstructionBlock:
         pass
             
     @abstractmethod
-    def flesh_program_end(self) -> List[InstructionBlock]:
+    def flesh_program_end(self) -> InstructionBlock:
         pass    
     
     @abstractmethod
-    def flesh_exit_node(self, n : int) -> List[InstructionBlock]:
+    def flesh_exit_node(self, n : int) -> InstructionBlock:
         pass    
     
     @abstractmethod
-    def flesh_unconditional_node(self, n : int) -> List[InstructionBlock]:
+    def flesh_unconditional_node(self, n : int) -> InstructionBlock:
         pass    
     
     @abstractmethod
-    def flesh_conditional_node(self, n : int) -> List[InstructionBlock]:
+    def flesh_conditional_node(self, n : int) -> InstructionBlock:
         pass
     
     @abstractmethod
-    def flesh_switch_node(self, n : int) -> List[InstructionBlock]:
+    def flesh_switch_node(self, n : int) -> InstructionBlock:
         pass
