@@ -24,11 +24,23 @@ def spaces(input_array):
 
     return output
 
-class Path():
+class Route():
 
     def __init__(self, expected_output = [], directions = []) -> None:
         self.expected_output = expected_output
         self.directions = directions
+
+    def to_dict(self) :
+        
+        path = {
+            'dir_len' : len(self.directions),
+            'output_len' : len(self.expected_output),
+            'dirs' : self.directions,
+            'expected_output' : self.expected_output
+        }
+
+        return path
+
 
 class CFG():
 
@@ -116,7 +128,7 @@ class CFG():
        
         return CFG(graph = H)
 
-    def get_path_neighbours(self, path : Path) -> List[int]:
+    def get_path_neighbours(self, path : Route) -> List[int]:
         '''
             returns a list of all nodes that are connected
             by at least one edge to the given path
@@ -161,7 +173,7 @@ class CFG():
         # found any paths to exit nodes
         return False
 
-    def find_path(self, max_length, seed=None) -> Path:
+    def find_path(self, max_length, seed=None) -> Route:
         '''
             function finds a random path through the 
             CFG and stores it in the expected output array.
@@ -179,7 +191,7 @@ class CFG():
         # root should be id 0
         current_node = self.get_root()
 
-        path = Path()
+        path = Route()
 
         path.expected_output.append(current_node)
 
@@ -356,37 +368,22 @@ class CFG():
         return (path[::-1], dirs[::-1])
         
     def generate_path(self,
-                    graph_number : int,
-                    graph_filepath : str, 
-                    path_filepath : str,
-                    graph_name : str, 
-                    n_paths : int, 
                     max_path_length : int, 
-                    seed : float = None):
+                    seed : float = None) -> Route:
         
         '''
             Funtion generates a set of paths for each graph and writes the path and 
             directions to the output filepath provided
         '''
             
-        #graph = pickle.load(open(f'{graph_filepath}/{graph_name}', 'rb'))
-
         if self.graph_is_valid():
 
-            for j in range(n_paths):
-
-                print(f'new path for graph {graph_number}, path {j}')
-
-                path = self.find_path(max_path_length, seed)
-
-                with open(f'{path_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
-                    f.write(str(len(path.directions))+'\n')
-                    f.write(str(len(path.expected_output))+'\n')
-                    f.write(str(spaces(path.directions))+'\n')
-                    f.write(str(spaces(path.expected_output)))
+            return self.find_path(max_path_length, seed)
 
         else:
             print("cfg is not valid")
+
+        return None
    
 
 
