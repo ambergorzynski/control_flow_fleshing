@@ -5,8 +5,8 @@ import subprocess
 from pathlib import Path
 
 from fuzzflesh.common.utils import Lang, Compiler
-from fuzzflesh.graph_generator import generator
-from fuzzflesh.cfg import CFG
+from fuzzflesh.graph_generator.generator import generate_graphs
+from fuzzflesh.cfg.CFG import CFG
 
 
 def main():
@@ -27,10 +27,14 @@ def main():
                         type=int,
                         default = 1,
                         help = 'Number of paths.')  
-    parser.add_argument("-size", 
+    parser.add_argument("-max_size", 
                         type=int,
                         default = 500,
-                        help = 'Maximum graph size.')    
+                        help = 'Maximum graph size.')   
+    parser.add_argument("-min_size", 
+                        type=int,
+                        default = 3,
+                        help = 'Minimum graph size.')     
     parser.add_argument("-graph_gen", 
                         choices=['e-r','grow'],
                         default = 'e-r',
@@ -43,6 +47,10 @@ def main():
                         type=int, 
                         default=3,
                         help="max successor nodes added during graph generation")
+    parser.add_argument("-max_path_length", 
+                        type=int,
+                        default=900,
+                        help = 'Maximum path length.')
     parser.add_argument("-no_annotations", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Do not add annotated edges to the graph.')
@@ -80,7 +88,7 @@ def main():
 
     language : Lang = Lang[args.language.upper()]
     compiler : Compiler = Compiler[args.compiler.upper()]
-    base_dir : Path = Path(args.base/out)
+    base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = Path(base_dir, 'graphs')
     path_dir : Path = Path(base_dir, 'paths')
 
@@ -94,22 +102,22 @@ def main():
 
     # Generate graph
     generate_graphs(graph_filepath = graph_dir,
-                n_graphs = args.n_graphs,
+                n_graphs = args.graphs,
                 min_graph_size = args.min_size,
                 max_graph_size = args.max_size,
                 min_successors = args.min_successors, 
                 max_successors = args.max_successors, 
                 graph_generation_approach = args.graph_gen, 
-                add_annotations= args.add_annotations,
+                add_annotations = False if args.no_annotations else True,
                 seed = None)
 
     # Generate paths for each graph
-    for i in range(args.n_graphs):
-        generate_path(graph_number = i,
+    for i in range(args.graphs):
+        CFG(filename=Path(graph_dir,f'graph_{i}.p')).generate_path(graph_number = i,
                 graph_filepath = graph_dir, 
                 path_filepath = path_dir,
                 graph_name = f'graph_{i}.p', 
-                n_paths = params.n_paths, 
+                n_paths = args.paths, 
                 max_path_length = args.max_path_length, 
                 seed = None)
 
@@ -131,13 +139,13 @@ def create_folders(base_dir : Path, language : Lang) -> bool:
     
     return False
 
-def create_javabc_folders(base_dir : Path, graph_dir : Path, path_dir : Path) -> bool:
+def create_javabc_folders(base_dir : Path) -> bool:
 
-    Path(base_dir,'out/output').mkdir(exist_ok=True)
-    Path(base_dir,'out/testing').mkdir(exist_ok=True)
+    Path(base_dir,'output').mkdir(exist_ok=True)
+    Path(base_dir,'testing').mkdir(exist_ok=True)
 
     # Put the wrapper in the relevant folder
-    wrapper_dir = Path(__file__).parent.parent.resolve() / 'wrappers'
+    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
     cmd = ['cp',
         f'{wrapper_dir}/WrapperNoReflection.java',
         f'{base_dir}/WrapperNoReflection.java']
