@@ -7,6 +7,7 @@ from random import Random
 from queue import Queue
 
 from fuzzflesh.graph_generator import sample_graphs
+from fuzzflesh.cfg.CFG import CFG, Route
 
 def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
@@ -153,7 +154,6 @@ def add_loops(graph : nx.MultiDiGraph,
         an edge to one of its parent nodes (not necessarily the immediate parent)
     '''
 
-
     for i in range(n_loops):
 
         end = rand.choice(list(range(1, graph.number_of_nodes())))
@@ -251,16 +251,14 @@ def list_graph(filepath : str) -> None:
 
     graph = pickle.load(open(filepath, "rb"))
 
-def generate_graphs(graph_filepath : str,
-                    n_graphs : int,
-                    min_graph_size : int,
+def generate_graph(min_graph_size : int,
                     max_graph_size : int,
                     min_successors : int, 
                     max_successors : int, 
                     graph_generation_approach : int, 
                     add_annotations : bool = True,
                     n_annotations : int = -1,
-                    seed : float = None):
+                    seed : float = None) -> CFG:
     '''
         Function generates a set of graphs based on the given
         parameters and saves them in the given filepath
@@ -270,21 +268,19 @@ def generate_graphs(graph_filepath : str,
 
     rand.seed(seed)
 
-    for i in range(n_graphs):
+    graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
 
-        graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
+    # parse arg for default annotations based on graph size
+    if add_annotations and n_annotations == -1:
+        n_annotations = graph_size // 5
 
-        # parse arg for default annotations based on graph size
-        if add_annotations and n_annotations == -1:
-            n_annotations = graph_size // 5
+    if graph_generation_approach == 'grow':
+        graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations, n_annotations)
 
-        if graph_generation_approach == 'grow':
-            graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations, n_annotations)
+    elif graph_generation_approach == 'e-r':
+        graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
 
-        elif graph_generation_approach == 'e-r':
-            graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
+    elif graph_generation_approach == -1:
+        graph = generate_graph_approach_presets(-1)
 
-        elif graph_generation_approach == -1:
-            graph = generate_graph_approach_presets(-1)
-
-        pickle.dump(graph, open(f'{graph_filepath}/graph_{i}.p', "wb"))
+    return CFG(graph)
