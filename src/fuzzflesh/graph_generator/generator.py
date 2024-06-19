@@ -112,7 +112,6 @@ def generate_graph_approach_1(n_nodes : int,
 
         n_annotations = G.number_of_nodes() // 5 # default for now: add 20% of graph size
 
-        print(f'adding {n_annotations} annotations now!')
         # randomly decide whether to add random edges or loops
         if(rand.randrange(0, 10) > 4):
             G = add_random_edges(G, n_annotations, rand)
@@ -133,7 +132,6 @@ def add_random_edges(graph : nx.MultiDiGraph,
         should not be repeated
     '''
 
-    print('random!')
 
     for i in range(n_edges):
             
@@ -155,7 +153,6 @@ def add_loops(graph : nx.MultiDiGraph,
         an edge to one of its parent nodes (not necessarily the immediate parent)
     '''
 
-    print('loops!')
 
     for i in range(n_loops):
 
@@ -211,7 +208,6 @@ def generate_graph_approach_2(n_nodes : int,
 
             n_annotations = G.number_of_nodes() // 5 # default for now: add 20% of graph size
 
-            print(f'adding {n_annotations} annotations now!')
             # randomly decide whether to add random edges or loops
             if(rand.randrange(0, 10) > 4):
                 G = add_random_edges(G, n_annotations, rand)
@@ -255,11 +251,6 @@ def list_graph(filepath : str) -> None:
 
     graph = pickle.load(open(filepath, "rb"))
 
-    print("all edges")
-    print(graph.edges())
-    print("edges from node 3")
-    print(graph.edges(3))
-
 def generate_graphs(graph_filepath : str,
                     n_graphs : int,
                     min_graph_size : int,
@@ -275,8 +266,6 @@ def generate_graphs(graph_filepath : str,
         parameters and saves them in the given filepath
     '''
 
-    print(f'annotation param is: {add_annotations}')
-
     rand = Random()
 
     rand.seed(seed)
@@ -284,16 +273,15 @@ def generate_graphs(graph_filepath : str,
     for i in range(n_graphs):
 
         graph_size = rand.choice(list(range(min_graph_size, max_graph_size)))
-        print(f'max successors is {max_successors}')
 
         # parse arg for default annotations based on graph size
         if add_annotations and n_annotations == -1:
             n_annotations = graph_size // 5
 
-        if graph_generation_approach == 1:
+        if graph_generation_approach == 'grow':
             graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations, n_annotations)
 
-        elif graph_generation_approach == 2:
+        elif graph_generation_approach == 'e-r':
             graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
 
         elif graph_generation_approach == -1:
