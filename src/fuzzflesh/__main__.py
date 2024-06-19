@@ -1,12 +1,13 @@
 import argparse 
 import os
 import subprocess
-
+import pickle
+import json
 from pathlib import Path
 
 from fuzzflesh.common.utils import Lang, Compiler
-from fuzzflesh.graph_generator.generator import generate_graphs
-from fuzzflesh.cfg.CFG import CFG
+from fuzzflesh.graph_generator.generator import generate_graph
+from fuzzflesh.cfg.CFG import CFG, Route
 
 
 def main():
@@ -90,36 +91,38 @@ def main():
     compiler : Compiler = Compiler[args.compiler.upper()]
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = Path(base_dir, 'graphs')
-    path_dir : Path = Path(base_dir, 'paths')
 
     # Create folders
     base_dir.mkdir(exist_ok=True)
     graph_dir.mkdir(exist_ok=True)
-    path_dir.mkdir(exist_ok=True)
 
     if not create_folders(base_dir, language):
         return(1)
 
-    # Generate graph
-    generate_graphs(graph_filepath = graph_dir,
-                n_graphs = args.graphs,
-                min_graph_size = args.min_size,
-                max_graph_size = args.max_size,
-                min_successors = args.min_successors, 
-                max_successors = args.max_successors, 
-                graph_generation_approach = args.graph_gen, 
-                add_annotations = False if args.no_annotations else True,
-                seed = None)
-
-    # Generate paths for each graph
+    # Generate graphs
     for i in range(args.graphs):
-        CFG(filename=Path(graph_dir,f'graph_{i}.p')).generate_path(graph_number = i,
-                graph_filepath = graph_dir, 
-                path_filepath = path_dir,
-                graph_name = f'graph_{i}.p', 
-                n_paths = args.paths, 
-                max_path_length = args.max_path_length, 
-                seed = None)
+
+        filepath = Path(graph_dir, f'graph_{i}')
+        
+        filepath.mkdir(exist_ok=True)
+        
+        graph = generate_graph(min_graph_size = args.min_size,
+                    max_graph_size = args.max_size,
+                    min_successors = args.min_successors, 
+                    max_successors = args.max_successors, 
+                    graph_generation_approach = args.graph_gen, 
+                    add_annotations = False if args.no_annotations else True,
+                    seed = None)
+        
+        pickle.dump(graph, open(f'{filepath}/graph_{i}.p', "wb"))
+
+        # Generate paths for each graph
+        for j in range(args.paths):
+            path = graph.generate_path(max_path_length = args.max_path_length)
+
+            with open(f'{filepath}/inputs_graph_{i}_path_{j}.json', 'w') as f:
+                    json.dump(path.to_dict(), f, indent=2)
+
 
     # Flesh graphs
 
@@ -152,7 +155,7 @@ def create_javabc_folders(base_dir : Path) -> bool:
     
     result = subprocess.run(cmd)
 
-    return True if result.returncode != 0 else False
+    return True if result.returncode == 0 else False
     
 if __name__ == "__main__":
     main()
