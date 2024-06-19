@@ -2,22 +2,12 @@ import argparse
 import os
 import subprocess
 
-from enum import Enum
 from pathlib import Path
 
+from fuzzflesh.common.utils import Lang, Compiler
 from fuzzflesh.graph_generator import generator
 from fuzzflesh.cfg import CFG
 
-class Lang(Enum):
-    JAVABC = 1
-    C = 2
-
-class Compiler(Enum):
-    CFR = 1
-    FERNFLOWER = 2
-    PROCYON = 3
-    GRAALVM = 4
-    HOTSPOT = 5
 
 def main():
     parser = argparse.ArgumentParser()
