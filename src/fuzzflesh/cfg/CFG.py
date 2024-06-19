@@ -144,7 +144,7 @@ class CFG():
         return 0
 
     
-    def is_valid(self) -> bool:
+    def graph_is_valid(self) -> bool:
         '''
             function checks whether CFG is valid, which is 
             defined by a path existing from the start node
@@ -355,39 +355,38 @@ class CFG():
         # and remove start node since already in expected_output path
         return (path[::-1], dirs[::-1])
         
-def generate_path(graph_number : int,
-                  graph_filepath : str, 
-                   path_filepath : str,
-                   graph_name : str, 
-                   n_paths : int, 
-                   max_path_length : int, 
-                   seed : float = None):
-    
-    '''
-        Funtion generates a set of paths for each graph and writes the path and 
-        directions to the output filepath provided
-    '''
+    def generate_path(self,
+                    graph_number : int,
+                    graph_filepath : str, 
+                    path_filepath : str,
+                    graph_name : str, 
+                    n_paths : int, 
+                    max_path_length : int, 
+                    seed : float = None):
         
-    graph = pickle.load(open(f'{graph_filepath}/{graph_name}', 'rb'))
+        '''
+            Funtion generates a set of paths for each graph and writes the path and 
+            directions to the output filepath provided
+        '''
+            
+        #graph = pickle.load(open(f'{graph_filepath}/{graph_name}', 'rb'))
 
-    cfg = CFG(graph)
+        if self.graph_is_valid():
 
-    if cfg.is_valid():
+            for j in range(n_paths):
 
-        for j in range(n_paths):
+                print(f'new path for graph {graph_number}, path {j}')
 
-            print(f'new path for graph {graph_number}, path {j}')
+                path = self.find_path(max_path_length, seed)
 
-            path = cfg.find_path(max_path_length, seed)
+                with open(f'{path_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
+                    f.write(str(len(path.directions))+'\n')
+                    f.write(str(len(path.expected_output))+'\n')
+                    f.write(str(spaces(path.directions))+'\n')
+                    f.write(str(spaces(path.expected_output)))
 
-            with open(f'{path_filepath}/input_graph_{graph_number}_path{j}.txt', 'w') as f:
-                f.write(str(len(path.directions))+'\n')
-                f.write(str(len(path.expected_output))+'\n')
-                f.write(str(spaces(path.directions))+'\n')
-                f.write(str(spaces(path.expected_output)))
-
-    else:
-        print("cfg is not valid")
+        else:
+            print("cfg is not valid")
    
 
 
