@@ -55,24 +55,56 @@ class JavaBCRunner():
     def compile_test(self, test_name : str) -> int:
 
         if self.params.with_reflection:
-            
-            wrapper_cmd = [f'''./javabc/compile_wrapper_java.sh {self.filepaths.src_filepath} {self.filepaths.jvm}''']
-            wrapper_result = subprocess.run(wrapper_cmd, shell=True)
+            compile_test_with_reflection(test_name)
 
-            if wrapper_result.returncode != 0:
-                return wrapper_result.returncode
-
-            compile_cmd = [f'''./javabc/compile_test_java.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
-            compile_result = subprocess.run(compile_cmd, shell=True)
-
-            return compile_result.returncode
-        
         else:
-            compile_cmd = [f'''./javabc/compile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.jasmin}''']
-            compile_result = subprocess.run(compile_cmd, shell=True)
+            compile_test_without_reflection(test_name)
 
-            return compile_result.returncode
+    def compile_test_with_reflection(self, test_name : str) -> ProcessResult.returncode:   
         
+        interface_cmd = [f'{self.filepaths.jvm}/javac',
+                        f'{self.filepaths.src_filepath}/testing/TestCaseInterface.java']
+                
+        interface_result = subprocess.run(interface_cmd, shell=True)
+
+        if interface_result.returncode != 0:
+            return interface_result.returncode
+
+        wrapper_cmd = [f'{self.filepaths.jvm}/javac',
+                        f'{self.filepaths.src_filepath}/testing/Wrapper.java']
+        
+        wrapper_result = subprocess.run(wrapper_cmd, shell=True)
+
+        if wrapper_result.returncode != 0:
+            return wrapper_result.returncode
+
+        compile_cmd = [f'{self.filepaths.jvm}/java',
+                    '- jar',
+                    f'{self.filepaths.jasmin}/jasmin.jar',
+                    f'{self.filepaths.src}/testing/{test_id}.j']
+
+        compile_result = subprocess.run(compile_cmd, shell=True)
+
+        return compile_result.returncode
+
+    def compile_test_without_reflection(self, test_name : str) -> ProcessResult.returncode:    a
+
+        compile_test_cmd = [f'{self.filepaths.jvm}/java',
+                    '- jar',
+                    f'{self.filepaths.jasmin}/jasmin.jar',
+                    f'{self.filepaths.src}/testing/{test_id}/{test_id}.j',
+                    '-d',
+                    f'{self.filepaths.src}/testing/{test_id}']
+
+        compile_test_result = subprocess.run(compile_cmd, shell=True)
+
+        compile_wrapper_cmd = [f'{self.filepaths.jvm}/javac',
+                    '-cp',
+                    f'{self.filepaths.src}:./testing/{test_id}',
+                    f'{self.filepaths.src}/testing/WrapperNoReflection.java']
+
+        compile_wrapper_result = subprocess.run(compile_wrapper_cmd, shell=True)
+
     def decompile_test(self, test_name : str) -> int:
             
             # decompilation syntax varies depending on which decompiler toolchain is used
