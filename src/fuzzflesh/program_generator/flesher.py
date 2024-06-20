@@ -7,9 +7,8 @@ from fuzzflesh.cfg import CFG
 
 class ProgramFlesher(ABC):
 
-    def __init__(self):
-        self.fleshed_graph : List[InstructionBlock] = None
-        self.cfg : CFG = None
+    def __init__(self, _dirs_known):
+        self.dirs_known : bool = _dirs_known
 
     def save_to_file(self, filename : Path) -> bool:
 
@@ -20,8 +19,16 @@ class ProgramFlesher(ABC):
         
         except:
             return False
+
+    def fleshout(self) -> List[InstructionBlock]:
         
-    def fleshout(self, cfg : CFG) -> List[InstructionBlock]:
+        if self.dirs_known:
+            return fleshout_with_dirs(cfg)
+        else:
+            return fleshout_without_dirs(cfg)
+
+        
+    def fleshout_without_dirs(self, cfg : CFG) -> List[InstructionBlock]:
 
         '''
         Converts control flow graph to target language.
