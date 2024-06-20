@@ -7,8 +7,8 @@ from fuzzflesh.cfg import CFG
 
 class ProgramFlesher(ABC):
 
-    def __init__(self, _dirs_known):
-        self.dirs_known : bool = _dirs_known
+    def __init__(self, dirs_known_at_compile : bool):
+        self.dirs_known_at_compile : bool = dirs_known_at_compile
 
     def save_to_file(self, filename : Path) -> bool:
 

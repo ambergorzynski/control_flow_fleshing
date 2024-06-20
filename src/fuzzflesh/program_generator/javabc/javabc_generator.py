@@ -8,7 +8,7 @@ from fuzzflesh.cfg import CFG
 class JavaBCProgramGenerator(ProgramFlesher):
 
     def __init__(self, dirs_known_at_compile : bool = False):
-        self.dirs_known_at_compile : bool = dirs_known_at_compile
+        super(JavaBCProgramGenerator, self).__init__(dirs_known_at_compile)
 
     def flesh_program_start(self) -> InstructionBlock:
         code = '''
