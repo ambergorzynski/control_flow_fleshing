@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from pathlib import Path
 
-from fuzzflesh.program_generator.instruction_blocks import InstructionBlock
+from fuzzflesh.common.utils import InstructionBlock
 from fuzzflesh.cfg import CFG
 
 class ProgramFlesher(ABC):
@@ -19,14 +19,6 @@ class ProgramFlesher(ABC):
         
         except:
             return False
-
-    def fleshout(self) -> List[InstructionBlock]:
-        
-        if self.dirs_known:
-            return fleshout_with_dirs(cfg)
-        else:
-            return fleshout_without_dirs(cfg)
-
         
     def fleshout_without_dirs(self, cfg : CFG) -> List[InstructionBlock]:
 
