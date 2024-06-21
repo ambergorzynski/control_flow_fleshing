@@ -1,7 +1,7 @@
 from typing import List 
 from pathlib import Path
 
-from fuzzflesh.program_generator.instruction_blocks import InstructionBlock
+from fuzzflesh.common.utils import InstructionBlock
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.cfg import CFG
 
