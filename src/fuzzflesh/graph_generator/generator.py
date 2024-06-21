@@ -160,9 +160,11 @@ def add_loops(graph : nx.MultiDiGraph,
         
         ancestors = list(nx.ancestors(graph, end))
 
-        start = rand.choice(ancestors)
+        if len(ancestors) > 0:
 
-        graph.add_edge(start, end)
+            start = rand.choice(ancestors)
+
+            graph.add_edge(start, end)
 
     return graph
 
