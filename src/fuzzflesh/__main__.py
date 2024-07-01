@@ -5,8 +5,10 @@ import pickle
 import json
 from pathlib import Path
 
-from fuzzflesh.common.utils import Lang, Compiler
+from fuzzflesh.common.utils import Lang, Compiler, InstructionBlock
 from fuzzflesh.graph_generator.generator import generate_graph
+from fuzzflesh.program_generator.flesher import ProgramFlesher
+from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -117,16 +119,31 @@ def main():
         pickle.dump(graph, open(f'{filepath}/graph_{i}.p', "wb"))
 
         # Generate paths for each graph
+        all_paths = []
+
         for j in range(args.paths):
+
             path = graph.generate_path(max_path_length = args.max_path_length)
 
-            with open(f'{filepath}/inputs_graph_{i}_path_{j}.json', 'w') as f:
-                    json.dump(path.to_dict(), f, indent=2)
+            all_paths.append(path)
+
+        with open(f'{filepath}/inputs_graph_{i}_path_{j}.json', 'w') as f:
+                json.dump(paths_to_dict(all_paths), f, indent=2)
+
+        # Flesh graphs
+        flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
+
+        # If directions are known at compile time, then flesh separate programs for each path
+        if args.dirs:
+            for p in all_paths:
+                program : list[InstructionBlock] = flesher.fleshout_with_dirs(p.directions)
+                
+        # If directions are unknown, then only flesh one program that accepts a runtime direction array
+        else:
+            program : list[InstructionBlock] = flesher.fleshout_without_dirs()
 
 
-    # Flesh graphs
-
-    # Run tests
+    # Run tests - include option to exit before running
 
     # Cleanup
     
@@ -156,6 +173,18 @@ def create_javabc_folders(base_dir : Path) -> bool:
     result = subprocess.run(cmd)
 
     return True if result.returncode == 0 else False
-    
+
+def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher:
+
+    match language:
+        case Lang.JAVABC:
+            return JavaBCProgramGenerator(cfg, dirs_known)
+
+    return None
+
+def paths_to_dict(all_paths : list[Route]) -> dict:
+
+    return {f'path_id_{i}' : route.to_dict() for i, route in enumerate(all_paths)}
+        
 if __name__ == "__main__":
     main()
