@@ -16,8 +16,11 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Common parser args
-    parser.add_argument("action", choices=['gen', 'run'])
-
+    parser.add_argument("action", choices=['gen', 'run', 'fuzz'],
+                        help='''Gen produces graphs and paths. 
+                                Run runs existing graphs and paths.
+                                Fuzz combines gen and run.''')
+    
     parser.add_argument("-base",
                         type = str,
                         default = os.getcwd(),
@@ -100,7 +103,19 @@ def main():
 
     if not create_folders(base_dir, language):
         return(1)
+    
+    if args.action == 'gen':
+        gen(args, language, graph_dir)
 
+    elif args.action == 'run':
+        run(args)
+
+    elif args.action == 'fuzz':
+        gen(args, language, graph_dir)
+        run(args)
+
+def gen(args, language, graph_dir):
+    
     # Generate graphs
     for g in range(args.graphs):
 
@@ -145,7 +160,8 @@ def main():
             program : Program = flesher.fleshout_without_dirs()
             program.write_to_file(filepath, filename=f'prog_{g}')
 
-    # Run tests - include option to exit before running
+def run(args):
+    pass
 
     # Cleanup
     
@@ -175,6 +191,9 @@ def create_javabc_folders(base_dir : Path) -> bool:
     result = subprocess.run(cmd)
 
     return True if result.returncode == 0 else False
+
+def create_c_folders(base_dir : Path):
+    pass
 
 def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher:
 
