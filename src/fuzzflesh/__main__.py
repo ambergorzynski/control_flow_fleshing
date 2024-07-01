@@ -9,6 +9,8 @@ from fuzzflesh.common.utils import Lang, Compiler, Program
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
+from fuzzflesh.harness.runner import Runner
+from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -108,11 +110,11 @@ def main():
         gen(args, language, graph_dir)
 
     elif args.action == 'run':
-        run(args)
+        run(args, language)
 
     elif args.action == 'fuzz':
         gen(args, language, graph_dir)
-        run(args)
+        run(args, language)
 
 def gen(args, language, graph_dir):
     
@@ -160,8 +162,13 @@ def gen(args, language, graph_dir):
             program : Program = flesher.fleshout_without_dirs()
             program.write_to_file(filepath, filename=f'prog_{g}')
 
-def run(args):
-    pass
+def run(args, language):
+
+    runner : Runner = get_runner(language, args.dirs)
+    
+    # If directions are known at compile time, then run separate programs for each path
+
+    # If directions are unknown, then run one program with different inputs
 
     # Cleanup
     
@@ -200,6 +207,15 @@ def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher
     match language:
         case Lang.JAVABC:
             return JavaBCProgramGenerator(cfg, dirs_known)
+
+    return None
+
+
+def get_runner(language : Lang) -> Runner:
+
+    match language:
+        case Lang.JAVABC:
+            return JavaBCRunner()
 
     return None
 

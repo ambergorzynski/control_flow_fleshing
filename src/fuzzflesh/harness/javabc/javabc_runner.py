@@ -1,13 +1,12 @@
 import subprocess
 
-from fuzzflesh.program_generator.flesher import ProgramFlesher
+from fuzzflesh.harness.runner import Runner
 from fuzzflesh.cfg import CFG
 
-class JavaBCProgramGenerator(ProgramFlesher):
+class JavaBCRunner(Runner):
 
-    def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False):
-        super(JavaBCProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
-        self.program_number : int = 0
+    def __init__(self):
+        super(Runner, self).__init__()
 
 class JavaBCRunner():
 
