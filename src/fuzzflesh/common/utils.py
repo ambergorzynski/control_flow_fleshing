@@ -12,6 +12,13 @@ class Compiler(Enum):
     GRAALVM = 4
     HOTSPOT = 5
 
+class RunnerReturn(Enum):
+    COMPILATION_FAIL = 1
+    DECOMPILATION_FAIL = 2
+    RECOMPILATION_FAIL = 3
+    EXECUTION_FAIL = 4
+    SUCCESS = 5
+
 class InstructionBlock():
 
     def __init__(self, _code : str):
