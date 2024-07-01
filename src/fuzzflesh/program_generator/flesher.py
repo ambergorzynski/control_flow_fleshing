@@ -7,8 +7,10 @@ from fuzzflesh.cfg import CFG
 
 class ProgramFlesher(ABC):
 
-    def __init__(self, dirs_known_at_compile : bool):
+    def __init__(self, cfg : CFG, dirs_known_at_compile : bool):
+        self.cfg : CFG = cfg
         self.dirs_known_at_compile : bool = dirs_known_at_compile
+
 
     def save_to_file(self, filename : Path) -> bool:
 
@@ -20,7 +22,7 @@ class ProgramFlesher(ABC):
         except:
             return False
         
-    def fleshout_without_dirs(self, cfg : CFG) -> List[InstructionBlock]:
+    def fleshout_without_dirs(self) -> List[InstructionBlock]:
 
         '''
         Converts control flow graph to target language.
@@ -32,13 +34,13 @@ class ProgramFlesher(ABC):
 
         program.append(self.flesh_program_start())
 
-        program.append(self.flesh_program_body(cfg))
+        program.append(self.flesh_program_body())
 
         program.append(self.flesh_program_end())
 
         return program
     
-    def fleshout_with_dirs(self, cfg : CFG, dirs : list[int]) -> List[InstructionBlock]:
+    def fleshout_with_dirs(self, dirs : list[int]) -> List[InstructionBlock]:
 
         '''
         Converts control flow graph to target language.
@@ -51,21 +53,21 @@ class ProgramFlesher(ABC):
 
         program.append(self.flesh_program_start_with_dirs(dirs))
 
-        program.append(self.flesh_program_body(cfg))
+        program.append(self.flesh_program_body())
 
         program.append(self.flesh_program_end())
 
         return program
     
-    def flesh_program_body(self, cfg : CFG) -> List[InstructionBlock]:
+    def flesh_program_body(self) -> List[InstructionBlock]:
 
         body : List[InstructionBlock] = []
 
-        for n in cfg.graph:
+        for n in self.cfg.graph:
 
             body.append(self.flesh_start_of_node(n))
 
-            n_successors = cfg.successors(n)
+            n_successors = self.cfg.successors(n)
 
             match n_successors:
 
@@ -76,7 +78,7 @@ class ProgramFlesher(ABC):
                 case 2:
                     body.append(self.flesh_conditional_node(n))
                 case _:
-                    body.append(self.flesh_switch_node(n))
+                    body.append(self.flesh_switch_node(n, n_successors))
 
         return body
     
