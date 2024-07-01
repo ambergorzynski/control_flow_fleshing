@@ -1,14 +1,22 @@
 from typing import List 
 from pathlib import Path
 
-from fuzzflesh.common.utils import InstructionBlock
+from fuzzflesh.common.utils import InstructionBlock, Lang
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.cfg import CFG
 
 class JavaBCProgramGenerator(ProgramFlesher):
 
-    def __init__(self, dirs_known_at_compile : bool = False):
-        super(JavaBCProgramGenerator, self).__init__(dirs_known_at_compile)
+    def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False):
+        super(JavaBCProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
+        self.program_number : int = 0
+
+    @property
+    def language(self):
+        return Lang.JAVABC
+
+    def increment_program_number(self) -> None:
+        self.program_number += 1
 
     def flesh_program_start(self) -> InstructionBlock:
         code = '''
@@ -84,7 +92,7 @@ block_0:
 
         return InstructionBlock(code)       
 
-    def flesh_program_start(self, prog_number : int) -> str:
+    def flesh_program_start(self) -> InstructionBlock:
         code = '''
 .class public testing.TestCase{i}
 .super java/lang/Object
@@ -109,11 +117,11 @@ block_0:
     ; set up directions counter in local variable 4
     iconst_0
     istore 4    
-'''.format(i = prog_number)
+'''.format(i = self.program_number)
 
         return InstructionBlock(code)
 
-    def flesh_start_of_node(self, n : int) -> str:
+    def flesh_start_of_node(self, n : int) -> InstructionBlock:
         
         if(n == 0):
             code = ''''''
@@ -147,7 +155,7 @@ block_{i}: '''.format(i = n)
         
         return InstructionBlock(code)
 
-    def flesh_unconditional_node(self, n : int) -> str:
+    def flesh_unconditional_node(self, n : int) -> InstructionBlock:
         '''
             returns code for node n with single successor
         '''
@@ -158,7 +166,7 @@ block_{i}: '''.format(i = n)
 
         return code
 
-    def flesh_conditional_node(self, n : int) -> str:
+    def flesh_conditional_node(self, n : int) -> InstructionBlock:
         ''' 
             returns code for node n with two successors, one of
             which may be self (e.g. in case of loop)
@@ -189,7 +197,7 @@ block_{i}: '''.format(i = n)
         
         return InstructionBlock(code)
 
-    def flesh_switch_node(self, n: int, n_successors : int) -> str:
+    def flesh_switch_node(self, n : int, n_successors : int) -> InstructionBlock:
         '''
             returns code for node with > 2 successors
             e.g. a switch statement
@@ -221,6 +229,6 @@ block_{i}: '''.format(i = n)
         
         return InstructionBlock(code)
     
-    def flesh_end(self) -> str:
+    def flesh_program_end(self) -> InstructionBlock:
         return InstructionBlock('''
 .end method''')
