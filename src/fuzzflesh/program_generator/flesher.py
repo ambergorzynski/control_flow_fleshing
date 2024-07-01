@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from pathlib import Path
 
-from fuzzflesh.common.utils import InstructionBlock
+from fuzzflesh.common.utils import InstructionBlock, Program
 from fuzzflesh.cfg import CFG
 
 class ProgramFlesher(ABC):
@@ -10,17 +10,12 @@ class ProgramFlesher(ABC):
     def __init__(self, cfg : CFG, dirs_known_at_compile : bool):
         self.cfg : CFG = cfg
         self.dirs_known_at_compile : bool = dirs_known_at_compile
-
-
-    def save_to_file(self, filename : Path) -> bool:
-
-        try:
-            with open(filename) as f:
-                f.write('\n'.join(self.fleshed_graph))
-            return True
         
-        except:
-            return False
+        @property
+        @abstractmethod
+        def language(self):
+            pass
+
         
     def fleshout_without_dirs(self) -> List[InstructionBlock]:
 
@@ -34,11 +29,11 @@ class ProgramFlesher(ABC):
 
         program.append(self.flesh_program_start())
 
-        program.append(self.flesh_program_body())
+        program.extend(self.flesh_program_body())
 
         program.append(self.flesh_program_end())
 
-        return program
+        return Program(self.language, program)
     
     def fleshout_with_dirs(self, dirs : list[int]) -> List[InstructionBlock]:
 
@@ -53,11 +48,11 @@ class ProgramFlesher(ABC):
 
         program.append(self.flesh_program_start_with_dirs(dirs))
 
-        program.append(self.flesh_program_body())
+        program.extend(self.flesh_program_body())
 
         program.append(self.flesh_program_end())
 
-        return program
+        return Program(self.language, program)
     
     def flesh_program_body(self) -> List[InstructionBlock]:
 
