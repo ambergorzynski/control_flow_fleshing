@@ -5,7 +5,7 @@ import pickle
 import json
 from pathlib import Path
 
-from fuzzflesh.common.utils import Lang, Compiler, InstructionBlock
+from fuzzflesh.common.utils import Lang, Compiler, Program
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
@@ -54,10 +54,10 @@ def main():
                         type=int,
                         default=900,
                         help = 'Maximum path length.')
-    parser.add_argument("-no_annotations", 
+    parser.add_argument("--no_annotations", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Do not add annotated edges to the graph.')
-    parser.add_argument("-dirs", 
+    parser.add_argument("--dirs", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Directions are known at compile time.')
     parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
@@ -102,9 +102,9 @@ def main():
         return(1)
 
     # Generate graphs
-    for i in range(args.graphs):
+    for g in range(args.graphs):
 
-        filepath = Path(graph_dir, f'graph_{i}')
+        filepath = Path(graph_dir, f'graph_{g}')
         
         filepath.mkdir(exist_ok=True)
         
@@ -116,18 +116,18 @@ def main():
                     add_annotations = False if args.no_annotations else True,
                     seed = None)
         
-        pickle.dump(graph, open(f'{filepath}/graph_{i}.p', "wb"))
+        pickle.dump(graph, open(f'{filepath}/graph_{g}.p', "wb"))
 
         # Generate paths for each graph
         all_paths = []
 
-        for j in range(args.paths):
+        for p in range(args.paths):
 
             path = graph.generate_path(max_path_length = args.max_path_length)
 
             all_paths.append(path)
 
-        with open(f'{filepath}/inputs_graph_{i}_path_{j}.json', 'w') as f:
+        with open(f'{filepath}/inputs_graph_{g}_path_{p}.json', 'w') as f:
                 json.dump(paths_to_dict(all_paths), f, indent=2)
 
         # Flesh graphs
@@ -135,13 +135,15 @@ def main():
 
         # If directions are known at compile time, then flesh separate programs for each path
         if args.dirs:
-            for p in all_paths:
-                program : list[InstructionBlock] = flesher.fleshout_with_dirs(p.directions)
+            for (p, path) in enumerate(all_paths):
+                program : Program = flesher.fleshout_with_dirs(path.directions)
+                program.write_to_file(filepath, filename=f'prog_{g}_path_{p}')
+                
                 
         # If directions are unknown, then only flesh one program that accepts a runtime direction array
         else:
-            program : list[InstructionBlock] = flesher.fleshout_without_dirs()
-
+            program : Program = flesher.fleshout_without_dirs()
+            program.write_to_file(filepath, filename=f'prog_{g}')
 
     # Run tests - include option to exit before running
 
