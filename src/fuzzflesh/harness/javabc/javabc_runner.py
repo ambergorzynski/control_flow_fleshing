@@ -1,47 +1,68 @@
 import subprocess
+from pathlib import Path
 
 from fuzzflesh.harness.runner import Runner
-from fuzzflesh.cfg import CFG
+from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
 class JavaBCRunner(Runner):
 
-    def __init__(self):
+    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path):
         super(Runner, self).__init__()
-
-class JavaBCRunner():
-
-    def __init__(self,
-                 filepaths : FilePaths,
-                 params : FuzzingParams,
-                 directions : str = 'unknown'):
+        self.compiler : Compiler = _toolchain
+        self.jvm : Path = Path(_jvm, 'java')
+        self.javac : Path = Path(_jvm, 'javac')
+        self.jasmin : Path = (_jasmin, 'jasmin.jar')
         
-        self.filepaths : FilePaths = filepaths
-        self.params : FuzzingParams = params
-        self.directions : str = directions
-
-    def run(self, test_name : str, test_id : int, path_name : Path) -> int:
+    @property
+    def language(self):
+        return Lang.JAVABC
+    
+    @property
+    def toolchain(self):
+        return self.compiler
+        
+    def run(self, program : Path, path : Path = None) -> RunnerReturn:
         '''
             Function runs the compilation and execution process for the given
             parameters and filepaths
         '''
-
-        compile_result = self.compile_test(test_name)
+        if self.is_decompiler():
+            return self.run_decompiler(program, path)
+        else:
+            return self.run_compiler(program, path)
+        
+    def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
+        
+        compile_result = self.compile_test(program)
 
         if compile_result != 0:
             return RunnerReturn.COMPILATION_FAIL
         
-        # if we are using a decompiler, then include additional step to de- and re- compile test
-        if self.params.decompiler == True:
-            
-            decompile_result = self.decompile_test(test_name)
+        '''exe_result = self.execute_test(program, test_id, path_name)
+        
+        if exe_result != 0:
+            return RunnerReturn.EXECUTION_FAIL
+        
+        '''
+        
+        return RunnerReturn.SUCCESS
+     
+    def run_decompiler(self, test_name : Path, path : Path = None) -> RunnerReturn:
+        
+        compile_result = self.compile_test(test_name)
 
-            if decompile_result != 0:
-                return RunnerReturn.DECOMPILATION_FAIL
-            
-            recompile_result = self.recompile_test(test_name)
+        if compile_result != 0:
+            return RunnerReturn.COMPILATION_FAIL
+                    
+        decompile_result = self.decompile_test(test_name)
 
-            if recompile_result != 0:
-                return RunnerReturn.RECOMPILATION_FAIL
+        if decompile_result != 0:
+            return RunnerReturn.DECOMPILATION_FAIL
+        
+        recompile_result = self.recompile_test(test_name)
+
+        if recompile_result != 0:
+            return RunnerReturn.RECOMPILATION_FAIL
         
         exe_result = self.execute_test(test_name, test_id, path_name)
         
@@ -50,15 +71,37 @@ class JavaBCRunner():
         
         return RunnerReturn.SUCCESS
 
-    def compile_test(self, test_name : str) -> int:
+    def is_decompiler(self):
+        if self.toolchain in ['CFR', 'FERNFLOWER', 'PROCYON']:
+            return True
+        
+        return False
 
-        if self.params.with_reflection:
-            compile_test_with_reflection(test_name)
+    def compile_test(self, program : Path) -> int:
 
-        else:
-            compile_test_without_reflection(test_name)
+        #TODO: Add reflection
 
-    def compile_test_with_reflection(self, test_name : str) -> ProcessResult.returncode:   
+        return self.compile_test_without_reflection(program)
+
+    def compile_test_without_reflection(self, program : Path) -> int:    
+
+        compile_test_cmd = [f'{self.jvm}',
+                    '- jar',
+                    f'{self.jasmin}',
+                    f'{program}',
+                    '-d',
+                    f'{program.parent}']
+
+        compile_test_result = subprocess.run(compile_test_cmd, shell=True)
+        '''
+        compile_wrapper_cmd = [f'{self.javac}',
+                    '-cp',
+                    f'{self.filepaths.src}:./testing/{test_id}',
+                    f'{self.filepaths.src}/testing/WrapperNoReflection.java']
+
+        compile_wrapper_result = subprocess.run(compile_wrapper_cmd, shell=True)
+        '''
+    def compile_test_with_reflection(self, test_name : str) -> int:   
         
         interface_cmd = [f'{self.filepaths.jvm}/javac',
                         f'{self.filepaths.src_filepath}/testing/TestCaseInterface.java']
@@ -84,24 +127,6 @@ class JavaBCRunner():
         compile_result = subprocess.run(compile_cmd, shell=True)
 
         return compile_result.returncode
-
-    def compile_test_without_reflection(self, test_name : str) -> ProcessResult.returncode:    a
-
-        compile_test_cmd = [f'{self.filepaths.jvm}/java',
-                    '- jar',
-                    f'{self.filepaths.jasmin}/jasmin.jar',
-                    f'{self.filepaths.src}/testing/{test_id}/{test_id}.j',
-                    '-d',
-                    f'{self.filepaths.src}/testing/{test_id}']
-
-        compile_test_result = subprocess.run(compile_cmd, shell=True)
-
-        compile_wrapper_cmd = [f'{self.filepaths.jvm}/javac',
-                    '-cp',
-                    f'{self.filepaths.src}:./testing/{test_id}',
-                    f'{self.filepaths.src}/testing/WrapperNoReflection.java']
-
-        compile_wrapper_result = subprocess.run(compile_wrapper_cmd, shell=True)
 
     def decompile_test(self, test_name : str) -> int:
             
