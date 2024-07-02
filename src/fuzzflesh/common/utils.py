@@ -33,13 +33,16 @@ class Program():
         self.program : list[InstructionBlock] = _prog
         self.language : Lang = _lang
 
-    def write_to_file(self, filepath : Path, filename : str) -> bool:
+    def write_to_file(self, program_path : Path) -> bool:
 
-        with open(Path(filepath, f'{filename}{self.get_extension()}'), 'w') as f:
+        with open(program_path, 'w') as f:
             for i in self.program:
                 f.write(f'{i.get_code()}\n')
         
         return True
+    
+    def get_program_path(self, filepath : Path, filename : str) -> Path:
+        return Path(filepath, f'{filename}{self.get_extension}')
     
     def get_extension(self) -> str:
         match self.language:
