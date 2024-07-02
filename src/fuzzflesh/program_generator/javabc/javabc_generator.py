@@ -164,7 +164,7 @@ block_{i}: '''.format(i = n)
     goto block_{successor}
         '''.format(successor = list(self.cfg.graph.adj[n])[0])
 
-        return code
+        return InstructionBlock(code)
 
     def flesh_conditional_node(self, n : int) -> InstructionBlock:
         ''' 
