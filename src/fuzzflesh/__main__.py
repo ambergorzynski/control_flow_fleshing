@@ -82,13 +82,13 @@ def main():
     javabc_parser.add_argument("jvm", 
                         type=str,
                         help="Path to JVM to be used")
-    parser.add_argument("jasmin", 
+    javabc_parser.add_argument("jasmin", 
                         type=str,
                         help="Path to Jasmin to be used")
-    parser.add_argument("compiler_path", 
+    javabc_parser.add_argument("compiler_path", 
                         type=str, 
                         help="Path to the (de)compiler")  
-    parser.add_argument("-reflection", 
+    javabc_parser.add_argument("-reflection", 
                         action=argparse.BooleanOptionalAction,
                         help='Use reflection instead of static compilation.')
     
@@ -106,71 +106,103 @@ def main():
     if not create_folders(base_dir, language):
         return(1)
     
-    if args.action == 'gen':
-        gen(args, language, graph_dir)
-
-    elif args.action == 'run':
-        run(args, language)
-
-    elif args.action == 'fuzz':
-        gen(args, language, graph_dir)
-        run(args, language)
-
-def gen(args, language, graph_dir):
+    for graph_id in range(args.graphs):
     
-    # Generate graphs
-    for g in range(args.graphs):
+        if args.action == 'gen':
+            gen(args, language, graph_dir, graph_id)
 
-        filepath = Path(graph_dir, f'graph_{g}')
-        
-        filepath.mkdir(exist_ok=True)
-        
-        graph = generate_graph(min_graph_size = args.min_size,
-                    max_graph_size = args.max_size,
-                    min_successors = args.min_successors, 
-                    max_successors = args.max_successors, 
-                    graph_generation_approach = args.graph_gen, 
-                    add_annotations = False if args.no_annotations else True,
-                    seed = None)
-        
-        pickle.dump(graph, open(f'{filepath}/graph_{g}.p', "wb"))
+        elif args.action == 'run':
+            run(args, language, graph_id)
 
-        # Generate paths for each graph
-        all_paths = []
+        elif args.action == 'fuzz':
+            (programs, paths) = gen(args, language, graph_dir, graph_id)
+            run(args, language, compiler, programs, paths)
+            #TODO:Cleanup as we go for fuzzing
 
-        for p in range(args.paths):
-
-            path = graph.generate_path(max_path_length = args.max_path_length)
-
-            all_paths.append(path)
-
-        with open(f'{filepath}/inputs_graph_{g}_path_{p}.json', 'w') as f:
-                json.dump(paths_to_dict(all_paths), f, indent=2)
-
-        # Flesh graphs
-        flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
-
-        # If directions are known at compile time, then flesh separate programs for each path
-        if args.dirs:
-            for (p, path) in enumerate(all_paths):
-                program : Program = flesher.fleshout_with_dirs(path.directions)
-                program.write_to_file(filepath, filename=f'prog_{g}_path_{p}')
-                
-                
-        # If directions are unknown, then only flesh one program that accepts a runtime direction array
-        else:
-            program : Program = flesher.fleshout_without_dirs()
-            program.write_to_file(filepath, filename=f'prog_{g}')
-
-def run(args, language):
-
-    runner : Runner = get_runner(language, args.dirs)
+def gen(args, language : Lang, graph_dir : Path, graph_id : int) -> tuple[Path, list[Path]]:
     
-    # If directions are known at compile time, then run separate programs for each path
+    # Generate graph
+    print(f'Generating graph {graph_id}...')
+
+    filepath = Path(graph_dir, f'graph_{graph_id}')
+    
+    filepath.mkdir(exist_ok=True)
+    
+    graph = generate_graph(min_graph_size = args.min_size,
+                max_graph_size = args.max_size,
+                min_successors = args.min_successors, 
+                max_successors = args.max_successors, 
+                graph_generation_approach = args.graph_gen, 
+                add_annotations = False if args.no_annotations else True,
+                seed = None)
+    
+    graph_path = f'{filepath}/graph_{graph_id}.p'
+    pickle.dump(graph, open(graph_path, "wb"))
+
+    # Generate paths for each graph
+    all_paths = []
+
+    for p in range(args.paths):
+
+        print(f'Generating path {p}...')
+
+        path = graph.generate_path(max_path_length = args.max_path_length)
+
+        all_paths.append(path)
+
+    path_path = f'{filepath}/inputs_graph_{graph_id}_path_{p}.json'
+    with open(path_path, 'w') as f:
+            json.dump(paths_to_dict(all_paths), f, indent=2)
+
+    # Flesh graphs
+    flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
+
+    # If directions are known at compile time, then flesh separate programs for each path
+    prog_paths = []
+    
+    if args.dirs:
+        for (p, path) in enumerate(all_paths):
+            print(f'Fleshing graph {graph_id} with path {p}...')
+            prog_path = f'prog_{graph_id}_path_{p}'
+            program : Program = flesher.fleshout_with_dirs(path.directions)
+            prog_path = program.get_program_path(filepath,f'prog_{graph_id}_path_{p}')
+            program.write_to_file(prog_path)
+            prog_paths.append(prog_path)
+            
+            
+    # If directions are unknown, then only flesh one program that accepts a runtime direction array
+    else:
+        print(f'Fleshing graph {graph_id}...')
+        program : Program = flesher.fleshout_without_dirs()
+        prog_path = program.get_program_path(filepath,f'prog_{graph_id}')
+        program.write_to_file(prog_path)   
+        prog_paths.append(prog_path)
+
+    return (prog_paths, path_path)
+
+def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : Path):
+
+    runner : Runner = get_runner(args, language, compiler)
+    
+    # If directions are known at compile time, then run separate programs that contain embedded paths
+    if args.dirs:
+        for prog in programs:
+            print('Running program...')
+            result = runner.run(program=prog)
 
     # If directions are unknown, then run one program with different inputs
+    else:
 
-    # Cleanup
+        with open(paths, 'r') as f:
+            all_paths = json.load(f)
+
+        for path in all_paths:
+
+            print('Running program...')
+            result = runner.run(program=programs[0], path=path)
+
+    print(f'Result is: {result}')
+
     
 def create_folders(base_dir : Path, language : Lang) -> bool:
 
@@ -211,11 +243,11 @@ def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher
     return None
 
 
-def get_runner(language : Lang) -> Runner:
+def get_runner(args, language : Lang, compiler : Compiler) -> Runner:
 
     match language:
         case Lang.JAVABC:
-            return JavaBCRunner()
+            return JavaBCRunner(compiler, Path(args.jvm), Path(args.jasmin))
 
     return None
 
