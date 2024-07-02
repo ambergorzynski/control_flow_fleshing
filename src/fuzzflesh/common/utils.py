@@ -42,7 +42,7 @@ class Program():
         return True
     
     def get_program_path(self, filepath : Path, filename : str) -> Path:
-        return Path(filepath, f'{filename}{self.get_extension}')
+        return Path(filepath, f'{filename}{self.get_extension()}')
     
     def get_extension(self) -> str:
         match self.language:
