@@ -112,14 +112,14 @@ def main():
             gen(args, language, graph_dir, graph_id)
 
         elif args.action == 'run':
-            run(args, language, graph_id)
+            run(args, language, graph_id, base_dir)
 
         elif args.action == 'fuzz':
             (programs, paths) = gen(args, language, graph_dir, graph_id)
-            run(args, language, compiler, programs, paths)
+            run(args, language, compiler, programs, paths, base_dir)
             #TODO:Cleanup as we go for fuzzing
 
-def gen(args, language : Lang, graph_dir : Path, graph_id : int) -> tuple[Path, list[Path]]:
+def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, list[Path]]:
     
     # Generate graph
     print(f'Generating graph {graph_id}...')
@@ -180,9 +180,9 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int) -> tuple[Path, 
 
     return (prog_paths, path_path)
 
-def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : Path):
+def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : Path, base_dir : Path):
 
-    runner : Runner = get_runner(args, language, compiler)
+    runner : Runner = get_runner(args, language, compiler, base_dir)
     
     # If directions are known at compile time, then run separate programs that contain embedded paths
     if args.dirs:
@@ -243,12 +243,14 @@ def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher
     return None
 
 
-def get_runner(args, language : Lang, compiler : Compiler) -> Runner:
+def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> Runner:
 
     match language:
         case Lang.JAVABC:
-            return JavaBCRunner(compiler, Path(args.jvm), Path(args.jasmin))
-
+            return JavaBCRunner(compiler, 
+                                Path(args.jvm), 
+                                Path(args.jasmin),
+                                base_dir)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
