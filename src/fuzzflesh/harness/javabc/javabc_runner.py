@@ -6,12 +6,13 @@ from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
 class JavaBCRunner(Runner):
 
-    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path):
+    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path, _output : Path):
         super(Runner, self).__init__()
         self.compiler : Compiler = _toolchain
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
+        self.wrapper : Path = Path(_output, 'WrapperNoReflection.java')
         
     @property
     def language(self):
@@ -35,18 +36,18 @@ class JavaBCRunner(Runner):
         
         compile_result = self.compile_test(program)
 
-        if compile_result != 0:
+        if compile_result == RunnerReturn.COMPILATION_FAIL:
             return RunnerReturn.COMPILATION_FAIL
         
-        '''exe_result = self.execute_test(program, test_id, path_name)
+        '''exe_result = self.execute_test(program, path)
         
         if exe_result != 0:
             return RunnerReturn.EXECUTION_FAIL
-        
         '''
-        
+
         return RunnerReturn.SUCCESS
-     
+        
+             
     def run_decompiler(self, test_name : Path, path : Path = None) -> RunnerReturn:
         
         compile_result = self.compile_test(test_name)
@@ -83,26 +84,36 @@ class JavaBCRunner(Runner):
 
         return self.compile_test_without_reflection(program)
 
-    def compile_test_without_reflection(self, program : Path) -> int:    
+    def compile_test_without_reflection(self, program : Path) -> RunnerReturn:    
+
+        class_location = f'{str(program.parent)}/{str(program.stem)}'
 
         compile_test_cmd = [f'{self.jvm}',
-                    '- jar',
+                    '-jar',
                     str(self.jasmin),
                     str(program),
                     '-d',
-                    str(program.parent)]
+                    class_location]
         
-        print(compile_test_cmd)
+        compile_test_result = subprocess.run(compile_test_cmd)
 
-        #compile_test_result = subprocess.run(compile_test_cmd, shell=True)
-        '''
-        compile_wrapper_cmd = [f'{self.javac}',
+        if compile_test_result.returncode != 0:
+            return RunnerReturn.COMPILATION_FAIL
+    
+        compile_wrapper_cmd = [str(self.javac),
                     '-cp',
-                    f'{self.filepaths.src}:./testing/{test_id}',
-                    f'{self.filepaths.src}/testing/WrapperNoReflection.java']
-
-        compile_wrapper_result = subprocess.run(compile_wrapper_cmd, shell=True)
-        '''
+                    f':{class_location}',
+                    str(self.wrapper),
+                    '-d',
+                    class_location]
+        
+        compile_wrapper_result = subprocess.run(compile_wrapper_cmd)
+        
+        if compile_wrapper_result.returncode != 0:
+            return RunnerReturn.COMPILATION_FAIL
+        
+        return RunnerReturn.SUCCESS
+    
     def compile_test_with_reflection(self, test_name : str) -> int:   
         
         interface_cmd = [f'{self.filepaths.jvm}/javac',
