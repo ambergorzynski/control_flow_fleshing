@@ -10,6 +10,10 @@ class JavaBCProgramGenerator(ProgramFlesher):
     def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False):
         super(JavaBCProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
         self.program_number : int = 0
+        self.directions_index : int = 5 if dirs_known_at_compile else 1
+        self.output_index : int = 2
+        self.counter_index : int = 3
+        self.dirs_counter_index : int = 4
 
     @property
     def language(self):
@@ -35,14 +39,14 @@ class JavaBCProgramGenerator(ProgramFlesher):
     .limit locals 5
 
 block_0:
-    ; set up counter in local variable 3
+    ; set up counter in local variable {counter}
     iconst_0
-    istore_3
+    istore_{counter}
 
-    ; set up directions counter in local variable 4
+    ; set up directions counter in local variable {dirs_counter}
     iconst_0
-    istore 4    
-'''
+    istore {dirs_counter}  
+'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
         return InstructionBlock(code)  
     
     def flesh_program_start_with_dirs(self, directions : list[int]) -> InstructionBlock:
@@ -63,11 +67,22 @@ block_0:
     .limit locals 6
 
 block_0:
-    ; set up directions array in local variable 5
+    ; set up counter in local variable {counter}
+    iconst_0
+    istore_{counter}
+
+    ; set up directions counter in local variable {dirs_counter}
+    iconst_0
+    istore {dirs_counter}  
+'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
+ 
+        code += '''
+    ; set up directions array 
+
     sipush {dir_length}
     newarray int
 
-'''.format(dir_length=len(directions))
+    '''.format(dir_length=len(directions))
         # fill out directions array
         for i, d in enumerate(directions):
             code += '''
@@ -75,24 +90,17 @@ block_0:
     sipush {index}
     sipush {direction}
     iastore
-'''.format(index = i, direction = d)
-
+    '''.format(index = i, direction = d)
+            
         code += '''
     ; store array ref in local variable 5
-    astore 5
-
-    ; set up counter in local variable 3
-    iconst_0
-    istore_3
-
-    ; set up directions counter in local variable 4
-    iconst_0
-    istore 4    
-'''
+    astore {dirs}
+   
+'''.format(dirs=self.directions_index)
 
         return InstructionBlock(code)       
 
-    def flesh_program_start(self) -> InstructionBlock:
+    def flesh_program_start_with_reflection(self) -> InstructionBlock:
         code = '''
 .class public testing.TestCase{i}
 .super java/lang/Object
@@ -177,11 +185,12 @@ block_{i}: '''.format(i = n)
         # directions array stored in different local variable 
         # depending on whether they are known at compile time or not
         #TODO: switch dir and output in passing function so dirs is always var 2
-        dir_local_var = 5 if self.dirs_known_at_compile else 1
+        #TODO: something is broken here with the 1 and 5
+        dir_local_var = 2 if self.dirs_known_at_compile else 1
 
         code = '''
     ; get directions for node
-    aload_{dir_local_var}
+    aload {dir_local_var}
     iload 4
     iaload
 
@@ -207,7 +216,7 @@ block_{i}: '''.format(i = n)
 
         code = '''
     ; get directions for node
-    aload_{dir_local_var}
+    aload {dir_local_var}
     iload 4
     iaload
 
