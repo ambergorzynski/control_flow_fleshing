@@ -11,7 +11,7 @@ class JavaBCRunner(Runner):
         self.compiler : Compiler = _toolchain
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
-        self.jasmin : Path = (_jasmin, 'jasmin.jar')
+        self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         
     @property
     def language(self):
@@ -87,12 +87,14 @@ class JavaBCRunner(Runner):
 
         compile_test_cmd = [f'{self.jvm}',
                     '- jar',
-                    f'{self.jasmin}',
-                    f'{program}',
+                    str(self.jasmin),
+                    str(program),
                     '-d',
-                    f'{program.parent}']
+                    str(program.parent)]
+        
+        print(compile_test_cmd)
 
-        compile_test_result = subprocess.run(compile_test_cmd, shell=True)
+        #compile_test_result = subprocess.run(compile_test_cmd, shell=True)
         '''
         compile_wrapper_cmd = [f'{self.javac}',
                     '-cp',
