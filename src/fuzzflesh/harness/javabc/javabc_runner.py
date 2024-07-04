@@ -6,12 +6,13 @@ from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
 class JavaBCRunner(Runner):
 
-    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path, _output : Path):
+    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path, _json : Path, _output : Path):
         super(Runner, self).__init__()
         self.compiler : Compiler = _toolchain
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
+        self.json_jar : Path = Path(_json)
         self.wrapper : Path = Path(_output, 'WrapperNoReflection.java')
         self.n_function_repeats : int = 1000
         
@@ -32,6 +33,16 @@ class JavaBCRunner(Runner):
             return self.run_decompiler(program, path)
         else:
             return self.run_compiler(program, path)
+        
+    def compile(self, program : Path) -> RunnerReturn:
+        if self.is_decompiler():
+            return RunnerReturn.COMPILATION_FAIL
+        else:
+            return self.compile_test(program)
+        
+    def execute(self, program :Path, path : Path) -> RunnerReturn:
+        return self.execute_test(program, path)
+
         
     def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
         
@@ -141,6 +152,25 @@ class JavaBCRunner(Runner):
 
         return compile_result.returncode
 
+    def execute_test(self, program : Path, path : Path) -> RunnerReturn:
+        
+        #TODO:Add reflection
+        class_location = f'{str(program.parent)}/{str(program.stem)}'
+
+        exe_cmd = [f'{self.jvm}',
+                '-cp',
+                f':{class_location}:{self.json_jar}',
+                'Wrapper',
+                str(path),
+                f'{class_location}/output.txt',
+                f'{class_location}/bad_output.txt',
+                f'{self.n_function_repeats}',
+                '-XX:CompileThreshold=100']
+                     
+        result = subprocess.run(exe_cmd)
+
+        return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
+
     def decompile_test(self, test_name : str) -> int:
             
             # decompilation syntax varies depending on which decompiler toolchain is used
@@ -172,21 +202,3 @@ class JavaBCRunner(Runner):
 
             return compile_result.returncode
             
-    def execute_test(self, program : Path, path : Path) -> RunnerReturn:
-        
-        #TODO:Add reflection
-        class_location = f'{str(program.parent)}/{str(program.stem)}'
-
-        exe_cmd = [f'{self.jvm}',
-                '-cp',
-                f':{class_location}:/data/dev/java/json-simple-1.1.1.jar',
-                'Wrapper',
-                str(path),
-                f'{class_location}/output.txt',
-                f'{class_location}/bad_output.txt',
-                f'{self.n_function_repeats}',
-                '-XX:CompileThreshold=100']
-                     
-        result = subprocess.run(exe_cmd)
-
-        return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
