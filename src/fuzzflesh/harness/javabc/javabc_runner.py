@@ -13,6 +13,7 @@ class JavaBCRunner(Runner):
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.wrapper : Path = Path(_output, 'WrapperNoReflection.java')
+        self.n_function_repeats : int = 1000
         
     @property
     def language(self):
@@ -39,11 +40,10 @@ class JavaBCRunner(Runner):
         if compile_result == RunnerReturn.COMPILATION_FAIL:
             return RunnerReturn.COMPILATION_FAIL
         
-        '''exe_result = self.execute_test(program, path)
+        exe_result = self.execute_test(program, path)
         
-        if exe_result != 0:
+        if exe_result == RunnerReturn.EXECUTION_FAIL:
             return RunnerReturn.EXECUTION_FAIL
-        '''
 
         return RunnerReturn.SUCCESS
         
@@ -102,7 +102,7 @@ class JavaBCRunner(Runner):
     
         compile_wrapper_cmd = [str(self.javac),
                     '-cp',
-                    f':{class_location}',
+                    f':{class_location}:/data/dev/java/json-simple-1.1.1.jar',
                     str(self.wrapper),
                     '-d',
                     class_location]
@@ -115,7 +115,7 @@ class JavaBCRunner(Runner):
         return RunnerReturn.SUCCESS
     
     def compile_test_with_reflection(self, test_name : str) -> int:   
-        
+
         interface_cmd = [f'{self.filepaths.jvm}/javac',
                         f'{self.filepaths.src_filepath}/testing/TestCaseInterface.java']
                 
@@ -172,14 +172,21 @@ class JavaBCRunner(Runner):
 
             return compile_result.returncode
             
-    def execute_test(self, test_name : str, test_id : int, path_name : str) -> int:
+    def execute_test(self, program : Path, path : Path) -> RunnerReturn:
         
-        if self.params.with_reflection:
-            exe_cmd = [f'''./javabc/execute_test_java.sh {self.filepaths.src_filepath} {test_id} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
+        #TODO:Add reflection
+        class_location = f'{str(program.parent)}/{str(program.stem)}'
 
-        else:
-            exe_cmd = [f'''./javabc/execute_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {path_name} {self.filepaths.results_name} {self.filepaths.bug_results_name} {self.params.n_function_repeats} {self.filepaths.jvm}''']
-        
-        result = subprocess.run(exe_cmd, shell=True)
+        exe_cmd = [f'{self.jvm}',
+                '-cp',
+                f':{class_location}:/data/dev/java/json-simple-1.1.1.jar',
+                'Wrapper',
+                str(path),
+                f'{class_location}/output.txt',
+                f'{class_location}/bad_output.txt',
+                f'{self.n_function_repeats}',
+                '-XX:CompileThreshold=100']
+                     
+        result = subprocess.run(exe_cmd)
 
-        return result.returncode
+        return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
