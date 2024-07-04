@@ -9,9 +9,12 @@ Compiler testing using control flow graph fleshing
 
 # Install
 Run the following commands from the root directory to set up a Python virtual environment and install the necessary packages:
-`python -m venv venv` 
-`source venv/bin/activate`
-`pip install -e .`
+```
+cd $FUZZFLESH/src
+python -m venv venv
+source venv/bin/activate
+pip install -e .
+```
 
 # Run
 - Create an output directory, ideally somewhere outside of the repo
