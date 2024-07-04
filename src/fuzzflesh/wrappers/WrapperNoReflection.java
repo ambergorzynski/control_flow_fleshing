@@ -3,12 +3,17 @@ import java.util.Scanner;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.lang.reflect.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 class Wrapper{
 
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException {
 
 		// parse args
 		String inputFilename = args[0];
@@ -17,12 +22,16 @@ class Wrapper{
 		int nFunctionRepeats = Integer.parseInt(args[3]);
 
 		boolean result = true;
-
+		
 		// get direction size and expected output size from file
-		Scanner reader = new Scanner(new File(inputFilename));
+        JSONParser parser = new JSONParser();
+		JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(inputFilename));
 
-		int dirSize = Integer.parseInt(reader.nextLine());
-		int outputSize = Integer.parseInt(reader.nextLine());
+        JSONArray jsonDir = (JSONArray) jsonObject.get("dirs");
+        JSONArray jsonOutput = (JSONArray) jsonObject.get("expected_output");
+
+        int outputSize = jsonOutput.size();
+        int dirSize = jsonDir.size();
 
 		// create arrays
 		int[] dir = new int[dirSize];
@@ -30,7 +39,19 @@ class Wrapper{
 		int[] expectedOutput = new int[outputSize];
 
 		// fill arrays
-		setupArrays(dirSize, outputSize, dir, actualOutput, expectedOutput, reader);
+		int counter = 0;
+		for (Object o : jsonDir) {
+			dir[counter] = (int) (long) o;
+			counter++;
+		}	
+		counter = 0;
+		for (Object o : jsonOutput) {
+			expectedOutput[counter] = (int) (long) o;
+			counter++;
+		}
+		for (int i = outputSize; i < 2*outputSize; i++) {
+			actualOutput[i] = -1;
+		}
 
 		// create class
         TestCase test = new TestCase();
@@ -79,17 +100,13 @@ class Wrapper{
 			System.out.print(" " + expectedOutput[i]);
 		}
 
-		System.out.print("\n");
+		System.out.print("\nActual output:  ");
 
-
-		System.out.print("Actual output:  ");
-		
 		for(int i = 0; i < 2*outputSize; i++){
 			System.out.print(" " + actualOutput[i]);
 		}
 
 		System.out.print("\n");
-
 
 	}
 
@@ -138,6 +155,7 @@ class Wrapper{
 
 	private static void setupArrays(int dirSize, int outputSize, int[] dir, int[] actualOutput, int[] expectedOutput, Scanner reader){
 	
+		
 		// initialise to -1
 		for(int i = 0; i < 2*outputSize; i++){
 			actualOutput[i] = -1;
@@ -151,6 +169,7 @@ class Wrapper{
 		for(int i = 0; i < outputSize; i++){
 			expectedOutput[i] = reader.nextInt();
 		}
+		
 
 	}
 
