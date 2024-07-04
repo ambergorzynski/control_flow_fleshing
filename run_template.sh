@@ -16,7 +16,7 @@ PYTHONPATH=$SRC/fuzzflesh
 
 python3 -m fuzzflesh \
     $ACTION \
-    $BASE \
+    -base=$BASE \
     --dirs \
     -graphs=3 \
     -paths=2 \
