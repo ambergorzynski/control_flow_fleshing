@@ -147,12 +147,13 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         print(f'Generating path {p}...')
 
         path = graph.generate_path(max_path_length = args.max_path_length)
+        
+        path_path = f'{filepath}/inputs_graph_{graph_id}_path_{p}.json'
 
-        all_paths.append(path)
+        with open(path_path, 'w') as f:
+                json.dump(path.to_dict(), f, indent=2)
 
-    path_path = f'{filepath}/inputs_graph_{graph_id}_path_{p}.json'
-    with open(path_path, 'w') as f:
-            json.dump(paths_to_dict(all_paths), f, indent=2)
+        all_paths.append(path_path)
 
     # Flesh graphs
     flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
@@ -178,28 +179,24 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         program.write_to_file(prog_path)   
         prog_paths.append(prog_path)
 
-    return (prog_paths, path_path)
+    return (prog_paths, all_paths)
 
-def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : Path, base_dir : Path):
+def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path):
 
     runner : Runner = get_runner(args, language, compiler, base_dir)
     
     # If directions are known at compile time, then run separate programs that contain embedded paths
-    if args.dirs:
-        for prog in programs:
-            print('Running program...')
+    for prog in programs:
+        print('Running program...')
+        
+        # If directions are known at compile time, then run separate programs that contain embedded paths
+        if args.dirs:
             result = runner.run(program=prog)
 
-    # If directions are unknown, then run one program with different inputs
-    else:
-
-        with open(paths, 'r') as f:
-            all_paths = json.load(f)
-
-        for path in all_paths:
-
-            print('Running program...')
-            result = runner.run(program=programs[0], path=path)
+        # If directions are unknown, then run one program with different inputs
+        else:
+            for path in paths:
+                result = runner.run(program=prog, path=path)
 
     print(f'Result is: {result}')
 
@@ -256,6 +253,6 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
 def paths_to_dict(all_paths : list[Route]) -> dict:
 
     return {f'path_id_{i}' : route.to_dict() for i, route in enumerate(all_paths)}
-        
+           
 if __name__ == "__main__":
     main()
