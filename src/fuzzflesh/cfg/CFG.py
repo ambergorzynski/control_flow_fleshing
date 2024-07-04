@@ -191,7 +191,7 @@ class CFG():
         # root should be id 0
         current_node = self.get_root()
 
-        path = Route()
+        path = Route([],[])
 
         path.expected_output.append(current_node)
 
