@@ -85,6 +85,9 @@ def main():
     javabc_parser.add_argument("jasmin", 
                         type=str,
                         help="Path to Jasmin to be used")
+    javabc_parser.add_argument("json",
+                        type=str,
+                        help="Path to json simple jar")
     javabc_parser.add_argument("compiler_path", 
                         type=str, 
                         help="Path to the (de)compiler")  
@@ -97,7 +100,7 @@ def main():
     language : Lang = Lang[args.language.upper()]
     compiler : Compiler = Compiler[args.compiler.upper()]
     base_dir : Path = Path(args.base, 'out')
-    graph_dir : Path = Path(base_dir, 'graphs')
+    graph_dir : Path = base_dir
 
     # Create folders
     base_dir.mkdir(exist_ok=True)
@@ -140,7 +143,8 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
     pickle.dump(graph, open(graph_path, "wb"))
 
     # Generate paths for each graph
-    all_paths = []
+    path_paths = []
+    paths = []
 
     for p in range(args.paths):
 
@@ -153,7 +157,8 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         with open(path_path, 'w') as f:
                 json.dump(path.to_dict(), f, indent=2)
 
-        all_paths.append(path_path)
+        paths.append(path)
+        path_paths.append(path_path)
 
     # Flesh graphs
     flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
@@ -162,9 +167,8 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
     prog_paths = []
     
     if args.dirs:
-        for (p, path) in enumerate(all_paths):
+        for (p, path) in enumerate(paths):
             print(f'Fleshing graph {graph_id} with path {p}...')
-            prog_path = f'prog_{graph_id}_path_{p}'
             program : Program = flesher.fleshout_with_dirs(path.directions)
             prog_path = program.get_program_path(filepath,f'prog_{graph_id}_path_{p}')
             program.write_to_file(prog_path)
@@ -179,26 +183,31 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         program.write_to_file(prog_path)   
         prog_paths.append(prog_path)
 
-    return (prog_paths, all_paths)
+    return (prog_paths, path_paths)
 
 def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path):
 
     runner : Runner = get_runner(args, language, compiler, base_dir)
-    
-    # If directions are known at compile time, then run separate programs that contain embedded paths
-    for prog in programs:
-        print('Running program...')
-        
-        # If directions are known at compile time, then run separate programs that contain embedded paths
-        if args.dirs:
-            result = runner.run(program=prog)
 
-        # If directions are unknown, then run one program with different inputs
+    if args.dirs:
+        assert(len(programs)==len(paths))
+    
+    for (i, prog) in enumerate(programs):
+
+        # Compile
+        compile_result = runner.compile(program=prog)
+
+        if args.dirs:
+            exe_result = runner.execute(program=prog, path=paths[i])
+
+            print(f'Result is: {compile_result}')
+
         else:
             for path in paths:
-                result = runner.run(program=prog, path=path)
 
-    print(f'Result is: {result}')
+                exe_result = runner.execute(program=prog, path=path)
+            
+                print(f'Result is: {exe_result}')
 
     
 def create_folders(base_dir : Path, language : Lang) -> bool:
@@ -214,9 +223,6 @@ def create_folders(base_dir : Path, language : Lang) -> bool:
     return False
 
 def create_javabc_folders(base_dir : Path) -> bool:
-
-    Path(base_dir,'output').mkdir(exist_ok=True)
-    Path(base_dir,'testing').mkdir(exist_ok=True)
 
     # Put the wrapper in the relevant folder
     wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
@@ -247,6 +253,7 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
             return JavaBCRunner(compiler, 
                                 Path(args.jvm), 
                                 Path(args.jasmin),
+                                Path(args.json),
                                 base_dir)
     return None
 
