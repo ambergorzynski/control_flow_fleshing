@@ -30,6 +30,7 @@ class InstructionBlock():
 class Program():
 
     def __init__(self, _lang : Lang, _prog : list[InstructionBlock]):
+
         self.program : list[InstructionBlock] = _prog
         self.language : Lang = _lang
 

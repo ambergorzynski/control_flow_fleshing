@@ -6,15 +6,22 @@ from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
 class JavaBCRunner(Runner):
 
-    def __init__(self, _toolchain : Compiler, _jvm : Path, _jasmin : Path, _json : Path, _output : Path):
+    def __init__(self, 
+                _toolchain : Compiler,
+                _jvm : Path,
+                _jasmin : Path,
+                _json : Path,
+                _output : Path,
+                _reflection : bool):
         super(Runner, self).__init__()
         self.compiler : Compiler = _toolchain
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.json_jar : Path = Path(_json)
-        self.wrapper : Path = Path(_output, 'WrapperNoReflection.java')
+        self.wrapper : Path = Path(_output, 'Wrapper.java')
         self.n_function_repeats : int = 1000
+        self.reflection : bool = _reflection
         
     @property
     def language(self):

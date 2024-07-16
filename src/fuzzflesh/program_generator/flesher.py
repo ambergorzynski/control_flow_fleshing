@@ -27,7 +27,7 @@ class ProgramFlesher(ABC):
 
         program : List[InstructionBlock] = []
 
-        program.append(self.flesh_program_start())
+        program.extend(self.flesh_program_start())
 
         program.extend(self.flesh_program_body())
 
@@ -46,7 +46,7 @@ class ProgramFlesher(ABC):
 
         program : List[InstructionBlock] = []
 
-        program.append(self.flesh_program_start_with_dirs(dirs))
+        program.extend(self.flesh_program_start_with_dirs(dirs))
 
         program.extend(self.flesh_program_body())
 
@@ -78,11 +78,11 @@ class ProgramFlesher(ABC):
         return body
     
     @abstractmethod
-    def flesh_program_start(self) -> InstructionBlock:
+    def flesh_program_start(self) -> List[InstructionBlock]:
         pass
 
     @abstractmethod
-    def flesh_program_start_with_dirs(self, dirs : list[int]) -> InstructionBlock:
+    def flesh_program_start_with_dirs(self, dirs : list[int]) -> List[InstructionBlock]:
         pass
             
     @abstractmethod

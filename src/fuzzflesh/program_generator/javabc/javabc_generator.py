@@ -7,13 +7,14 @@ from fuzzflesh.cfg import CFG
 
 class JavaBCProgramGenerator(ProgramFlesher):
 
-    def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False):
+    def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False, _reflection : bool = False):
         super(JavaBCProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
         self.program_number : int = 0
         self.directions_index : int = 5 if dirs_known_at_compile else 1
         self.output_index : int = 2
         self.counter_index : int = 3
         self.dirs_counter_index : int = 4
+        self.reflection = _reflection
 
     @property
     def language(self):
@@ -22,67 +23,26 @@ class JavaBCProgramGenerator(ProgramFlesher):
     def increment_program_number(self) -> None:
         self.program_number += 1
 
-    def flesh_program_start(self) -> InstructionBlock:
-        code = '''
-.class public TestCase
-.super java/lang/Object
+    def flesh_program_start(self) -> List[InstructionBlock]:
 
-; default constructor
-.method public <init>()V
-    aload_0
-    invokespecial java/lang/Object/<init>()V
-    return
-.end method
+        code_name = self.get_program_name()
 
-.method public testCase([I[I)V
-    .limit stack 5
-    .limit locals 5
+        code_setup = self.get_program_setup()
 
-block_0:
-    ; set up counter in local variable {counter}
-    iconst_0
-    istore_{counter}
+        return [code_name, code_setup]
 
-    ; set up directions counter in local variable {dirs_counter}
-    iconst_0
-    istore {dirs_counter}  
-'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
-        return InstructionBlock(code)  
-    
-    def flesh_program_start_with_dirs(self, directions : list[int]) -> InstructionBlock:
+    def flesh_program_start_with_dirs(self, directions : list[int]) -> List[InstructionBlock]:
+
+        code_start = self.flesh_program_start()
 
         code = '''
-.class public TestCase
-.super java/lang/Object
-
-; default constructor
-.method public <init>()V
-    aload_0
-    invokespecial java/lang/Object/<init>()V
-    return
-.end method
-
-.method public testCase([I[I)V
-    .limit stack 5
-    .limit locals 6
-
-block_0:
-    ; set up counter in local variable {counter}
-    iconst_0
-    istore_{counter}
-
-    ; set up directions counter in local variable {dirs_counter}
-    iconst_0
-    istore {dirs_counter}  
-'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
- 
-        code += '''
     ; set up directions array 
 
     sipush {dir_length}
     newarray int
 
     '''.format(dir_length=len(directions))
+
         # fill out directions array
         for i, d in enumerate(directions):
             code += '''
@@ -98,14 +58,35 @@ block_0:
    
 '''.format(dirs=self.directions_index)
 
-        return InstructionBlock(code)       
+        code_start.append(InstructionBlock(code))
+        
+        return code_start
 
-    def flesh_program_start_with_reflection(self) -> InstructionBlock:
-        code = '''
+    def get_program_name(self) -> str:
+
+        if self.reflection:
+            
+            code = '''
 .class public testing.TestCase{i}
 .super java/lang/Object
 .implements testing.TestCaseInterface
+'''.format(i = self.get_program_number())
 
+        else:
+            code = '''
+.class public TestCase
+.super java/lang/Object
+'''
+        return InstructionBlock(code)
+
+    def get_program_number(self) -> int:
+        num = self.program_number
+        self.increment_program_number
+        return num
+
+    def get_program_setup(self) -> InstructionBlock:
+
+        code = '''
 ; default constructor
 .method public <init>()V
     aload_0
@@ -118,16 +99,17 @@ block_0:
     .limit locals 5
 
 block_0:
-    ; set up counter in local variable 3
+    ; set up counter in local variable {counter}
     iconst_0
-    istore_3
+    istore_{counter}
 
-    ; set up directions counter in local variable 4
+    ; set up directions counter in local variable {dirs_counter}
     iconst_0
-    istore 4    
-'''.format(i = self.program_number)
+    istore {dirs_counter}  
+'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
 
-        return InstructionBlock(code)
+        return InstructionBlock(code)  
+
 
     def flesh_start_of_node(self, n : int) -> InstructionBlock:
         

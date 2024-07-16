@@ -91,7 +91,7 @@ def main():
     javabc_parser.add_argument("compiler_path", 
                         type=str, 
                         help="Path to the (de)compiler")  
-    javabc_parser.add_argument("-reflection", 
+    javabc_parser.add_argument("--reflection", 
                         action=argparse.BooleanOptionalAction,
                         help='Use reflection instead of static compilation.')
     
@@ -106,7 +106,7 @@ def main():
     base_dir.mkdir(exist_ok=True)
     graph_dir.mkdir(exist_ok=True)
 
-    if not create_folders(base_dir, language):
+    if not create_folders(args, base_dir, language):
         return(1)
     
     for graph_id in range(args.graphs):
@@ -161,7 +161,7 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         path_paths.append(path_path)
 
     # Flesh graphs
-    flesher : ProgramFlesher = get_flesher(language, graph, args.dirs)
+    flesher : ProgramFlesher = get_flesher(args, language, graph)
 
     # If directions are known at compile time, then flesh separate programs for each path
     prog_paths = []
@@ -210,38 +210,47 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
                 print(f'Result is: {exe_result}')
 
     
-def create_folders(base_dir : Path, language : Lang) -> bool:
+def create_folders(args, base_dir : Path, language : Lang) -> bool:
 
     print('Setting up folders...')
 
     match language:
         case Lang.JAVABC:
-            return create_javabc_folders(base_dir)
+            return create_javabc_folders(base_dir, args.reflection)
         case Lang.C:
             return create_c_folders(base_dir)
     
     return False
 
-def create_javabc_folders(base_dir : Path) -> bool:
+def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
 
     # Put the wrapper in the relevant folder
+    wrapper = 'Wrapper' if reflection else 'WrapperNoReflection'
     wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
     cmd = ['cp',
-        f'{wrapper_dir}/WrapperNoReflection.java',
-        f'{base_dir}/WrapperNoReflection.java']
+        f'{wrapper_dir}/{wrapper}.java',
+        f'{base_dir}/Wrapper.java']
     
     result = subprocess.run(cmd)
 
-    return True if result.returncode == 0 else False
+    # Interface is required for reflection
+    if reflection:
+        cmd = ['cp',
+            f'{wrapper_dir}/TestCaseInterface.java',
+            f'{base_dir}/']
+
+        result_ifc = subprocess.run(cmd)
+
+    return True if result.returncode == 0 and result_ifc.returncode == 0 else False
 
 def create_c_folders(base_dir : Path):
     pass
 
-def get_flesher(language : Lang, cfg : CFG, dirs_known : bool) -> ProgramFlesher:
+def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 
     match language:
         case Lang.JAVABC:
-            return JavaBCProgramGenerator(cfg, dirs_known)
+            return JavaBCProgramGenerator(cfg, args.dirs, args.reflection)
 
     return None
 
@@ -254,7 +263,8 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                                 Path(args.jvm), 
                                 Path(args.jasmin),
                                 Path(args.json),
-                                base_dir)
+                                base_dir,
+                                args.reflection)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
