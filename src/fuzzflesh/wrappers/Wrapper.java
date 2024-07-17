@@ -53,8 +53,6 @@ class Wrapper{
 			actualOutput[i] = -1;
 		}
 
-
-
 		// create class
 		Constructor<?> constructor = Class.forName(className).getConstructor();
 	
