@@ -67,7 +67,7 @@ class JavaBCProgramGenerator(ProgramFlesher):
         if self.reflection:
             
             code = '''
-.class public testing.TestCase{i}
+.class public testing.TestCase
 .super java/lang/Object
 .implements testing.TestCaseInterface
 '''.format(i = self.get_program_number())
@@ -96,7 +96,7 @@ class JavaBCProgramGenerator(ProgramFlesher):
 
 .method public testCase([I[I)V
     .limit stack 5
-    .limit locals 5
+    .limit locals 6
 
 block_0:
     ; set up counter in local variable {counter}

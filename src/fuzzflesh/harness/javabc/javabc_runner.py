@@ -15,11 +15,13 @@ class JavaBCRunner(Runner):
                 _reflection : bool):
         super(Runner, self).__init__()
         self.compiler : Compiler = _toolchain
+        self.output : Path = _output
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.json_jar : Path = Path(_json)
-        self.wrapper : Path = Path(_output, 'Wrapper.java')
+        self.wrapper : Path = Path(_output, 'testing/Wrapper.java')
+        self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
         self.n_function_repeats : int = 1000
         self.reflection : bool = _reflection
         
@@ -40,17 +42,7 @@ class JavaBCRunner(Runner):
             return self.run_decompiler(program, path)
         else:
             return self.run_compiler(program, path)
-        
-    def compile(self, program : Path) -> RunnerReturn:
-        if self.is_decompiler():
-            return RunnerReturn.COMPILATION_FAIL
-        else:
-            return self.compile_test(program)
-        
-    def execute(self, program :Path, path : Path) -> RunnerReturn:
-        return self.execute_test(program, path)
-
-        
+            
     def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
         
         compile_result = self.compile_test(program)
@@ -63,8 +55,32 @@ class JavaBCRunner(Runner):
         if exe_result == RunnerReturn.EXECUTION_FAIL:
             return RunnerReturn.EXECUTION_FAIL
 
-        return RunnerReturn.SUCCESS
+        return RunnerReturn.SUCCESS   
         
+    def compile(self, program : Path) -> RunnerReturn:
+        if self.is_decompiler():
+            return RunnerReturn.COMPILATION_FAIL
+        else:
+            return self.compile_test(program)
+        
+    def execute(self, program :Path, path : Path) -> RunnerReturn:
+        class_location = f'{str(program.parent)}/{str(program.stem)}'
+
+        return self.execute_test(program, path, class_location)
+
+    def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
+        
+        compile_result = self.compile_test(program)
+
+        if compile_result == RunnerReturn.COMPILATION_FAIL:
+            return RunnerReturn.COMPILATION_FAIL
+        
+        exe_result = self.execute_test(program, path)
+        
+        if exe_result == RunnerReturn.EXECUTION_FAIL:
+            return RunnerReturn.EXECUTION_FAIL
+
+        return RunnerReturn.SUCCESS   
              
     def run_decompiler(self, test_name : Path, path : Path = None) -> RunnerReturn:
         
@@ -98,29 +114,23 @@ class JavaBCRunner(Runner):
 
     def compile_test(self, program : Path) -> int:
 
-        #TODO: Add reflection
-
-        return self.compile_test_without_reflection(program)
-
-    def compile_test_without_reflection(self, program : Path) -> RunnerReturn:    
-
         class_location = f'{str(program.parent)}/{str(program.stem)}'
 
-        compile_test_cmd = [f'{self.jvm}',
-                    '-jar',
-                    str(self.jasmin),
-                    str(program),
-                    '-d',
-                    class_location]
-        
-        compile_test_result = subprocess.run(compile_test_cmd)
+        if self.reflection:
+            return self.compile_test_with_reflection(program, class_location)
 
-        if compile_test_result.returncode != 0:
+        return self.compile_test_without_reflection(program, class_location)
+
+    def compile_test_without_reflection(self, program : Path, class_location : Path) -> RunnerReturn:    
+
+        compile_test_result = self.compile_testcase(program, class_location)
+
+        if compile_test_result != 0:
             return RunnerReturn.COMPILATION_FAIL
     
         compile_wrapper_cmd = [str(self.javac),
                     '-cp',
-                    f':{class_location}:/data/dev/java/json-simple-1.1.1.jar',
+                    f':{class_location}:{self.json_jar}',
                     str(self.wrapper),
                     '-d',
                     class_location]
@@ -132,39 +142,66 @@ class JavaBCRunner(Runner):
         
         return RunnerReturn.SUCCESS
     
-    def compile_test_with_reflection(self, test_name : str) -> int:   
+    def compile_test_with_reflection(self, program: Path, class_location : Path) -> RunnerReturn:   
 
-        interface_cmd = [f'{self.filepaths.jvm}/javac',
-                        f'{self.filepaths.src_filepath}/testing/TestCaseInterface.java']
+        compile_test_result = self.compile_testcase(program, class_location)
+
+        if compile_test_result != 0:
+            return RunnerReturn.COMPILATION_FAIL
+
+        interface_cmd = [f'{self.javac}',
+                        f'{self.interface}']
                 
-        interface_result = subprocess.run(interface_cmd, shell=True)
+        interface_result = subprocess.run(interface_cmd)
 
         if interface_result.returncode != 0:
+            print('Interface compilation failed!')
             return interface_result.returncode
 
-        wrapper_cmd = [f'{self.filepaths.jvm}/javac',
-                        f'{self.filepaths.src_filepath}/testing/Wrapper.java']
+        wrapper_cmd = [f'{self.javac}',
+                        '-cp',
+                        f':{self.output}:{self.json_jar}',
+                        f'{self.wrapper}']
         
-        wrapper_result = subprocess.run(wrapper_cmd, shell=True)
+        wrapper_result = subprocess.run(wrapper_cmd)
 
         if wrapper_result.returncode != 0:
+            print('Wrapper compilation failed!')
             return wrapper_result.returncode
 
-        compile_cmd = [f'{self.filepaths.jvm}/java',
-                    '- jar',
-                    f'{self.filepaths.jasmin}/jasmin.jar',
-                    f'{self.filepaths.src}/testing/{test_id}.j']
+        return wrapper_result.returncode
 
-        compile_result = subprocess.run(compile_cmd, shell=True)
+    def compile_testcase(self, program : Path, testcase_location : Path) -> int:    
 
-        return compile_result.returncode
-
-    def execute_test(self, program : Path, path : Path) -> RunnerReturn:
-        
-        #TODO:Add reflection
         class_location = f'{str(program.parent)}/{str(program.stem)}'
 
-        exe_cmd = [f'{self.jvm}',
+        compile_test_cmd = [f'{self.jvm}',
+                    '-jar',
+                    str(self.jasmin),
+                    str(program),
+                    '-d',
+                    str(testcase_location)]
+
+        compile_test_result = subprocess.run(compile_test_cmd)
+
+        return compile_test_result.returncode
+
+        
+    def execute_test(self, program : Path, path : Path, class_location : Path) -> RunnerReturn:
+
+        if self.reflection:
+            exe_cmd = [f'{self.jvm}',
+                '-cp',
+                f':{self.output}:{class_location}:{self.json_jar}',
+                f'testing/Wrapper',
+                f'testing.TestCase',
+                str(path),
+                f'{class_location}/output.txt',
+                f'{class_location}/bad_output.txt',
+                f'{self.n_function_repeats}',
+                '-XX:CompileThreshold=100']
+        else:
+            exe_cmd = [f'{self.jvm}',
                 '-cp',
                 f':{class_location}:{self.json_jar}',
                 'Wrapper',

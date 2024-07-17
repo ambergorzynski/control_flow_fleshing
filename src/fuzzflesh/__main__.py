@@ -224,22 +224,30 @@ def create_folders(args, base_dir : Path, language : Lang) -> bool:
 
 def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
 
-    # Put the wrapper in the relevant folder
-    wrapper = 'Wrapper' if reflection else 'WrapperNoReflection'
     wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
-    cmd = ['cp',
-        f'{wrapper_dir}/{wrapper}.java',
-        f'{base_dir}/Wrapper.java']
-    
-    result = subprocess.run(cmd)
 
-    # Interface is required for reflection
     if reflection:
+        testing_dir = Path(base_dir, 'testing')
+        testing_dir.mkdir(exist_ok=True)
+        wrapper = 'Wrapper'
+
+        # Interface required for reflection
         cmd = ['cp',
             f'{wrapper_dir}/TestCaseInterface.java',
-            f'{base_dir}/']
+            f'{testing_dir}/']
 
         result_ifc = subprocess.run(cmd)
+    
+    else:
+        testing_dir = base_dir
+        wrapper = 'WrapperNoReflection'
+
+    # Wrapper required for all cases
+    cmd = ['cp',
+        f'{wrapper_dir}/{wrapper}.java',
+        f'{testing_dir}/Wrapper.java']
+    
+    result = subprocess.run(cmd)
 
     return True if result.returncode == 0 and result_ifc.returncode == 0 else False
 
