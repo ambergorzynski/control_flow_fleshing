@@ -16,14 +16,12 @@ PYTHONPATH=$SRC/fuzzflesh
 
 python3 -m fuzzflesh \
     $ACTION \
-    $BASE \
+    -base=$OUTPUT \
     --dirs \
-    -graphs=3 \
-    -paths=2 \
     $LANG \
     $COMPILER \
     $JVM \
     $JASMIN \
     $JSON \
-    $DECOMPILER_PATH 
-
+    $DECOMPILER_PATH \
+    --reflection 
