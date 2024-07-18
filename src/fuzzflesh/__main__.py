@@ -88,9 +88,10 @@ def main():
     javabc_parser.add_argument("json",
                         type=str,
                         help="Path to json simple jar")
-    javabc_parser.add_argument("compiler_path", 
+    javabc_parser.add_argument("-compiler_path",
+                        default = None, 
                         type=str, 
-                        help="Path to the (de)compiler")  
+                        help="Path to the (de)compiler under test. Not required for testing JIT compiler e.g. HotSpot where the software under test is in the JVM path")  
     javabc_parser.add_argument("--reflection", 
                         action=argparse.BooleanOptionalAction,
                         help='Use reflection instead of static compilation.')
