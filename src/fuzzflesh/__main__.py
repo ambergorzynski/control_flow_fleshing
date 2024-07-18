@@ -237,6 +237,9 @@ def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
             f'{testing_dir}/']
 
         result_ifc = subprocess.run(cmd)
+
+        if result_ifc.returncode != 0:
+            return False
     
     else:
         testing_dir = base_dir
@@ -249,7 +252,7 @@ def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
     
     result = subprocess.run(cmd)
 
-    return True if result.returncode == 0 and result_ifc.returncode == 0 else False
+    return True if result.returncode == 0 else False
 
 def create_c_folders(base_dir : Path):
     pass

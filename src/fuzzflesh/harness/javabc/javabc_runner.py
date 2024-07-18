@@ -20,7 +20,7 @@ class JavaBCRunner(Runner):
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.json_jar : Path = Path(_json)
-        self.wrapper : Path = Path(_output, 'testing/Wrapper.java')
+        self.wrapper : Path = Path(_output, 'testing/Wrapper.java') if _reflection else Path(_output,'Wrapper.java')
         self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
         self.n_function_repeats : int = 1000
         self.reflection : bool = _reflection
@@ -136,7 +136,7 @@ class JavaBCRunner(Runner):
                     class_location]
         
         compile_wrapper_result = subprocess.run(compile_wrapper_cmd)
-        
+
         if compile_wrapper_result.returncode != 0:
             return RunnerReturn.COMPILATION_FAIL
         
