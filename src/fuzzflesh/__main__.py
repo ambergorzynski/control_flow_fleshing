@@ -5,7 +5,7 @@ import pickle
 import json
 from pathlib import Path
 
-from fuzzflesh.common.utils import Lang, Compiler, Program
+from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
@@ -103,6 +103,12 @@ def main():
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
 
+    # Validity check args
+    if not validity_check(args, language):
+        print('Arguments invalid!')
+        exit()
+
+
     # Create folders
     base_dir.mkdir(exist_ok=True)
     graph_dir.mkdir(exist_ok=True)
@@ -197,18 +203,22 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 
         # Compile
         compile_result = runner.compile(program=prog)
+        print(f'Result: {compile_result}')
+
+        if compile_result == RunnerReturn.COMPILATION_FAIL:
+            return
 
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
 
-            print(f'Result is: {compile_result}')
+            print(f'Result: {exe_result}')
 
         else:
             for path in paths:
 
                 exe_result = runner.execute(program=prog, path=path)
             
-                print(f'Result is: {exe_result}')
+                print(f'Result: {exe_result}')
 
     
 def create_folders(args, base_dir : Path, language : Lang) -> bool:
@@ -276,12 +286,20 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                                 Path(args.jasmin),
                                 Path(args.json),
                                 base_dir,
+                                Path(args.compiler_path),
                                 args.reflection)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
 
     return {f'path_id_{i}' : route.to_dict() for i, route in enumerate(all_paths)}
-           
+
+def validity_check(args, language):
+    if language == Lang.JAVABC:
+        if args.compiler in set(['cfr','fernflower','procyon']) and args.compiler_path is None:
+            return False
+
+    return True
+
 if __name__ == "__main__":
     main()
