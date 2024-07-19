@@ -103,6 +103,11 @@ class Wrapper{
 
 		System.out.print("\n");
 
+		if(result) {
+			System.exit(0);
+		}
+
+		System.exit(1);
 
 	}
 
