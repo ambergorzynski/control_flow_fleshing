@@ -171,6 +171,8 @@ class JavaBCRunner(Runner):
     
     def decompile_test(self, class_file : Path) -> RunnerReturn:
         
+        outputdir = str(class_file.parent)
+
         # decompilation syntax varies depending on which decompiler toolchain is used
 
         if self.compiler_name == Compiler.CFR:
@@ -179,19 +181,22 @@ class JavaBCRunner(Runner):
                         '-jar',
                         str(self.compiler_path),
                         '--outputdir',
-                        str(class_file.parent),
+                        outputdir,
                         str(class_file)]            
+
+        elif self.compiler_name == Compiler.FERNFLOWER:
+
+            decompile_cmd = [str(self.jvm),
+                        '-jar',
+                        str(self.compiler_path),
+                        str(class_file),
+                        outputdir]
 
         #TODO: syntax for other decompilers
         """
-        elif self.params.decompiler.value == Decompiler.FERNFLOWER.value:
-
-            decompile_cmd = [f'''./javabc/decompile_test_fernflower.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
-        
         elif self.params.decompiler.value == Decompiler.PROCYON.value:
             decompile_cmd = [f'''./javabc/decompile_test_procyon.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
         """
-        
         decompile_result = subprocess.run(decompile_cmd)
 
         if decompile_result.returncode != 0:
