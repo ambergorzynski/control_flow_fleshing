@@ -11,6 +11,8 @@ class Compiler(Enum):
     PROCYON = 3
     GRAALVM = 4
     HOTSPOT = 5
+    GCC = 6
+    GHIDRA = 7
 
 class RunnerReturn(Enum):
     COMPILATION_FAIL = 1
