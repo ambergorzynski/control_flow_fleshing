@@ -4,6 +4,9 @@ from pathlib import Path
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
+def get_class_location(program : Path) -> str:
+    return f'{str(program.parent)}/{str(program.stem)}'
+
 class JavaBCRunner(Runner):
 
     def __init__(self, 
@@ -12,15 +15,17 @@ class JavaBCRunner(Runner):
                 _jasmin : Path,
                 _json : Path,
                 _output : Path,
+                _compiler_path : Path,
                 _reflection : bool):
         super(Runner, self).__init__()
-        self.compiler : Compiler = _toolchain
+        self.compiler_name : Compiler = _toolchain
+        self.compiler_path : Path = _compiler_path
         self.output : Path = _output
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
         self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.json_jar : Path = Path(_json)
-        self.wrapper : Path = Path(_output, 'testing/Wrapper.java')
+        self.wrapper : Path = Path(_output, 'testing/Wrapper.java') if _reflection else Path(_output,'Wrapper.java')
         self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
         self.n_function_repeats : int = 1000
         self.reflection : bool = _reflection
@@ -31,83 +36,33 @@ class JavaBCRunner(Runner):
     
     @property
     def toolchain(self):
-        return self.compiler
-        
-    def run(self, program : Path, path : Path = None) -> RunnerReturn:
-        '''
-            Function runs the compilation and execution process for the given
-            parameters and filepaths
-        '''
-        if self.is_decompiler():
-            return self.run_decompiler(program, path)
-        else:
-            return self.run_compiler(program, path)
-            
-    def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
-        
-        compile_result = self.compile_test(program)
+        return self.compiler_name
 
-        if compile_result == RunnerReturn.COMPILATION_FAIL:
-            return RunnerReturn.COMPILATION_FAIL
-        
-        exe_result = self.execute_test(program, path)
-        
-        if exe_result == RunnerReturn.EXECUTION_FAIL:
-            return RunnerReturn.EXECUTION_FAIL
-
-        return RunnerReturn.SUCCESS   
-        
     def compile(self, program : Path) -> RunnerReturn:
+
+        class_location = get_class_location(program)
+
         if self.is_decompiler():
-            return RunnerReturn.COMPILATION_FAIL
+
+            # We compile, decompile, and re-compile the program
+            print('Compiling...')
+            self.compile_test(program)
+            print('Decompiling...')
+            self.decompile_test(Path(class_location,'TestCase.class'))
+            print('Recompiling...')
+            self.recompile_test(Path(class_location,'TestCase.java'))
+        
         else:
+            print('Compiling...')
             return self.compile_test(program)
         
     def execute(self, program :Path, path : Path) -> RunnerReturn:
-        class_location = f'{str(program.parent)}/{str(program.stem)}'
+        class_location = get_class_location(program)
 
         return self.execute_test(program, path, class_location)
 
-    def run_compiler(self, program : Path, path : Path = None) -> RunnerReturn:
-        
-        compile_result = self.compile_test(program)
-
-        if compile_result == RunnerReturn.COMPILATION_FAIL:
-            return RunnerReturn.COMPILATION_FAIL
-        
-        exe_result = self.execute_test(program, path)
-        
-        if exe_result == RunnerReturn.EXECUTION_FAIL:
-            return RunnerReturn.EXECUTION_FAIL
-
-        return RunnerReturn.SUCCESS   
-             
-    def run_decompiler(self, test_name : Path, path : Path = None) -> RunnerReturn:
-        
-        compile_result = self.compile_test(test_name)
-
-        if compile_result != 0:
-            return RunnerReturn.COMPILATION_FAIL
-                    
-        decompile_result = self.decompile_test(test_name)
-
-        if decompile_result != 0:
-            return RunnerReturn.DECOMPILATION_FAIL
-        
-        recompile_result = self.recompile_test(test_name)
-
-        if recompile_result != 0:
-            return RunnerReturn.RECOMPILATION_FAIL
-        
-        exe_result = self.execute_test(test_name, test_id, path_name)
-        
-        if exe_result != 0:
-            return RunnerReturn.EXECUTION_FAIL
-        
-        return RunnerReturn.SUCCESS
-
     def is_decompiler(self):
-        if self.toolchain in ['CFR', 'FERNFLOWER', 'PROCYON']:
+        if self.toolchain in [Compiler.CFR,Compiler.PROCYON,Compiler.FERNFLOWER]:
             return True
         
         return False
@@ -136,7 +91,7 @@ class JavaBCRunner(Runner):
                     class_location]
         
         compile_wrapper_result = subprocess.run(compile_wrapper_cmd)
-        
+
         if compile_wrapper_result.returncode != 0:
             return RunnerReturn.COMPILATION_FAIL
         
@@ -185,8 +140,7 @@ class JavaBCRunner(Runner):
         compile_test_result = subprocess.run(compile_test_cmd)
 
         return compile_test_result.returncode
-
-        
+    
     def execute_test(self, program : Path, path : Path, class_location : Path) -> RunnerReturn:
 
         if self.reflection:
@@ -222,35 +176,67 @@ class JavaBCRunner(Runner):
         result = subprocess.run(exe_cmd)
 
         return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
+    
+    def decompile_test(self, class_file : Path) -> RunnerReturn:
+        
+        outputdir = str(class_file.parent)
 
-    def decompile_test(self, test_name : str) -> int:
-            
-            # decompilation syntax varies depending on which decompiler toolchain is used
+        # decompilation syntax varies depending on which decompiler toolchain is used
 
-            if self.params.decompiler.value == Decompiler.CFR.value:
-            
-                decompile_cmd = [f'''./javabc/decompile_test_cfr.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
-            
-            elif self.params.decompiler.value == Decompiler.FERNFLOWER.value:
+        if self.compiler_name == Compiler.CFR:
 
-                decompile_cmd = [f'''./javabc/decompile_test_fernflower.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
-            
-            elif self.params.decompiler.value == Decompiler.PROCYON.value:
-                decompile_cmd = [f'''./javabc/decompile_test_procyon.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
-            
-            # if decompilation cmd failed or decompilation threw exception
-            decompile_result = subprocess.run(decompile_cmd, shell=True)
+            decompile_cmd = [f'{self.jvm}',
+                        '-jar',
+                        str(self.compiler_path),
+                        '--outputdir',
+                        outputdir,
+                        str(class_file)]            
 
-            if decompile_result.returncode != 0:
-                return 1
+        elif self.compiler_name == Compiler.FERNFLOWER:
+
+            decompile_cmd = [str(self.jvm),
+                        '-jar',
+                        str(self.compiler_path),
+                        str(class_file),
+                        outputdir]
+
+        #TODO: syntax for other decompilers
+        """
+        elif self.params.decompiler.value == Decompiler.PROCYON.value:
+            decompile_cmd = [f'''./javabc/decompile_test_procyon.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
+        """
+        decompile_result = subprocess.run(decompile_cmd)
+
+        if decompile_result.returncode != 0:
+            return RunnerReturn.DECOMPILATION_FAIL
+        
+        return RunnerReturn.SUCCESS
+    
+
+    def recompile_test(self, program : Path) -> RunnerReturn:
+                        
+            # Recompile test case
+            compile_cmd = [str(self.javac),
+                    str(program),
+                    '-d',
+                    str(program.parent)]
+
+            compile_result = subprocess.run(compile_cmd)
+
+            if compile_result.returncode != 0:
+                return RunnerReturn.RECOMPILATION_FAIL
+
+            # Compile wrapper with recompiled test case class
+            compile_wrapper_cmd = [str(self.javac),
+                    '-cp',
+                    f':{str(program.parent)}:{self.json_jar}',
+                    str(self.wrapper),
+                    '-d',
+                    str(program.parent)]
             
-            return 0
+            wrapper_result = subprocess.run(compile_wrapper_cmd)
+
+            return RunnerReturn.SUCCESS if wrapper_result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
 
 
-    def recompile_test(self, test_name : str) -> int:
-            
-            compile_cmd = [f'''./javabc/recompile_java_no_ref.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm}''']
-            compile_result = subprocess.run(compile_cmd, shell=True)
-
-            return compile_result.returncode
             

@@ -5,7 +5,7 @@ import pickle
 import json
 from pathlib import Path
 
-from fuzzflesh.common.utils import Lang, Compiler, Program
+from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
@@ -88,12 +88,25 @@ def main():
     javabc_parser.add_argument("json",
                         type=str,
                         help="Path to json simple jar")
-    javabc_parser.add_argument("compiler_path", 
+    javabc_parser.add_argument("-compiler_path",
+                        default = None, 
                         type=str, 
-                        help="Path to the (de)compiler")  
+                        help="Path to the (de)compiler under test. Not required for testing JIT compiler e.g. HotSpot where the software under test is in the JVM path")  
     javabc_parser.add_argument("--reflection", 
                         action=argparse.BooleanOptionalAction,
                         help='Use reflection instead of static compilation.')
+
+    # C parser args
+    c_parser = subparsers.add_parser('c',
+                    help='C help')
+    c_parser.add_argument("compiler",
+                    choices=['llvm','gcc','ghidra'],
+                    help='Compiler / decompiler toolchain under test.')
+    c_parser.add_argument("compiler_path",
+                    help='Path to C compiler.')
+    c_parser.add_argument("--decompiler_path",
+                    default = None,
+                    help = 'Path to decompiler under test.')
     
     args = parser.parse_args()
 
@@ -101,12 +114,18 @@ def main():
     compiler : Compiler = Compiler[args.compiler.upper()]
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
+    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
+
+    # Validity check args
+    if not validity_check(args, language):
+        print('Arguments invalid!')
+        exit()
 
     # Create folders
     base_dir.mkdir(exist_ok=True)
     graph_dir.mkdir(exist_ok=True)
 
-    if not create_folders(args, base_dir, language):
+    if not create_folders(args, base_dir, language, wrapper_dir):
         return(1)
     
     for graph_id in range(args.graphs):
@@ -196,35 +215,37 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 
         # Compile
         compile_result = runner.compile(program=prog)
+        print(f'Result: {compile_result}')
+
+        if compile_result == RunnerReturn.COMPILATION_FAIL:
+            return
 
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
 
-            print(f'Result is: {compile_result}')
+            print(f'Result: {exe_result}')
 
         else:
             for path in paths:
 
                 exe_result = runner.execute(program=prog, path=path)
             
-                print(f'Result is: {exe_result}')
+                print(f'Result: {exe_result}')
 
     
-def create_folders(args, base_dir : Path, language : Lang) -> bool:
+def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -> bool:
 
     print('Setting up folders...')
 
     match language:
         case Lang.JAVABC:
-            return create_javabc_folders(base_dir, args.reflection)
+            return create_javabc_folders(base_dir, args.reflection, wrapper_dir)
         case Lang.C:
-            return create_c_folders(base_dir)
+            return create_c_folders(base_dir, wrapper_dir)
     
     return False
 
-def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
-
-    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
+def create_javabc_folders(base_dir : Path, reflection: bool, wrapper_dir : Path) -> bool:
 
     if reflection:
         testing_dir = Path(base_dir, 'testing')
@@ -237,6 +258,9 @@ def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
             f'{testing_dir}/']
 
         result_ifc = subprocess.run(cmd)
+
+        if result_ifc.returncode != 0:
+            return False
     
     else:
         testing_dir = base_dir
@@ -249,10 +273,21 @@ def create_javabc_folders(base_dir : Path, reflection: bool) -> bool:
     
     result = subprocess.run(cmd)
 
-    return True if result.returncode == 0 and result_ifc.returncode == 0 else False
+    return True if result.returncode == 0 else False
 
-def create_c_folders(base_dir : Path):
-    pass
+def create_c_folders(base_dir : Path, wrapper_dir : Path):
+
+    #TODO: add dynamic directions wrapper
+
+    wrapper = 'WrapperStatic'
+
+    cmd = ['cp',
+        f'{wrapper_dir}/{wrapper}.c',
+        f'{base_dir}/Wrapper.c']
+    
+    result = subprocess.run(cmd)
+
+    return True if result.returncode == 0 else False
 
 def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 
@@ -260,6 +295,8 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
         case Lang.JAVABC:
             return JavaBCProgramGenerator(cfg, args.dirs, args.reflection)
 
+        case Lang.C:
+            #TODO: create flesher
     return None
 
 
@@ -272,12 +309,24 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                                 Path(args.jasmin),
                                 Path(args.json),
                                 base_dir,
+                                Path(args.compiler_path),
                                 args.reflection)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
 
     return {f'path_id_{i}' : route.to_dict() for i, route in enumerate(all_paths)}
-           
+
+def validity_check(args, language):
+
+    if language == Lang.JAVABC:
+        if args.compiler in set(['cfr','fernflower','procyon']) and args.compiler_path is None:
+            return False
+    
+    if language == Lang.C:
+        if args.compiler in set(['ghidra']) and args.decompiler_path is None:
+            return False
+    return True
+
 if __name__ == "__main__":
     main()

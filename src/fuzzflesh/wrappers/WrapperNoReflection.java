@@ -108,6 +108,12 @@ class Wrapper{
 
 		System.out.print("\n");
 
+		if(result) {
+			System.exit(0);
+		}
+
+		System.exit(1);
+
 	}
 
 	private static void recordOutput(String fileName, String testName, boolean result, int[] expectedOutput, int[] actualOutput, int outputSize){

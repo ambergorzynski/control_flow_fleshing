@@ -17,5 +17,9 @@ class Runner(ABC):
         pass
         
     @abstractmethod
-    def run(self) -> RunnerReturn:
+    def compile(self) -> RunnerReturn:
+        pass
+
+    @abstractmethod
+    def execute(self) -> RunnerReturn:
         pass
