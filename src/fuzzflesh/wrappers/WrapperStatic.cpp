@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<fstream>
 #include<iostream>
+#include<json.hpp>
 using namespace std;
 
 extern void run_cfg(int* actual_output);
