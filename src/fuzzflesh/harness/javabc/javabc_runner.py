@@ -191,6 +191,10 @@ class JavaBCRunner(Runner):
 
         if self.reflection:
             exe_cmd = [f'{self.jvm}',
+                '-XX:+UnlockDiagnosticVMOptions',
+                '-XX:CompileCommand=print,TestCase.testCase',
+                '-XX:+LogCompilation',
+                f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{self.output}:{class_location}:{self.json_jar}',
                 f'testing/Wrapper',
@@ -202,6 +206,10 @@ class JavaBCRunner(Runner):
                 '-XX:CompileThreshold=100']
         else:
             exe_cmd = [f'{self.jvm}',
+                '-XX:+UnlockDiagnosticVMOptions',
+                '-XX:CompileCommand=print,TestCase.testCase',
+                '-XX:+LogCompilation',
+                f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{class_location}:{self.json_jar}',
                 'Wrapper',
