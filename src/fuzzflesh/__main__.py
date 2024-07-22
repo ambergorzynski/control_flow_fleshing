@@ -9,6 +9,7 @@ from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
+from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.cfg.CFG import CFG, Route
@@ -296,7 +297,8 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
             return JavaBCProgramGenerator(cfg, args.dirs, args.reflection)
 
         case Lang.C:
-            #TODO: create flesher
+            return CProgramGenerator(cfg, args.dirs)
+
     return None
 
 
