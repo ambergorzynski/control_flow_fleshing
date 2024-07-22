@@ -12,6 +12,7 @@ from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGen
 from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
+from fuzzflesh.harness.c.c_runner import CRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -101,7 +102,7 @@ def main():
     c_parser = subparsers.add_parser('c',
                     help='C help')
     c_parser.add_argument("compiler",
-                    choices=['llvm','gcc','ghidra'],
+                    choices=['llvm','gcc','ghidra','g++'],
                     help='Compiler / decompiler toolchain under test.')
     c_parser.add_argument("compiler_path",
                     help='Path to C compiler.')
@@ -112,7 +113,7 @@ def main():
     args = parser.parse_args()
 
     language : Lang = Lang[args.language.upper()]
-    compiler : Compiler = Compiler[args.compiler.upper()]
+    compiler : Compiler = get_compiler(args.compiler) 
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
     wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
@@ -283,8 +284,8 @@ def create_c_folders(base_dir : Path, wrapper_dir : Path):
     wrapper = 'WrapperStatic'
 
     cmd = ['cp',
-        f'{wrapper_dir}/{wrapper}.c',
-        f'{base_dir}/Wrapper.c']
+        f'{wrapper_dir}/{wrapper}.cpp',
+        f'{base_dir}/Wrapper.cpp']
     
     result = subprocess.run(cmd)
 
@@ -307,12 +308,17 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
     match language:
         case Lang.JAVABC:
             return JavaBCRunner(compiler, 
-                                Path(args.jvm), 
-                                Path(args.jasmin),
-                                Path(args.json),
-                                base_dir,
-                                Path(args.compiler_path),
-                                args.reflection)
+                        Path(args.jvm), 
+                        Path(args.jasmin),
+                        Path(args.json),
+                        base_dir,
+                        Path(args.compiler_path),
+                        args.reflection)
+        case Lang.C:
+            return CRunner(compiler,
+                        Path(args.compiler_path),
+                        base_dir,
+                        args.dirs)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
@@ -329,6 +335,12 @@ def validity_check(args, language):
         if args.compiler in set(['ghidra']) and args.decompiler_path is None:
             return False
     return True
+
+def get_compiler(compiler : str) -> Compiler:
+    if compiler == 'g++':
+        return Compiler.GPP
+    else:
+        return Compiler[args.compiler.upper()]
 
 if __name__ == "__main__":
     main()
