@@ -106,6 +106,8 @@ def main():
                     help='Compiler / decompiler toolchain under test.')
     c_parser.add_argument("compiler_path",
                     help='Path to C compiler.')
+    c_parser.add_argument("include_path",
+                    help='Path to json.hpp include file.')
     c_parser.add_argument("--decompiler_path",
                     default = None,
                     help = 'Path to decompiler under test.')
@@ -222,11 +224,14 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         if compile_result == RunnerReturn.COMPILATION_FAIL:
             return
 
+        # Execute a single path with a single program
+        # We pass the path so that the runner can compare the expected and actual result
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
 
             print(f'Result: {exe_result}')
 
+        # Execute multiple paths with a single program
         else:
             for path in paths:
 
@@ -318,6 +323,7 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
             return CRunner(compiler,
                         Path(args.compiler_path),
                         base_dir,
+                        Path(args.include_path),
                         args.dirs)
     return None
 
