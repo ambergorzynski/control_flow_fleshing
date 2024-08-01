@@ -19,7 +19,7 @@ class JavaBCRunner(Runner):
                 _reflection : bool):
         super(Runner, self).__init__()
         self.compiler_name : Compiler = _toolchain
-        self.compiler_path : Path = _compiler_path
+        self.compiler_path : Path = None
         self.output : Path = _output
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
@@ -27,7 +27,7 @@ class JavaBCRunner(Runner):
         self.json_jar : Path = Path(_json)
         self.wrapper : Path = Path(_output, 'testing/Wrapper.java') if _reflection else Path(_output,'Wrapper.java')
         self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
-        self.n_function_repeats : int = 1000
+        self.n_function_repeats : int = 300000
         self.reflection : bool = _reflection
         
     @property
@@ -146,7 +146,7 @@ class JavaBCRunner(Runner):
         if self.reflection:
             exe_cmd = [f'{self.jvm}',
                 '-XX:+UnlockDiagnosticVMOptions',
-                '-XX:CompileCommand=print,TestCase.testCase',
+                '-XX:CompileCommand=print,testing.TestCase::testCase',
                 '-XX:+LogCompilation',
                 f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',

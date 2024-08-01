@@ -295,8 +295,8 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
         case Lang.JAVABC:
             return JavaBCProgramGenerator(cfg, args.dirs, args.reflection)
 
-        case Lang.C:
-            #TODO: create flesher
+        # case Lang.C:
+        #     #TODO: create flesher
     return None
 
 
@@ -304,12 +304,13 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
 
     match language:
         case Lang.JAVABC:
+            compiler_path = None if compiler == Compiler.HOTSPOT else Path(args.compiler_path)
             return JavaBCRunner(compiler, 
                                 Path(args.jvm), 
                                 Path(args.jasmin),
                                 Path(args.json),
                                 base_dir,
-                                Path(args.compiler_path),
+                                compiler_path,
                                 args.reflection)
     return None
 

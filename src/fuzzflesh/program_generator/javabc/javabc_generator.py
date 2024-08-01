@@ -168,7 +168,7 @@ block_{i}: '''.format(i = n)
         # depending on whether they are known at compile time or not
         #TODO: switch dir and output in passing function so dirs is always var 2
         #TODO: something is broken here with the 1 and 5
-        dir_local_var = 2 if self.dirs_known_at_compile else 1
+        dir_local_var = 5 if self.dirs_known_at_compile else 1
 
         code = '''
     ; get directions for node

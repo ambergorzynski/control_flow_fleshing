@@ -23,6 +23,8 @@ class Wrapper{
 		String badOutputFilename = args[3];
 		int nFunctionRepeats = Integer.parseInt(args[4]);
 
+		boolean result = true;
+
 		// get direction size and expected output size from file
         JSONParser parser = new JSONParser();
 		JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(inputFilename));
@@ -61,10 +63,18 @@ class Wrapper{
 		// repeat function to induce JIT
 		for(int i = 0; i < nFunctionRepeats; i++){
 			test.testCase(dir, actualOutput);
+
+			// compare each expected and actual and write out if any are inconsistent
+			result = compare(expectedOutput, actualOutput, outputSize);
+
+			// record bad output in separate file
+			if (!result){
+				recordOutput(badOutputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
+			}
 		}
 
 		// compare expected and actual
-		boolean result = compare(expectedOutput, actualOutput, outputSize);
+		result = compare(expectedOutput, actualOutput, outputSize);
 
 		// record all output
 		recordOutput(outputFilename, inputFilename, result, expectedOutput, actualOutput, outputSize);
