@@ -67,8 +67,8 @@ def main():
     parser.add_argument("--dirs", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Directions are known at compile time.')
-    parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
-                        help="specifies whether to remove files if test passes")
+    parser.add_argument("--tidy",action=argparse.BooleanOptionalAction,
+                        help="Specifies whether to remove files if test passes")
 
     # Subparser for language-specific arguments
     subparsers = parser.add_subparsers(dest='language',
@@ -138,14 +138,13 @@ def main():
             gen(args, language, graph_dir, graph_id)
 
         elif args.action == 'run':
-            run(args, language, graph_id, base_dir)
+            result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
         elif args.action == 'fuzz':
-            (programs, paths) = gen(args, language, graph_dir, graph_id)
-            run(args, language, compiler, programs, paths, base_dir)
-            #TODO:Cleanup as we go for fuzzing
+            (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+            run(args, language, compiler, programs, paths, base_dir, graph)
 
-def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, list[Path]]:
+def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, Path, list[Path]]:
     
     # Generate graph
     print(f'Generating graph {graph_id}...')
@@ -206,11 +205,14 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         program.write_to_file(prog_path)   
         prog_paths.append(prog_path)
 
-    return (prog_paths, path_paths)
+    return (Path(graph_path), prog_paths, path_paths)
 
-def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path):
+def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path, graph_path : Path):
 
     runner : Runner = get_runner(args, language, compiler, base_dir)
+
+    # Indicator for whether any program derived from this particular graph has failed
+    graph_has_failed : bool = False
 
     if args.dirs:
         assert(len(programs)==len(paths))
@@ -231,6 +233,13 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 
             print(f'Result: {exe_result}')
 
+            if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                delete_program(prog, language)
+                delete_path(path=paths[i])
+
+            else:
+                graph_has_failed = True
+
         # Execute multiple paths with a single program
         else:
             for path in paths:
@@ -239,6 +248,43 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
             
                 print(f'Result: {exe_result}')
 
+                if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                    delete_path(path)
+
+                else:
+                    delete_program(prog, language)
+                    graph_has_failed = True
+
+    # If no programs associated with this graph fail, then tidy up by removing the graph
+    if not graph_has_failed:
+        delete_graph(graph_path)
+
+
+def delete_program(program : Path, language : Lang):
+    '''
+        Deletes program and associated language-specific files
+    '''
+    match language:
+        case Lang.JAVABC:
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}']
+            result = subprocess.run(cmd)
+
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}.j']
+            result = subprocess.run(cmd)
+
+        case Lang.C:
+            cmd = ['rm', '-f', f'{str(program.parent)}/{str(program.stem)}*']
+
+def delete_graph(graph : Path):
+    ''' 
+        Deletes graph and graph folder
+    '''
+    cmd = ['rm', '-rf', str(graph.parent)]
+    subprocess.run(cmd)
+
+def delete_path(path : Path):
+    cmd = ['rm', '-f', str(path)]
+    subprocess.run(cmd)
     
 def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -> bool:
 
@@ -312,12 +358,14 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
 
     match language:
         case Lang.JAVABC:
+            #TODO: update to full decompiler check
+            path = Path(args.compiler_path) if compiler != Compiler.HOTSPOT else None
             return JavaBCRunner(compiler, 
                         Path(args.jvm), 
                         Path(args.jasmin),
                         Path(args.json),
                         base_dir,
-                        Path(args.compiler_path),
+                        path,
                         args.reflection)
         case Lang.C:
             return CRunner(compiler,
@@ -346,7 +394,7 @@ def get_compiler(compiler : str) -> Compiler:
     if compiler == 'g++':
         return Compiler.GPP
     else:
-        return Compiler[args.compiler.upper()]
+        return Compiler[compiler.upper()]
 
 if __name__ == "__main__":
     main()
