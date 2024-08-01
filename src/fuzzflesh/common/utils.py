@@ -12,7 +12,8 @@ class Compiler(Enum):
     GRAALVM = 4
     HOTSPOT = 5
     GCC = 6
-    GHIDRA = 7
+    GPP = 7
+    GHIDRA = 8
 
 class RunnerReturn(Enum):
     COMPILATION_FAIL = 1

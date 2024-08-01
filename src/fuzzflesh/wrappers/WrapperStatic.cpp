@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<fstream>
 #include<iostream>
+#include<rapidjson/document.h>
+#include<rapidjson/istreamwrapper.h>
 using namespace std;
 
 extern void run_cfg(int* actual_output);
@@ -76,39 +78,46 @@ bool cmp(int* expected, int* actual, int size) {
 
 void read_in(const char* filename, int** directions, int** expected_output, int** actual_output, int& out_size) {
 
-	ifstream in;
+	ifstream in(filename);
 	int dir_size;
 
-	// open file
-	in.open(filename);
-
-	if(in.fail()) {
-		printf("Error opening input file\n");
+	if (!in.is_open()) {
+		cout << "Error opening input file!" << endl;
 		exit(1);
 	}
 
-	// first line in file gives direction array size
-	in >> dir_size;
+	rapidjson::IStreamWrapper isw {in};
 
-	// second line in file gives expected output array size
-	in >> out_size;
+	rapidjson::Document doc {};
+	
+	doc.ParseStream(isw);
+
+	if (doc.HasParseError()) {
+		cout << "Error parsing JSON!" << endl;
+		exit(1);
+	}
+
+	// Get array sizes
+	dir_size = doc["dir_len"].GetInt();
+	out_size = doc["output_len"].GetInt();
 
 	// allocate arrays
 	*directions = new int[dir_size];
 	*expected_output = new int[out_size];
 	*actual_output = new int[2*out_size]; // allocate 2x size to allow for overflow
 
-	// third line in file gives directions
-	for(int i = 0; i < dir_size; i++){
-		in >> (*directions)[i];
+	// Get arrays
+	const rapidjson::Value& dirs = doc["dirs"];
+	assert(dirs.IsArray());
+	for (int i = 0; i < dir_size; i++) {
+		(*directions)[i] = dirs[i].GetInt();
 	}
 
-	// fourth line in file gives expected output
-	for(int i = 0; i < out_size; i++){
-		in >> (*expected_output)[i];
+	const rapidjson::Value& output = doc["expected_output"];
+	assert(output.IsArray());
+	for (int i = 0; i < out_size; i++) {
+		(*expected_output)[i] = output[i].GetInt();
 	}
-
-	in.close();
 
 	// initialise actual output to -1
 	for(int i = 0; i < 2*out_size; i++) {

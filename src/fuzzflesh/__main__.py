@@ -9,8 +9,10 @@ from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
+from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
+from fuzzflesh.harness.c.c_runner import CRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -65,8 +67,8 @@ def main():
     parser.add_argument("--dirs", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Directions are known at compile time.')
-    parser.add_argument("--no_tidy",action=argparse.BooleanOptionalAction,
-                        help="specifies whether to remove files if test passes")
+    parser.add_argument("--tidy",action=argparse.BooleanOptionalAction,
+                        help="Specifies whether to remove files if test passes")
 
     # Subparser for language-specific arguments
     subparsers = parser.add_subparsers(dest='language',
@@ -100,10 +102,12 @@ def main():
     c_parser = subparsers.add_parser('c',
                     help='C help')
     c_parser.add_argument("compiler",
-                    choices=['llvm','gcc','ghidra'],
+                    choices=['llvm','gcc','ghidra','g++'],
                     help='Compiler / decompiler toolchain under test.')
     c_parser.add_argument("compiler_path",
                     help='Path to C compiler.')
+    c_parser.add_argument("include_path",
+                    help='Path to json.hpp include file.')
     c_parser.add_argument("--decompiler_path",
                     default = None,
                     help = 'Path to decompiler under test.')
@@ -111,7 +115,7 @@ def main():
     args = parser.parse_args()
 
     language : Lang = Lang[args.language.upper()]
-    compiler : Compiler = Compiler[args.compiler.upper()]
+    compiler : Compiler = get_compiler(args.compiler) 
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
     wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
@@ -134,14 +138,13 @@ def main():
             gen(args, language, graph_dir, graph_id)
 
         elif args.action == 'run':
-            run(args, language, graph_id, base_dir)
+            result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
         elif args.action == 'fuzz':
-            (programs, paths) = gen(args, language, graph_dir, graph_id)
-            run(args, language, compiler, programs, paths, base_dir)
-            #TODO:Cleanup as we go for fuzzing
+            (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+            run(args, language, compiler, programs, paths, base_dir, graph)
 
-def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, list[Path]]:
+def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, Path, list[Path]]:
     
     # Generate graph
     print(f'Generating graph {graph_id}...')
@@ -202,11 +205,14 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
         program.write_to_file(prog_path)   
         prog_paths.append(prog_path)
 
-    return (prog_paths, path_paths)
+    return (Path(graph_path), prog_paths, path_paths)
 
-def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path):
+def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path, graph_path : Path):
 
     runner : Runner = get_runner(args, language, compiler, base_dir)
+
+    # Indicator for whether any program derived from this particular graph has failed
+    graph_has_failed : bool = False
 
     if args.dirs:
         assert(len(programs)==len(paths))
@@ -220,11 +226,21 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         if compile_result == RunnerReturn.COMPILATION_FAIL:
             return
 
+        # Execute a single path with a single program
+        # We pass the path so that the runner can compare the expected and actual result
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
 
             print(f'Result: {exe_result}')
 
+            if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                delete_program(prog, language)
+                delete_path(path=paths[i])
+
+            else:
+                graph_has_failed = True
+
+        # Execute multiple paths with a single program
         else:
             for path in paths:
 
@@ -232,6 +248,43 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
             
                 print(f'Result: {exe_result}')
 
+                if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                    delete_path(path)
+
+                else:
+                    delete_program(prog, language)
+                    graph_has_failed = True
+
+    # If no programs associated with this graph fail, then tidy up by removing the graph
+    if not graph_has_failed:
+        delete_graph(graph_path)
+
+
+def delete_program(program : Path, language : Lang):
+    '''
+        Deletes program and associated language-specific files
+    '''
+    match language:
+        case Lang.JAVABC:
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}']
+            result = subprocess.run(cmd)
+
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}.j']
+            result = subprocess.run(cmd)
+
+        case Lang.C:
+            cmd = ['rm', '-f', f'{str(program.parent)}/{str(program.stem)}*']
+
+def delete_graph(graph : Path):
+    ''' 
+        Deletes graph and graph folder
+    '''
+    cmd = ['rm', '-rf', str(graph.parent)]
+    subprocess.run(cmd)
+
+def delete_path(path : Path):
+    cmd = ['rm', '-f', str(path)]
+    subprocess.run(cmd)
     
 def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -> bool:
 
@@ -282,8 +335,8 @@ def create_c_folders(base_dir : Path, wrapper_dir : Path):
     wrapper = 'WrapperStatic'
 
     cmd = ['cp',
-        f'{wrapper_dir}/{wrapper}.c',
-        f'{base_dir}/Wrapper.c']
+        f'{wrapper_dir}/{wrapper}.cpp',
+        f'{base_dir}/Wrapper.cpp']
     
     result = subprocess.run(cmd)
 
@@ -295,8 +348,9 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
         case Lang.JAVABC:
             return JavaBCProgramGenerator(cfg, args.dirs, args.reflection)
 
-        # case Lang.C:
-        #     #TODO: create flesher
+        case Lang.C:
+            return CProgramGenerator(cfg, args.dirs)
+
     return None
 
 
@@ -304,14 +358,21 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
 
     match language:
         case Lang.JAVABC:
-            compiler_path = None if compiler == Compiler.HOTSPOT else Path(args.compiler_path)
+            #TODO: update to full decompiler check
+            path = Path(args.compiler_path) if compiler != Compiler.HOTSPOT else None
             return JavaBCRunner(compiler, 
-                                Path(args.jvm), 
-                                Path(args.jasmin),
-                                Path(args.json),
-                                base_dir,
-                                compiler_path,
-                                args.reflection)
+                        Path(args.jvm), 
+                        Path(args.jasmin),
+                        Path(args.json),
+                        base_dir,
+                        path,
+                        args.reflection)
+        case Lang.C:
+            return CRunner(compiler,
+                        Path(args.compiler_path),
+                        base_dir,
+                        Path(args.include_path),
+                        args.dirs)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
@@ -328,6 +389,12 @@ def validity_check(args, language):
         if args.compiler in set(['ghidra']) and args.decompiler_path is None:
             return False
     return True
+
+def get_compiler(compiler : str) -> Compiler:
+    if compiler == 'g++':
+        return Compiler.GPP
+    else:
+        return Compiler[compiler.upper()]
 
 if __name__ == "__main__":
     main()
