@@ -1,5 +1,6 @@
 import argparse 
 import os
+import glob
 import subprocess
 import pickle
 import json
@@ -273,12 +274,18 @@ def delete_program(program : Path, language : Lang):
             result = subprocess.run(cmd)
 
         case Lang.C:
-            cmd = ['rm', '-f', f'{str(program.parent)}/{str(program.stem)}*']
+            files_to_delete = glob.glob(f'{str(program.parent)}/*{str(program.stem)}*')
+
+            cmd = ['rm', '-f']
+            cmd.extend(files_to_delete)
+
+            result = subprocess.run(cmd)
 
 def delete_graph(graph : Path):
     ''' 
         Deletes graph and graph folder
     '''
+    return
     cmd = ['rm', '-rf', str(graph.parent)]
     subprocess.run(cmd)
 
