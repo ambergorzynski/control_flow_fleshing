@@ -223,7 +223,7 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         compile_result = runner.compile(program=prog)
         print(f'Result: {compile_result}')
 
-        if compile_result == RunnerReturn.COMPILATION_FAIL:
+        if compile_result != RunnerReturn.SUCCESS:
             return
 
         # Execute a single path with a single program
@@ -368,11 +368,14 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                         path,
                         args.reflection)
         case Lang.C:
+            decompiler_path = Path(args.decompiler_path) if args.decompiler_path != None else None
+
             return CRunner(compiler,
                         Path(args.compiler_path),
                         base_dir,
                         Path(args.include_path),
-                        args.dirs)
+                        args.dirs,
+                        decompiler_path)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
