@@ -163,7 +163,7 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
                 seed = None)
     
     graph_path = f'{filepath}/graph_{graph_id}.p'
-    pickle.dump(graph, open(graph_path, "wb"))
+    graph.save_graph(graph_path)
 
     # Generate paths for each graph
     path_paths = []
