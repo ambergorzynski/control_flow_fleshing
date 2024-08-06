@@ -83,7 +83,7 @@ void read_in(const char* filename, int** directions, int** expected_output, int*
 
 	if (!in.is_open()) {
 		cout << "Error opening input file!" << endl;
-		exit(1);
+		exit(2);
 	}
 
 	rapidjson::IStreamWrapper isw {in};
