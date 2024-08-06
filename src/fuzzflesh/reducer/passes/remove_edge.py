@@ -2,11 +2,8 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__),'../..'))
-
-from CFG import CFG, Path
-from passes.abstract import AbstractPass
-
+from fuzzflesh.cfg.CFG import CFG, Route
+from fuzzflesh.reducer.passes.abstract import AbstractPass
 
 class RemoveEdgePass(AbstractPass):
     '''

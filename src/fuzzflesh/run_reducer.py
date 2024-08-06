@@ -9,12 +9,10 @@ import json
 
 from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+from fuzzflesh.cfg.CFG import CFG, Route
+from fuzzflesh.reducer.reducer import Reducer
 
-from CFG import CFG, Route
-from reducer import Reducer
-
-def get_path(filename : Path) -> Route:
+def get_route(filename : Path) -> Route:
     
     with open(filename, "r") as f:
         content = json.load(f)
@@ -42,12 +40,12 @@ if __name__==("__main__"):
 
     cfg = CFG(filename=args.graph)
 
-    path = get_path(args.input)
+    route = get_route(args.input)
     
     reducer = Reducer(cfg=cfg, 
-            path=path, 
-            interestingness_test=args.interestingness_test,
-            output_path=args.output_path)
+            route=route, 
+            interestingness_test=Path(args.interestingness_test),
+            output_path=Path(args.output_path))
     
     #reducer.reduce(['merge_off_path','remove_edge','merge_on_path'])
     

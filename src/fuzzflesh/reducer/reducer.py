@@ -4,32 +4,39 @@ import argparse
 import subprocess
 import random
 import time
+import json
 
 from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+from fuzzflesh.cfg.CFG import CFG, Route
+from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 
-from CFG import CFG, Path
-from c.CProgramGenerator import CProgramGenerator
-
-from passes.abstract import AbstractPass
-from passes.merge import MergeOnPathPass, MergeOffPathPass, MergeExitPass
-from passes.remove_edge import RemoveEdgePass
+from fuzzflesh.reducer.passes.abstract import AbstractPass
+from fuzzflesh.reducer.passes.merge import MergeOnPathPass, MergeOffPathPass, MergeExitPass
+from fuzzflesh.reducer.passes.remove_edge import RemoveEdgePass
 
 class Reducer():
 
-    def __init__(self, cfg : CFG, path : Path, interestingness_test : str, output_path : str):
-        self.interestingness_test : str = interestingness_test
+    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path):
+        self.interestingness_test : Path = interestingness_test
         self.cfg : CFG = cfg
-        self.path : Path = path
+        print(f'route has type {type(route)}')
+        self.route : Route = route
         self.pass_name_mapping = {
             'merge_on_path' : MergeOnPathPass,
             'merge_off_path' : MergeOffPathPass,
             'merge_exit' : MergeExitPass,
             'remove_edge' : RemoveEdgePass,
             }
-        self.output_path = output_path
+        self.output_path : Path = output_path
 
+        self.reduced_program_path : Path = Path(output_path, 'program.c')
+        self.reduced_input_path : Path = Path(output_path, 'inputs.json')
+        self.reduced_graph_path : Path = Path(output_path,'graph.p')
+        
+        self.interesting_program_path : Path = Path(output_path, 'interesting_program.c')
+        self.interesting_input_path : Path = Path(output_path, 'interesting_input.json')
+        self.interesting_graph_path : Path = Path(output_path,'interesting_graph.p')
 
     def reduce(self, passes : list[AbstractPass]) -> None:
         
@@ -47,7 +54,15 @@ class Reducer():
         print(f'dirs: {self.path.directions}')
         '''
 
-        if not self.is_interesting(cfg=self.cfg, path=self.path):
+        # Set up reducer directory
+        self.output_path.mkdir(exist_ok=True)
+
+        cmd = ['cp', str(self.interestingness_test), str(self.output_path)]
+        result = subprocess.run(cmd)
+
+        self.interestingness_test = Path(self.output_path, self.interestingness_test.name)
+
+        if not self.is_interesting(cfg=self.cfg, route=self.route):
             print('Error! Initial test case is not interesting!') 
             return
 
@@ -96,28 +111,29 @@ class Reducer():
 
         return True
 
-    def is_interesting(self, cfg : CFG, path : Path) -> bool:
+    def is_interesting(self, cfg : CFG, route : Route) -> bool:
         '''
             runs interestingness test to check whether given 
             cfg is interesting
         '''
 
-        program = self.flesh_cfg(cfg)
+        program = self.flesh_cfg(cfg, route.directions)
         
         #TODO: change to tmp folder
-        with open(f'{self.output_path}/test_case.c', "w") as f:
-            f.write(program)
+        with open(self.reduced_program_path, "w") as f:
+            program.write_to_file(self.reduced_program_path)
+            print(f'Program written to: {str(self.reduced_program_path)}')
 
-        with open(f'{self.output_path}/inputs.txt', "w") as f:
-            f.write(str(len(path.directions)) + '\n')
-            f.write(str(len(path.expected_output)) + '\n')
-            f.writelines(' '.join([str(i) for i in path.directions]) + '\n')
-            f.writelines(' '.join([str(i) for i in path.expected_output]))
+        with open(self.reduced_input_path, "w") as f:
+            json.dump(route.to_dict(), f, indent=4)
 
-        cfg.save_graph(f'{self.output_path}/test_graph.p')
+        cfg.save_graph(self.reduced_graph_path)
 
         # run interestingness test
-        cmd = ['sh', f'/{self.interestingness_test}']
+        cmd = ['sh', 
+            str(self.interestingness_test),
+            str(self.reduced_program_path),
+            str(self.reduced_input_path)]
 
         result = subprocess.run(cmd)
         
@@ -128,11 +144,11 @@ class Reducer():
 
         return False        
 
-    def flesh_cfg(self, cfg : CFG) -> str:
+    def flesh_cfg(self, cfg : CFG, dirs : list[int]) -> str:
     
-        generator = CProgramGenerator()
+        generator = CProgramGenerator(cfg)
 
-        program = generator.fleshout(cfg)
+        program = generator.fleshout_with_dirs(dirs)
 
         return program 
 
@@ -142,11 +158,11 @@ class Reducer():
 
     def run_pass(self, p : AbstractPass) -> None:
        
-        p.new(self.cfg, self.path)
+        p.new(self.cfg, self.route)
 
-        while p.check_prerequisites(self.cfg, self.path):
+        while p.check_prerequisites(self.cfg, self.route):
            
-            (modified_cfg, modified_path) = p.transform(self.cfg, self.path)
+            (modified_cfg, modified_path) = p.transform(self.cfg, self.route)
 
             if self.is_interesting(modified_cfg, modified_path):
                 print('Updating cfg and path')
@@ -157,21 +173,17 @@ class Reducer():
                 print(f'New dirs: {modified_path.directions}')
                 '''
                 self.cfg = modified_cfg
-                self.path = modified_path
+                self.route = modified_path
 
                 # save out latest interesting cfg info
-                program = self.flesh_cfg(self.cfg)
+                program = self.flesh_cfg(self.cfg, self.route.directions)
                 
-                with open(f'{self.output_path}/latest_test_case.c', "w") as f:
-                    f.write(program)
+                program.write_to_file(self.interesting_program_path)
 
-                with open(f'{self.output_path}/latest_inputs.txt', "w") as f:
-                    f.write(str(len(self.path.directions)) + '\n')
-                    f.write(str(len(self.path.expected_output)) + '\n')
-                    f.writelines(' '.join([str(i) for i in self.path.directions]) + '\n')
-                    f.writelines(' '.join([str(i) for i in self.path.expected_output]))
+                with open(self.interesting_input_path, "w") as f:
+                    json.dump(self.route.to_dict(), f, indent=4)
 
-                self.cfg.save_graph(f'{self.output_path}/latest_graph.p')
+                self.cfg.save_graph(self.interesting_graph_path)
                 print('Saved latest interesting test case')
 
             print('Completed round of pass')

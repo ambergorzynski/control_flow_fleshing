@@ -2,10 +2,9 @@ import numpy as np
 import os
 import sys
 from pathlib import Path
-sys.path.append(os.path.join(os.path.dirname(__file__),'../..'))
 
-from CFG import CFG, Path
-from passes.abstract import AbstractPass
+from fuzzflesh.cfg.CFG import CFG, Route
+from fuzzflesh.reducer.passes.abstract import AbstractPass
 
 #TODO: Add support for merging nodes connected to the path
 # this is more complicated because it requires adjusting the
@@ -83,7 +82,7 @@ class MergeOnPathPass(AbstractPass):
 
         return True
 
-    def transform(self, cfg : CFG, path : Path) -> tuple[CFG, Path]:
+    def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
 
         #n = len(self.nodes) // self.chunk if len(self.nodes) >= self.chunk else 1
         
@@ -180,7 +179,7 @@ class MergeExitPass(AbstractPass):
 
 def update_path(cfg : CFG, old_cfg : CFG, old_path : Path, node1 : int, node2 : int) -> Path:
 
-    new_path = Path(directions=old_path.directions, expected_output=old_path.expected_output)
+    new_path = Route(directions=old_path.directions, expected_output=old_path.expected_output)
   
     new_path.expected_output = [node1 if x == node2 else x for x in old_path.expected_output]
 
