@@ -58,8 +58,54 @@ class JavaBCRunner(Runner):
         
     def execute(self, program :Path, path : Path) -> RunnerReturn:
         class_location = get_class_location(program)
+        print(str(class_location))
+        print(str(program))
+
 
         return self.execute_test(program, path, class_location)
+    
+    def execute_with_changing_paths(self, program : Path, paths : list[Path]) -> RunnerReturn:
+        class_location = get_class_location(program)
+
+        path = ":".join(map(str, paths))
+
+        if self.reflection:
+            exe_cmd = [f'{self.jvm}',
+                '-XX:+UnlockDiagnosticVMOptions',
+                # '-XX:CompileCommand=print,testing.TestCase::testCase',
+                # '-XX:+PrintCompilation',
+                '-XX:+LogCompilation',
+                f'-XX:LogFile={class_location}/hotspot.log',
+                '-cp',
+                f':{self.output}:{class_location}:{self.json_jar}',
+                f'testing/Wrapper',
+                f'testing.TestCase',
+                path,
+                f'{class_location}/output.txt',
+                f'{class_location}/bad_output.txt',
+                f'{self.n_function_repeats}',
+                '-XX:CompileThreshold=100']
+            
+        else:
+            exe_cmd = [f'{self.jvm}',
+                '-XX:+UnlockDiagnosticVMOptions',
+                # '-XX:CompileCommand=print,TestCase.testCase',
+                # '-XX:+PrintCompilation',
+                '-XX:+LogCompilation',
+                f'-XX:LogFile={class_location}/hotspot.log',
+                '-cp',
+                f':{class_location}:{self.json_jar}',
+                'Wrapper',
+                path,
+                f'{class_location}/output.txt',
+                f'{class_location}/bad_output.txt',
+                f'{self.n_function_repeats}',
+                '-XX:CompileThreshold=100']
+                     
+        result = subprocess.run(exe_cmd)
+
+        return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS        
+
 
     def is_decompiler(self):
         if self.toolchain in [Compiler.CFR,Compiler.PROCYON,Compiler.FERNFLOWER]:
@@ -146,9 +192,10 @@ class JavaBCRunner(Runner):
         if self.reflection:
             exe_cmd = [f'{self.jvm}',
                 '-XX:+UnlockDiagnosticVMOptions',
-                '-XX:CompileCommand=print,testing.TestCase::testCase',
-                '-XX:+LogCompilation',
-                f'-XX:LogFile={class_location}/hotspot.log',
+                # '-XX:CompileCommand=print,testing.TestCase::testCase',
+                # '-XX:+PrintCompilation',
+                # '-XX:+LogCompilation',
+                # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{self.output}:{class_location}:{self.json_jar}',
                 f'testing/Wrapper',
@@ -161,9 +208,10 @@ class JavaBCRunner(Runner):
         else:
             exe_cmd = [f'{self.jvm}',
                 '-XX:+UnlockDiagnosticVMOptions',
-                '-XX:CompileCommand=print,TestCase.testCase',
-                '-XX:+LogCompilation',
-                f'-XX:LogFile={class_location}/hotspot.log',
+                # '-XX:CompileCommand=print,TestCase.testCase',
+                # '-XX:+PrintCompilation',
+                # '-XX:+LogCompilation',
+                # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{class_location}:{self.json_jar}',
                 'Wrapper',

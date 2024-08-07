@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Common parser args
-    parser.add_argument("action", choices=['gen', 'run', 'fuzz'],
+    parser.add_argument("action", choices=['gen', 'run', 'fuzz', 'fuzz_with_changing_paths'],
                         help='''Gen produces graphs and paths. 
                                 Run runs existing graphs and paths.
                                 Fuzz combines gen and run.''')
@@ -143,6 +143,15 @@ def main():
         elif args.action == 'fuzz':
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
             run(args, language, compiler, programs, paths, base_dir, graph)
+        
+        elif args.action == 'fuzz_with_changing_paths':
+            assert(language == Lang.JAVABC)
+            assert(compiler == Compiler.HOTSPOT)
+
+            args.paths      = 2
+            args.dirs       = False
+            (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+            run_with_changing_paths(args, language, compiler, programs, paths, base_dir, graph)
 
 def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, Path, list[Path]]:
     
@@ -150,7 +159,7 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
     print(f'Generating graph {graph_id}...')
 
     filepath = Path(graph_dir, f'graph_{graph_id}')
-    
+
     filepath.mkdir(exist_ok=True)
     
     graph = generate_graph(min_graph_size = args.min_size,
@@ -252,8 +261,70 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
                     delete_path(path)
 
                 else:
-                    delete_program(prog, language)
                     graph_has_failed = True
+            
+            if not graph_has_failed:
+                delete_program(prog, language)
+
+
+    # If no programs associated with this graph fail, then tidy up by removing the graph
+    if not graph_has_failed:
+        delete_graph(graph_path)
+        
+
+def run_with_changing_paths(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path, graph_path : Path):
+    assert(not args.dirs)
+
+    runner = JavaBCRunner(compiler, 
+                        Path(args.jvm), 
+                        Path(args.jasmin),
+                        Path(args.json),
+                        base_dir,
+                        None,
+                        args.reflection)
+
+    # Indicator for whether any program derived from this particular graph has failed
+    graph_has_failed : bool = False
+
+    if args.dirs:
+        assert(len(programs)==len(paths))
+    
+    for (i, prog) in enumerate(programs):
+
+        # Compile
+        compile_result = runner.compile(program=prog)
+        print(f'Result: {compile_result}')
+
+        if compile_result == RunnerReturn.COMPILATION_FAIL:
+            return
+
+        # Execute a single path with a single program
+        # We pass the path so that the runner can compare the expected and actual result
+        if args.dirs:
+            exe_result = runner.execute(program=prog, path=paths[i])
+
+            print(f'Result: {exe_result}')
+
+            if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                delete_program(prog, language)
+                delete_path(path=paths[i])
+
+            else:
+                graph_has_failed = True
+
+        # Execute multiple paths with a single program
+        else:
+            exe_result = runner.execute_with_changing_paths(program=prog, paths=paths)
+        
+            print(f'Result: {exe_result}')
+
+            if exe_result == RunnerReturn.SUCCESS and args.tidy:
+                for path in paths:
+                    delete_path(path)
+                delete_program(prog, language)
+
+            else:
+                graph_has_failed = True
 
     # If no programs associated with this graph fail, then tidy up by removing the graph
     if not graph_has_failed:

@@ -5,7 +5,7 @@ NAME=$(hostname)
 MACHINE=${NAME%%.*}
 
 SRC='/homes/rk1923/control_flow_fleshing/src'
-ACTION='fuzz'
+ACTION='fuzz_with_changing_paths'
 # OUTPUT=/vol/bitbucket/rk1923/UROP/output/${MACHINE}_${TIMESTAMP}
 OUTPUT=./output
 LANG='javabc'
@@ -23,11 +23,11 @@ mkdir -p $OUTPUT
 python3 -m fuzzflesh \
     $ACTION \
     -base=$OUTPUT \
-    -graphs=1 \
+    -graphs=1000000000 \
     -paths=2 \
     -min_size=3 \
     -max_size=100 \
-    --no_tidy \
+    --tidy \
     $LANG \
     $COMPILER \
     $JVM \
