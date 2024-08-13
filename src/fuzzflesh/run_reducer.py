@@ -46,9 +46,7 @@ if __name__==("__main__"):
             route=route, 
             interestingness_test=Path(args.interestingness_test),
             output_path=Path(args.output_path))
-    
-    #reducer.reduce(['merge_off_path','remove_edge','merge_on_path'])
-    
+        
     reducer.reduce(['merge_off_path', 
                 'remove_edge', 
                 'merge_on_path',
