@@ -1,5 +1,6 @@
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.passes.abstract import AbstractPass
+from fuzzflesh.reducer.passes.common import get_full_directions, get_new_direction_using_adj
 
 class RemoveOffPathEdgePass(AbstractPass):
     '''
@@ -22,50 +23,6 @@ class RemoveOffPathEdgePass(AbstractPass):
 
         return True
 
-    def transform(self, cfg : CFG, path : Path) -> tuple[CFG, Route]:
-
-        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
-
-        for i in range(n):
-
-            edge = self.edges.pop(0)
-
-            cfg = cfg.remove_edge(edge)
-
-        # path is not modified here - we are only removing off-path edges
-
-        return (cfg, path)
-
-    def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
-
-        edges = [x for x in cfg.get_edges() if x[0] not in path.expected_output
-                    and x[1] not in path.expected_output]
-
-        return edges
-        
-
-class RemovePathEdges(AbstractPass):
-    '''
-        This pass removes edges that are are connected to nodes
-        that are on the path. This requires the path to be updated
-        (possibly just directions or directions and expected output).
-    '''
-
-        def __init__(self):
-        self.chunk : int = 2 
-        self.edges : list[tuple[int,int]] = []
-
-    def new(self, cfg : CFG, path : Path) -> None:
-        
-        self.edges = self.get_edges_for_removal(cfg, path)
-
-    def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
-        
-        if len(self.edges) == 0:
-            return False
-
-        return True
-
     def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
 
         n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
@@ -80,10 +37,159 @@ class RemovePathEdges(AbstractPass):
 
         return (cfg, path)
 
-    def get_edges_for_removal(self, cfg : CFG, path : Path) -> list[int]:
+    def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
+        '''
+            Edges for removal here are not connected to the path or any
+            nodes that appear on the path. Neither the start nor end node of 
+            the edge is on the path.
+        '''
 
-        edges = [x for x in cfg.get_edges() if x[0] in path.expected_output
-                    or x[1] in path.expected_output]
+        edges = [x for x in cfg.get_edges() if x[0] not in path.expected_output
+                    and x[1] not in path.expected_output]
 
         return edges
         
+class RemoveNearbyPathEdgePass(AbstractPass):
+    '''
+        This pass removes edges that are connected to at least one
+        node on the path, but are not themselves on the path. 
+    '''
+  
+    def __init__(self):
+        self.chunk : int = 2 
+        self.edges : list[tuple[int,int]] = []
+
+    def new(self, cfg : CFG, path : Route) -> None:
+        
+        self.edges = self.get_edges_for_removal(cfg, path)
+
+    def check_prerequisites(self, cfg : CFG, path : Route) -> bool:
+        
+        if len(self.edges) == 0:
+            return False
+
+        return True
+
+    def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
+
+        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
+
+        for i in range(n):
+
+            edge = self.edges.pop(0)
+
+            print(f'Removing edge: {edge}')
+
+            new_cfg = cfg.remove_edge(edge)
+
+            print(f'Cur path is: \n {path.directions} \n {path.expected_output}')
+
+            # Update path to reflect possible new directions
+            # Expected output will not change since we are only removing edges
+            # that are not on the path
+            new_path = update_path(new_cfg, cfg, path, edge)
+
+            print(f'New path is: \n {new_path.directions} \n {path.expected_output}')
+
+        return (cfg, path)
+
+    def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
+        
+        '''
+            Edges for removal here are not directly on the path but are 
+            nearby: either the start or end node of the edge is on the path.
+        '''
+
+        all_edges = set([(u, v) for (u, v, n) in cfg.get_edges()])
+
+        edges_on_path = set(get_edges_from_output(path.expected_output))
+        
+        return list(all_edges - edges_on_path)      
+
+class RemoveOnPathEdgePass(AbstractPass):
+    '''
+        This pass removes edges that are on the path. This requires the 
+        path to be updated.
+    '''
+
+    def __init__(self):
+        self.chunk : int = 2 
+        self.edges : list[tuple[int,int]] = []
+
+    def new(self, cfg : CFG, path : Route) -> None:
+        
+        self.edges = self.get_edges_for_removal(cfg, path)
+
+    def check_prerequisites(self, cfg : CFG, path : Route) -> bool:
+        
+        if len(self.edges) == 0:
+            return False
+
+        return True
+
+    def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
+
+        pass
+
+        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
+
+        for i in range(n):
+
+            edge = self.edges.pop(0)
+
+            cfg = cfg.remove_edge(edge)
+
+            # Update route to reflect any changes from removing the edge
+
+
+        return (cfg, path)
+
+    def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
+
+        '''
+            Edges for removal here are directly on the path: both the start
+            and end node of the edge are on the path.
+        '''
+
+        #TODO: this should check whether the edge is on the path - so check
+        # should be for sequential x[0] and x[1] in expected output
+        edges = [x for x in cfg.get_edges() if x[0] in path.expected_output
+                    and x[1] in path.expected_output]
+
+        return edges
+        
+def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, edge : tuple[int,int]) -> Route:
+ 
+    new_path = Route(directions=old_path.directions, expected_output=old_path.expected_output)    
+    
+    full_direction_array = get_full_directions(old_cfg, old_path)
+    
+    former_direction_array = full_direction_array
+
+    # find all nodes in the output that require directions adjustments
+    # for edge (u,v), we need to update directions for node u if u is on
+    # the path
+    node_indices = [i for i, u in enumerate(new_path.expected_output) if u == edge[0]]
+
+    for i in node_indices:
+
+        # replace out-direction unless we are at the end of the path
+        if i != len(new_path.expected_output) - 1:
+            full_direction_array[i] = get_new_direction_using_adj(
+                    cfg,
+                    new_path.expected_output[i],
+                    new_path.expected_output[i+1]
+                    )
+
+    new_path.directions = [x for x in full_direction_array if x != None]
+
+    return new_path
+
+def get_edges_from_output(output : list[int]) -> list[tuple[int,int]]:
+    
+    '''
+        Returns a list of tuples containing the edges that appear on 
+        the expected output path
+    '''
+
+    return [(output[index], output[index + 1]) for index, node in enumerate(output) if index != len(output) - 1]
