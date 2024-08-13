@@ -13,7 +13,7 @@ from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 
 from fuzzflesh.reducer.passes.abstract import AbstractPass
 from fuzzflesh.reducer.passes.merge import MergeOnPathPass, MergeOffPathPass, MergeExitPass
-from fuzzflesh.reducer.passes.remove_edge import RemoveEdgePass
+from fuzzflesh.reducer.passes.remove_edge import RemoveOffPathEdgePass, RemoveOnPathEdgePass
 
 class Reducer():
 
@@ -27,7 +27,8 @@ class Reducer():
             'merge_on_path' : MergeOnPathPass,
             'merge_off_path' : MergeOffPathPass,
             'merge_exit' : MergeExitPass,
-            'remove_edge' : RemoveEdgePass,
+            'remove_edge_off_path' : RemoveOffPathEdgePass,
+            'remove_edge_on_path' : RemoveOnPathEdgePass,
             }
         self.output_path : Path = output_path
 
