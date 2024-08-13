@@ -1,49 +1,5 @@
 from fuzzflesh.cfg.CFG import CFG, Route
 
-def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, node1 : int, node2 : int) -> Route:
-
-    new_path = Route(directions=old_path.directions, expected_output=old_path.expected_output)
-  
-    new_path.expected_output = [node1 if x == node2 else x for x in old_path.expected_output]
-
-    full_direction_array = get_full_directions(old_cfg, old_path)
-    
-    former_direction_array = full_direction_array
-    
-    # find all nodes in the output that require directions adjustments
-    # this includes node1 and any node that was a parent of node2
-    nodes = set(old_cfg.get_parents(node2) + [node1])
-
-    node_indices = [i for i, x in enumerate(new_path.expected_output) if x in nodes]
-
-    for i in node_indices:
-
-        # replace out-direction unless we are at the end of the path
-        if i != len(new_path.expected_output) - 1:
-            full_direction_array[i] = get_new_direction_using_adj(
-                    cfg,
-                    new_path.expected_output[i],
-                    new_path.expected_output[i+1]
-                    )
-
-        # also replace in-direction if it is node1
-        if new_path.expected_output[i] == node1:
-            full_direction_array[i-1] = get_new_direction_using_adj(
-                    cfg, 
-                    new_path.expected_output[i-1], 
-                    node1
-                    )
-
-    #former = list(zip(old_path.expected_output, former_direction_array))
-    #zipped = list(zip(new_path.expected_output, full_direction_array))
-
-    #print(f'former:\n {former}')
-    #print(f'current:\n {zipped}')
-
-    new_path.directions = [x for x in full_direction_array if x != None]
-
-    return new_path
-
 def get_new_direction_using_adj(new_cfg : CFG, u : int, v : int) -> int:
 
     '''
