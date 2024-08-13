@@ -141,7 +141,7 @@ class MergeExitPass(AbstractPass):
     def new(self, cfg : CFG, path : Path) -> None:
         
         self.nodes = cfg.get_exit_nodes()
-        self.default_exit = self.nodes.pop(1) # pop so we don't merge it
+        self.default_exit = self.nodes.pop(0) # pop so we don't merge it
 
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         
