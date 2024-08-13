@@ -109,6 +109,8 @@ def main():
                     help='Path to C compiler.')
     c_parser.add_argument("include_path",
                     help='Path to json.hpp include file.')
+    c_parser.add_argument("--headless_path",
+                    help='Path to headless analyser Ghidra script.')
     c_parser.add_argument("--decompiler_path",
                     default = None,
                     help = 'Path to decompiler under test.')
@@ -301,7 +303,7 @@ def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -
         case Lang.JAVABC:
             return create_javabc_folders(base_dir, args.reflection, wrapper_dir)
         case Lang.C:
-            return create_c_folders(base_dir, wrapper_dir)
+            return create_c_folders(base_dir, wrapper_dir, args.dirs)
     
     return False
 
@@ -335,11 +337,9 @@ def create_javabc_folders(base_dir : Path, reflection: bool, wrapper_dir : Path)
 
     return True if result.returncode == 0 else False
 
-def create_c_folders(base_dir : Path, wrapper_dir : Path):
+def create_c_folders(base_dir : Path, wrapper_dir : Path, dirs_known : bool):
 
-    #TODO: add dynamic directions wrapper
-
-    wrapper = 'WrapperStatic'
+    wrapper = 'WrapperStatic' if dirs_known else 'WrapperDynamic'
 
     cmd = ['cp',
         f'{wrapper_dir}/{wrapper}.cpp',
@@ -382,6 +382,7 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                         base_dir,
                         Path(args.include_path),
                         args.dirs,
+                        args.headless_path,
                         decompiler_path)
     return None
 
