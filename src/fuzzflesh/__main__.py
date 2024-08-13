@@ -255,8 +255,11 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
                     delete_path(path)
 
                 else:
-                    delete_program(prog, language)
                     graph_has_failed = True
+
+            if not graph_has_failed:
+                delete_program(prog, language)
+
 
     # If no programs associated with this graph fail, then tidy up by removing the graph
     if not graph_has_failed:
@@ -277,6 +280,7 @@ def delete_program(program : Path, language : Lang):
 
         case Lang.C:
             files_to_delete = glob.glob(f'{str(program.parent)}/*{str(program.stem)}*')
+            print(f'Files to delete: \n {files_to_delete}')
 
             cmd = ['rm', '-f']
             cmd.extend(files_to_delete)
@@ -287,7 +291,6 @@ def delete_graph(graph : Path):
     ''' 
         Deletes graph and graph folder
     '''
-    return
     cmd = ['rm', '-rf', str(graph.parent)]
     subprocess.run(cmd)
 

@@ -161,17 +161,6 @@ class CRunner(Runner):
         result = subprocess.run(cmd, env=env)
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.LINKING_FAIL
-        
-    def execute_test(self, test_name : str, path_name : str) -> int:
-        
-        exe_cmd = [f'''{self.filepaths.exe_filepath}/{test_name}_out \
-                    {self.filepaths.path_filepath}/{path_name}.txt \
-                    {self.filepaths.output_filepath}/{self.filepaths.results_name}.txt \
-                    {self.filepaths.output_filepath}/{self.filepaths.bug_results_name}.txt ''']
-        
-        exe_result = subprocess.run(exe_cmd, shell=True)
-
-        return exe_result.returncode
 
     def execute_test(self, executable : Path, path : Path) -> RunnerReturn:
         
