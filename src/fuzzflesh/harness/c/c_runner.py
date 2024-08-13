@@ -13,6 +13,7 @@ class CRunner(Runner):
                 _output : Path,
                 _include : Path,
                 _dirs : bool,
+                _headless_path : Path = None,
                 _decompiler_path : Path = None):
         super(Runner, self).__init__()
         self.compiler_name : Compiler = _toolchain
@@ -22,7 +23,7 @@ class CRunner(Runner):
         self.wrapper : Path = Path(_output, 'Wrapper.cpp')
         self.include_path : Path = _include
         self.decompiler_path : Path = _decompiler_path
-        self.headless_path : Path = Path('/data/dev/fuzzflesh/src/fuzzflesh/harness/javabc/')
+        self.headless_path : Path = Path(_headless_path)
         self.headless_script_name : Path = Path('DecompileHeadless.java')
 
     @property
@@ -118,6 +119,8 @@ class CRunner(Runner):
                 "-postScript",
                 str(self.headless_script_name),
                 str(get_decomp_name(program))]
+
+        print(cmd)
 
         result = subprocess.run(cmd)
 
