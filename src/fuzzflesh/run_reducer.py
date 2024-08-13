@@ -34,6 +34,8 @@ if __name__==("__main__"):
                         help='Filepath to interestingness shell script.')
     parser.add_argument("output_path",
                         help='Filepath to which the reduced program should be saved.')
+    parser.add_argument("--dirs_known",
+                        action=argparse.BooleanOptionalAction)
     parser.add_argument("--language", default="c")
    
     args = parser.parse_args()
@@ -45,7 +47,8 @@ if __name__==("__main__"):
     reducer = Reducer(cfg=cfg, 
             route=route, 
             interestingness_test=Path(args.interestingness_test),
-            output_path=Path(args.output_path))
+            output_path=Path(args.output_path),
+            dirs=args.dirs_known)
         
     reducer.reduce(['merge_off_path', 
                 'remove_edge', 

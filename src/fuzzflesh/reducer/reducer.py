@@ -17,8 +17,8 @@ from fuzzflesh.reducer.passes.remove_edge import RemoveEdgePass
 
 class Reducer():
 
-    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path, _dirs : bool = True):
-        self.dirs_known : bool = _dirs
+    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path, dirs : bool = True):
+        self.dirs_known : bool = dirs
         self.interestingness_test : Path = interestingness_test
         self.cfg : CFG = cfg
         print(f'route has type {type(route)}')
@@ -171,10 +171,7 @@ class Reducer():
                 self.route = modified_path
 
                 # save out latest interesting cfg info
-                if self.dirs_known:
-                    program = self.flesh_cfg(self.cfg, self.route.directions)
-                else:
-                    program = self.flesh_cfg(self.cfg)
+                program = self.flesh_cfg(self.cfg, self.route.directions)
                 
                 program.write_to_file(self.interesting_program_path)
 
