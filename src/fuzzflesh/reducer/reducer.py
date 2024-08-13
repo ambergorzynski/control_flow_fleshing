@@ -130,12 +130,10 @@ class Reducer():
         cfg.save_graph(self.reduced_graph_path)
 
         # run interestingness test
-        cmd = ['sh', 
-            str(self.interestingness_test),
-            str(self.reduced_program_path),
-            str(self.reduced_input_path)]
+        cmd = ['sh',
+             str(self.interestingness_test)]
 
-        result = subprocess.run(cmd)
+        result = subprocess.run(cmd, cwd=str(self.output_path))
         
         print(f'Result of interestingness test is: {result.returncode}')
 
