@@ -17,7 +17,8 @@ from fuzzflesh.reducer.passes.remove_edge import RemoveEdgePass
 
 class Reducer():
 
-    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path):
+    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path, _dirs : bool = True):
+        self.dirs_known : bool = _dirs
         self.interestingness_test : Path = interestingness_test
         self.cfg : CFG = cfg
         print(f'route has type {type(route)}')
@@ -46,13 +47,6 @@ class Reducer():
 
         else:
             pass_instances = self.get_passes(passes)
-        
-        '''
-        print(f'cfg nodes: {self.cfg.get_nodes()}')
-        print(f'cfg edges: {self.cfg.get_edges()}')
-        print(f'path: {self.path.expected_output}')
-        print(f'dirs: {self.path.directions}')
-        '''
 
         # Set up reducer directory
         self.output_path.mkdir(exist_ok=True)
@@ -143,10 +137,13 @@ class Reducer():
         return False        
 
     def flesh_cfg(self, cfg : CFG, dirs : list[int]) -> str:
-    
+        
         generator = CProgramGenerator(cfg)
 
-        program = generator.fleshout_with_dirs(dirs)
+        if self.dirs_known:
+            program = generator.fleshout_with_dirs(dirs)
+        else:
+            program = generator.fleshout_without_dirs()
 
         return program 
 
@@ -174,7 +171,10 @@ class Reducer():
                 self.route = modified_path
 
                 # save out latest interesting cfg info
-                program = self.flesh_cfg(self.cfg, self.route.directions)
+                if self.dirs_known:
+                    program = self.flesh_cfg(self.cfg, self.route.directions)
+                else:
+                    program = self.flesh_cfg(self.cfg)
                 
                 program.write_to_file(self.interesting_program_path)
 
