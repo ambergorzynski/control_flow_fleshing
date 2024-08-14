@@ -48,7 +48,8 @@ class CFG():
         
         if graph == None:
             graph = load_graph(filename)
-        
+            #graph = g.graph
+
         self.graph : nx.MultiDiGraph = graph
         self.fleshed_graph : str = None 
         self.doomed : List[int] = []
@@ -88,16 +89,15 @@ class CFG():
             returns a list of all exit nodes in the graph
             defined as nodes with no successors 
         '''
-
-        exits = [node for node in self.graph.nodes()
-                    if self.graph.in_degree(node) != 0
-                    and self.graph.out_degree(node) == 0]
+        exits = [node for node in self.graph.nodes 
+            if self.graph.in_degree(node) != 0 
+            and self.graph.out_degree(node) == 0]
 
         return exits
 
     def remove_edge(self, edge : tuple[int,int]):
         
-        modified_graph = self.graph
+        modified_graph = self.graph.copy()
 
         modified_graph.remove_edge(*edge)
 
