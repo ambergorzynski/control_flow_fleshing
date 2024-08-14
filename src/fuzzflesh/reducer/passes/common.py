@@ -14,10 +14,10 @@ def get_new_direction_using_adj(new_cfg : CFG, u : int, v : int) -> int:
 
     if len(successors) == 1:
         return None
-
-    #print(f'successors from {u} are: {successors}')
-    #print(f'{u} to {v} is successor index {successors.index(v)}')
-
+    '''
+    print(f'successors from {u} are: {successors}')
+    print(f'{u} to {v} is successor index {successors.index(v)}')
+    '''
     return successors.index(v)
 
 def get_new_direction_using_edges(new_cfg : CFG, u : int, v : int) -> int:
@@ -65,4 +65,42 @@ def get_full_directions(cfg : CFG, path : Route) -> list[int]:
 
     return direction
 
+def check_route(cfg : CFG, path : Route) -> bool:
+    '''
+        Checks that direction correspond with expected output.
+    '''
+    
+    actual_output = []
+    dir_index = 0
+
+    # Get entry node
+    current_node = cfg.get_root()
+    actual_output.append(current_node)
+
+    # Check number of children
+    children : list[int] = cfg.get_successors(current_node)
+
+    while len(children) > 0:
+
+        if len(children) == 1:
+            current_node = children[0]
+            
+        elif len(children) > 1:
+            direction = path.directions[dir_index]
+            dir_index += 1
+            if direction >= len(children):
+                print('\nPROBLEM')
+                print(f'direction: {direction}')
+                print(f'node: {current_node}')
+                print(f'children: {children}')
+                exit()
+            current_node = children[direction]
+
+        actual_output.append(current_node)
+        children = cfg.get_successors(current_node)
+
+    # Compare actual and expected output
+    print(f'CHECK: actual: \n {actual_output}')
+    print(f'CHECK: expect: \n {path.expected_output}')
+    return False if actual_output != path.expected_output else True
 
