@@ -72,8 +72,9 @@ class RemoveNearbyPathEdgePass(AbstractPass):
 
     def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
 
-        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
-
+        #n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
+        n = 1
+        
         for i in range(n):
 
             edge = self.edges.pop(0)
