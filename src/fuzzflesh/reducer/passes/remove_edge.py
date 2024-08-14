@@ -1,6 +1,6 @@
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.passes.abstract import AbstractPass
-from fuzzflesh.reducer.passes.common import get_full_directions, get_new_direction_using_adj
+from fuzzflesh.reducer.passes.common import get_full_directions, get_new_direction_using_adj, check_route
 
 class RemoveOffPathEdgePass(AbstractPass):
     '''
@@ -82,16 +82,16 @@ class RemoveNearbyPathEdgePass(AbstractPass):
 
             new_cfg = cfg.remove_edge(edge)
 
-            print(f'Cur path is: \n {path.directions} \n {path.expected_output}')
-
             # Update path to reflect possible new directions
             # Expected output will not change since we are only removing edges
             # that are not on the path
             new_path = update_path(new_cfg, cfg, path, edge)
 
-            print(f'New path is: \n {new_path.directions} \n {path.expected_output}')
+            # update cfg and path to modified
+            cfg = new_cfg
+            path = new_path
 
-        return (cfg, path)
+        return (new_cfg, new_path)
 
     def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
         
@@ -159,6 +159,8 @@ class RemoveOnPathEdgePass(AbstractPass):
         return edges
         
 def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, edge : tuple[int,int]) -> Route:
+
+    print('Updating route...')
  
     new_path = Route(directions=old_path.directions, expected_output=old_path.expected_output)    
     
@@ -168,7 +170,7 @@ def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, edge : tuple[int,int
 
     # find all nodes in the output that require directions adjustments
     # for edge (u,v), we need to update directions for node u if u is on
-    # the path
+    # the path. 
     node_indices = [i for i, u in enumerate(new_path.expected_output) if u == edge[0]]
 
     for i in node_indices:
@@ -182,6 +184,13 @@ def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, edge : tuple[int,int
                     )
 
     new_path.directions = [x for x in full_direction_array if x != None]
+    print(f'Updated directions: {new_path.directions}')
+    print(f'Updated output: {new_path.expected_output}')
+
+    # check that new path directions matches expected output
+    if not check_route(cfg, new_path):
+        print('NO MATCH!')
+        exit()
 
     return new_path
 
