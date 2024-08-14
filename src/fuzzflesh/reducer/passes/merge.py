@@ -5,7 +5,7 @@ from pathlib import Path
 
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.passes.abstract import AbstractPass
-from fuzzflesh.reducer.passes.common import *
+from fuzzflesh.reducer.passes.common import get_new_direction_using_adj
 
 #TODO: Add support for merging nodes connected to the path
 # this is more complicated because it requires adjusting the
