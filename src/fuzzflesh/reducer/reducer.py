@@ -111,6 +111,8 @@ class Reducer():
             runs interestingness test to check whether given 
             cfg is interesting
         '''
+        with open('/data/work/fuzzflesh/log.txt','a') as f:
+            f.write(f'INTERESTING CHECK\n')
 
         program = self.flesh_cfg(cfg, route.directions)
         
@@ -131,6 +133,9 @@ class Reducer():
         result = subprocess.run(cmd, cwd=str(self.output_path))
         
         print(f'Result of interestingness test is: {result.returncode}')
+        
+        with open('/data/work/fuzzflesh/log.txt','a') as f:
+            f.write(f'Result of interestingness test is: {result.returncode}\n')
 
         if result.returncode == 0:
             return True
@@ -157,10 +162,11 @@ class Reducer():
         p.new(self.cfg, self.route)
 
         while p.check_prerequisites(self.cfg, self.route):
-           
+
             (modified_cfg, modified_path) = p.transform(self.cfg, self.route)
 
             if self.is_interesting(modified_cfg, modified_path):
+
                 print('Updating cfg and path')
                 '''
                 print(f'New cfg nodes: {modified_cfg.get_nodes()}')
@@ -183,6 +189,7 @@ class Reducer():
                 print('Saved latest interesting test case')
 
             print('Completed round of pass')
+
 
 
 if __name__=="__main__":
