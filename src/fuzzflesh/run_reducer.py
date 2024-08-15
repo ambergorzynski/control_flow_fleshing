@@ -49,8 +49,11 @@ if __name__==("__main__"):
             interestingness_test=Path(args.interestingness_test),
             output_path=Path(args.output_path),
             dirs=args.dirs_known)
-        
+    
     reducer.reduce(['merge_off_path', 
-                'remove_edge', 
+                'remove_edge_off_path', 
                 'merge_on_path',
-                'merge_exit'])
+                'merge_exit',
+                'remove_edge_on_path'])
+
+    
