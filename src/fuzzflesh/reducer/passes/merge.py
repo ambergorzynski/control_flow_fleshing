@@ -2,14 +2,11 @@ import numpy as np
 import os
 import sys
 from pathlib import Path
+from itertools import combinations
 
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.passes.abstract import AbstractPass
-from fuzzflesh.reducer.passes.common import get_new_direction_using_adj
-
-#TODO: Add support for merging nodes connected to the path
-# this is more complicated because it requires adjusting the
-# path as well as the graph
+from fuzzflesh.reducer.passes.common import get_new_direction_using_adj, get_full_directions
 
 class MergeOffPathPass(AbstractPass):
     '''
@@ -20,7 +17,9 @@ class MergeOffPathPass(AbstractPass):
 
     def __init__(self):
         self.chunk : int = 2 
-        self.nodes : list[int] = []
+        self.nodes : list[tuple[int,int]] = []
+        self.nodes_attempted : list[tuple[int,int]] = []
+
 
     def new(self, cfg : CFG, path : Path) -> None:
         
@@ -28,7 +27,9 @@ class MergeOffPathPass(AbstractPass):
 
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         
-        if len(self.nodes) < 2:
+        available_pairs = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+
+        if len(available_pairs) < 1:
             return False
 
         return True
@@ -39,11 +40,12 @@ class MergeOffPathPass(AbstractPass):
         n = 1
 
         for i in range(n):
-            
-            # pop second node because it will be destroyed in the 
+
+            # pop pair because it will be destroyed in the 
             # merge, so we cannot merge on it again
-            node1 = self.nodes[0]
-            node2 = self.nodes.pop(1)
+            available_nodes = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+            (node1, node2) = available_nodes[0]
+            self.nodes_attempted.append((node1, node2))
            
             print(f'nodes for merging: {node1} {node2}')
      
@@ -59,7 +61,9 @@ class MergeOffPathPass(AbstractPass):
                 and x not in cfg.get_path_neighbours(path)
                 and x not in path.expected_output]
 
-        return merge_nodes
+        merge_pairs = list(combinations(merge_nodes,2))
+        
+        return merge_pairs
 
 class MergeOnPathPass(AbstractPass):
     '''
@@ -70,7 +74,8 @@ class MergeOnPathPass(AbstractPass):
 
     def __init__(self):
         self.chunk : int = 2 
-        self.nodes : list[int] = []
+        self.nodes : list[tuple[int,int]] = []
+        self.nodes_attempted : list[tuple[int,int]] = []
 
     def new(self, cfg : CFG, path : Path) -> None:
         
@@ -78,7 +83,9 @@ class MergeOnPathPass(AbstractPass):
 
     def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
         
-        if len(self.nodes) < 2:
+        available_pairs = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+
+        if len(available_pairs) < 1:
             return False
 
         return True
@@ -87,17 +94,21 @@ class MergeOnPathPass(AbstractPass):
 
         #n = len(self.nodes) // self.chunk if len(self.nodes) >= self.chunk else 1
         
+        # update nodes in case some have been merged successfully
+        self.nodes = self.get_on_path_nodes(cfg, path)
+        
         n = 1
 
         for i in range(n):
 
-            # pop second node because it will be destroyed in the 
+            # pop pair because it will be destroyed in the 
             # merge, so we cannot merge on it again
-            node1 = self.nodes[0]
-            node2 = self.nodes.pop(1)
+            available_nodes = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+            (node1, node2) = available_nodes[0]
+            self.nodes_attempted.append((node1, node2))
            
             print(f'nodes for merging: {node1} {node2}')
-            
+
             new_cfg = cfg.merge_nodes(node1, node2)
 
             new_path = update_path(new_cfg, cfg, path, node1, node2)
@@ -117,14 +128,16 @@ class MergeOnPathPass(AbstractPass):
         
         return (new_cfg, new_path)
 
-    def get_on_path_nodes(self, cfg : CFG, path : Path) -> list[int]:
+    def get_on_path_nodes(self, cfg : CFG, path : Path) -> list[tuple[int,int]]:
 
         merge_nodes = [x for x in cfg.nodes if x not in cfg.get_exit_nodes()
                 and x != 0
                 and (x in path.expected_output
                 or x in cfg.get_path_neighbours(path))]
 
-        return merge_nodes
+        merge_pairs = list(combinations(merge_nodes,2))
+
+        return merge_pairs
 
 class MergeExitPass(AbstractPass):
 
