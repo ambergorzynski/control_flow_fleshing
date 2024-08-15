@@ -25,8 +25,9 @@ class RemoveOffPathEdgePass(AbstractPass):
 
     def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
 
-        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
-
+        #n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
+        n = 1
+        
         for i in range(n):
 
             edge = self.edges.pop(0)
@@ -49,7 +50,7 @@ class RemoveOffPathEdgePass(AbstractPass):
 
         return edges
         
-class RemoveNearbyPathEdgePass(AbstractPass):
+class RemoveOnPathEdgePass(AbstractPass):
     '''
         This pass removes edges that are connected to at least one
         node on the path, but are not themselves on the path. 
@@ -106,59 +107,7 @@ class RemoveNearbyPathEdgePass(AbstractPass):
         edges_on_path = set(get_edges_from_output(path.expected_output))
         
         return list(all_edges - edges_on_path)      
-
-class RemoveOnPathEdgePass(AbstractPass):
-    '''
-        This pass removes edges that are on the path. This requires the 
-        path to be updated.
-    '''
-
-    def __init__(self):
-        self.chunk : int = 2 
-        self.edges : list[tuple[int,int]] = []
-
-    def new(self, cfg : CFG, path : Route) -> None:
-        
-        self.edges = self.get_edges_for_removal(cfg, path)
-
-    def check_prerequisites(self, cfg : CFG, path : Route) -> bool:
-        
-        if len(self.edges) == 0:
-            return False
-
-        return True
-
-    def transform(self, cfg : CFG, path : Route) -> tuple[CFG, Route]:
-
-        pass
-
-        n = len(self.edges) // self.chunk if len(self.edges) >= self.chunk else 1
-
-        for i in range(n):
-
-            edge = self.edges.pop(0)
-
-            cfg = cfg.remove_edge(edge)
-
-            # Update route to reflect any changes from removing the edge
-
-
-        return (cfg, path)
-
-    def get_edges_for_removal(self, cfg : CFG, path : Route) -> list[int]:
-
-        '''
-            Edges for removal here are directly on the path: both the start
-            and end node of the edge are on the path.
-        '''
-
-        #TODO: this should check whether the edge is on the path - so check
-        # should be for sequential x[0] and x[1] in expected output
-        edges = [x for x in cfg.get_edges() if x[0] in path.expected_output
-                    and x[1] in path.expected_output]
-
-        return edges
-        
+       
 def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, edge : tuple[int,int]) -> Route:
 
     print('Updating route...')
