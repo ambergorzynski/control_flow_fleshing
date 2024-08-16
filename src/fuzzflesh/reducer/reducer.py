@@ -111,8 +111,6 @@ class Reducer():
             runs interestingness test to check whether given 
             cfg is interesting
         '''
-        with open('/data/work/fuzzflesh/log.txt','a') as f:
-            f.write(f'INTERESTING CHECK\n')
 
         program = self.flesh_cfg(cfg, route.directions)
         
