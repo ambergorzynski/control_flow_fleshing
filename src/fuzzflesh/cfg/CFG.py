@@ -95,6 +95,13 @@ class CFG():
 
         return exits
 
+    def get_next_greatest_node(self, node : int) -> int:
+        current_index = self.get_nodes().index(node)
+        return (self.get_nodes())[current_index + 1]
+    
+    def add_edge_directly(self, edge : tuple[int,int]):
+        self.graph.add_edge(edge[0], edge[1])
+
     def remove_edge(self, edge : tuple[int,int]):
         
         modified_graph = self.graph.copy()
