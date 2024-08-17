@@ -15,11 +15,11 @@ class JavaBCRunner(Runner):
                 _jasmin : Path,
                 _json : Path,
                 _output : Path,
-                _compiler_path : Path,
+                _decompiler_path : Path,
                 _reflection : bool):
         super(Runner, self).__init__()
         self.compiler_name : Compiler = _toolchain
-        self.compiler_path : Path = _compiler_path
+        self.decompiler_path : Path = _decompiler_path
         self.output : Path = _output
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
@@ -29,6 +29,9 @@ class JavaBCRunner(Runner):
         self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
         self.n_function_repeats : int = 1000
         self.reflection : bool = _reflection
+        
+        #TODO put in CFR class
+        self.cfr_main = 'org.benf.cfr.reader.Main'
         
     @property
     def language(self):
@@ -176,13 +179,17 @@ class JavaBCRunner(Runner):
         # decompilation syntax varies depending on which decompiler toolchain is used
 
         if self.compiler_name == Compiler.CFR:
-
-            decompile_cmd = [f'{self.jvm}',
-                        '-jar',
-                        str(self.compiler_path),
-                        '--outputdir',
+            
+            # CFR syntax for source
+            decompile_cmd = [str(self.jvm),
+                        '-cp',
+                        str(self.decompiler_path),
+                        self.cfr_main,
+                        str(class_file),
+                        '--outputpath',
                         outputdir,
-                        str(class_file)]            
+                        '--clobber',
+                        'True']
 
         elif self.compiler_name == Compiler.FERNFLOWER:
 
@@ -192,12 +199,26 @@ class JavaBCRunner(Runner):
                         str(class_file),
                         outputdir]
 
+        #TODO: allow CFR in either jar or source form (syntax varies)
+        '''
+            # CFR synatx for jar file
+            decompile_cmd = [f'{self.jvm}',
+                        '-jar',
+                        str(self.compiler_path),
+                        '--outputdir',
+                        outputdir,
+                        str(class_file)]            
+        '''
+
         #TODO: syntax for other decompilers
         """
         elif self.params.decompiler.value == Decompiler.PROCYON.value:
             decompile_cmd = [f'''./javabc/decompile_test_procyon.sh {self.filepaths.src_filepath} {test_name} {self.filepaths.jvm} {self.filepaths.decompiler_path}''']
         """
         decompile_result = subprocess.run(decompile_cmd)
+
+        print('CHECK')
+        exit()
 
         if decompile_result.returncode != 0:
             return RunnerReturn.DECOMPILATION_FAIL

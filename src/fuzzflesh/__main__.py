@@ -91,10 +91,10 @@ def main():
     javabc_parser.add_argument("json",
                         type=str,
                         help="Path to json simple jar")
-    javabc_parser.add_argument("-compiler_path",
+    javabc_parser.add_argument("-decompiler_path",
                         default = None, 
                         type=str, 
-                        help="Path to the (de)compiler under test. Not required for testing JIT compiler e.g. HotSpot where the software under test is in the JVM path")  
+                        help="Path to the decompiler under test.")  
     javabc_parser.add_argument("--reflection", 
                         action=argparse.BooleanOptionalAction,
                         help='Use reflection instead of static compilation.')
@@ -280,7 +280,6 @@ def delete_program(program : Path, language : Lang):
 
         case Lang.C:
             files_to_delete = glob.glob(f'{str(program.parent)}/*{str(program.stem)}*')
-            print(f'Files to delete: \n {files_to_delete}')
 
             cmd = ['rm', '-f']
             cmd.extend(files_to_delete)
@@ -367,15 +366,16 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> Runner:
 
     match language:
-        case Lang.JAVABC:
-            #TODO: update to full decompiler check
-            path = Path(args.compiler_path) if compiler != Compiler.HOTSPOT else None
+        case Lang.JAVABC: 
+            
+            decompiler_path = Path(args.decompiler_path) if args.decompiler_path else None
+            
             return JavaBCRunner(compiler, 
                         Path(args.jvm), 
                         Path(args.jasmin),
                         Path(args.json),
                         base_dir,
-                        path,
+                        decompiler_path,
                         args.reflection)
         case Lang.C:
             decompiler_path = Path(args.decompiler_path) if args.decompiler_path != None else None
@@ -396,7 +396,7 @@ def paths_to_dict(all_paths : list[Route]) -> dict:
 def validity_check(args, language):
 
     if language == Lang.JAVABC:
-        if args.compiler in set(['cfr','fernflower','procyon']) and args.compiler_path is None:
+        if args.compiler in set(['cfr','fernflower','procyon']) and args.decompiler_path is None:
             return False
     
     if language == Lang.C:
