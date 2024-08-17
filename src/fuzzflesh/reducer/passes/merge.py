@@ -6,7 +6,7 @@ from itertools import combinations
 
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.passes.abstract import AbstractPass
-from fuzzflesh.reducer.passes.common import get_new_direction_using_adj, get_full_directions
+from fuzzflesh.reducer.passes.common import get_new_direction_using_adj, get_full_directions, check_route
 
 class MergeOffPathPass(AbstractPass):
     '''
@@ -81,10 +81,13 @@ class MergeOnPathPass(AbstractPass):
         
         self.nodes = self.get_on_path_nodes(cfg, path)
 
-    def check_prerequisites(self, cfg : CFG, path : Path) -> bool:
+    def check_prerequisites(self, cfg : CFG, path : Route) -> bool:
         
-        available_pairs = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+        # update nodes in case some have been merged successfully
+        self.nodes = self.get_on_path_nodes(cfg, path)
 
+        available_pairs = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+        print(f'available pairs in check: {available_pairs}')
         if len(available_pairs) < 1:
             return False
 
@@ -104,6 +107,7 @@ class MergeOnPathPass(AbstractPass):
             # pop pair because it will be destroyed in the 
             # merge, so we cannot merge on it again
             available_nodes = [pair for pair in self.nodes if pair not in self.nodes_attempted]
+            print(f'available nodes in pass: {available_nodes}')
             (node1, node2) = available_nodes[0]
             self.nodes_attempted.append((node1, node2))
            
@@ -232,5 +236,10 @@ def update_path(cfg : CFG, old_cfg : CFG, old_path : Route, node1 : int, node2 :
     #print(f'current:\n {zipped}')
 
     new_path.directions = [x for x in full_direction_array if x != None]
+
+    # check that new path directions matches expected output
+    if not check_route(cfg, new_path):
+        print('NO MATCH!')
+        exit()
 
     return new_path
