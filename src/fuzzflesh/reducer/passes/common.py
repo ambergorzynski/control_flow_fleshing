@@ -18,7 +18,19 @@ def get_new_direction_using_adj(new_cfg : CFG, u : int, v : int) -> int:
     print(f'successors from {u} are: {successors}')
     print(f'{u} to {v} is successor index {successors.index(v)}')
     '''
-    return successors.index(v)
+    # allow for a default fall-through to subsequent node using default value
+    # TODO: update to show the default next node as a successor based on ordering
+    if v in successors:
+        return successors.index(v)
+    elif len(successors) > 2 and (v == new_cfg.get_next_greatest_node(u)):
+        return len(successors) # this is the default fallthrough on a switch
+    else:
+        print(f'Problem! No edge connects u {u} to v {v} (likely due to merging)')
+        print(f'Children of u are: {successors}')
+        print(f'Next greatest node is: {new_cfg.get_next_greatest_node(u)}')
+        new_cfg.add_edge_directly((u,v))
+        print(f'Children of u are: {new_cfg.get_successors(u)}')
+        return new_cfg.get_successors(u).index(v)
 
 def get_new_direction_using_edges(new_cfg : CFG, u : int, v : int) -> int:
 
@@ -69,9 +81,10 @@ def check_route(cfg : CFG, path : Route) -> bool:
     '''
         Checks that direction correspond with expected output.
     '''
-    
     actual_output = []
+    output_index = 0
     dir_index = 0
+    direction = None
 
     # Get entry node
     current_node = cfg.get_root()
@@ -82,25 +95,41 @@ def check_route(cfg : CFG, path : Route) -> bool:
 
     while len(children) > 0:
 
+        if actual_output[output_index] != path.expected_output[output_index]:
+            print(f'CHECK: actual: \n {actual_output}')
+            print(f'CHECK: expect: \n {path.expected_output}')
+            return False
+
+        output_index += 1
+
         if len(children) == 1:
             current_node = children[0]
             
-        elif len(children) > 1:
+        else:
             direction = path.directions[dir_index]
             dir_index += 1
-            if direction >= len(children):
-                print('\nPROBLEM')
-                print(f'direction: {direction}')
-                print(f'node: {current_node}')
-                print(f'children: {children}')
-                exit()
-            current_node = children[direction]
 
+            if len(children) == 2:
+                print(f'CHECK: actual: \n {actual_output}')
+                print(f'CHECK: expect: \n {path.expected_output}')
+                print(f'current node: {current_node}')
+                print(f'current node children: {children}')
+                print(f'directions: {direction}')
+                current_node = children[direction]
+
+            elif len(children) > 2:
+                # check for default direction, which occurs
+                # if the direction is greater than the number
+                # of children
+                if direction >= len(children):
+                    # the next node will be the next greatest
+                    # numbered node in the graph
+                    current_node = cfg.get_next_greatest_node(current_node)
+                
+                else:
+                    current_node = children[direction]
+        
         actual_output.append(current_node)
         children = cfg.get_successors(current_node)
 
-    # Compare actual and expected output
-    print(f'CHECK: actual: \n {actual_output}')
-    print(f'CHECK: expect: \n {path.expected_output}')
-    return False if actual_output != path.expected_output else True
-
+    return True
