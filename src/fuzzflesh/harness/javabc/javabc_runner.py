@@ -4,9 +4,6 @@ from pathlib import Path
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 
-def get_class_location(program : Path) -> str:
-    return f'{str(program.parent)}/{str(program.stem)}'
-
 class JavaBCRunner(Runner):
 
     def __init__(self, 
@@ -41,26 +38,48 @@ class JavaBCRunner(Runner):
     def toolchain(self):
         return self.compiler_name
 
+    def get_class_location(self, program : Path) -> str:
+        return f'{str(program.parent)}/{str(program.stem)}'
+    
+    def get_recompiled_class_location(self, program : Path) -> str:
+        return f'{str(program.parent)}/{str(program.stem)}/recompiled'
+
     def compile(self, program : Path) -> RunnerReturn:
 
-        class_location = get_class_location(program)
+        class_location = self.get_class_location(program)
 
         if self.is_decompiler():
 
+            recompiled_class_location = self.get_recompiled_class_location(program)
+
             # We compile, decompile, and re-compile the program
             print('Compiling...')
-            self.compile_test(program)
+            if self.compile_test(program, class_location) != RunnerReturn.SUCCESS:
+                return RunnerReturn.COMPILATION_FAIL
+
             print('Decompiling...')
-            self.decompile_test(Path(class_location,'TestCase.class'))
+            if self.decompile_test(Path(class_location,'TestCase.class'), class_location) != RunnerReturn.SUCCESS:
+                return RunnerReturn.DECOMPILATION_FAIL   
+
+            recompiled_class_location = self.get_recompiled_class_location(program)
+
             print('Recompiling...')
-            self.recompile_test(Path(class_location,'TestCase.java'))
+            if self.recompile_test(Path(class_location,'TestCase.java'), recompiled_class_location) != RunnerReturn.SUCCESS:
+                return RunnerReturn.RECOMPILATION_FAIL
         
         else:
             print('Compiling...')
-            return self.compile_test(program)
+            return self.compile_test(program, class_location)
+
+        return RunnerReturn.SUCCESS
         
-    def execute(self, program :Path, path : Path) -> RunnerReturn:
-        class_location = get_class_location(program)
+    def execute(self, program : Path, path : Path) -> RunnerReturn:
+        print('Executing...')
+
+        if self.is_decompiler():
+            class_location = self.get_recompiled_class_location(program)
+        else:
+            class_location = self.get_class_location(program)
 
         return self.execute_test(program, path, class_location)
 
@@ -70,9 +89,7 @@ class JavaBCRunner(Runner):
         
         return False
 
-    def compile_test(self, program : Path) -> int:
-
-        class_location = f'{str(program.parent)}/{str(program.stem)}'
+    def compile_test(self, program : Path, class_location : Path) -> int:
 
         if self.reflection:
             return self.compile_test_with_reflection(program, class_location)
@@ -172,10 +189,8 @@ class JavaBCRunner(Runner):
 
         return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
     
-    def decompile_test(self, class_file : Path) -> RunnerReturn:
+    def decompile_test(self, class_file : Path, outputdir : Path) -> RunnerReturn:
         
-        outputdir = str(class_file.parent)
-
         # decompilation syntax varies depending on which decompiler toolchain is used
 
         if self.compiler_name == Compiler.CFR:
@@ -217,39 +232,36 @@ class JavaBCRunner(Runner):
         """
         decompile_result = subprocess.run(decompile_cmd)
 
-        print('CHECK')
-        exit()
-
         if decompile_result.returncode != 0:
             return RunnerReturn.DECOMPILATION_FAIL
         
         return RunnerReturn.SUCCESS
     
 
-    def recompile_test(self, program : Path) -> RunnerReturn:
+    def recompile_test(self, program : Path, outputdir : Path) -> RunnerReturn:
                         
-            # Recompile test case
-            compile_cmd = [str(self.javac),
-                    str(program),
-                    '-d',
-                    str(program.parent)]
+        # Recompile test case
+        compile_cmd = [str(self.javac),
+                str(program),
+                '-d',
+                outputdir]
 
-            compile_result = subprocess.run(compile_cmd)
+        compile_result = subprocess.run(compile_cmd)
 
-            if compile_result.returncode != 0:
-                return RunnerReturn.RECOMPILATION_FAIL
+        if compile_result.returncode != 0:
+            return RunnerReturn.RECOMPILATION_FAIL
 
-            # Compile wrapper with recompiled test case class
-            compile_wrapper_cmd = [str(self.javac),
-                    '-cp',
-                    f':{str(program.parent)}:{self.json_jar}',
-                    str(self.wrapper),
-                    '-d',
-                    str(program.parent)]
-            
-            wrapper_result = subprocess.run(compile_wrapper_cmd)
+        # Compile wrapper
+        compile_wrapper_cmd = [str(self.javac),
+                '-cp',
+                f':{str(program.parent)}:{self.json_jar}',
+                str(self.wrapper),
+                '-d',
+                outputdir]
+        
+        wrapper_result = subprocess.run(compile_wrapper_cmd)
 
-            return RunnerReturn.SUCCESS if wrapper_result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
+        return RunnerReturn.SUCCESS if wrapper_result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
 
 
             
