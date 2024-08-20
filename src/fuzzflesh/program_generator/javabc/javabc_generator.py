@@ -10,11 +10,20 @@ class JavaBCProgramGenerator(ProgramFlesher):
     def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False, _reflection : bool = False):
         super(JavaBCProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
         self.program_number : int = 0
-        self.directions_index : int = 5 if dirs_known_at_compile else 1
-        self.output_index : int = 2
-        self.counter_index : int = 3
-        self.dirs_counter_index : int = 4
+
+        if dirs_known_at_compile:
+            self.directions_array : int = 4
+            self.output_array : int = 1
+            self.output_index : int = 2
+            self.dir_index : int = 3
+        else:
+            self.directions_array : int = 1
+            self.output_array : int = 2
+            self.output_index : int = 3
+            self.dir_index : int = 4
+
         self.reflection = _reflection
+        self.dirs_known = dirs_known_at_compile
 
     @property
     def language(self):
@@ -53,10 +62,10 @@ class JavaBCProgramGenerator(ProgramFlesher):
     '''.format(index = i, direction = d)
             
         code += '''
-    ; store array ref in local variable 5
+    ; store array ref in local variable {dirs}
     astore {dirs}
    
-'''.format(dirs=self.directions_index)
+'''.format(dirs=self.directions_array)
 
         code_start.append(InstructionBlock(code))
         
@@ -86,6 +95,8 @@ class JavaBCProgramGenerator(ProgramFlesher):
 
     def get_program_setup(self) -> InstructionBlock:
 
+        fn_signature = '[I' if self.dirs_known_at_compile else '[I[I'
+
         code = '''
 ; default constructor
 .method public <init>()V
@@ -94,7 +105,7 @@ class JavaBCProgramGenerator(ProgramFlesher):
     return
 .end method
 
-.method public testCase([I[I)V
+.method public testCase({fn_signature})V
     .limit stack 5
     .limit locals 6
 
@@ -106,7 +117,9 @@ block_0:
     ; set up directions counter in local variable {dirs_counter}
     iconst_0
     istore {dirs_counter}  
-'''.format(counter=self.counter_index, dirs_counter=self.dirs_counter_index)
+'''.format(counter=self.output_index, 
+        dirs_counter=self.dir_index,
+        fn_signature=fn_signature)
 
         return InstructionBlock(code)  
 
@@ -122,14 +135,16 @@ block_{i}: '''.format(i = n)
 
         code += '''
     ; store node label in output array
-    aload_2
-    iload_3
+    aload_{output_array}
+    iload_{output_index}
     sipush {i}
     iastore
 
     ; increment counter
-    iinc 3 1
-'''.format(i = n)
+    iinc {output_index} 1
+'''.format(i = n,
+        output_array=self.output_array,
+        output_index=self.output_index)
 
         return InstructionBlock(code)
 
@@ -166,25 +181,23 @@ block_{i}: '''.format(i = n)
 
         # directions array stored in different local variable 
         # depending on whether they are known at compile time or not
-        #TODO: switch dir and output in passing function so dirs is always var 2
-        #TODO: something is broken here with the 1 and 5
-        dir_local_var = 2 if self.dirs_known_at_compile else 1
 
         code = '''
     ; get directions for node
-    aload {dir_local_var}
-    iload 4
+    aload {dir_array}
+    iload {dir_index}
     iaload
 
     ; increment directions counter
-    iinc 4 1
+    iinc {dir_index} 1
 
     ; branch
     ifeq block_{successor_true}
     goto block_{successor_false}
-            '''.format(dir_local_var = dir_local_var,
-                       successor_false = list(self.cfg.graph.adj[n])[1],
-                       successor_true = list(self.cfg.graph.adj[n])[0])
+            '''.format(dir_array = self.directions_array,
+                        dir_index = self.dir_index,
+                        successor_false = list(self.cfg.graph.adj[n])[1],
+                        successor_true = list(self.cfg.graph.adj[n])[0])
         
         return InstructionBlock(code)
 
@@ -194,19 +207,18 @@ block_{i}: '''.format(i = n)
             e.g. a switch statement
         '''
 
-        dir_local_var = 5 if self.dirs_known_at_compile else 1
-
         code = '''
     ; get directions for node
-    aload {dir_local_var}
-    iload 4
+    aload {dir_array}
+    iload {dir_index}
     iaload
 
     ; increment directions counter
-    iinc 4 1
+    iinc {dir_index} 1
 
     ; switch
-    lookupswitch'''.format(dir_local_var=dir_local_var)
+    lookupswitch'''.format(dir_array = self.directions_array,
+                        dir_index = self.dir_index)
         
         for j in range(n_successors):
              code += '''
