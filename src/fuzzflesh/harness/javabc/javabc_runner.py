@@ -44,7 +44,7 @@ class JavaBCRunner(Runner):
     def get_recompiled_class_location(self, program : Path) -> str:
         return f'{str(program.parent)}/{str(program.stem)}/recompiled'
 
-    def compile(self, program : Path) -> RunnerReturn:
+    def compile(self, program : Path, path : Path) -> RunnerReturn:
 
         class_location = self.get_class_location(program)
 
@@ -56,6 +56,11 @@ class JavaBCRunner(Runner):
             print('Compiling...')
             if self.compile_test(program, class_location) != RunnerReturn.SUCCESS:
                 return RunnerReturn.COMPILATION_FAIL
+
+            # TODO: move the compile/decompile/recompile into main and extract execution test from here
+            print('Executing to check original version...')
+            if self.execute_test(program, path, self.get_class_location(program)) != RunnerReturn.SUCCESS:
+                return RunnerReturn.EXECUTION_FAIL
 
             print('Decompiling...')
             if self.decompile_test(Path(class_location,'TestCase.class'), class_location) != RunnerReturn.SUCCESS:
@@ -77,6 +82,7 @@ class JavaBCRunner(Runner):
         print('Executing...')
 
         if self.is_decompiler():
+            print('Executing recompiled...')
             class_location = self.get_recompiled_class_location(program)
         else:
             class_location = self.get_class_location(program)
@@ -235,6 +241,13 @@ class JavaBCRunner(Runner):
         if decompile_result.returncode != 0:
             return RunnerReturn.DECOMPILATION_FAIL
         
+        # CFR can decompile successfully but throw a 'Decompilation failed' error
+        if self.compiler_name == Compiler.CFR:
+            with open(Path(outputdir, 'TestCase.java'),'r') as f:
+                program = f.read()
+                if 'Decompilation failed' in program:
+                    return RunnerReturn.DECOMPILATION_FAIL
+
         return RunnerReturn.SUCCESS
     
 
