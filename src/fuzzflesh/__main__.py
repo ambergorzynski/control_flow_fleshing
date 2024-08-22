@@ -221,19 +221,21 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         assert(len(programs)==len(paths))
     
     for (i, prog) in enumerate(programs):
+        print(f'prog is: {prog}')
 
         # Compile
-        compile_result = runner.compile(program=prog)
+        compile_result = runner.compile(program=prog,path=paths[i])
         print(f'Result: {compile_result}')
 
         if compile_result != RunnerReturn.SUCCESS:
-            return
+            print('Compilation fail!')
+            graph_has_failed=True
+            continue
 
         # Execute a single path with a single program
         # We pass the path so that the runner can compare the expected and actual result
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
-
             print(f'Result: {exe_result}')
 
             if exe_result == RunnerReturn.SUCCESS and args.tidy:
@@ -248,7 +250,6 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
             for path in paths:
 
                 exe_result = runner.execute(program=prog, path=path)
-            
                 print(f'Result: {exe_result}')
 
                 if exe_result == RunnerReturn.SUCCESS and args.tidy:
@@ -262,7 +263,7 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 
 
     # If no programs associated with this graph fail, then tidy up by removing the graph
-    if not graph_has_failed:
+    if args.tidy and not graph_has_failed:
         delete_graph(graph_path)
 
 
@@ -303,13 +304,13 @@ def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -
 
     match language:
         case Lang.JAVABC:
-            return create_javabc_folders(base_dir, args.reflection, wrapper_dir)
+            return create_javabc_folders(base_dir, args.reflection, wrapper_dir, args.dirs)
         case Lang.C:
             return create_c_folders(base_dir, wrapper_dir, args.dirs)
     
     return False
 
-def create_javabc_folders(base_dir : Path, reflection: bool, wrapper_dir : Path) -> bool:
+def create_javabc_folders(base_dir : Path, reflection: bool, wrapper_dir : Path, dirs) -> bool:
 
     if reflection:
         testing_dir = Path(base_dir, 'testing')
@@ -328,7 +329,10 @@ def create_javabc_folders(base_dir : Path, reflection: bool, wrapper_dir : Path)
     
     else:
         testing_dir = base_dir
-        wrapper = 'WrapperNoReflection'
+        if dirs:
+            wrapper = 'WrapperNoReflectionStatic'
+        else:
+            wrapper = 'WrapperNoReflection'
 
     # Wrapper required for all cases
     cmd = ['cp',
