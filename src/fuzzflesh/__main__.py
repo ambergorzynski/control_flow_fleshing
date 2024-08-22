@@ -121,7 +121,7 @@ def main():
     compiler : Compiler = get_compiler(args.compiler) 
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
-    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'
+    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'    
 
     # Validity check args
     if not validity_check(args, language):
@@ -147,7 +147,10 @@ def main():
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
             run(args, language, compiler, programs, paths, base_dir, graph)
 
-def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path, Path, list[Path]]:
+def gen(args, 
+    language : Lang, 
+    graph_dir : Path, 
+    graph_id : int,) -> tuple[Path, Path, list[Path]]:
     
     # Generate graph
     print(f'Generating graph {graph_id}...')
@@ -210,7 +213,14 @@ def gen(args, language : Lang, graph_dir : Path, graph_id : int,) -> tuple[Path,
 
     return (Path(graph_path), prog_paths, path_paths)
 
-def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path, graph_path : Path):
+def run(args, language : Lang, 
+        compiler : Compiler, 
+        programs : list[Path], 
+        paths : list[Path], 
+        base_dir : Path, 
+        graph_path : Path):
+
+    log_path = Path(base_dir,'log.txt')
 
     runner : Runner = get_runner(args, language, compiler, base_dir)
 
@@ -221,11 +231,12 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         assert(len(programs)==len(paths))
     
     for (i, prog) in enumerate(programs):
-        print(f'prog is: {prog}')
+        log(log_path, f'Program: {prog}')
 
         # Compile
         compile_result = runner.compile(program=prog,path=paths[i])
         print(f'Result: {compile_result}')
+        log(log_path, f'Compile result: {compile_result}')
 
         if compile_result != RunnerReturn.SUCCESS:
             print('Compilation fail!')
@@ -237,6 +248,7 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
         if args.dirs:
             exe_result = runner.execute(program=prog, path=paths[i])
             print(f'Result: {exe_result}')
+            log(log_path, f'Execution result: {exe_result}')
 
             if exe_result == RunnerReturn.SUCCESS and args.tidy:
                 delete_program(prog, language)
@@ -251,6 +263,7 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 
                 exe_result = runner.execute(program=prog, path=path)
                 print(f'Result: {exe_result}')
+                log(log_path,f'Execution result: {exe_result}')
 
                 if exe_result == RunnerReturn.SUCCESS and args.tidy:
                     delete_path(path)
@@ -413,6 +426,10 @@ def get_compiler(compiler : str) -> Compiler:
         return Compiler.GPP
     else:
         return Compiler[compiler.upper()]
+
+def log(log_path : Path, comment : str):
+    with open(log_path,'a') as f:
+        f.write(comment + '\n')
 
 if __name__ == "__main__":
     main()
