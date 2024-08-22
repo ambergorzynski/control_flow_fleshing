@@ -9,6 +9,7 @@ import json
 
 from pathlib import Path
 
+from fuzzflesh.common.utils import Lang
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.reducer.reducer import Reducer
 
@@ -36,15 +37,20 @@ if __name__==("__main__"):
                         help='Filepath to which the reduced program should be saved.')
     parser.add_argument("--dirs_known",
                         action=argparse.BooleanOptionalAction)
-    parser.add_argument("--language", default="c")
+    parser.add_argument("--language", 
+                        choices=['c','javabc'],
+                        default="c")
    
     args = parser.parse_args()
+
+    language = Lang[args.language.upper()]
 
     cfg = CFG(filename=args.graph)
 
     route = get_route(args.input)
     
-    reducer = Reducer(cfg=cfg, 
+    reducer = Reducer(language=language,
+            cfg=cfg, 
             route=route, 
             interestingness_test=Path(args.interestingness_test),
             output_path=Path(args.output_path),
