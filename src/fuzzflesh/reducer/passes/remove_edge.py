@@ -31,6 +31,7 @@ class RemoveOffPathEdgePass(AbstractPass):
         for i in range(n):
 
             edge = self.edges.pop(0)
+            print(f'Edge to remove: {edge}')
 
             cfg = cfg.remove_edge(edge)
 
