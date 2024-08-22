@@ -96,8 +96,6 @@ def check_route(cfg : CFG, path : Route) -> bool:
     while len(children) > 0:
 
         if actual_output[output_index] != path.expected_output[output_index]:
-            print(f'CHECK: actual: \n {actual_output}')
-            print(f'CHECK: expect: \n {path.expected_output}')
             return False
 
         output_index += 1
@@ -110,11 +108,6 @@ def check_route(cfg : CFG, path : Route) -> bool:
             dir_index += 1
 
             if len(children) == 2:
-                print(f'CHECK: actual: \n {actual_output}')
-                print(f'CHECK: expect: \n {path.expected_output}')
-                print(f'current node: {current_node}')
-                print(f'current node children: {children}')
-                print(f'directions: {direction}')
                 current_node = children[direction]
 
             elif len(children) > 2:
