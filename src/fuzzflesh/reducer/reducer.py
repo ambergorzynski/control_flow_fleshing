@@ -8,8 +8,11 @@ import json
 
 from pathlib import Path
 
+from fuzzflesh.common.utils import Lang
+
 from fuzzflesh.cfg.CFG import CFG, Route
 from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
+from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
 
 from fuzzflesh.reducer.passes.abstract import AbstractPass
 from fuzzflesh.reducer.passes.merge import MergeOnPathPass, MergeOffPathPass, MergeExitPass
@@ -17,11 +20,11 @@ from fuzzflesh.reducer.passes.remove_edge import RemoveOffPathEdgePass, RemoveOn
 
 class Reducer():
 
-    def __init__(self, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path, dirs : bool = True):
+    def __init__(self, language, cfg : CFG, route : Route, interestingness_test : Path, output_path : Path, dirs : bool = True):
+        self.language = language
         self.dirs_known : bool = dirs
         self.interestingness_test : Path = interestingness_test
         self.cfg : CFG = cfg
-        print(f'route has type {type(route)}')
         self.route : Route = route
         self.pass_name_mapping = {
             'merge_on_path' : MergeOnPathPass,
@@ -32,13 +35,20 @@ class Reducer():
             }
         self.output_path : Path = output_path
 
-        self.reduced_program_path : Path = Path(output_path, 'program.c')
+        self.reduced_program_path : Path = Path(output_path, f'program.{self.get_suffix()}')
         self.reduced_input_path : Path = Path(output_path, 'inputs.json')
         self.reduced_graph_path : Path = Path(output_path,'graph.p')
         
-        self.interesting_program_path : Path = Path(output_path, 'interesting_program.c')
+        self.interesting_program_path : Path = Path(output_path, f'interesting_program.{self.get_suffix()}')
         self.interesting_input_path : Path = Path(output_path, 'interesting_input.json')
         self.interesting_graph_path : Path = Path(output_path,'interesting_graph.p')
+
+    def get_suffix(self) -> str:
+        match self.language:
+            case Lang.C: 
+                return 'c'
+            case Lang.JAVABC:
+                return 'j'
 
     def reduce(self, passes : list[AbstractPass]) -> None:
         
@@ -72,16 +82,16 @@ class Reducer():
             old_edges = edges
 
             for p in pass_instances:
-                print(f'Running pass {p}')
+                print(f'Running pass {p}\n')
                 self.run_pass(p)
-                print(f'Finished pass {p}')
+                print(f'Finished pass {p}\n')
 
             (nodes, edges) = self.cfg.get_cfg_size()
             
             print(f'CFG size is: {nodes} nodes and {edges} edges')
 
             shrinking = True if ((nodes < old_nodes) or (edges < old_edges)) else False 
-            time.sleep(1)
+            time.sleep(3)
 
         print('Finished all passes')
 
@@ -132,17 +142,20 @@ class Reducer():
         
         print(f'Result of interestingness test is: {result.returncode}')
         
-        with open('/data/work/fuzzflesh/log.txt','a') as f:
-            f.write(f'Result of interestingness test is: {result.returncode}\n')
-
         if result.returncode == 0:
             return True
 
         return False        
 
     def flesh_cfg(self, cfg : CFG, dirs : list[int]) -> str:
+
+        print(f'dirs known: {self.dirs_known}')
         
-        generator = CProgramGenerator(cfg)
+        if self.language == Lang.C:
+            generator = CProgramGenerator(cfg)
+            
+        elif self.language == Lang.JAVABC:
+            generator = JavaBCProgramGenerator(cfg, self.dirs_known)
 
         if self.dirs_known:
             program = generator.fleshout_with_dirs(dirs)
@@ -185,6 +198,18 @@ class Reducer():
 
                 self.cfg.save_graph(self.interesting_graph_path)
                 print('Saved latest interesting test case')
+
+            #TODO: Update to language-specific
+            tidy_cmd = ['rm', '-rf', 
+                str(self.reduced_program_path),
+                str(self.reduced_input_path),
+                str(self.reduced_graph_path),
+                f'{str(self.reduced_graph_path.parent)}/TestCase.class',
+                f'{str(self.reduced_graph_path.parent)}/TestCase.java',
+                f'{str(self.reduced_graph_path.parent)}/recompiled/TestCase.class',
+                f'{str(self.reduced_graph_path.parent)}/recompiled/TestCase.java']
+
+            subprocess.run(tidy_cmd)
 
             print('Completed round of pass')
 
