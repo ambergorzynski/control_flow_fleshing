@@ -216,7 +216,7 @@ class JavaBCRunner(Runner):
 
             decompile_cmd = [str(self.jvm),
                         '-jar',
-                        str(self.compiler_path),
+                        str(self.decompiler_path),
                         str(class_file),
                         outputdir]
 
@@ -246,6 +246,13 @@ class JavaBCRunner(Runner):
             with open(Path(outputdir, 'TestCase.java'),'r') as f:
                 program = f.read()
                 if 'Decompilation failed' in program:
+                    return RunnerReturn.DECOMPILATION_FAIL
+
+        # Fernflower throws a 'Decompilation failed' error
+        if self.compiler_name == Compiler.FERNFLOWER:
+            with open(Path(outputdir, 'TestCase.java'),'r') as f:
+                program = f.read()
+                if "$FF: Couldn't be decompiled" in program:
                     return RunnerReturn.DECOMPILATION_FAIL
 
         return RunnerReturn.SUCCESS
