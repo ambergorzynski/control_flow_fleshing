@@ -6,24 +6,20 @@ OBJECT='program.o'
 SCRIPT_PATH=${SRC}/fuzzflesh/harness/c
 DECOMPILED='decompiled.c'
 RECOMPILED_OBJECT='recompiled.o'
-WRAPPER=${SRC}/fuzzflesh/wrappers/WrapperStatic.cpp
+WRAPPER=${SRC}/fuzzflesh/wrappers/WrapperDynamic.cpp
 EXE='recompiled.exe'
 INPUT_PATH='inputs.json'
-OUTPUT='/data/work/fuzzflesh/dev_testing/output/out/graph_0/reduce'
 GHIDRA='/data/dev/ghidra/ghidra_11.1.2_PUBLIC/support'
 
 # set env
 export CPLUS_INCLUDE_PATH='/data/dev/include'
-
-# navigate to output file
-cd $OUTPUT
 
 # compile program to object file
 g++ $PROGRAM -c -o $OBJECT
 
 # decompile to c
 $GHIDRA/analyzeHeadless \
-    $OUTPUT Project \
+    . Project \
     -import $OBJECT \
     -scriptPath $SCRIPT_PATH \
     -postscript DecompileHeadless.java \
