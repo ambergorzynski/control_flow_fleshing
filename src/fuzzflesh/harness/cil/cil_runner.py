@@ -11,13 +11,15 @@ class CILRunner(Runner):
                 _toolchain : Compiler,
                 _decompiler_path : Path,
                 _output : Path,
-                _dirs : bool):
+                _dirs : bool,
+                _n_fn_repeats : int = 1000):
         super(Runner, self).__init__()
         self.compiler_name : Compiler = _toolchain
         self.output : Path = _output
         self.dirs_known : bool = _dirs
         self.wrapper : Path = Path(_output, 'Wrapper.cs')
         self.decompiler_path : Path = _decompiler_path
+        self.n_fn_repeats : int = _n_fn_repeats
 
         self.wrapper_exe : Path = Path(_output, 'Wrapper.exe')
 
@@ -34,8 +36,10 @@ class CILRunner(Runner):
 
     def compile(self, program : Path, path : Path) -> RunnerReturn:
 
-        self.compile_wrapper()
-
+        if self.compile_wrapper() != 0:
+            print('Problem with wrapper compilation!')
+            return RunnerReturn.COMPILATION_FAIL
+        
         if self.is_decompiler():
             # We compile, decompile, and re-compile the program
             print('Assembling to exe...')
@@ -53,8 +57,6 @@ class CILRunner(Runner):
                 print('Recompilation failed!')
                 return RunnerReturn.RECOMPILATION_FAIL
             
-            exit()
-
         else:
             pass
 
@@ -62,7 +64,7 @@ class CILRunner(Runner):
 
     def execute(self, program : Path, path : Path) -> RunnerReturn:
 
-        return self.execute_test(get_exe_name(program), path)
+        return self.execute_recompiled_test(get_recomp_name(program), path)
 
     def compile_wrapper(self) -> int:
 
@@ -106,14 +108,19 @@ class CILRunner(Runner):
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
 
-    def execute_test(self, executable : Path, path : Path) -> RunnerReturn:
-        
-        exe_cmd = [str(executable),
+    def execute_recompiled_test(self, executable : Path, path : Path) -> RunnerReturn:
+
+        #TODO: tidy up this command with the Wrapper args
+        exe_cmd = ['mono',
+                str(self.wrapper_exe),
+                str(executable.stem),
                 str(path),
                 str(self.output) + '/out.txt',
-                str(self.output) + '/bug.txt'
+                str(self.output) + '/bug.txt',
+                str(self.n_fn_repeats),
+                str(executable.parent)
                 ]
-
+        
         result = subprocess.run(exe_cmd)
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.EXECUTION_FAIL
