@@ -17,6 +17,7 @@ from fuzzflesh.program_generator.cil.cil_generator import CILProgramGenerator
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.harness.c.c_runner import CRunner
+from fuzzflesh.harness.cil.cil_runner import CILRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -394,7 +395,6 @@ def create_cil_folders(base_dir : Path, wrapper_dir : Path, dirs_known : bool):
            f'{wrapper_dir}/Wrapper.cs',
            f'{base_dir}/Wrapper.cs']
 
-    print(cmd)
     result = subprocess.run(cmd)
 
     return True if result.returncode == 0 else False
@@ -439,6 +439,14 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                         args.dirs,
                         args.headless_path,
                         decompiler_path)
+        
+        case Lang.CIL:
+
+            return CILRunner(compiler,
+                        Path(args.decompiler_path),
+                        base_dir,
+                        args.dirs)
+        
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
