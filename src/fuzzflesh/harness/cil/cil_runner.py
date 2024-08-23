@@ -52,11 +52,8 @@ class CILRunner(Runner):
             if self.recompile_test(program) != RunnerReturn.SUCCESS:
                 print('Recompilation failed!')
                 return RunnerReturn.RECOMPILATION_FAIL
-
-            print('Linking...')
-            if self.link_test(program) != RunnerReturn.SUCCESS:
-                print('Linking failed!')
-                return RunnerReturn.RECOMPILATION_FAIL
+            
+            exit()
 
         else:
             pass
@@ -101,39 +98,13 @@ class CILRunner(Runner):
 
     def recompile_test(self, program : Path):
 
-        #TODO: move to appropriate fn
-        #Ghidra sometimes inserts a function __stack_chk_fail() that is not defined in the c file
-        line = 'void __stack_chk_fail(){return;}'
-        with open(get_decomp_name(program), 'r+') as f:
-            prog = f.read()
-            f.seek(0, 0)
-            f.write(line.rstrip('\r\n') + '\n' + prog)
-
-        cmd = [str(self.compiler_path),
+        cmd = ['csc',
                 str(get_decomp_name(program)),
-                "-c",
-                "-o",
-                str(get_recomp_name(program))]
+                f'-out:{str(get_recomp_name(program))}']
         
         result = subprocess.run(cmd)
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
-
-    def link_test(self, program : Path):
-                
-        cmd = [str(self.compiler_path),
-                str(get_recomp_name(program)),
-                str(self.wrapper),
-                "-o",
-                str(get_recomp_exe_name(program))]
-        
-        env = os.environ.copy()
-
-        env['CPLUS_INCLUDE_PATH']=str(self.include_path)
-
-        result = subprocess.run(cmd, env=env)
-
-        return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.LINKING_FAIL
 
     def execute_test(self, executable : Path, path : Path) -> RunnerReturn:
         
@@ -151,8 +122,9 @@ def get_compiled_name(program : Path) -> Path:
     return Path(program.parent, f'{program.stem}.exe')
 
 def get_decomp_name(program : Path) -> Path: 
-    return Path(program.parent, f'decompiled_{program.stem}.cs')
+    # This naming format is fixed by ILSpy
+    return Path(program.parent, f'{program.stem}.decompiled.cs')
 
 def get_recomp_name(program : Path) -> Path:
-    return Path(program.parent, f'recompiled_{program.stem}.exe')
+    return Path(program.parent, f'{program.stem}.recompiled.exe')
 
