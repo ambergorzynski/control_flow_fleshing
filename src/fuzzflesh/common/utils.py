@@ -20,7 +20,8 @@ class RunnerReturn(Enum):
     DECOMPILATION_FAIL = 2
     RECOMPILATION_FAIL = 3
     EXECUTION_FAIL = 4
-    SUCCESS = 5
+    EXECUTION_MISMATCH = 5
+    SUCCESS = 6
 
 class InstructionBlock():
 
