@@ -1,10 +1,11 @@
 #!/bin/sh
 
-SRC='/data/dev/fuzzflesh/src'
+SRC='/Users/ambergorzynski/dev/fuzzflesh/src'
 ACTION='fuzz'
-OUTPUT='/data/work/fuzzflesh/output/ilspy'
+OUTPUT='/Users/ambergorzynski/phd/work/fuzzflesh/output/ilspy'
 LANG='cil'
-DECOMPILER_PATH='/Users/ambergorzynski/.dotnet/'
+COMPILER='ilspy'
+DECOMPILER_PATH='/Users/ambergorzynski/dev/ilspy/ICSharpCode.ILSpyCmd/bin/Debug/net8.0/ilspycmd'
 
 . $SRC/venv/bin/activate
 
@@ -18,4 +19,5 @@ python3 -m fuzzflesh \
     -max_size=10  \
     --tidy \
     $LANG \
+    $COMPILER \
     $DECOMPILER_PATH 
