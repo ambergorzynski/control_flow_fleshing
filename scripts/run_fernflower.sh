@@ -2,13 +2,13 @@
 
 SRC='/data/dev/fuzzflesh/src'
 ACTION='fuzz'
-OUTPUT='/data/work/fuzzflesh/dev_testing/output'
+OUTPUT='/data/work/fuzzflesh/output/fernflower'
 LANG='javabc'
-COMPILER='cfr'
 JVM='/usr/lib/jvm/java-19-openjdk-amd64/bin'
 JASMIN='/homes/agg22/dev/jasmin-2.4'
 JSON='/data/dev/java/json-simple-1.1.1.jar'
-DECOMPILER_PATH='/vol/bitbucket/agg22/cfr-0.152.jar'
+COMPILER='fernflower'
+DECOMPILER_PATH='/data/dev/fernflower/java-decompiler-engine-242.21829.40.jar'
 
 . $SRC/venv/bin/activate
 
@@ -17,11 +17,14 @@ PYTHONPATH=$SRC/fuzzflesh
 python3 -m fuzzflesh \
     $ACTION \
     -base=$OUTPUT \
-    --dirs \
+    -graphs=10 \
+    -paths=5 \
+    -max_size=20  \
+    -max_successors=2 \
+    --tidy \
     $LANG \
     $COMPILER \
     $JVM \
     $JASMIN \
     $JSON \
-    $DECOMPILER_PATH \
-    --reflection 
+    -decompiler_path=$DECOMPILER_PATH 
