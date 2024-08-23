@@ -121,7 +121,12 @@ def main():
     compiler : Compiler = get_compiler(args.compiler) 
     base_dir : Path = Path(args.base, 'out')
     graph_dir : Path = base_dir
-    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'    
+    wrapper_dir = Path(__file__).parent.parent.resolve() / 'fuzzflesh' / 'wrappers'  
+
+    log_path = Path(base_dir,'log.txt')
+    if log_path.exists():
+        log_path.unlink()
+  
 
     # Validity check args
     if not validity_check(args, language):
