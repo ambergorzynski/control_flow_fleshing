@@ -75,7 +75,7 @@ class JavaBCRunner(Runner):
         else:
             print('Compiling...')
             return self.compile_test(program, class_location)
-
+        
         return RunnerReturn.SUCCESS
         
     def execute(self, program : Path, path : Path) -> RunnerReturn:
@@ -191,9 +191,19 @@ class JavaBCRunner(Runner):
                 f'{self.n_function_repeats}',
                 '-XX:CompileThreshold=100']
                      
-        result = subprocess.run(exe_cmd)
+        result = subprocess.run(exe_cmd, capture_output=True)
 
-        return RunnerReturn.EXECUTION_FAIL if result.returncode != 0 else RunnerReturn.SUCCESS
+        # Diagnose whether result is mismatch or execution failure (e.g. index out of bounds)
+        if result.returncode != 0:
+            if 'Expected and actual output are not the same' in result.stdout.decode('utf-8'):
+                return RunnerReturn.EXECUTION_MISMATCH
+            else:
+                with open(Path(class_location.parent,"output_check.txt"),'a') as f:
+                    f.write(result.stdout.decode('utf-8'))
+                    f.write(result.stderr.decode('utf-8'))
+                return RunnerReturn.EXECUTION_FAIL
+
+        return RunnerReturn.SUCCESS
     
     def decompile_test(self, class_file : Path, outputdir : Path) -> RunnerReturn:
         
