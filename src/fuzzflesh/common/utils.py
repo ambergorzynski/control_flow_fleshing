@@ -57,6 +57,8 @@ class Program():
                 return '.j'
             case Lang.C:
                 return '.c'
+            case Lang.CIL:
+                return '.cil'
             case _ : 
                 return '.txt'
 
