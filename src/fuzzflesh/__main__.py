@@ -8,9 +8,12 @@ from pathlib import Path
 
 from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
+
 from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
 from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
+from fuzzflesh.program_generator.cil.cil_generator import CILProgramGenerator
+
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.harness.c.c_runner import CRunner
@@ -112,6 +115,16 @@ def main():
     c_parser.add_argument("--headless_path",
                     help='Path to headless analyser Ghidra script.')
     c_parser.add_argument("--decompiler_path",
+                    default = None,
+                    help = 'Path to decompiler under test.')
+    
+    # CIL parser args
+    cil_parser = subparsers.add_parser('cil',
+                    help='CIL help')
+    cil_parser.add_argument("compiler",
+                    choices=['ilspy'],
+                    help='Compiler / decompiler toolchain under test.')
+    cil_parser.add_argument("decompiler_path",
                     default = None,
                     help = 'Path to decompiler under test.')
     
@@ -325,6 +338,8 @@ def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -
             return create_javabc_folders(base_dir, args.reflection, wrapper_dir, args.dirs)
         case Lang.C:
             return create_c_folders(base_dir, wrapper_dir, args.dirs)
+        case Lang.CIL:
+            return create_cil_folders(base_dir, wrapper_dir, args.dirs)
     
     return False
 
@@ -373,6 +388,18 @@ def create_c_folders(base_dir : Path, wrapper_dir : Path, dirs_known : bool):
 
     return True if result.returncode == 0 else False
 
+def create_cil_folders(base_dir : Path, wrapper_dir : Path, dirs_known : bool):
+
+    cmd = ['cp',
+           f'{wrapper_dir}/Wrapper.cs',
+           f'{base_dir}/Wrapper.cs']
+
+    print(cmd)
+    result = subprocess.run(cmd)
+
+    return True if result.returncode == 0 else False
+
+
 def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 
     match language:
@@ -381,6 +408,9 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 
         case Lang.C:
             return CProgramGenerator(cfg, args.dirs)
+        
+        case Lang.CIL:
+            return CILProgramGenerator(cfg, args.dirs)
 
     return None
 
