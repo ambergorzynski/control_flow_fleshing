@@ -4,6 +4,7 @@ from pathlib import Path
 class Lang(Enum):
     JAVABC = 1
     C = 2
+    CIL = 3
 
 class Compiler(Enum):
     CFR = 1
