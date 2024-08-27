@@ -23,6 +23,7 @@ class Wrapper
 			string fullPath = args[5];
 
 			Console.WriteLine(fullPath);
+			Console.WriteLine(fullPath+className);
 
 			readIn(inputFilename, ref dirSize, ref outSize, ref dir, ref expectedOutput, ref actualOutput);
 
@@ -32,7 +33,7 @@ class Wrapper
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 
-			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name==className);
+			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name=="run_cfg_None");
 			
 			Console.WriteLine(targetType);
 			
