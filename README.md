@@ -7,6 +7,7 @@ Compiler testing using control flow graph fleshing
 - Jasmin 2.4, which you can download here: https://jasmin.sourceforge.net/
 - json-simple-1.1.1, which you can download here: https://code.google.com/archive/p/json-simple/downloads
 - rapidjson, which you can find here: https://rapidjson.org/
+- Json.NET, which you can find here: https://www.newtonsoft.com/json
 
 # Install
 Run the following commands from the root directory to set up a Python virtual environment and install the necessary packages:
