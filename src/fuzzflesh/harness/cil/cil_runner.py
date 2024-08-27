@@ -1,5 +1,5 @@
 import subprocess
-import os
+import json
 from pathlib import Path
 
 from fuzzflesh.harness.runner import Runner
@@ -35,6 +35,8 @@ class CILRunner(Runner):
         return True if self.compiler_name in [Compiler.ILSPY] else False
 
     def compile(self, program : Path, path : Path) -> RunnerReturn:
+
+        self.convert_path(path)
 
         if self.compile_wrapper() != 0:
             print('Problem with wrapper compilation!')
@@ -101,6 +103,7 @@ class CILRunner(Runner):
     def recompile_test(self, program : Path):
 
         cmd = ['csc',
+               '-o',
                 str(get_decomp_name(program)),
                 f'-out:{str(get_recomp_name(program))}']
         
@@ -108,22 +111,40 @@ class CILRunner(Runner):
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.RECOMPILATION_FAIL
 
-    def execute_recompiled_test(self, executable : Path, path : Path) -> RunnerReturn:
+    def execute_recompiled_test(self, executable : Path, route : Path) -> RunnerReturn:
+
+        txt_route = str(route).replace('.json','.txt')
 
         #TODO: tidy up this command with the Wrapper args
         exe_cmd = ['mono',
                 str(self.wrapper_exe),
                 str(executable.stem),
-                str(path),
+                txt_route,
                 str(self.output) + '/out.txt',
                 str(self.output) + '/bug.txt',
                 str(self.n_fn_repeats),
-                str(executable.parent)
+                f'{str(executable.parent)}/' 
                 ]
         
         result = subprocess.run(exe_cmd)
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.EXECUTION_FAIL
+    
+    def convert_path(self, path : Path):
+        #TODO: convert c# wrapper to read directly from json instead of txt
+
+        with open(path,'r') as f:
+            route = json.load(f)
+
+        dirs = ' '.join([str(d) for d in route["dirs"]])
+        out = ' '.join([str(d) for d in route["expected_output"]])
+
+        with open(str(path).replace('.json','.txt'),'w') as f:
+            f.write(f'{route["dir_len"]}\n')
+            f.write(f'{route["output_len"]}\n')
+            f.write(dirs + '\n')
+            f.write(out + '\n')
+
 
 def get_compiled_name(program : Path) -> Path:
     return Path(program.parent, f'{program.stem}.exe')
