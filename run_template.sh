@@ -5,12 +5,14 @@ NAME=$(hostname)
 MACHINE=${NAME%%.*}
 
 SRC='/homes/rk1923/control_flow_fleshing/src'
+# ACTION='fuzz'
 ACTION='fuzz_with_changing_paths'
 # OUTPUT=/vol/bitbucket/rk1923/UROP/output/${MACHINE}_${TIMESTAMP}
 OUTPUT=./output
-LANG='javabc'
+LANG='java'
 COMPILER='hotspot'
 JVM='/usr/lib/jvm/java-17-openjdk-amd64/bin'
+# JVM='/vol/bitbucket/rk1923/UROP/graalvm-jdk-22.0.2+9.1/bin'
 JASMIN='/vol/bitbucket/rk1923/UROP/jasmin-2.4'
 JSON='/vol/bitbucket/rk1923/UROP/json-simple-1.1.1.jar'
 
@@ -23,15 +25,13 @@ mkdir -p $OUTPUT
 python3 -m fuzzflesh \
     $ACTION \
     -base=$OUTPUT \
-    -graphs=1000000000 \
-    -paths=2 \
-    -min_size=3 \
+    -graphs=1 \
+    -paths=3 \
+    -min_size=2 \
     -max_size=100 \
-    --tidy \
     $LANG \
     $COMPILER \
     $JVM \
-    $JASMIN \
     $JSON \
     # --reflection
 
