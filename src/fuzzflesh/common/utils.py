@@ -4,6 +4,7 @@ from pathlib import Path
 class Lang(Enum):
     JAVABC = 1
     C = 2
+    JAVA = 3
 
 class Compiler(Enum):
     CFR = 1
@@ -54,6 +55,8 @@ class Program():
                 return '.j'
             case Lang.C:
                 return '.c'
+            case Lang.JAVA:
+                return '.java'
             case _ : 
                 return '.txt'
 

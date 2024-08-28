@@ -8,15 +8,17 @@ from pathlib import Path
 from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
 from fuzzflesh.graph_generator.generator import generate_graph
 from fuzzflesh.program_generator.flesher import ProgramFlesher
+from fuzzflesh.program_generator.java.java_generator import JavaProgramGenerator
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
 from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 from fuzzflesh.harness.runner import Runner
+from fuzzflesh.harness.java.java_runner import JavaRunner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.harness.c.c_runner import CRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
-def main():
+def main():    
     parser = argparse.ArgumentParser()
 
     # Common parser args
@@ -112,6 +114,26 @@ def main():
                     default = None,
                     help = 'Path to decompiler under test.')
     
+    # Java parser args
+    java_parser = subparsers.add_parser('java',
+                    help='Java bytecode help')
+    java_parser.add_argument("compiler",
+                        choices=['cfr','fernflower','procyon','hotspot','graalvm'],
+                        help='Compiler / decompiler toolchain under test.')
+    java_parser.add_argument("jvm", 
+                        type=str,
+                        help="Path to JVM to be used")
+    java_parser.add_argument("json",
+                        type=str,
+                        help="Path to json simple jar")
+    java_parser.add_argument("-compiler_path",
+                        default = None, 
+                        type=str, 
+                        help="Path to the (de)compiler under test. Not required for testing JIT compiler e.g. HotSpot where the software under test is in the JVM path")  
+    java_parser.add_argument("--reflection", 
+                        action=argparse.BooleanOptionalAction,
+                        help='Use reflection instead of static compilation.')
+    
     args = parser.parse_args()
 
     language : Lang = Lang[args.language.upper()]
@@ -145,11 +167,11 @@ def main():
             run(args, language, compiler, programs, paths, base_dir, graph)
         
         elif args.action == 'fuzz_with_changing_paths':
-            assert(language == Lang.JAVABC)
+            assert(language == Lang.JAVABC or language == Lang.JAVA)
             assert(compiler == Compiler.HOTSPOT)
+            assert(args.paths >= 2)
 
-            args.paths      = 2
-            args.dirs       = False
+            args.dirs = False
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
             run_with_changing_paths(args, language, compiler, programs, paths, base_dir, graph)
 
@@ -275,13 +297,21 @@ def run(args, language : Lang, compiler : Compiler, programs : list[Path], paths
 def run_with_changing_paths(args, language : Lang, compiler : Compiler, programs : list[Path], paths : list[Path], base_dir : Path, graph_path : Path):
     assert(not args.dirs)
 
-    runner = JavaBCRunner(compiler, 
-                        Path(args.jvm), 
-                        Path(args.jasmin),
-                        Path(args.json),
-                        base_dir,
-                        None,
-                        args.reflection)
+    if (language == Lang.JAVABC):
+        runner = JavaBCRunner(compiler, 
+                              Path(args.jvm), 
+                              Path(args.jasmin),
+                              Path(args.json),
+                              base_dir,
+                              None,
+                              args.reflection)
+    else:
+        runner = JavaRunner(compiler,
+                            Path(args.jvm),
+                            Path(args.json),
+                            base_dir,
+                            None,
+                            args.reflection)
 
     # Indicator for whether any program derived from this particular graph has failed
     graph_has_failed : bool = False
@@ -296,6 +326,7 @@ def run_with_changing_paths(args, language : Lang, compiler : Compiler, programs
         print(f'Result: {compile_result}')
 
         if compile_result == RunnerReturn.COMPILATION_FAIL:
+            log(compile_result)
             return
 
         # Execute a single path with a single program
@@ -317,6 +348,8 @@ def run_with_changing_paths(args, language : Lang, compiler : Compiler, programs
             exe_result = runner.execute_with_changing_paths(program=prog, paths=paths)
         
             print(f'Result: {exe_result}')
+            if exe_result != RunnerReturn.SUCCESS:
+                log(exe_result)
 
             if exe_result == RunnerReturn.SUCCESS and args.tidy:
                 for path in paths:
@@ -346,6 +379,13 @@ def delete_program(program : Path, language : Lang):
         case Lang.C:
             cmd = ['rm', '-f', f'{str(program.parent)}/{str(program.stem)}*']
 
+        case Lang.JAVA:
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}']
+            result = subprocess.run(cmd)
+
+            cmd = ['rm', '-rf', f'{str(program.parent)}/{str(program.stem)}.java']
+            result = subprocess.run(cmd)
+
 def delete_graph(graph : Path):
     ''' 
         Deletes graph and graph folder
@@ -366,6 +406,8 @@ def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -
             return create_javabc_folders(base_dir, args.reflection, wrapper_dir)
         case Lang.C:
             return create_c_folders(base_dir, wrapper_dir)
+        case Lang.JAVA:
+            return create_javabc_folders(base_dir, args.reflection, wrapper_dir)
     
     return False
 
@@ -421,6 +463,9 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
 
         case Lang.C:
             return CProgramGenerator(cfg, args.dirs)
+        
+        case Lang.JAVA:
+            return JavaProgramGenerator(cfg, args.dirs, args.reflection)
 
     return None
 
@@ -444,6 +489,14 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                         base_dir,
                         Path(args.include_path),
                         args.dirs)
+        case Lang.JAVA:
+            path = Path(args.compiler_path) if compiler != Compiler.HOTSPOT else None
+            return JavaRunner(compiler, 
+                        Path(args.jvm), 
+                        Path(args.json),
+                        base_dir,
+                        path,
+                        args.reflection)
     return None
 
 def paths_to_dict(all_paths : list[Route]) -> dict:
@@ -466,6 +519,11 @@ def get_compiler(compiler : str) -> Compiler:
         return Compiler.GPP
     else:
         return Compiler[compiler.upper()]
+
+def log(result: RunnerReturn):
+    with open('/vol/bitbucket/rk1923/UROP/outputlog.txt', 'a') as file:
+        file.write(f"Result: {result}\n")
+    
 
 if __name__ == "__main__":
     main()

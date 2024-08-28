@@ -7,12 +7,11 @@ from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
 def get_class_location(program : Path) -> str:
     return f'{str(program.parent)}/{str(program.stem)}'
 
-class JavaBCRunner(Runner):
+class JavaRunner(Runner):
 
     def __init__(self, 
                 _toolchain : Compiler,
                 _jvm : Path,
-                _jasmin : Path,
                 _json : Path,
                 _output : Path,
                 _compiler_path : Path,
@@ -23,7 +22,6 @@ class JavaBCRunner(Runner):
         self.output : Path = _output
         self.jvm : Path = Path(_jvm, 'java')
         self.javac : Path = Path(_jvm, 'javac')
-        self.jasmin : Path = Path(_jasmin, 'jasmin.jar')
         self.json_jar : Path = Path(_json)
         self.wrapper : Path = Path(_output, 'testing/Wrapper.java') if _reflection else Path(_output,'Wrapper.java')
         self.interface : Path = Path(_output, 'testing/TestCaseInterface.java')
@@ -32,7 +30,7 @@ class JavaBCRunner(Runner):
         
     @property
     def language(self):
-        return Lang.JAVABC
+        return Lang.JAVA
     
     @property
     def toolchain(self):
@@ -58,9 +56,6 @@ class JavaBCRunner(Runner):
         
     def execute(self, program :Path, path : Path) -> RunnerReturn:
         class_location = get_class_location(program)
-        print(str(class_location))
-        print(str(program))
-
 
         return self.execute_test(program, path, class_location)
     
@@ -74,8 +69,8 @@ class JavaBCRunner(Runner):
                 '-XX:+UnlockDiagnosticVMOptions',
                 # '-XX:CompileCommand=print,testing.TestCase::testCase',
                 # '-XX:+PrintCompilation',
-                '-XX:+LogCompilation',
-                f'-XX:LogFile={class_location}/hotspot.log',
+                # '-XX:+LogCompilation',
+                # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{self.output}:{class_location}:{self.json_jar}',
                 f'testing/Wrapper',
@@ -88,11 +83,14 @@ class JavaBCRunner(Runner):
             
         else:
             exe_cmd = [f'{self.jvm}',
-                # '-Dgraal.MaxDuplicationFactor=100000.0',
+                # '-Dgraal.PrintCompilation=true',
+                # '-Djdk.graal.Dump=:1',
+                # f'-Dgraal.LogFile={class_location}/graal.log',
+
                 '-XX:+UnlockDiagnosticVMOptions',
-                # '-XX:CompileCommand=print,TestCase.testCase',
-                '-XX:+PrintCompilation',
+                # # '-XX:CompileCommand=print,TestCase::testCase',
                 # '-XX:+PrintAssembly',
+                # '-XX:+PrintCompilation',
                 # '-XX:+LogCompilation',
                 # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
@@ -102,7 +100,8 @@ class JavaBCRunner(Runner):
                 f'{class_location}/output.txt',
                 f'{class_location}/bad_output.txt',
                 f'{self.n_function_repeats}',
-                '-XX:CompileThreshold=100']
+                # '-XX:CompileThreshold=100'
+            ]
                      
         result = subprocess.run(exe_cmd)
 
@@ -147,15 +146,15 @@ class JavaBCRunner(Runner):
     
     def compile_test_with_reflection(self, program: Path, class_location : Path) -> RunnerReturn:   
 
-        compile_test_result = self.compile_testcase(program, class_location)
-
-        if compile_test_result != 0:
-            return RunnerReturn.COMPILATION_FAIL
-
         interface_cmd = [f'{self.javac}',
                         f'{self.interface}']
                 
         interface_result = subprocess.run(interface_cmd)
+
+        compile_test_result = self.compile_testcase(program, class_location)
+
+        if compile_test_result != 0:
+            return RunnerReturn.COMPILATION_FAIL
 
         if interface_result.returncode != 0:
             print('Interface compilation failed!')
@@ -178,9 +177,9 @@ class JavaBCRunner(Runner):
 
         class_location = f'{str(program.parent)}/{str(program.stem)}'
 
-        compile_test_cmd = [f'{self.jvm}',
-                    '-jar',
-                    str(self.jasmin),
+        compile_test_cmd = [f'{self.javac}',
+                    '-cp',
+                    f'{self.output}',
                     str(program),
                     '-d',
                     str(testcase_location)]
@@ -195,10 +194,9 @@ class JavaBCRunner(Runner):
             exe_cmd = [f'{self.jvm}',
                 '-XX:+UnlockDiagnosticVMOptions',
                 # '-XX:CompileCommand=print,testing.TestCase::testCase',
-                '-XX:+PrintCompilation',
-                '-XX:+PrintAssembly',
-                '-XX:+LogCompilation',
-                f'-XX:LogFile={class_location}/hotspot.log',
+                # '-XX:+PrintCompilation',
+                # '-XX:+LogCompilation',
+                # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{self.output}:{class_location}:{self.json_jar}',
                 f'testing/Wrapper',
@@ -212,10 +210,9 @@ class JavaBCRunner(Runner):
             exe_cmd = [f'{self.jvm}',
                 '-XX:+UnlockDiagnosticVMOptions',
                 # '-XX:CompileCommand=print,TestCase.testCase',
-                # '-XX:+PrintCompilation',
-                '-XX:+PrintAssembly',
-                '-XX:+LogCompilation',
-                f'-XX:LogFile={class_location}/hotspot.log',
+                '-XX:+PrintCompilation',
+                # '-XX:+LogCompilation',
+                # f'-XX:LogFile={class_location}/hotspot.log',
                 '-cp',
                 f':{class_location}:{self.json_jar}',
                 'Wrapper',

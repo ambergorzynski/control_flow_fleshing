@@ -13,7 +13,6 @@ venv/
 __pycache__/
 _old/
 fuzzing*/
-java/
 jasmin/
 work/
 evaluation/test/
