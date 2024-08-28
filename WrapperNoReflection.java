@@ -1,11 +1,11 @@
-package testing;
-
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.lang.Math;
 import java.lang.reflect.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -148,15 +148,13 @@ class Path {
 } 
 
 class Wrapper{
-
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException {
 
 		// parse args
-		String className = args[0];
-		String inputFilenames[] = args[1].split(":");
-		String outputFilename = args[2];
-		String badOutputFilename = args[3];
-		int nFunctionRepeats = Integer.parseInt(args[4]);
+		String inputFilenames[] = args[0].split(":");
+		String outputFilename = args[1];
+		String badOutputFilename = args[2];
+		int nFunctionRepeats = Integer.parseInt(args[3]);
 
 		Path paths[] = new Path[inputFilenames.length];
 
@@ -168,9 +166,7 @@ class Wrapper{
 		boolean success = true;
 
 		// create class
-		Constructor<?> constructor = Class.forName(className).getConstructor();
-	
-		TestCaseInterface test = (TestCaseInterface) constructor.newInstance();
+        TestCase test = new TestCase();
 
 		int index = (int) (Math.random() * paths.length);
 
@@ -256,5 +252,4 @@ class Wrapper{
 		System.exit(1);
 
 	}
-
 }
