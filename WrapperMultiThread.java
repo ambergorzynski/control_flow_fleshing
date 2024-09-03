@@ -207,7 +207,7 @@ class Wrapper{
 				path.recordOutput(badOutputFilename, result);
 				path.recordOutput(null, result);
 
-				e.printStackTrace();
+				exception.printStackTrace();
 				System.exit(1);
 			});
 		}
@@ -217,8 +217,18 @@ class Wrapper{
 
 		// Running one path to let it JIT compile
 		for(int i = 0; i < nFunctionRepeats; i++){
-			paths[0].resetActualOutput();
-			test.testCase(paths[0].dir, paths[0].actualOutput);
+			try {
+				paths[0].resetActualOutput();
+				test.testCase(paths[0].dir, paths[0].actualOutput);
+			} catch (Exception e) {
+				boolean result = paths[0].compare();
+				paths[0].recordOutput(outputFilename, result);
+				paths[0].recordOutput(badOutputFilename, result);
+				paths[0].recordOutput(null, result);
+
+				e.printStackTrace();
+				System.exit(1);
+			}
 
 			// compare each expected and actual and write out if any are inconsistent
 			boolean result = paths[0].compare();
@@ -243,6 +253,7 @@ class Wrapper{
 		for (Path path : paths) {
 			boolean result = path.compare();
 			path.recordOutput(outputFilename, result);
+			if (!result) paths[0].recordOutput(badOutputFilename, result);
 		}
 		
 
