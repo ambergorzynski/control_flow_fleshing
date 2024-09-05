@@ -84,7 +84,7 @@ def main():
     javabc_parser = subparsers.add_parser('javabc',
                     help='Java bytecode help')
     javabc_parser.add_argument("compiler",
-                        choices=['cfr','fernflower','procyon','hotspot','graalvm','jadx'],
+                        choices=['cfr','fernflower','procyon','hotspot','graalvm','jadx','angr'],
                         help='Compiler / decompiler toolchain under test.')
     javabc_parser.add_argument("jvm", 
                         type=str,
@@ -107,7 +107,7 @@ def main():
     c_parser = subparsers.add_parser('c',
                     help='C help')
     c_parser.add_argument("compiler",
-                    choices=['llvm','gcc','ghidra','g++'],
+                    choices=['llvm','gcc','ghidra','g++','angr'],
                     help='Compiler / decompiler toolchain under test.')
     c_parser.add_argument("compiler_path",
                     help='Path to C compiler.')
@@ -460,7 +460,7 @@ def validity_check(args, language):
             return False
     
     if language == Lang.C:
-        if args.compiler in set(['ghidra']) and args.decompiler_path is None:
+        if args.compiler in set(['ghidra','angr']) and args.decompiler_path is None:
             return False
     return True
 
