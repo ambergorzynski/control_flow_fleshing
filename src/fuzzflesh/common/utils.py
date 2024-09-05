@@ -16,6 +16,7 @@ class Compiler(Enum):
     GPP = 7
     GHIDRA = 8
     ILSPY = 9
+    JADX = 10
 
 class RunnerReturn(Enum):
     COMPILATION_FAIL = 1
