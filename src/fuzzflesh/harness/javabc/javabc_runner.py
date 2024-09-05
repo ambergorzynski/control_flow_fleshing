@@ -90,7 +90,7 @@ class JavaBCRunner(Runner):
         return self.execute_test(program, path, class_location)
 
     def is_decompiler(self):
-        if self.toolchain in [Compiler.CFR,Compiler.PROCYON,Compiler.FERNFLOWER]:
+        if self.toolchain in [Compiler.CFR,Compiler.PROCYON,Compiler.FERNFLOWER,Compiler.JADX]:
             return True
         
         return False
@@ -229,6 +229,13 @@ class JavaBCRunner(Runner):
                         str(self.decompiler_path),
                         str(class_file),
                         outputdir]
+        
+        elif self.compiler_name == Compiler.JADX:
+
+            decompile_cmd = [str(self.decompiler_path),
+                        '--single-class-output',
+                        str(outputdir),
+                        str(class_file)]
 
         #TODO: allow CFR in either jar or source form (syntax varies)
         '''
