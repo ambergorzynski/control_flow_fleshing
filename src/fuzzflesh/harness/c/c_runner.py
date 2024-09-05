@@ -37,7 +37,7 @@ class CRunner(Runner):
     def is_decompiler(self):
         return True if self.compiler_name in [Compiler.GHIDRA] else False
 
-    def compile(self, program : Path) -> RunnerReturn:
+    def compile(self, program : Path, path : Path) -> RunnerReturn:
 
         program_location : Path = program.parent
 
