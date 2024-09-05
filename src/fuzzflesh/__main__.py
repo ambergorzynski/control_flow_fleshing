@@ -84,7 +84,7 @@ def main():
     javabc_parser = subparsers.add_parser('javabc',
                     help='Java bytecode help')
     javabc_parser.add_argument("compiler",
-                        choices=['cfr','fernflower','procyon','hotspot','graalvm'],
+                        choices=['cfr','fernflower','procyon','hotspot','graalvm','jadx'],
                         help='Compiler / decompiler toolchain under test.')
     javabc_parser.add_argument("jvm", 
                         type=str,
