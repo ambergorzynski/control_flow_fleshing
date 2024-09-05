@@ -22,8 +22,8 @@ class CRunner(Runner):
         self.dirs_known : bool = _dirs
         self.wrapper : Path = Path(_output, 'Wrapper.cpp')
         self.include_path : Path = _include
-        self.decompiler_path : Path = _decompiler_path
-        self.headless_path : Path = Path(_headless_path)
+        self.decompiler_path : str = _decompiler_path
+        self.headless_path : str = _headless_path
         self.headless_script_name : Path = Path('DecompileHeadless.java')
 
     @property
@@ -35,7 +35,7 @@ class CRunner(Runner):
         return self.compiler_name
 
     def is_decompiler(self):
-        return True if self.compiler_name in [Compiler.GHIDRA] else False
+        return True if self.compiler_name in [Compiler.GHIDRA, Compiler.ANGR] else False
 
     def compile(self, program : Path, path : Path) -> RunnerReturn:
 
@@ -75,7 +75,7 @@ class CRunner(Runner):
 
     def compile_test(self, program : Path) -> RunnerReturn:
         
-        output_path = self.get_executable(program)
+        output_path = get_exe_name(program)
 
         cmd = [str(self.compiler_path),
                 str(program),
@@ -108,21 +108,31 @@ class CRunner(Runner):
 
     def decompile_test(self, program : Path) -> RunnerReturn:
         
-        cmd = [str(self.decompiler_path),
-                str(self.output),
-                "Project",
-                "-import",
-                str(get_object_name(program)),
-                "-overwrite",
-                "-scriptPath",
-                str(self.headless_path),
-                "-postScript",
-                str(self.headless_script_name),
-                str(get_decomp_name(program))]
+        if self.compiler_name == Compiler.GHIDRA:
+            cmd = [str(self.decompiler_path),
+                    str(self.output),
+                    "Project",
+                    "-import",
+                    str(get_object_name(program)),
+                    "-overwrite",
+                    "-scriptPath",
+                    self.headless_path,
+                    "-postScript",
+                    str(self.headless_script_name),
+                    str(get_decomp_name(program))]
+            
+            result = subprocess.run(cmd)
 
-        print(cmd)
+        elif self.compiler_name == Compiler.ANGR:
+            cmd = [str(self.decompiler_path),
+                    'decompile',
+                    str(get_object_name(program))]
 
-        result = subprocess.run(cmd)
+            result = subprocess.run(cmd, capture_output=True)
+
+            # angr output is written to stdout
+            with open(str(get_decomp_name(program)),'w') as f:
+                f.write(result.stdout.decode('utf-8'))
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.DECOMPILATION_FAIL
 
