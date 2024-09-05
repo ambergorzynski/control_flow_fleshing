@@ -430,14 +430,16 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
                         decompiler_path,
                         args.reflection)
         case Lang.C:
+            #TODO: change to option types
             decompiler_path = Path(args.decompiler_path) if args.decompiler_path != None else None
-
+            headless_path = Path(args.headless_path) if args.headless_path != None else None
+            
             return CRunner(compiler,
                         Path(args.compiler_path),
                         base_dir,
                         Path(args.include_path),
                         args.dirs,
-                        args.headless_path,
+                        headless_path,
                         decompiler_path)
         
         case Lang.CIL:
