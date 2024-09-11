@@ -25,7 +25,7 @@ class CSProgramGenerator(ProgramFlesher):
 
         internal class run_cfg {
             public static void Main(string[] args){}
-            public void callTest(int[] dir, ref int[] actualOutput){
+            public void callTest(int[] directions, ref int[] actualOutput){
 
         block_0:
             // set up counters
@@ -72,7 +72,7 @@ class CSProgramGenerator(ProgramFlesher):
 
         code += '''
             // store visited node to output array
-            actual_output[out_counter++] = {i};
+            actualOutput[out_counter++] = {i};
         '''.format(i = n)
 
         return InstructionBlock(code)
