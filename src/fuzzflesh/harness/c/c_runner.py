@@ -138,17 +138,17 @@ class CRunner(Runner):
 
     def recompile_test(self, program : Path):
 
-        #TODO: move to appropriate fn
-        #Ghidra sometimes inserts a function __stack_chk_fail() that is not defined in the c file
-        line = 'void __stack_chk_fail(){return;}'
-        with open(get_decomp_name(program), 'r+') as f:
-            prog = f.read()
-            f.seek(0, 0)
-            f.write(line.rstrip('\r\n') + '\n' + prog)
+        if self.compiler_name == Compiler.GHIDRA:
+            add_stack_chk_def(program)
+
+
+        if self.compiler_name == Compiler.ANGR:
+            self.edit_angr_prog(program)
 
         cmd = [str(self.compiler_path),
                 str(get_decomp_name(program)),
                 "-c",
+                "-fpermissive",
                 "-o",
                 str(get_recomp_name(program))]
         
@@ -183,6 +183,66 @@ class CRunner(Runner):
         result = subprocess.run(exe_cmd)
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.EXECUTION_FAIL
+        
+    def add_stack_chk_def(self, program : Path):
+        #Ghidra sometimes inserts a function __stack_chk_fail() that is not defined in the c file
+        line = 'void __stack_chk_fail(){return;}'
+        with open(get_decomp_name(program), 'r+') as f:
+            prog = f.read()
+            f.seek(0, 0)
+            f.write(line.rstrip('\r\n') + '\n' + prog)
+
+    def edit_angr_prog(self, program : Path):
+
+        if self.dirs_known:
+            # Need to perform some edits on the angr output to make it 
+            # recompilable:
+            #   1. change function signature, which is usually mis-decompiled
+            #   2. remove all 'unsigned' from the program (i.e. change to signed)
+            #   3. dereference a pointer - this might be more tricky to see where
+            #       it is, check a few more examples in case it's always in the same
+            #       part of the program. Seems to always be in the line after v1
+            #       is defined which has the format *((int *)(vn * 4 + a0)) = 0; and
+            #       we need to reference vn
+
+            with open(get_decomp_name(program), 'r') as f:
+                prog = f.readlines()
+
+            # replace function signature
+            prog[0] = 'void run_cfg(int* a0)\n'
+
+            # remove return statement since function is void
+            prog = [line for line in prog if 'return' not in line]
+
+            # remove all unsigned types
+            prog = [line.replace('unsigned','') for line in prog]
+
+            # program seems to use rax without dereferencing by mistake
+            prog = [line if 'rax' not in line else line.replace('*','') for line in prog]
+
+            with open(get_decomp_name(program), 'w') as f:
+                f.write(''.join(prog))
+
+        else:
+            
+            with open(get_decomp_name(program), 'r') as f:
+                prog = f.readlines()
+
+            # replace function signature
+            prog[0] = 'void run_cfg(int* a0, int* a1)\n'
+
+            # remove return statement since function is void
+            prog = [line for line in prog if 'return' not in line]
+
+            # remove all unsigned types
+            prog = [line.replace('unsigned','') for line in prog]
+
+            # program seems to use rax without dereferencing by mistake
+            prog = [line if 'rax' not in line else line.replace('*','') for line in prog]
+
+            with open(get_decomp_name(program), 'w') as f:
+                f.write(''.join(prog))
+            
 
 def get_object_name(program : Path) -> Path:
     return Path(program.parent, f'{program.stem}.o')
