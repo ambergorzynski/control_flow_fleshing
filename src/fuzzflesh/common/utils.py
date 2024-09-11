@@ -5,6 +5,7 @@ class Lang(Enum):
     JAVABC = 1
     C = 2
     CIL = 3
+    CS = 4
 
 class Compiler(Enum):
     CFR = 1
