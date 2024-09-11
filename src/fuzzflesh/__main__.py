@@ -13,6 +13,7 @@ from fuzzflesh.program_generator.flesher import ProgramFlesher
 from fuzzflesh.program_generator.javabc.javabc_generator import JavaBCProgramGenerator
 from fuzzflesh.program_generator.c.c_generator import CProgramGenerator
 from fuzzflesh.program_generator.cil.cil_generator import CILProgramGenerator
+from fuzzflesh.program_generator.cs.cs_generator import CSProgramGenerator
 
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
@@ -129,6 +130,15 @@ def main():
                     default = None,
                     help = 'Path to decompiler under test.')
     
+    # C# parser args
+    cs_parser = subparsers.add_parser('cs',
+                    help='C# help')
+    cs_parser.add_argument("compiler",
+                    choices=['ilspy'],
+                    help='Compiler / decompiler toolchain under test.')
+    cs_parser.add_argument("decompiler_path",
+                    default = None,
+                    help = 'Path to decompiler under test.')
     args = parser.parse_args()
 
     language : Lang = Lang[args.language.upper()]
@@ -231,6 +241,8 @@ def gen(args,
         prog_paths.append(prog_path)
 
     return (Path(graph_path), prog_paths, path_paths)
+
+    exit()
 
 def run(args, language : Lang, 
         compiler : Compiler, 
@@ -411,6 +423,9 @@ def get_flesher(args, language : Lang, cfg : CFG) -> ProgramFlesher:
         
         case Lang.CIL:
             return CILProgramGenerator(cfg, args.dirs)
+
+        case Lang.CS:
+            return CSProgramGenerator(cfg, args.dirs)
 
     return None
 
