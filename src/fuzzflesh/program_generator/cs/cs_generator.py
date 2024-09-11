@@ -8,7 +8,7 @@ from fuzzflesh.cfg import CFG
 class CSProgramGenerator(ProgramFlesher):
 
     def __init__(self, cfg : CFG, dirs_known_at_compile : bool = False):
-        super(CProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
+        super(CSProgramGenerator, self).__init__(cfg, dirs_known_at_compile)
 
     @property
     def language(self):

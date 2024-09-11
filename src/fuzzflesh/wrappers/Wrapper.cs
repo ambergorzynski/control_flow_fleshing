@@ -33,7 +33,7 @@ class Wrapper
 
 			Type[] assemblyTypes = externalAssembly.GetTypes();
 
-			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name=="run_cfg_None");
+			Type targetType = assemblyTypes.FirstOrDefault(t => t.Name=="run_cfg");
 			
 			Console.WriteLine(targetType);
 			

@@ -174,6 +174,7 @@ def main():
 
         elif args.action == 'fuzz':
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+            exit()
             run(args, language, compiler, programs, paths, base_dir, graph)
 
 def gen(args, 
@@ -241,7 +242,6 @@ def gen(args,
         prog_paths.append(prog_path)
 
     return (Path(graph_path), prog_paths, path_paths)
-
     exit()
 
 def run(args, language : Lang, 
@@ -351,7 +351,7 @@ def create_folders(args, base_dir : Path, language : Lang, wrapper_dir : Path) -
             return create_javabc_folders(base_dir, args.reflection, wrapper_dir, args.dirs)
         case Lang.C:
             return create_c_folders(base_dir, wrapper_dir, args.dirs)
-        case Lang.CIL:
+        case Lang.CIL | Lang.CS:
             return create_cil_folders(base_dir, wrapper_dir, args.dirs)
     
     return False
