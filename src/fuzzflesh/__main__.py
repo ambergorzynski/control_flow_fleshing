@@ -19,6 +19,7 @@ from fuzzflesh.harness.runner import Runner
 from fuzzflesh.harness.javabc.javabc_runner import JavaBCRunner
 from fuzzflesh.harness.c.c_runner import CRunner
 from fuzzflesh.harness.cil.cil_runner import CILRunner
+from fuzzflesh.harness.cs.cs_runner import CSRunner
 from fuzzflesh.cfg.CFG import CFG, Route
 
 
@@ -174,7 +175,6 @@ def main():
 
         elif args.action == 'fuzz':
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
-            exit()
             run(args, language, compiler, programs, paths, base_dir, graph)
 
 def gen(args, 
@@ -460,6 +460,12 @@ def get_runner(args, language : Lang, compiler : Compiler, base_dir : Path) -> R
         case Lang.CIL:
 
             return CILRunner(compiler,
+                        Path(args.decompiler_path),
+                        base_dir,
+                        args.dirs)
+
+        case Lang.CS:
+                return CSRunner(compiler,
                         Path(args.decompiler_path),
                         base_dir,
                         args.dirs)
