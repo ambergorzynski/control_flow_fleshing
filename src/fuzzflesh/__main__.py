@@ -68,6 +68,9 @@ def main():
                         type=int,
                         default=900,
                         help = 'Maximum path length.')
+    parser.add_argument("--gen_decompiler_input",
+                        action=argparse.BooleanOptionalAction,
+                        help = 'Generate a low-level program for decompiler input at the generate phase.')
     parser.add_argument("--no_annotations", 
                         action=argparse.BooleanOptionalAction,
                         help = 'Do not add annotated edges to the graph.')
@@ -162,16 +165,23 @@ def main():
     base_dir.mkdir(exist_ok=True)
     graph_dir.mkdir(exist_ok=True)
 
+    if args.gen_decompiler_input:
+        Path(base_dir, 'decompiler_input').mkdir(exist_ok=True)
+
     if not create_folders(args, base_dir, language, wrapper_dir):
         return(1)
     
     for graph_id in range(args.graphs):
     
         if args.action == 'gen':
-            gen(args, language, graph_dir, graph_id)
+            gen(args, language, compiler, graph_dir, graph_id, base_dir)
 
         elif args.action == 'run':
             result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
+ 
+        elif args.action == 'compile':
+            gen(args, language, compiler, graph_dir, graph_id, base_dir)
+            compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
         elif args.action == 'fuzz':
             (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
@@ -179,8 +189,10 @@ def main():
 
 def gen(args, 
     language : Lang, 
+    compiler : Compiler,
     graph_dir : Path, 
-    graph_id : int,) -> tuple[Path, Path, list[Path]]:
+    graph_id : int,
+    base_dir : Path) -> tuple[Path, Path, list[Path]]:
     
     # Generate graph
     print(f'Generating graph {graph_id}...')
@@ -221,6 +233,9 @@ def gen(args,
     # Flesh graphs
     flesher : ProgramFlesher = get_flesher(args, language, graph)
 
+    if args.gen_decompiler_input:
+        runner : Runner = get_runner(args, language, compiler, base_dir)
+
     # If directions are known at compile time, then flesh separate programs for each path
     prog_paths = []
     
@@ -231,7 +246,13 @@ def gen(args,
             prog_path = program.get_program_path(filepath,f'prog_{graph_id}_path_{p}')
             program.write_to_file(prog_path)
             prog_paths.append(prog_path)
-            
+
+            if args.gen_decompiler_input:
+                outputdir = Path(base_dir, 'decompiler_input', f'graph_{graph_id}_path_{p}')
+                outputdir.mkdir(exist_ok=True)
+                runner.gen_decompiler_input(program=prog_path, outputdir=outputdir)
+                write_to_fuzz_test_xml(outputdir, test_id=f'graph_{graph_id}_path{p}')
+
             
     # If directions are unknown, then only flesh one program that accepts a runtime direction array
     else:
@@ -241,8 +262,13 @@ def gen(args,
         program.write_to_file(prog_path)   
         prog_paths.append(prog_path)
 
+        if args.gen_decompiler_input:
+            outputdir = Path(base_dir, 'decompiler_input', f'graph_{graph_id}')
+            outputdir.mkdir(exist_ok=True)
+            runner.gen_decompiler_input(program=prog_path, outputdir=outputdir)
+            write_to_fuzz_test_xml(outputdir, test_id=f'graph_{graph_id}')
+
     return (Path(graph_path), prog_paths, path_paths)
-    exit()
 
 def run(args, language : Lang, 
         compiler : Compiler, 
@@ -264,15 +290,17 @@ def run(args, language : Lang,
     for (i, prog) in enumerate(programs):
         log(log_path, f'Program: {prog}')
 
-        # Compile
-        compile_result = runner.compile(program=prog,path=paths[i])
-        print(f'Result: {compile_result}')
-        log(log_path, f'Compile result: {compile_result}')
+        # We have already compiled the programs to low-level for decompilers 
+        if not compiler.is_decompiler():
+            # Compile
+            compile_result = runner.compile(program=prog,path=paths[i])
+            print(f'Result: {compile_result}')
+            log(log_path, f'Compile result: {compile_result}')
 
-        if compile_result != RunnerReturn.SUCCESS:
-            print('Compilation fail!')
-            graph_has_failed=True
-            continue
+            if compile_result != RunnerReturn.SUCCESS:
+                print('Compilation fail!')
+                graph_has_failed=True
+                continue
 
         # Execute a single path with a single program
         # We pass the path so that the runner can compare the expected and actual result
@@ -496,6 +524,20 @@ def get_compiler(compiler : str) -> Compiler:
 def log(log_path : Path, comment : str):
     with open(log_path,'a') as f:
         f.write(comment + '\n')
+    
+def write_to_fuzz_test_xml(dir : Path, test_id : str):
+
+    content = f'''
+    <classes>
+        <class>
+            <path>{dir}</path>
+            <name>Test_{test_id}</name>
+        </class>
+    </classes>
+    '''
+    with open(Path(dir, 'fuzzer_classes.xml'),'a') as f:
+        f.write(content)
+
 
 if __name__ == "__main__":
     main()
