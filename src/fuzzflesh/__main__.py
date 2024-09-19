@@ -4,6 +4,7 @@ import glob
 import subprocess
 import pickle
 import json
+import time
 from pathlib import Path
 
 from fuzzflesh.common.utils import Lang, Compiler, Program, RunnerReturn
@@ -31,7 +32,6 @@ def main():
                         help='''Gen produces graphs and paths. 
                                 Run runs existing graphs and paths.
                                 Fuzz combines gen and run.''')
-    
     parser.add_argument("-base",
                         type = str,
                         default = os.getcwd(),
@@ -43,7 +43,7 @@ def main():
     parser.add_argument("-paths", 
                         type=int,
                         default = 1,
-                        help = 'Number of paths.')  
+                        help = 'Number of paths per graph.')  
     parser.add_argument("-max_size", 
                         type=int,
                         default = 500,
@@ -79,6 +79,9 @@ def main():
                         help = 'Directions are known at compile time.')
     parser.add_argument("--tidy",action=argparse.BooleanOptionalAction,
                         help="Specifies whether to remove files if test passes")
+    parser.add_argument("--time_limit",
+                        type=int,
+                        help = 'Time budget in minutes. Using this option overrides the number of graphs; graph generation will continue until the time limit')
 
     # Subparser for language-specific arguments
     subparsers = parser.add_subparsers(dest='language',
@@ -171,21 +174,44 @@ def main():
     if not create_folders(args, base_dir, language, wrapper_dir):
         return(1)
     
-    for graph_id in range(args.graphs):
+    if not args.time_limit:
+        for graph_id in range(args.graphs):
     
-        if args.action == 'gen':
-            gen(args, language, compiler, graph_dir, graph_id, base_dir)
+            if args.action == 'gen':
+                gen(args, language, compiler, graph_dir, graph_id, base_dir)
 
-        elif args.action == 'run':
-            result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
- 
-        elif args.action == 'compile':
-            gen(args, language, compiler, graph_dir, graph_id, base_dir)
-            compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
+            elif args.action == 'run':
+                result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
+    
+            elif args.action == 'compile':
+                gen(args, language, compiler, graph_dir, graph_id, base_dir)
+                compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
-        elif args.action == 'fuzz':
-            (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+            elif args.action == 'fuzz':
+                (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
             run(args, language, compiler, programs, paths, base_dir, graph)
+
+    else:
+        graph_id = 0
+        start_time = time.time()
+
+        while((time.time() - start_time) < (args.time_limit*60)):
+            if args.action == 'gen':
+                gen(args, language, compiler, graph_dir, graph_id, base_dir)
+
+            elif args.action == 'run':
+                result = run(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
+    
+            elif args.action == 'compile':
+                gen(args, language, compiler, graph_dir, graph_id, base_dir)
+                compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
+
+            elif args.action == 'fuzz':
+                (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+                run(args, language, compiler, programs, paths, base_dir, graph)
+
+            graph_id += 1
+
 
 def gen(args, 
     language : Lang, 
