@@ -44,6 +44,14 @@ class JavaBCRunner(Runner):
     def get_recompiled_class_location(self, program : Path) -> str:
         return f'{str(program.parent)}/{str(program.stem)}/recompiled'
 
+    def gen_decompiler_input(self, program : Path, outputdir : Path = None) -> RunnerReturn:
+        if not outputdir:
+            outputdir = self.get_class_location(program)
+        
+        print('Assembling...')
+        if self.compile_testcase(program, outputdir) != RunnerReturn.SUCCESS:
+            return RunnerReturn.COMPILATION_FAIL
+
     def compile(self, program : Path, path : Path) -> RunnerReturn:
 
         class_location = self.get_class_location(program)
