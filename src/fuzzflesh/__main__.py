@@ -82,7 +82,9 @@ def main():
     parser.add_argument("--time_limit",
                         type=int,
                         help = 'Time budget in minutes. Using this option overrides the number of graphs; graph generation will continue until the time limit')
-
+    parser.add_argument("--gen_xml_for_coverage",
+                        action=argparse.BooleanOptionalAction,
+                        help = 'Generate an xml file that lists the location of all class files to be used for coverage tracking.')
     # Subparser for language-specific arguments
     subparsers = parser.add_subparsers(dest='language',
                         help='Language to run',
@@ -170,6 +172,12 @@ def main():
 
     if args.gen_decompiler_input:
         Path(base_dir, 'decompiler_input').mkdir(exist_ok=True)
+        with open (Path(base_dir, 'decompiler_input/fuzzer_classes.xml'),'w') as f:
+            f.write('<classes>')
+
+    if args.gen_xml_for_coverage:
+        with open (Path(base_dir, 'fuzzer_classes.xml'),'w') as f:
+            f.write('<classes>')
 
     if not create_folders(args, base_dir, language, wrapper_dir):
         return(1)
@@ -207,10 +215,18 @@ def main():
                 compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
             elif args.action == 'fuzz':
-                (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
+                (graph, programs, paths) = gen(args, language, compiler, graph_dir, graph_id, base_dir)
                 run(args, language, compiler, programs, paths, base_dir, graph)
 
             graph_id += 1
+
+    if args.gen_decompiler_input:
+        with open (Path(base_dir, 'decompiler_input/fuzzer_classes.xml'),'a') as f:
+            f.write('</classes>')
+    
+    if args.gen_xml_for_coverage:
+        with open (Path(base_dir, 'fuzzer_classes.xml'),'a') as f:
+            f.write('</classes>')
 
 
 def gen(args, 
@@ -277,9 +293,10 @@ def gen(args,
                 outputdir = Path(base_dir, 'decompiler_input', f'graph_{graph_id}_path_{p}')
                 outputdir.mkdir(exist_ok=True)
                 runner.gen_decompiler_input(program=prog_path, outputdir=outputdir)
-                write_to_fuzz_test_xml(outputdir, test_id=f'graph_{graph_id}_path{p}')
+                write_to_fuzz_test_xml(xml_location=outputdir.parent,
+                        test_location=outputdir,
+                        test_id=f'TestCase')
 
-            
     # If directions are unknown, then only flesh one program that accepts a runtime direction array
     else:
         print(f'Fleshing graph {graph_id}...')
@@ -292,7 +309,9 @@ def gen(args,
             outputdir = Path(base_dir, 'decompiler_input', f'graph_{graph_id}')
             outputdir.mkdir(exist_ok=True)
             runner.gen_decompiler_input(program=prog_path, outputdir=outputdir)
-            write_to_fuzz_test_xml(outputdir, test_id=f'graph_{graph_id}')
+            write_to_fuzz_test_xml(xml_location=outputdir.parent,
+                    test_location=outputdir,    
+                    test_id=f'TestCase')
 
     return (Path(graph_path), prog_paths, path_paths)
 
@@ -316,17 +335,21 @@ def run(args, language : Lang,
     for (i, prog) in enumerate(programs):
         log(log_path, f'Program: {prog}')
 
-        # We have already compiled the programs to low-level for decompilers 
-        if not compiler.is_decompiler():
-            # Compile
-            compile_result = runner.compile(program=prog,path=paths[i])
-            print(f'Result: {compile_result}')
-            log(log_path, f'Compile result: {compile_result}')
+        # Compile
+        compile_result = runner.compile(program=prog,path=paths[i])
+        print(f'Result: {compile_result}')
+        log(log_path, f'Compile result: {compile_result}')
 
-            if compile_result != RunnerReturn.SUCCESS:
-                print('Compilation fail!')
-                graph_has_failed=True
-                continue
+        if compile_result != RunnerReturn.SUCCESS:
+            print('Compilation fail!')
+            graph_has_failed=True
+
+            if args.gen_xml_for_coverage:
+                write_to_fuzz_test_xml(xml_location=base_dir,
+                    test_location=runner.get_low_level_location(program=prog),
+                    test_id=runner.get_test_id(program=prog))
+
+            continue
 
         # Execute a single path with a single program
         # We pass the path so that the runner can compare the expected and actual result
@@ -358,6 +381,11 @@ def run(args, language : Lang,
 
             if not graph_has_failed:
                 delete_program(prog, language)
+
+        if args.gen_xml_for_coverage:
+            write_to_fuzz_test_xml(xml_location=base_dir,
+                test_location=runner.get_low_level_location(program=prog),
+                test_id=runner.get_test_id(program=prog))
 
 
     # If no programs associated with this graph fail, then tidy up by removing the graph
@@ -551,17 +579,15 @@ def log(log_path : Path, comment : str):
     with open(log_path,'a') as f:
         f.write(comment + '\n')
     
-def write_to_fuzz_test_xml(dir : Path, test_id : str):
+def write_to_fuzz_test_xml(xml_location: Path, test_location : Path, test_id : str):
 
     content = f'''
-    <classes>
         <class>
-            <path>{dir}</path>
-            <name>Test_{test_id}</name>
+            <path>{test_location}</path>
+            <name>{test_id}</name>
         </class>
-    </classes>
     '''
-    with open(Path(dir, 'fuzzer_classes.xml'),'a') as f:
+    with open(Path(xml_location, 'fuzzer_classes.xml'),'a') as f:
         f.write(content)
 
 
