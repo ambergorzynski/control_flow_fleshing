@@ -17,9 +17,8 @@ PYTHONPATH=$SRC/fuzzflesh
 python3 -m fuzzflesh \
     $ACTION \
     -base=$OUTPUT \
-    -graphs=1 \
     -paths=5 \
-    -max_size=7 \
+    -max_size=10 \
     -max_successors=4 \
     --dirs \
     --tidy \
@@ -28,4 +27,4 @@ python3 -m fuzzflesh \
     $JVM \
     $JASMIN \
     $JSON \
-    -decompiler_path=$DECOMPILER_PATH 
+    -decompiler_path=$DECOMPILER_PATH
