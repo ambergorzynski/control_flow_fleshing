@@ -38,6 +38,12 @@ class JavaBCRunner(Runner):
     def toolchain(self):
         return self.compiler_name
 
+    def get_low_level_location(self, program : Path) -> Path:
+        return Path(self.get_class_location(program))
+    
+    def get_test_id(self, program : Path) -> str:
+        return 'TestCase'
+
     def get_class_location(self, program : Path) -> str:
         return f'{str(program.parent)}/{str(program.stem)}'
     
