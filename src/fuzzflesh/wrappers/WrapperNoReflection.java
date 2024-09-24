@@ -5,9 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.lang.Math;
-import java.lang.Thread;
 import java.lang.reflect.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -150,7 +148,8 @@ class Path {
 } 
 
 class Wrapper{
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException, InterruptedException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException {
+
 		// parse args
 		String inputFilenames[] = args[0].split(":");
 		String outputFilename = args[1];
@@ -163,90 +162,90 @@ class Wrapper{
 			paths[i] = new Path(inputFilenames[i]);
 		}
 
-		// To keep track if any of them failed
-		AtomicBoolean success = new AtomicBoolean(true);
-
-		Thread threads[] = new Thread[paths.length];
-
-		// Initializing threads
-		for (int i = 0; i < threads.length; ++i) {
-			final Path path = paths[i];
-			final String tempBadOutputFilename = badOutputFilename + i;
-
-			threads[i] = new Thread(() -> {
-				boolean threadSuccess = true;
-				boolean result = true;
-				TestCase test = new TestCase();
-
-				for(int j = 0; j < nFunctionRepeats; j++){
-					path.resetActualOutput();
-					test.testCase(path.dir, path.actualOutput);
-
-					// compare each expected and actual and write out if any are inconsistent
-					result = path.compare();
-					threadSuccess = threadSuccess && result;
-
-					// record bad output in separate file
-					if (!result){
-						path.recordOutput(tempBadOutputFilename, result);
-					}
-
-				}
-
-				// Update success if any of paths failed in this thread
-				success.set(success.get() && threadSuccess);
-
-				// Print to console
-				path.recordOutput(null, result);
-			});
-
-			// Catch exceptions occured in threads
-			threads[i].setUncaughtExceptionHandler((thread, exception) -> {
-				boolean result = path.compare();
-				path.recordOutput(outputFilename, result);
-				path.recordOutput(badOutputFilename, result);
-				path.recordOutput(null, result);
-
-				e.printStackTrace();
-				System.exit(1);
-			});
-		}
+		boolean result = true;
+		boolean success = true;
 
 		// create class
         TestCase test = new TestCase();
 
-		// Running one path to let it JIT compile
+		int index = (int) (Math.random() * paths.length);
+
+		// repeat function to induce JIT
 		for(int i = 0; i < nFunctionRepeats; i++){
-			paths[0].resetActualOutput();
-			test.testCase(paths[0].dir, paths[0].actualOutput);
+			try {
+				paths[index].resetActualOutput();
+				test.testCase(paths[index].dir, paths[index].actualOutput);
+			} catch (Exception e) {
+				result = paths[index].compare();
+				paths[index].recordOutput(outputFilename, result);
+				paths[index].recordOutput(badOutputFilename, result);
+				paths[index].recordOutput(null, result);
+
+				e.printStackTrace();
+				System.exit(1);
+			}
 
 			// compare each expected and actual and write out if any are inconsistent
-			boolean result = paths[0].compare();
-			success.set(success.get() && result);
+			result = paths[index].compare();
+			success = success && result;
 
 			// record bad output in separate file
 			if (!result){
-				paths[0].recordOutput(badOutputFilename, result);
+				paths[index].recordOutput(badOutputFilename, result);
 			}
 
 		}
 
-		// Launching all threads
-		for (Thread thread : threads) {
-			thread.start();
-		}
+		// record all output
+		paths[index].recordOutput(outputFilename, result);
 
-		for (Thread thread : threads) {
-			thread.join();
-		}
+		// print outcomes
+		paths[index].recordOutput(null, result);
 
-		for (Path path : paths) {
-			boolean result = path.compare();
-			path.recordOutput(outputFilename, result);
+		// if multiple paths provided, change the path to trigger deoptimization
+		if (paths.length >= 2) {
+			int repeat = (int) (Math.random() * paths.length * 1.5) + 1;
+
+			for (int i = 0; i < repeat; ++i) {
+				System.out.println("Switching paths");
+				index = (int) (Math.random() * paths.length);
+
+				// repeat function to induce JIT
+				for(int j = 0; j < nFunctionRepeats; j++){
+					try {
+						paths[index].resetActualOutput();
+						test.testCase(paths[index].dir, paths[index].actualOutput);
+					} catch (Exception e) {
+						result = paths[index].compare();
+						paths[index].recordOutput(outputFilename, result);
+						paths[index].recordOutput(badOutputFilename, result);
+						paths[index].recordOutput(null, result);
+
+						e.printStackTrace();
+						System.exit(1);
+					}
+
+					// compare each expected and actual and write out if any are inconsistent
+					result = paths[index].compare();
+					success = success && result;
+
+					// record bad output in separate file
+					if (!result){
+						paths[index].recordOutput(badOutputFilename, result);
+					}
+
+				}
+
+				// record all output
+				paths[index].recordOutput(outputFilename, result);
+
+				// print outcomes
+				paths[index].recordOutput(null, result);
+			}
 		}
 		
 
-		if(success.get()) {
+		if(success) {
 			System.exit(0);
 		}
 

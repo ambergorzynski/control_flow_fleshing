@@ -88,10 +88,10 @@ class JavaBCRunner(Runner):
             
         else:
             exe_cmd = [f'{self.jvm}',
-                # '-Dgraal.MaxDuplicationFactor=100000.0',
+                '-Dgraal.MaxDuplicationFactor=100000.0',
                 '-XX:+UnlockDiagnosticVMOptions',
                 # '-XX:CompileCommand=print,TestCase.testCase',
-                '-XX:+PrintCompilation',
+                # '-XX:+PrintCompilation',
                 # '-XX:+PrintAssembly',
                 # '-XX:+LogCompilation',
                 # f'-XX:LogFile={class_location}/hotspot.log',
