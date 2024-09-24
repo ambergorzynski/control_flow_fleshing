@@ -1,12 +1,14 @@
 #!/bin/sh
 
 # This script creates a sample of FuzzFlesh test programs
-# in Java bytecode (.class files) and runs CFR
+# in Java bytecode (.class files) and runs FernFlower
+
+OUTPUT=$1
+TIMELIMIT=$2
 
 # Setup information
 SRC='/data/dev/fuzzflesh/src'
 ACTION='fuzz'
-OUTPUT='/data/work/fuzzflesh/coverage/fernflower/fuzzflesh'
 LANG='javabc'
 JVM='/usr/lib/jvm/java-19-openjdk-amd64/bin'
 JASMIN='/homes/agg22/dev/jasmin-2.4'
@@ -29,7 +31,7 @@ python3 -m fuzzflesh \
     --dirs \
     --no-tidy \
     --gen_xml_for_coverage \
-    --time_limit=1 \
+    --time_limit=$TIMELIMIT \
     $LANG \
     $COMPILER \
     $JVM \
