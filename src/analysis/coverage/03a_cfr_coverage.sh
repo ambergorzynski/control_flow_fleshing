@@ -36,7 +36,7 @@ mvn jacoco:report
 #open target/site/index.html
 
 # Compress coverage report and save
-zip -r cfr_coverage_fuzzflesh.zip target/site
+zip -r cfr_coverage_${TOOL}.zip target/site
 
 mv cfr_coverage_${TOOL}.zip $OUTPUT/cfr_coverage_${TOOL}.zip
 rm -rf $OUTPUT/cfr_coverage_${TOOL}
