@@ -16,6 +16,9 @@ OUTPUT=$1
 # Path to the output directory containing the FuzzFlesh test .class files
 TEST_FILES=$2
 
+# Tool from {fuzzflesh, jdtester}
+TOOL=$3
+
 # Copy the test .xml into the CFR test-spec folder
 # CFR will read from this file to determine the location of the .class files
 cp ${TEST_FILES}/fuzzer_classes.xml ${CFR}/decompilation-test/test-specs/
@@ -35,4 +38,7 @@ mvn jacoco:report
 # Compress coverage report and save
 zip -r cfr_coverage_fuzzflesh.zip target/site
 
-mv cfr_coverage_fuzzflesh.zip $OUTPUT/
+mv cfr_coverage_${TOOL}.zip $OUTPUT/cfr_coverage_${TOOL}.zip
+rm -rf $OUTPUT/cfr_coverage_${TOOL}
+unzip $OUTPUT/cfr_coverage_${TOOL}.zip -d $OUTPUT/cfr_coverage_${TOOL}
+rm -f $OUTPUT/cfr_coverage_${TOOL}.zip
