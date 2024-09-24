@@ -11,11 +11,10 @@ CFR=/data/dev/cfr_cov
 JAVA11=/usr/lib/jvm/java-11-openjdk-amd64/
 
 # Path to coverage results output
-OUTPUT=/data/work/fuzzflesh/coverage/results/
+OUTPUT=$1
 
 # Path to the output directory containing the FuzzFlesh test .class files
-TEST_FILES=/data/work/fuzzflesh/coverage/cfr/fuzzflesh/out
-#TEST_FILES=/data/work/fuzzflesh/coverage/cfr/jdtester/javafuzzer
+TEST_FILES=$2
 
 # Copy the test .xml into the CFR test-spec folder
 # CFR will read from this file to determine the location of the .class files
@@ -36,4 +35,4 @@ mvn jacoco:report
 # Compress coverage report and save
 zip -r cfr_coverage_fuzzflesh.zip target/site
 
-mv cfr_coverage_fuzzflesh.zip $OUTPUT
+mv cfr_coverage_fuzzflesh.zip $OUTPUT/
