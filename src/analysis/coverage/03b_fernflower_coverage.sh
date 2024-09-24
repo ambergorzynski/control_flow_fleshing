@@ -10,6 +10,9 @@ FERNFLOWER=/data/dev/fernflower/intellij-community-cov/plugins/java-decompiler/e
 # Path to the output directory containing the FuzzFlesh test .class files
 TEST_FILES=/data/work/fuzzflesh/coverage/fernflower/fuzzflesh/out
 
+# Path to coverage results output
+OUTPUT=/data/work/fuzzflesh/coverage/results/
+
 # Copy the test .xml into the FernFlower test-spec folder
 # FernFlower will read from this file to determine the location of the .class files
 cp ${TEST_FILES}/fuzzer_classes.xml ${FERNFLOWER}/testSpecs/
@@ -20,3 +23,8 @@ gradle clean test
 
 # View interactive coverage results
 #open build/jacocoHtml/index.html
+
+# Compress coverage report and save
+zip -r fernflower_coverage_fuzzflesh.zip build/jacocoHtml
+
+mv fernflower_coverage_fuzzflesh.zip $OUTPUT
