@@ -27,8 +27,8 @@ python3 -m fuzzflesh \
     -base=$OUTPUT \
     -graphs=1 \
     -paths=3 \
-    -min_size=2 \
-    -max_size=100 \
+    -min_size=3 \
+    -max_size=10000 \
     $LANG \
     $COMPILER \
     $JVM \
