@@ -20,6 +20,6 @@ pip install -e .
 
 # Run
 - Create an output directory, ideally somewhere outside of the repo
-- Edit the template `run_template.sh` to point to the relevant filepaths on your machine
+- Edit the template `scripts/run_template.sh` to point to the relevant filepaths on your machine
 - Run the shell script 
 
