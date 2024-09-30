@@ -37,6 +37,12 @@ class CRunner(Runner):
     def is_decompiler(self):
         return True if self.compiler_name in [Compiler.GHIDRA, Compiler.ANGR] else False
 
+    def get_low_level_location(self, program : Path):
+        return self.get_object_name(program)
+
+    def get_test_id(self, program : Path):
+        return program.stem
+
     def compile(self, program : Path, path : Path) -> RunnerReturn:
 
         program_location : Path = program.parent
@@ -71,11 +77,11 @@ class CRunner(Runner):
 
     def execute(self, program : Path, path : Path or None) -> RunnerReturn:
 
-        return self.execute_test(get_exe_name(program), path)
+        return self.execute_test(self.get_exe_name(program), path)
 
     def compile_test(self, program : Path) -> RunnerReturn:
         
-        output_path = get_exe_name(program)
+        output_path = self.get_exe_name(program)
 
         cmd = [str(self.compiler_path),
                 str(program),
@@ -113,25 +119,25 @@ class CRunner(Runner):
                     str(self.output),
                     "Project",
                     "-import",
-                    str(get_object_name(program)),
+                    str(self.get_object_name(program)),
                     "-overwrite",
                     "-scriptPath",
                     self.headless_path,
                     "-postScript",
                     str(self.headless_script_name),
-                    str(get_decomp_name(program))]
+                    str(self.get_decomp_name(program))]
             
             result = subprocess.run(cmd)
 
         elif self.compiler_name == Compiler.ANGR:
             cmd = [str(self.decompiler_path),
                     'decompile',
-                    str(get_object_name(program))]
+                    str(self.object_name(program))]
 
             result = subprocess.run(cmd, capture_output=True)
 
             # angr output is written to stdout
-            with open(str(get_decomp_name(program)),'w') as f:
+            with open(str(self.get_decomp_name(program)),'w') as f:
                 f.write(result.stdout.decode('utf-8'))
 
         return RunnerReturn.SUCCESS if result.returncode == 0 else RunnerReturn.DECOMPILATION_FAIL
@@ -139,18 +145,18 @@ class CRunner(Runner):
     def recompile_test(self, program : Path):
 
         if self.compiler_name == Compiler.GHIDRA:
-            add_stack_chk_def(program)
+            self.add_stack_chk_def(program)
 
 
         if self.compiler_name == Compiler.ANGR:
             self.edit_angr_prog(program)
 
         cmd = [str(self.compiler_path),
-                str(get_decomp_name(program)),
+                str(self.get_decomp_name(program)),
                 "-c",
                 "-fpermissive",
                 "-o",
-                str(get_recomp_name(program))]
+                str(self.get_recomp_name(program))]
         
         result = subprocess.run(cmd)
 
@@ -159,10 +165,10 @@ class CRunner(Runner):
     def link_test(self, program : Path):
                 
         cmd = [str(self.compiler_path),
-                str(get_recomp_name(program)),
+                str(self.get_recomp_name(program)),
                 str(self.wrapper),
                 "-o",
-                str(get_recomp_exe_name(program))]
+                str(self.get_recomp_exe_name(program))]
         
         env = os.environ.copy()
 
@@ -187,7 +193,7 @@ class CRunner(Runner):
     def add_stack_chk_def(self, program : Path):
         #Ghidra sometimes inserts a function __stack_chk_fail() that is not defined in the c file
         line = 'void __stack_chk_fail(){return;}'
-        with open(get_decomp_name(program), 'r+') as f:
+        with open(self.get_decomp_name(program), 'r+') as f:
             prog = f.read()
             f.seek(0, 0)
             f.write(line.rstrip('\r\n') + '\n' + prog)
@@ -205,7 +211,7 @@ class CRunner(Runner):
             #       is defined which has the format *((int *)(vn * 4 + a0)) = 0; and
             #       we need to reference vn
 
-            with open(get_decomp_name(program), 'r') as f:
+            with open(self.get_decomp_name(program), 'r') as f:
                 prog = f.readlines()
 
             # replace function signature
@@ -220,12 +226,12 @@ class CRunner(Runner):
             # program seems to use rax without dereferencing by mistake
             prog = [line if 'rax' not in line else line.replace('*','') for line in prog]
 
-            with open(get_decomp_name(program), 'w') as f:
+            with open(self.get_decomp_name(program), 'w') as f:
                 f.write(''.join(prog))
 
         else:
             
-            with open(get_decomp_name(program), 'r') as f:
+            with open(self.get_decomp_name(program), 'r') as f:
                 prog = f.readlines()
 
             # replace function signature
@@ -240,21 +246,20 @@ class CRunner(Runner):
             # program seems to use rax without dereferencing by mistake
             prog = [line if 'rax' not in line else line.replace('*','') for line in prog]
 
-            with open(get_decomp_name(program), 'w') as f:
+            with open(self.get_decomp_name(program), 'w') as f:
                 f.write(''.join(prog))
             
+    def get_object_name(program : Path) -> Path:
+        return Path(program.parent, f'{program.stem}.o')
 
-def get_object_name(program : Path) -> Path:
-    return Path(program.parent, f'{program.stem}.o')
+    def get_decomp_name(program : Path) -> Path: 
+        return Path(program.parent, f'decompiled_{program.stem}.c')
 
-def get_decomp_name(program : Path) -> Path: 
-    return Path(program.parent, f'decompiled_{program.stem}.c')
+    def get_recomp_name(program : Path) -> Path:
+        return Path(program.parent, f'recompiled_{program.stem}.o')
 
-def get_recomp_name(program : Path) -> Path:
-    return Path(program.parent, f'recompiled_{program.stem}.o')
+    def get_exe_name(program : Path) -> Path:
+        return Path(program.parent, f'{program.stem}.exe')
 
-def get_exe_name(program : Path) -> Path:
-    return Path(program.parent, f'{program.stem}.exe')
-
-def get_recomp_exe_name(program : Path) -> Path:
-    return Path(program.parent, f'{program.stem}.exe')
+    def get_recomp_exe_name(program : Path) -> Path:
+        return Path(program.parent, f'{program.stem}.exe')
