@@ -82,7 +82,8 @@ def import_c_ff():
                     print(e)
                     data = None
                 
-                df[f'{decomp}_{time}'] = data
+                df[f'{decomp}_{dirs}_{time}'] = data
+
 
     return df
 
@@ -136,7 +137,7 @@ def pct(num : float) -> float or None:
     if num is None:
         return None
 
-    return round(num*100, 1)
+    return round(num*100, 3)
 
 def get_metric(df : pd.DataFrame, metric : str) -> float or None:
     if df is None:
@@ -184,9 +185,9 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
         df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(java_ff[f'{decomp}_dirs_mixed_{time}'], f'{jacoco_metric}_COVERED_PCT'))
 
     for decomp in ['ghidra11', 'ghidra9']:
-        df.loc[decomp, 'ff_dirs_known'] = 1
-        df.loc[decomp, 'ff_dirs_unknown'] = 1
-        df.loc[decomp, 'ff_dirs_mixed'] = 1
+        df.loc[decomp, 'ff_dirs_known']     = pct(get_metric(c_ff[f'{decomp}_dirs_known_{time}'], f'{gcov_metric}_percent'))
+        df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(c_ff[f'{decomp}_dirs_unknown_{time}'], f'{gcov_metric}_percent'))
+        df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(c_ff[f'{decomp}_dirs_mixed_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'df']                = pct(get_metric(c_df[f'{decomp}_{time}'], f'{gcov_metric}_percent'))
 
     print(df)
