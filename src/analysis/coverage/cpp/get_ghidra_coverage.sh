@@ -16,9 +16,12 @@ then
     exit 1
 fi
 
+export JAVA_HOME='/usr/lib/jvm/java-19-openjdk-amd64/'
+
 # get coverage
 cd $GHIDRA
-gradle clean
+git checkout ghidra1103release
+gradle clean # this removes .gcda files
 gradle buildGhidra
 gradle jacocoReport
 

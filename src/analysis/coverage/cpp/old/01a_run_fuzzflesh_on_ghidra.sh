@@ -22,7 +22,6 @@ python3 -m fuzzflesh \
     -max_size=15 \
     -graphs=1 \
     -paths=10 \
-    --dirs \
     --gen_xml_for_coverage \
     --time_limit=$TIMELIMIT \
     $LANG \
