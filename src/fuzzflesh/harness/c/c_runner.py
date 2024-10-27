@@ -122,10 +122,11 @@ class CRunner(Runner):
                     str(self.get_object_name(program)),
                     "-overwrite",
                     "-scriptPath",
-                    self.headless_path,
+                    str(self.headless_path),
                     "-postScript",
                     str(self.headless_script_name),
                     str(self.get_decomp_name(program))]
+            
             
             result = subprocess.run(cmd)
 
@@ -249,17 +250,17 @@ class CRunner(Runner):
             with open(self.get_decomp_name(program), 'w') as f:
                 f.write(''.join(prog))
             
-    def get_object_name(program : Path) -> Path:
+    def get_object_name(self, program : Path) -> Path:
         return Path(program.parent, f'{program.stem}.o')
 
-    def get_decomp_name(program : Path) -> Path: 
+    def get_decomp_name(self, program : Path) -> Path: 
         return Path(program.parent, f'decompiled_{program.stem}.c')
 
-    def get_recomp_name(program : Path) -> Path:
+    def get_recomp_name(self, program : Path) -> Path:
         return Path(program.parent, f'recompiled_{program.stem}.o')
 
-    def get_exe_name(program : Path) -> Path:
+    def get_exe_name(self, program : Path) -> Path:
         return Path(program.parent, f'{program.stem}.exe')
 
-    def get_recomp_exe_name(program : Path) -> Path:
+    def get_recomp_exe_name(self, program : Path) -> Path:
         return Path(program.parent, f'{program.stem}.exe')
