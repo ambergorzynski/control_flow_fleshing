@@ -9,7 +9,7 @@ from queue import Queue
 from fuzzflesh.graph_generator import sample_graphs
 from fuzzflesh.cfg.CFG import CFG, Route
 
-def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
+def generate_graph_approach_krapivsky(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
     ''' 
         returns graph with number of nodes specified 
@@ -38,7 +38,7 @@ def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
     for node in range(0, n_nodes - 1):
 
         # randomly choose number of successor nodes
-        # up to 3 for now - to update later
+        # up to 3 for now 
         n_successors = rand.choice(list(range(1, 3)))
 
         for j in range(n_successors):
@@ -51,7 +51,7 @@ def generate_graph_approach_0(n_nodes : int, seed=None) -> nx.MultiDiGraph:
 
     return G
 
-def generate_graph_approach_1(n_nodes : int, 
+def generate_graph_er_without_exit_nodes(n_nodes : int, 
                               min_successors : int,
                               max_successors : int, 
                               add_annotations : bool =False,
@@ -169,7 +169,7 @@ def add_loops(graph : nx.MultiDiGraph,
     return graph
 
     
-def generate_graph_approach_2(n_nodes : int, 
+def generate_graph_er_with_exit_nodes(n_nodes : int, 
                               seed : float = None, 
                               min_successors : int = 1, 
                               max_successors : int = 10,
@@ -276,11 +276,11 @@ def generate_graph(min_graph_size : int,
     if add_annotations and n_annotations == -1:
         n_annotations = graph_size // 5
 
-    if graph_generation_approach == 'grow':
-        graph = generate_graph_approach_1(graph_size, min_successors, max_successors, add_annotations, n_annotations)
+    if graph_generation_approach == 'krapivsky':
+        graph = generate_graph_krapivsky(graph_size, min_successors, max_successors, add_annotations, n_annotations)
 
     elif graph_generation_approach == 'e-r':
-        graph = generate_graph_approach_2(graph_size, min_successors, max_successors)
+        graph = generate_graph_er_with_exit_nodes(graph_size, min_successors, max_successors)
 
     elif graph_generation_approach == -1:
         graph = generate_graph_approach_presets(-1)

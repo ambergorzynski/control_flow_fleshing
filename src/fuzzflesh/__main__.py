@@ -53,9 +53,9 @@ def main():
                         default = 3,
                         help = 'Minimum graph size.')     
     parser.add_argument("-graph_gen", 
-                        choices=['e-r','grow'],
+                        choices=['e-r','krapivsky'],
                         default = 'e-r',
-                        help = 'Graph generation approach: Erdős–Rényi (e-r) or growing.')
+                        help = 'Graph generation approach: Erdős–Rényi (e-r) or Krapivsky (krapivsky).')
     parser.add_argument("-min_successors", 
                         type=int, 
                         default=0,
