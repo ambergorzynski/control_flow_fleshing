@@ -48,7 +48,7 @@ class Data():
             else:
                 print(f'Some data here! Check manually')
 
-            return (Summary(self.one_id, self.two_id, empty=True), [])
+            return (Summary(self.one_id, self.two_id, empty=True), pd.DataFrame())
 
         df['total_i'] = df[f'ci_{self.one_id}'] + df[f'mi_{self.one_id}'] 
         df['total_b'] = df[f'cb_{self.one_id}'] + df[f'mb_{self.one_id}'] 
@@ -90,6 +90,8 @@ class Data():
 
 class Summary():
     def __init__(self, one : str, two : str, empty = False):
+        self.data_one : str = one
+        self.data_two : str = two
         self.total_instructions : int 
         self.instr_covered : dict = {
             'by_both' : None,
@@ -112,6 +114,8 @@ class Summary():
 
     def __str__(self):
         return f'''
+        Dataset 1: {self.data_one}\n
+        Dataset 2: {self.data_two}\n
         Total instructions: {self.total_instructions}\n
         Total branches: {self.total_branches}\n
         Instruction coverage by tool: {self.instr_covered}\n
@@ -143,6 +147,48 @@ def get_coverage(xml : Path) -> dict[str, pd.DataFrame]:
 
     return data
 
+def get_overall_coverage_summary(src_summary : list[Summary]):
+
+    one_id = src_summary[0].data_one
+    two_id = src_summary[0].data_two
+
+    overall_coverage = Summary(one_id, two_id)
+    overall_coverage.total_instructions = sum([ x.total_instructions for x in src_summary])
+    overall_coverage.total_branches = sum([x.total_branches for x in src_summary])
+    
+    instr_covered_list = [x.instr_covered for x in src_summary]
+    overall_coverage.instr_covered = dict(functools.reduce(operator.add, map(collections.Counter, instr_covered_list)))
+
+    branches_covered_list = [x.branches_covered for x in src_summary]
+    overall_coverage.branches_covered = dict(functools.reduce(operator.add, map(collections.Counter, branches_covered_list)))
+
+    assert sum(overall_coverage.instr_covered.values()) == overall_coverage.total_instructions
+    assert sum(overall_coverage.branches_covered.values()) == overall_coverage.total_branches
+
+    return overall_coverage
+
+def get_difference_df(dfs : dict[str,list[pd.DataFrame]]):
+
+    ''' param is a dictionary with sourcefile names as keys
+        and dataframes containing coverage information as 
+        values 
+    '''
+
+    frames = [df.assign(sourcefile=key) for key, df in dfs.items() if not df.empty]
+    
+    # check all columns are consistent across datasets
+    columns = [x.columns.tolist() for x in frames]
+    assert all([x == columns[0] for x in columns])
+
+    all_dfs = pd.concat(frames, ignore_index = True)
+
+    # keep rows where different coverage exists for instructions or branches
+    filtered_df = all_dfs[(~all_dfs['ci'].str.contains('=')) | (~all_dfs['cb'].str.contains('=')) ]
+
+    filtered_df = filtered_df.reset_index(drop = True)
+
+    return filtered_df
+
 def compare(one : dict[str, pd.DataFrame], 
         one_id : str,
         two : dict[str, pd.DataFrame],
@@ -162,28 +208,23 @@ def compare(one : dict[str, pd.DataFrame],
     for src, data in one.items():
         src_compare.append(Data(src, data, one_id, two[src], two_id))
 
-    src_summary = []
-    src_df = []
+    src_summary = {}
+    src_df = {}
 
-    for src in src_compare:
-        (summary, df) = src.compare()
-        src_summary.append(summary)
-        src_df.append(df)
+    for data in src_compare:
+        (summary, df) = data.compare()
 
-    overall_coverage = Summary(one_id, two_id)
-    overall_coverage.total_instructions = sum([ x.total_instructions for x in src_summary])
-    overall_coverage.total_branches = sum([x.total_branches for x in src_summary])
-    
-    instr_covered_list = [x.instr_covered for x in src_summary]
-    overall_coverage.instr_covered = dict(functools.reduce(operator.add, map(collections.Counter, instr_covered_list)))
+        src_summary[data.sourcefile] = summary
+        src_df[data.sourcefile] = df
 
-    branches_covered_list = [x.branches_covered for x in src_summary]
-    overall_coverage.branches_covered = dict(functools.reduce(operator.add, map(collections.Counter, branches_covered_list)))
+    # Don't need to know src file names for overall coverage so just pass a 
+    # list of Summary objects
+    overall_coverage = get_overall_coverage_summary([v for k, v in src_summary.items()])
 
-    assert sum(overall_coverage.instr_covered.values()) == overall_coverage.total_instructions
-    assert sum(overall_coverage.branches_covered.values()) == overall_coverage.total_branches
+    detailed_difference_df = get_difference_df(src_df)
 
-    return overall_coverage
+    return (overall_coverage, detailed_difference_df)
+
 
     
 def main():
@@ -202,12 +243,14 @@ def main():
         fernflower[config] = get_coverage(config_path)
 
     # compare coverage
-    overall_coverage : Summary = compare(fernflower['jd_javafuzzer_120'], 'jd',
+    (overall_coverage, detailed_difference_df) = compare(fernflower['jd_javafuzzer_120'], 'jd',
         fernflower['ff_dirs_known_120'], 'ff')
 
     print(overall_coverage)
+    #with open(Path(output, 'overall_differential_coverage.csv'),'w') as f:
+    #    f.write(overall_coverage)
 
-    
+    detailed_difference_df.to_csv(Path(output, 'detailed_differential_coverage.csv'))
 
     # write results to latex file as table
     # TODO make visualisation e.g. venn diagram
