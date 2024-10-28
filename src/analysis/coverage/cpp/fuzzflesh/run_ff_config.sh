@@ -3,19 +3,19 @@
 TOOL='fuzzflesh'
 BASE=/data/work/fuzzflesh/coverage/fuzzer_outputs/ff
 
-for DECOMPILER in ghidra11 ghidr9
+for DECOMPILER in ghidra11
 do
-    for DIRS in dirs_known dirs_unknown
+    for DIRS in dirs_unknown
     do 
-        for TIMELIMIT in 120
-
+        for TIMELIMIT in 480
+        do
             # get appropriate decompiler path
-            if [[ "$DECOMPILER = ghidra11" ]]; then
+            if [ $DECOMPILER = "ghidra11" ]; then
                 DECOMPILER_PATH='/data/dev/ghidra/ghidra_11.0.3_PUBLIC/support/analyzeHeadless'
 
-            elif [[ "$DECOMPILER = ghidra9" ]]; then
+            elif [ $DECOMPILER = "ghidra9" ]; then
                 DECOMPILER_PATH='/data/dev/ghidra/ghidra_9.0.0_PUBLIC/support/analyzeHeadless'
-            else; then
+            else
                 echo "Invalid decompiler"
                 exit 1
             fi 

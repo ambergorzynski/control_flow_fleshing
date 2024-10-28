@@ -14,10 +14,10 @@ HEADLESS_PATH='/data/dev/fuzzflesh/src/fuzzflesh/harness/c/'
 INCLUDE_PATH='/data/dev/include/'
 
 # if dirs
-if [[ "$DIRS" = "dirs_known" ]]
+if [ $DIRS = "dirs_known" ]
 then
     DIR_ARG="--dirs"
-elif [[ "$DIRS" = "dirs_unknown"]]
+elif [ "$DIRS" = "dirs_unknown" ]
 then
     DIR_ARG=""
 else
@@ -36,7 +36,7 @@ python3 -m fuzzflesh \
     -graphs=1 \
     -paths=10 \
     --gen_xml_for_coverage \
-    --time_limit=$TIMELIMIT $DIRS \
+    --time_limit=$TIMELIMIT $DIR_ARG \
     $LANG \
     $COMPILER \
     $COMPILER_PATH \
