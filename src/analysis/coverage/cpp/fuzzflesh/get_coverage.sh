@@ -1,24 +1,38 @@
-#!/bin/sh
+#!/bin/bash
 
-BASE=/data/work/fuzzflesh/coverage
+DIRS=dirs_unknown
+TIME=120
 
-FUZZER_OUTPUT=${BASE}/fuzzer_outputs/ff
-RESULTS_OUTPUT=${BASE}/coverage_results/ff
+FUZZER_XML=/data/work/fuzzflesh/coverage/fuzzer_outputs/ff/fuzzflesh_ghidra11_${DIRS}_${TIME}/out/fuzzer_classes.xml
+OUTDIR=/data/work/fuzzflesh/coverage/coverage_results/ff/fuzzflesh_ghidra11_${DIRS}_${TIME}
 
-DECOMPILERS="ghidra11"
-DIRS="dirs_unknown"
-TIMELIMIT="120"
+GHIDRA=/data/dev/ghidra_cov
+DECOMPILER_ROOT=${GHIDRA}/Ghidra/Features/Decompiler
 
-for DECOMPILER in $DECOMPILERS
-do
-    for DIR in $DIRS
-    do
-        for TIME in $TIMELIMIT
-        do
-            FUZZER_XML=${FUZZER_OUTPUT}/fuzzflesh_${DECOMPILER}_${DIR}_${TIME}/out
-            OUTDIR=${RESULTS_OUTPUT}/fuzzflesh_${DECOMPILER}_${DIR}_${TIME}
-            mkdir -p $OUTDIR
-            /bin/bash ../get_ghidra_coverage.sh $OUTDIR $FUZZER_XML
-        done
-    done
-done
+mkdir -p $OUTDIR
+
+# copy fuzzer_classes.xml into ghidra_cov
+cp ${FUZZER_XML} ${GHIDRA}/Ghidra/Test/IntegrationTest/src/test.slow/java/ghidra/fuzz/fuzzer_classes.xml
+RESULT=$?
+if [ $RESULT != 0 ]; then
+    echo "Problem with fuzzer xml!"
+    exit 1
+fi
+
+export JAVA_HOME='/usr/lib/jvm/java-19-openjdk-amd64/'
+
+# get coverage
+cd $GHIDRA
+gradle clean
+gradle buildGhidra --continue
+gradle jacocoReport
+
+# produce csv summary of coverage
+cd $DECOMPILER_ROOT
+gcovr -r . \
+    --csv ${OUTDIR}/coverage.csv \
+    --xml ${OUTDIR}/coverage.xml \
+    --html --html-details ${OUTDIR}/coverage.html
+
+
+

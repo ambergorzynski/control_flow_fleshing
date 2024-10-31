@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+import re
 
 from fuzzflesh.harness.runner import Runner
 from fuzzflesh.common.utils import Compiler, Lang, RunnerReturn
@@ -97,7 +98,7 @@ class JavaBCRunner(Runner):
 
         if self.is_decompiler():
             print('Executing recompiled...')
-            class_location = self.get_recompiled_class_location(program)
+            class_location = Path(self.get_recompiled_class_location(program))
         else:
             class_location = self.get_class_location(program)
 
@@ -271,6 +272,13 @@ class JavaBCRunner(Runner):
 
         if decompile_result.returncode != 0:
             return RunnerReturn.DECOMPILATION_FAIL
+
+        if self.compiler_name == Compiler.JADX:
+            with open(Path(outputdir, 'TestCase.java'),'r') as f:
+                lines = f.readlines()
+            with open(Path(outputdir, 'TestCase.java'), 'w') as f:
+                for line in lines:
+                    f.write(re.sub('package defpackage;','', line))
         
         # CFR can decompile successfully but throw a 'Decompilation failed' error
         if self.compiler_name == Compiler.CFR:
@@ -284,6 +292,13 @@ class JavaBCRunner(Runner):
             with open(Path(outputdir, 'TestCase.java'),'r') as f:
                 program = f.read()
                 if "$FF: Couldn't be decompiled" in program:
+                    return RunnerReturn.DECOMPILATION_FAIL
+
+        # Jadx throws a 'Decompilation failed' error
+        if self.compiler_name == Compiler.JADX:
+            with open(Path(outputdir, 'TestCase.java'),'r') as f:
+                program = f.read()
+                if "Method not decompiled" in program:
                     return RunnerReturn.DECOMPILATION_FAIL
 
         return RunnerReturn.SUCCESS

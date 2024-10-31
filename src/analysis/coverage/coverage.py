@@ -2,17 +2,18 @@ from pathlib import Path
 import pandas as pd 
 
 DECOMPILERS_JAVA = ['cfr','fernflower','jadx']
-DECOMPILERS_C = ['ghidra11', 'ghidra9']
+DECOMPILERS_C = ['ghidra11']
 TOOLS = ['fuzzflesh','jdtester','decfuzzer']
 
 TIMES = ['120']
+TIME = TIMES[0]
 BASE : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
 
 def import_java_ff():
     df = {}
 
     for decomp in DECOMPILERS_JAVA:
-        for dirs in ['dirs_known', 'dirs_unknown', 'dirs_mixed']:
+        for dirs in ['dirs_known', 'dirs_unknown']:
             for time in TIMES:
                 try:
                     datapath = Path(BASE,
@@ -39,6 +40,8 @@ def import_java_jd():
                             f'jdtester_{decomp}_{generator}_{time}',
                             'coverage.csv')
                     data = pd.read_csv(datapath)
+                    if data.empty:
+                        data = None
                 except Exception as e:
                     print(e)
                     data = None
@@ -58,19 +61,21 @@ def import_c_df():
                             f'decfuzzer_{decomp}_{time}',
                             'coverage.csv')
                     data = pd.read_csv(datapath)
+                    if data.empty:
+                        data = None
+
                 except Exception as e:
                     print(e)
                     data = None
                 
                 df[f'{decomp}_{time}'] = data
-
     return df
 
 def import_c_ff():
     df = {}
 
     for decomp in DECOMPILERS_C:
-        for dirs in ['dirs_known', 'dirs_unknown', 'dirs_mixed']:
+        for dirs in ['dirs_known', 'dirs_unknown']:
             for time in TIMES:
                 try:
                     datapath = Path(BASE,
@@ -78,13 +83,13 @@ def import_c_ff():
                             f'fuzzflesh_{decomp}_{dirs}_{time}',
                             'coverage.csv')
                     data = pd.read_csv(datapath)
+                    if data.empty:
+                        data = None
                 except Exception as e:
                     print(e)
                     data = None
                 
                 df[f'{decomp}_{dirs}_{time}'] = data
-
-
     return df
 
 def get_overall_coverage(data : dict[str,pd.DataFrame], lang : str):
@@ -133,11 +138,11 @@ def get_gcov_overall_coverage(cov : dict[str, pd.DataFrame]):
         
     return result
 
-def pct(num : float) -> float or None:
+def pct(num : float) -> int or None:
     if num is None:
         return None
 
-    return round(num*100, 3)
+    return int(round(num*100, 0))
 
 def get_metric(df : pd.DataFrame, metric : str) -> float or None:
     if df is None:
@@ -166,13 +171,11 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
     df = pd.DataFrame(columns=[
             'ff_dirs_known', 
             'ff_dirs_unknown', 
-            'ff_dirs_mixed',
             'df',
             'jd_javafuzzer',
             'jd_hep'], 
             index = [
             'ghidra11',
-            'ghidra9',
             'cfr',
             'fernflower',
             'jadx'])
@@ -182,41 +185,59 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
         df.loc[decomp, 'jd_hep']            = pct(get_metric(java_jd[f'{decomp}_hephaestus_{time}'], f'{jacoco_metric}_COVERED_PCT'))
         df.loc[decomp, 'ff_dirs_known']     = pct(get_metric(java_ff[f'{decomp}_dirs_known_{time}'], f'{jacoco_metric}_COVERED_PCT'))
         df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(java_ff[f'{decomp}_dirs_unknown_{time}'], f'{jacoco_metric}_COVERED_PCT'))
-        df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(java_ff[f'{decomp}_dirs_mixed_{time}'], f'{jacoco_metric}_COVERED_PCT'))
+       # df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(java_ff[f'{decomp}_dirs_mixed_{time}'], f'{jacoco_metric}_COVERED_PCT'))
 
-    for decomp in ['ghidra11', 'ghidra9']:
+    for decomp in ['ghidra11']:
         df.loc[decomp, 'ff_dirs_known']     = pct(get_metric(c_ff[f'{decomp}_dirs_known_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(c_ff[f'{decomp}_dirs_unknown_{time}'], f'{gcov_metric}_percent'))
-        df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(c_ff[f'{decomp}_dirs_mixed_{time}'], f'{gcov_metric}_percent'))
+        #df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(c_ff[f'{decomp}_dirs_mixed_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'df']                = pct(get_metric(c_df[f'{decomp}_{time}'], f'{gcov_metric}_percent'))
 
     print(df)
 
 
-    code = '''
+    code = f'''
 \\begin{{table*}}[htbp]
-\caption{{Line coverage comparison (\%)}}
+\caption{{{metric.title()} coverage comparison {int(int(TIME)/60)} hrs (\%)}}
 \label{{tab:instruction_coverage}}
-\\begin{{tabular}}{{m{{1.7cm}}|M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}}}
+\\begin{{tabular}}{{m{{1.7cm}}|M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}}}
 
 \\toprule
-& \multicolumn{{6}}{{c}}{{Testing tool}} \\\\
+& \multicolumn{{5}}{{c}}{{Testing tool}} \\\\
         Decompiler %
-        & \mC{{1.65}}{{FuzzFlesh \footnotesize{{path known}}}} %
-        & \mC{{1.65}}{{FuzzFlesh \footnotesize{{path unknown}}}} %
-        & \mC{{1.65}}{{FuzzFlesh \footnotesize{{path mixed}}}} %
+        & \mC{{1.65}}{{FuzzFlesh \\footnotesize{{path known}}}} %
+        & \mC{{1.65}}{{FuzzFlesh \\footnotesize{{path unknown}}}} %
         & \mC{{1.65}}{{DecFuzzer}} %
-        & \mC{{1.65}}{{JD-Tester \footnotesize{{JavaFuzzer}}}} %
-        & \mC{{1.65}}{{JD-tester \footnotesize{{Hephaestus}}}} \\\\
-\midrule
-Ghidra 11   & {}          & {}          & {}                      & 39        & -           & -           \\\\
-Ghidra  9   & {}          & {}          & {}                      & {}        & -           & -           \\\\
-CFR         & {}          & {}          & {}                      & -         & {}          & {}          \\\\
-FernFlower  & {}          & {}          & {}                      & -         & {}          & {}          \\\\
-JADX        & {}          & {}          & {}                      & -         & {}          & {}         \\\\
+        & \mC{{1.65}}{{JD-Tester \\footnotesize{{JavaFuzzer}}}} %
+        & \mC{{1.65}}{{JD-tester \\footnotesize{{Hephaestus}}}} \\\\
+\midrule '''
+
+    rows = {'Ghidra 11' : 'ghidra11',
+        'CFR' : 'cfr',
+        'FernFlower' : 'fernflower',
+        'JADX' : 'jadx'}
+
+    configs = ['ff_dirs_known',
+        'ff_dirs_unknown',
+        'df',
+        'jd_javafuzzer',
+        'jd_hep']
+
+    for r, decomp in rows.items():
+        code += f'''
+    {r} '''
+        for config in configs:
+            if not pd.isna(df.loc[decomp,config]):
+                code += f''' & {df.loc[decomp, config]} '''
+            else:
+                code += ''' & - '''
+        
+        code += '''\\\\
+'''
+    code += '''
 \\bottomrule
-\end{{tabular}}
-\end{{table*}}
+\end{tabular}
+\end{table*}
     '''
 
     return code
@@ -225,6 +246,7 @@ def main():
 
     input : Path = BASE
     output : Path = Path(BASE, 'analysis')
+    latex : Path = Path(output, 'latex')
 
     raw_java_jd = import_java_jd()
     raw_java_ff = import_java_ff()
@@ -236,12 +258,16 @@ def main():
     overall_c_df = get_overall_coverage(raw_c_df, 'c')
     overall_c_ff = get_overall_coverage(raw_c_ff, 'c')
 
-    make_overall_latex_table(overall_java_jd,
-                    overall_java_ff,
-                    overall_c_df,
-                    overall_c_ff,
-                    metric='BRANCH',
-                    time=120)
+    for metric in ['INSTRUCTION', 'BRANCH']:
+        code = make_overall_latex_table(overall_java_jd,
+                        overall_java_ff,
+                        overall_c_df,
+                        overall_c_ff,
+                        metric=metric,
+                        time=TIME)
+
+        with open(Path(latex, f'overall_coverage_{metric}_{TIME}.tex'),'w') as f:
+            f.write(code)
 
 if __name__=="__main__":
     main()

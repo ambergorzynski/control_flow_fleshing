@@ -5,6 +5,10 @@ TIMELIMIT=$2
 
 DECFUZZER=/data/dev/decfuzzer
 
+# clean coverage files
+cd /data/dev/radare2/r2ghidra-11
+find . -name "*.gcda" | xargs rm -f
+
 cd $DECFUZZER
 
 # Must start the server as root
@@ -13,13 +17,8 @@ cd $DECFUZZER
 source venv/bin/activate
 
 export HOME=/data/dev
-
-# get start time
-SECONDS=0
+export PATH=/data/dev/radare2/install/radare2-ghidra11/bin:$PATH
 
 python run.py
+#python run_with_generation.py $TIMELIMIT
 
-# get end time
-echo "Time elapsed is: ${SECONDS}"
-
-# original run: time elapsed is 5295 seconds, although it appears tht the EMI did not run after this?
