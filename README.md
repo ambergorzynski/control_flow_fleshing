@@ -33,4 +33,4 @@ Navigate to `src/analysis/coverage`. The scripts to gather coverage for each tes
 # Bug-finding analysis
 To run the bug-finding analysis you must install the JD-Tester tool from https://github.com/AIRTEspresso/DecompilerStudy 
 
-Next, navigate to `src/analysis/head2head` and run `python head2head_jdtester.py`. It may be necessary to run the shell scripts manually depending on your JD-Tester installation location.
+Next, navigate to `src/analysis/head2head` and run `python head2head_jdtester.py --cfr` or `python head2head_jdtester.py --jadx`. It may be necessary to run the shell scripts manually depending on your JD-Tester installation location.
