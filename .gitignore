@@ -14,7 +14,6 @@ venv/
 __pycache__/
 _old/
 fuzzing*/
-java/
 jasmin/
 work/
 evaluation/test/
@@ -22,8 +21,6 @@ evaluation/test/
 work*/
 fleshing_progs/
 csmith_temp/
-coverage_analysis.py
 *.txt
-CODE_THAT_WORKS/
 Notes.md
 todo.md
