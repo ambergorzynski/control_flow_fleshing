@@ -687,7 +687,7 @@ def get_c_coverage(output_unit):
 
 def main():
     output_unit = 'num'
-    #get_c_coverage(output_unit)
+    get_c_coverage(output_unit)
     get_java_coverage(output_unit)
     # TODO make visualisation e.g. venn diagram
 

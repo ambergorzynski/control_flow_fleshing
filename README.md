@@ -18,8 +18,18 @@ source venv/bin/activate
 pip install -e .
 ```
 
-# Run
+# Run FuzzFlesh
 - Create an output directory, ideally somewhere outside of the repo
 - Edit the template `scripts/run_template.sh` to point to the relevant filepaths on your machine
 - Run the shell script 
 
+# Coverage analysis
+Navigate to `src/analysis/coverage`. The scripts to gather coverage for each testing tool - decompiler combination can be found within the `cpp` and `java` folders. Note that this requires a significant amount of setup and running time and the scripts are unlikely to work without adjustment on your machine. In light of this, we also provide the outputs from our coverage analysis as zipped files within `data`. Unzipping this in the appropriate location should allow you to run the overall coverage analysis as follows:
+- First, activate the virtual environment `/path/to/src venv/bin/activate`
+- To gather overall coverage, adjust the filepaths within the script to your own locations as necessary and run `python coverage.py` 
+- To gather unique coverage: `python diff_coverage.py --java` or `python diff_coverage.py`
+
+# Bug-finding analysis
+To run the bug-finding analysis you must install the JD-Tester tool from https://github.com/AIRTEspresso/DecompilerStudy 
+
+Next, navigate to `src/analysis/head2head` and run `python head2head_jdtester.py`. It may be necessary to run the shell scripts manually depending on your JD-Tester installation location.
