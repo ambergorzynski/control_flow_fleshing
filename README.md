@@ -1,13 +1,29 @@
 # FuzzFlesh
-Compiler testing using control flow graph fleshing
+FuzzFlesh implements Control Flow Graph-based program generation to test decompiler toolchains in multiple languages. So far, we offer support for:
+- Java decompilers CFR, JADX, and Fernflower
+- Binary decompiler Ghidra
+- C\# decompiler ILSpy
 
 # Pre-requisites 
 - Python 3.10
+
+## To test Java decompilers
 - JVM (tested with openjdk 19.0.2 2023-01-17)
 - Jasmin 2.4, which you can download here: https://jasmin.sourceforge.net/
 - json-simple-1.1.1, which you can download here: https://code.google.com/archive/p/json-simple/downloads
 - rapidjson, which you can find here: https://rapidjson.org/
 - Json.NET, which you can find here: https://www.newtonsoft.com/json
+- CFR: https://github.com/leibnitz27/cfr
+- FernFlower: https://github.com/JetBrains/intellij-community
+- JADX: https://github.com/skylot/jadx
+
+## To test binary decompilers
+- Ghidra: https://github.com/NationalSecurityAgency/ghidra
+
+## To test C# decompilers
+- .NET SDK
+- ILSpy: https://github.com/icsharpcode/ILSpy
+
 
 # Install
 Run the following commands from the root directory to set up a Python virtual environment and install the necessary packages:
