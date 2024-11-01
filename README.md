@@ -24,10 +24,11 @@ pip install -e .
 - Run the shell script 
 
 # Coverage analysis
-Navigate to `src/analysis/coverage`. The scripts to gather coverage for each testing tool - decompiler combination can be found within the `cpp` and `java` folders. Note that this requires a significant amount of setup and running time and the scripts are unlikely to work without adjustment on your machine. In light of this, we also provide the outputs from our coverage analysis as zipped files within `data`. Unzipping this in the appropriate location should allow you to run the overall coverage analysis as follows:
+Navigate to `src/analysis/coverage`. The scripts to gather coverage for each testing tool - decompiler combination can be found within the `cpp` and `java` folders. Note that this requires a significant amount of setup and running time and the scripts are unlikely to work without adjustment on your machine. The overall coverage analysis is run as follows:
 - First, activate the virtual environment `/path/to/src venv/bin/activate`
-- To gather overall coverage, adjust the filepaths within the script to your own locations as necessary and run `python coverage.py` 
-- To gather unique coverage: `python diff_coverage.py --java` or `python diff_coverage.py`
+- Scripts for running each tool with coverage are found within the respective language, tool, and decompiler folders. Jacoco is used for Java coverage, while gcovr is used for C/C++ coverag.
+- Once the raw coverage results are complete, analyse the results by adjusting the filepaths to your own locations as necessary and run `python coverage.py` 
+- To gather unique coverage: `python diff_coverage.py`
 
 # Bug-finding analysis
 To run the bug-finding analysis you must install the JD-Tester tool from https://github.com/AIRTEspresso/DecompilerStudy 
