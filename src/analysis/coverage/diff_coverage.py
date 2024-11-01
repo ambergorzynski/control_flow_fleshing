@@ -40,6 +40,13 @@ class Summary():
         Instruction coverage by tool: {self.instr_covered}\n
         Branch coverage by tool: {self.branches_covered}\n'''
 
+
+    def get_num_instruction_coverage(self):
+        return {k : int(round(v, -2)) for k,v in self.instr_covered.items()}
+    
+    def get_num_branch_coverage(self):
+        return {k : int(round(v, -2)) for k,v in self.branches_covered.items()}
+    
     def get_pct_instruction_coverage(self):
         return {k : int(round((v / self.total_instructions)*100, 0)) for k,v in self.instr_covered.items()}
     
@@ -129,10 +136,14 @@ class Data():
         return (summary, self.result)
 
 
-def make_overall_latex_table_java(overall_coverage : list[Summary]) -> str:
+def make_overall_latex_table_java(overall_coverage : list[Summary], metric) -> str:
 
-    instr_data = {x.decompiler : x.get_pct_instruction_coverage() for x in overall_coverage}
-    branch_data = {x.decompiler : x.get_pct_branch_coverage() for x in overall_coverage}
+    if metric == 'pct':
+        instr_data = {x.decompiler : x.get_pct_instruction_coverage() for x in overall_coverage}
+        branch_data = {x.decompiler : x.get_pct_branch_coverage() for x in overall_coverage}
+    elif metric == 'num':
+        instr_data = {x.decompiler : x.get_num_instruction_coverage() for x in overall_coverage}
+        branch_data = {x.decompiler : x.get_num_branch_coverage() for x in overall_coverage}
 
     rows = {
         'CFR' : 'cfr',
@@ -141,14 +152,14 @@ def make_overall_latex_table_java(overall_coverage : list[Summary]) -> str:
         }
 
     col_config = {
-        'FuzzFlesh' : 'by_ff_only',
-        'JD-Tester' : 'by_jd_only',
+        'Only FuzzFlesh' : 'by_ff_only',
+        'Only JD-Tester' : 'by_jd_only',
         'Both' : 'by_both',
         'Neither' : 'by_neither'
         }
 
     cols = [f'instr_{v}' for k,v in col_config.items()] 
-    cols.extend([f'branch_{v}' for k,v in col_config.items()])
+    #cols.extend([f'branch_{v}' for k,v in col_config.items()])
 
     df = pd.DataFrame(columns=cols, 
             index = [v for k,v in rows.items()])
@@ -163,15 +174,52 @@ def make_overall_latex_table_java(overall_coverage : list[Summary]) -> str:
                 df.loc[decomp, f'instr_{config}'] = '-'
 
         # branch coverage
+        '''
         for  c, config in col_config.items():
             try:
                 df.loc[decomp, f'branch_{config}'] = branch_data[decomp][config]
             except:
                 df.loc[decomp, f'branch_{config}'] = '-'
+        '''
 
+
+        code = f'''
+\\begin{{table*}}[htbp]
+\caption{{Unique coverage comparison}}
+\label{{tab:unique_coverage_java}}
+\\begin{{tabular}}{{m{{2cm}}|M{{2.5}}M{{2.5}}M{{2.5}}M{{2.5}}}}
+
+\\toprule
+& \multicolumn{{4}}{{c}}{{Instructions covered by}}   \\\\
+        Decompiler %
+        & \mC{{2.5}}{{FuzzFlesh}} %
+        & \mC{{2.5}}{{JD-Tester}} %
+        & \mC{{2.5}}{{Both}} %
+        & \mC{{2.5}}{{Neither}}  \\\\ %
+        \midrule  
+        '''
+
+    for r, decomp in rows.items():
+        code += f'''
+    {r} '''
+        for c in cols:
+            if not pd.isna(df.loc[decomp,c]):
+                code += f''' & {df.loc[decomp, c]} '''
+            else:
+                code += ''' & - '''
+
+    code += '''\\\\
+''' 
+    code += '''
+\\bottomrule
+\end{tabular}
+\end{table*}
+    '''
+    return code
+"""
     code = f'''
 \\begin{{table*}}[htbp]
-\caption{{Unique coverage comparison (\%)}}
+\caption{{Unique coverage comparison}}
 \label{{tab:unique_coverage_java}}
 \\begin{{tabular}}{{m{{1.7cm}}|M{{1.3}}M{{1.4}}M{{0.7}}M{{1}}|M{{1.3}}M{{1.4}}M{{0.7}}M{{1}}}}
 
@@ -196,22 +244,19 @@ def make_overall_latex_table_java(overall_coverage : list[Summary]) -> str:
                 code += f''' & {df.loc[decomp, c]} '''
             else:
                 code += ''' & - '''
-        
-        code += '''\\\\
-'''
 
-    code += '''
-\\bottomrule
-\end{tabular}
-\end{table*}
-    '''
-    return code
+    """
 
 
-def make_overall_latex_table_c(overall_coverage : list[Summary]) -> str:
 
-    line_data = {x.decompiler : x.get_pct_instruction_coverage() for x in overall_coverage}
-    branch_data = {x.decompiler : x.get_pct_branch_coverage() for x in overall_coverage}
+def make_overall_latex_table_c(overall_coverage : list[Summary], metric) -> str:
+
+    if metric == 'pct':
+        line_data = {x.decompiler : x.get_pct_instruction_coverage() for x in overall_coverage}
+        branch_data = {x.decompiler : x.get_pct_branch_coverage() for x in overall_coverage}
+    elif metric == 'num':
+        line_data = {x.decompiler : x.get_num_instruction_coverage() for x in overall_coverage}
+        branch_data = {x.decompiler : x.get_num_branch_coverage() for x in overall_coverage}
 
     rows = {
         'Ghidra' : 'ghidra11',
@@ -248,8 +293,8 @@ def make_overall_latex_table_c(overall_coverage : list[Summary]) -> str:
 
     code = f'''
 \\begin{{table*}}[htbp]
-\caption{{Unique coverage comparison (\%)}}
-\label{{tab:unique_coverage_java}}
+\caption{{Unique coverage comparison}}
+\label{{tab:unique_coverage_c}}
 \\begin{{tabular}}{{m{{1.7cm}}|M{{1.3}}M{{1.4}}M{{0.7}}M{{1}}|M{{1.3}}M{{1.4}}M{{0.7}}M{{1}}}}
 
 \\toprule
@@ -317,7 +362,7 @@ def make_overall_latex_table_single_metric(metric : str, overall_coverage : list
 
     code = f'''
 \\begin{{table*}}[htbp]
-\caption{{Unique {metric} coverage comparison (\%)}}
+\caption{{Unique {metric} coverage comparison}}
 \label{{tab:instruction_coverage}}
 \\begin{{tabular}}{{m{{1.7cm}}|M{{2}}M{{2}}M{{2}}M{{2}}}}
 
@@ -545,7 +590,7 @@ def compare(
 def filter_for_ff(df : pd.DataFrame, value : str):
     return df[(df['ci'] == value) | (df['cb'] == value)]
     
-def get_java_coverage():
+def get_java_coverage(output_unit):
 
     base : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
     output : Path = Path(base, 'analysis')
@@ -579,9 +624,12 @@ def get_java_coverage():
                                         coverage[decomp]['jd'], 'jd',
                                         coverage[decomp]['ff'], 'ff')
     
-    latex_code = make_overall_latex_table_java([v for k,v in all_cov.items()])
+    latex_code = make_overall_latex_table_java([v for k,v in all_cov.items()], output_unit)
 
-    with open(Path(output, 'unique_coverage_java.tex'), 'w') as f:
+    print(latex_code)
+
+
+    with open(Path(output, f'unique_coverage_java_{output_unit}.tex'), 'w') as f:
         f.write(latex_code)
 
     #detailed_difference_df.to_csv(Path(output, 'detailed_differential_coverage.csv'))
@@ -590,7 +638,7 @@ def get_java_coverage():
         detailed_df[decomp] = detailed_df[decomp].reset_index(drop=True)
         detailed_df[decomp].to_csv(Path(output, f'ff_only_coverage_df_{decomp}'), sep = '\t')
 
-def get_c_coverage():
+def get_c_coverage(output_unit):
 
     base : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
     output : Path = Path(base, 'analysis')
@@ -624,11 +672,11 @@ def get_c_coverage():
                                             coverage[decomp]['ff'], 'ff')
         
     
-    latex_code = make_overall_latex_table_c([v for k,v in all_cov.items()])
+    latex_code = make_overall_latex_table_c([v for k,v in all_cov.items()], output_unit)
 
     print(latex_code)
 
-    with open(Path(output, 'unique_coverage_c.tex'), 'w') as f:
+    with open(Path(output, f'unique_coverage_c_{output_unit}.tex'), 'w') as f:
         f.write(latex_code)
     
     for decomp in decompilers:
@@ -638,8 +686,9 @@ def get_c_coverage():
 
 
 def main():
-    get_c_coverage()
-    #get_java_coverage()
+    output_unit = 'num'
+    #get_c_coverage(output_unit)
+    get_java_coverage(output_unit)
     # TODO make visualisation e.g. venn diagram
 
 if __name__=="__main__":
