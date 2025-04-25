@@ -2,20 +2,21 @@ from pathlib import Path
 import subprocess
 import os 
 
+# Anonymised commits for review
 jadx_commits = {
-    'initial' : '87e0e5b',
-    'fix1' : '8ba0c17', # issue 1611 (jd)
-    'fix2' : '50283ab', # issue 1828 (jd)
-    'fix3' : 'fdf1705', # issue 1829 (jd)
-    'fix4' : '54f83ce', # issue 1838 (jd)
-    'pre_fix5' : '5c83c22', # code still contains issue 2274
-    'fix5' : '699ceb1'  # issue 2274 (ff)
+    'initial' : 'xxx',
+    'fix1' : 'xxx', # issue xxx (jd)
+    'fix2' : 'xxx', # issue xxx (jd)
+    'fix3' : 'xxx', # issue xxx (jd)
+    'fix4' : 'xxx', # issue xxx (jd)
+    'pre_fix5' : 'xxx', # code still contains issue xxx
+    'fix5' : 'xxx'  # issue 2274 (ff)
 }
 
 cfr_commits = {
-    'initial' : '68477be',
-    'pre_fix1' : 'd6f6758',
-    'fix1' : '3d1d0f4'
+    'initial' : 'xxx',
+    'pre_fix1' : 'xxx',
+    'fix1' : 'xxx'
 }
 
 def build_cfr(cfr : Path, commit : str, jdtester_location = None):
