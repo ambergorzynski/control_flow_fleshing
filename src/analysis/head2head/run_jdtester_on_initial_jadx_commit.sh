@@ -2,8 +2,8 @@
 
 DECOMPILER='jadx'
 PROGRAM_GENERATOR='javafuzzer'
-OUTPUT=results/pre_ff_fix_commit
-TIMELIMIT=60*60
+OUTPUT=results/pre_ff_fix_commit_4hrs
+TIMELIMIT=60*60*6
 
 if [ $PROGRAM_GENERATOR = "javafuzzer" ]
 then

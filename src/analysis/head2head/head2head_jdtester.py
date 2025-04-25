@@ -204,8 +204,10 @@ def test_cfr():
     output : Path = Path('/data/work/fuzzflesh/head2head/cfr')
 
     # build starting cfr version
-    #if not utils.build_cfr(cfr, utils.cfr_commits['pre_fix1'], jdtester_location = JDTESTER):
-    #    exit(1)
+    if not utils.build_cfr(cfr, utils.cfr_commits['pre_fix1'], jdtester_location = JDTESTER):
+        exit(1)
+
+    exit()
 
     # run jdtester for X minutes on the initial jadx version
     # this must be done manually using root for jdtester :(
@@ -255,10 +257,9 @@ def test_jadx():
     # first JD-Tester bug report is 10 Aug 2022
     #jadx_commits = utils.jadx_commits
 
-    
     # build starting jadx version
-    #if not utils.build_jadx(jadx, utils.jadx_commits['pre_fix5'], jdk=17, jdtester_location = JDTESTER):
-    #    exit(1)
+    if not utils.build_jadx(jadx, utils.jadx_commits['pre_fix5'], jdk=17, jdtester_location = JDTESTER):
+        exit(1)
     
     # run jdtester for X minutes on the initial jadx version
     # this must be done manually using root for jdtester :(
