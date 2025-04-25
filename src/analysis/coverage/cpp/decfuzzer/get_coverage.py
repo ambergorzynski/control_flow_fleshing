@@ -5,7 +5,7 @@ import xml.etree.ElementTree as et
 import time
 from datetime import datetime, timedelta
 
-TIME=120
+TIME=480
 
 binary_path=Path(f'/data/dev/decfuzzer/experiments')
 outdir=Path(f'/data/work/fuzzflesh/coverage/coverage_results/df/decfuzzer_ghidra11_{TIME}')
@@ -43,11 +43,8 @@ for x in programs_2hrs:
     print(x)
 
 
-print(len(programs_2hrs))
-
-exit()
 # get program filepaths 
-for program in programs_2hrs:
+for program in programs:
     print(program)
     env=os.environ.copy()
     
