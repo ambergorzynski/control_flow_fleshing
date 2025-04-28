@@ -36,8 +36,19 @@ pip install -e .
 
 # Run FuzzFlesh
 - Create an output directory, ideally somewhere outside of the repo
-- Edit the template `scripts/run_template.sh` to point to the relevant filepaths on your machine
+- Edit the template `scripts/run_template.sh` to point to the relevant filepaths on your machine. You can find many example scripts here demonstrating how to use FuzzFlesh to fuzz decompilers in different language settings
 - Run the shell script 
+
+# Extend FuzzFlesh to a new language
+Extending FuzzFlesh to an additional language is straightforward. Implement the following:
+- Add a new language directory to `src/fuzzflesh/program_generator`
+- Implement the abstract class `ProgramFlesher` which is in `src/fuzzflesh/program_generator/flesher.py`
+- Add your language to `src/fuzzflesh/__main__.py`. It should only be necessary to add the language to the subparser arguments (following the format of the existing languages), and to the `Lang` class in `src/fuzzflesh/common/utils.py`
+
+You should now be able to use FuzzFlesh in 'gen' mode to produce programs in your target language. To fuzz a decompiler in your language, you should implement the following:
+- Add a new language directory to `src/fuzzflesh/harness`
+- Implement the abstract class `Runner` which is in `src/fuzzflesh/harness/runner.py`
+- Add the filepaths required for your decompiler to the relevant argument subparser in `src/fuzzflesh/__main__.py`, and add the decompiler to the `Compiler` class in `src/fuzzflesh/common/utils.py`
 
 # Coverage analysis
 Navigate to `src/analysis/coverage`. The scripts to gather coverage for each testing tool - decompiler combination can be found within the `cpp` and `java` folders. Note that this requires a significant amount of setup and running time and the scripts are unlikely to work without adjustment on your machine. The overall coverage analysis is run as follows:
