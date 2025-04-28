@@ -196,8 +196,8 @@ def main():
                 compile(args, language, compiler, programs, paths, base_dir, Path(graph_dir, f'graph_{graph_id}.p'))
 
             elif args.action == 'fuzz':
-                (graph, programs, paths) = gen(args, language, graph_dir, graph_id)
-            run(args, language, compiler, programs, paths, base_dir, graph)
+                (graph, programs, paths) = gen(args, language, compiler, graph_dir, graph_id, base_dir)
+                run(args, language, compiler, programs, paths, base_dir, graph)
 
     else:
         graph_id = 0

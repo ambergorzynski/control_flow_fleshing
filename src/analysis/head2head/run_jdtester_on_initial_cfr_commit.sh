@@ -2,8 +2,8 @@
 
 DECOMPILER='cfr'
 PROGRAM_GENERATOR='javafuzzer'
-OUTPUT=results/${DECOMPILER}_pre_ff_fix_commit_6hrs
-TIMELIMIT=60*60*6
+OUTPUT=results/${DECOMPILER}_pre_ff_fix_commit
+TIMELIMIT=0
 
 if [ $PROGRAM_GENERATOR = "javafuzzer" ]
 then
@@ -15,7 +15,7 @@ fi
 
 JDTESTER=/data/dev/jdtester_backup
 JDTESTER_JAR=${JDTESTER}/JD-Tester-${PROGRAM_GENERATOR}.jar
-ANDROID=/data/dev/Android/Sdk
+ANDROID=/data/dev/fuzzflesh/external/Android/sdk/Sdk
 PROGRAMS=1
 
 cd $JDTESTER
@@ -23,7 +23,7 @@ cd $JDTESTER
 rm -rf $OUTPUT
 mkdir -p $OUTPUT
 
-export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export PATH=$JAVA_HOME/bin:$PATH
 
 num=0
@@ -31,13 +31,13 @@ end=$((SECONDS+TIMELIMIT))
 
 while [ $SECONDS -lt $end ]; do
 
-    java -jar $JDTESTER_JAR \
+java -jar $JDTESTER_JAR \
         -ph $JDTESTER \
         -ah $ANDROID \
         -o ./${OUTPUT}/out_${num} \
         -de ${DECOMPILER} \
         -npe $PROGRAMS
 
-    num=$((num+1))
+num=$((num+1))
     
 done

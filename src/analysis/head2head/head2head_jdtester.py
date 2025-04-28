@@ -9,7 +9,7 @@ import json
 
 import utils
 
-JDTESTER = '/data/dev/jdtester_backup'
+JDTESTER = '/data/dev/fuzzflesh/external/jdtester'
 
 def parse_xml(xml : Path):
     # tried to parse xml but the formatting is junk
@@ -197,36 +197,46 @@ def get_failing_tests_jadx(original : Path, output : Path, original_tests : dict
 
     return (failing_tests, passing_tests)
 
-def test_cfr():
-    base : Path = Path('/data/dev/head2head')
-    cfr : Path = Path(base, 'cfr')
+def test_cfr(output):
+    base : Path = Path('/data/dev/fuzzflesh')
     start_commit_output = Path(JDTESTER, 'results', 'cfr_pre_ff_fix_commit')
-    output : Path = Path('/data/work/fuzzflesh/head2head/cfr')
+    output : Path = Path(base,'output','cfr')
+
+    base.mkdir(parents=True, exist_ok=True)
+    start_commit_output.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, exist_ok=True)
 
     # build starting cfr version
+    cfr = Path(base, 'external', 'cfr', 'cfr_pre_fix1')
+
     if not utils.build_cfr(cfr, utils.cfr_commits['pre_fix1'], jdtester_location = JDTESTER):
         exit(1)
 
-    exit()
-
-    # run jdtester for X minutes on the initial jadx version
-    # this must be done manually using root for jdtester :(
-    # this should output tests into the start_commit_output folder
+    copy_cmd = ['cp', f'{cfr}/target/cfr-0.153-SNAPSHOT.jar', f'{jdtester_location}/cfr.jar']
+    result = subprocess.run(copy_cmd)
+    if result.returncode != 0:
+        print('Copy fail!')
+        exit(1)
     
+    # run jdtester for X minutes on the initial cfr version
+    # this must be done manually using root for jdtester :(
+    # this should output tests into the start_commit_output folder     
+
     (failing_tests, passing_tests) = get_initial_failing_tests(start_commit_output)
 
     print(f'Number of originally failing tests: {len(failing_tests)} and passing: {len(passing_tests)}')
 
-    with open(Path(output,'failing_tests_on_initial_commit.txt'),'w') as f:
+    with open(Path(output,'failing_tests_on_initial_commit.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in failing_tests.items()}, f)
 
-    with open(Path(output,'passing_tests_on_initial_commit.txt'),'w') as f:
+    with open(Path(output,'passing_tests_on_initial_commit.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in passing_tests.items()}, f)
 
     # get next commit
-    #if not utils.build_cfr(cfr, utils.cfr_commits['fix1'], jdtester_location = JDTESTER):
-    #    print('Problem building cfr!')
-    #   exit(1)
+    cfr = Path(base, 'external', 'cfr', 'cfr_fix1')
+    if not utils.build_cfr(cfr, utils.cfr_commits['fix1'], jdtester_location = JDTESTER):
+        print('Problem building cfr!')
+        exit(1)
 
     # attempt to decompile and execute each previously failing test
     outpath = Path(output, 'jd')
@@ -236,20 +246,16 @@ def test_cfr():
     print(f'\t{len(new_failing_tests)} failing tests and') 
     print(f'\t{len(new_passing_tests)} passing tests')
 
-    with open(Path(output,'failing_tests_on_postfix_commit.txt'),'w') as f:
+    with open(Path(output,'failing_tests_on_postfix_commit.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in new_failing_tests.items()},f)
 
-    with open(Path(output,'passing_tests_on_postfix_commit.txt'),'w') as f:
+    with open(Path(output,'passing_tests_on_postfix_commit.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in new_passing_tests.items()},f)
-
-
-
     
-def test_jadx(): 
+def test_jadx(output): 
     base : Path = Path('/data/dev/head2head')
     jadx : Path = Path(base, 'jadx')
     start_commit_output = Path(JDTESTER, 'results', 'jadx_pre_ff_fix_commit')
-    output : Path = Path('/data/work/fuzzflesh/head2head/jadx')
 
     # jadx initial commit is the latest stable release
     # before the first reported JD-Tester bug
@@ -269,10 +275,10 @@ def test_jadx():
     # on the initial commit
     (failing_tests, passing_tests) = get_initial_failing_tests(start_commit_output)
 
-    with open(Path(output,'failing_tests_on_initial_commit_jadx.txt'),'w') as f:
+    with open(Path(output,'failing_tests_on_initial_commit_jadx.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in failing_tests.items()}, f)
 
-    with open(Path(output,'passing_tests_on_initial_commit_jadx.txt'),'w') as f:
+    with open(Path(output,'passing_tests_on_initial_commit_jadx.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in passing_tests.items()}, f)
 
     print(f'There were {len(failing_tests)} failing tests and {len(passing_tests)} passing tests on the initial commit')
@@ -280,7 +286,6 @@ def test_jadx():
     # get next commit
     if not utils.build_jadx(jadx, utils.jadx_commits['fix5'], jdk=17, jdtester_location = JDTESTER):
         exit(1)
-
 
     # attempt to decompile and execute each previously failing test
     outpath = Path(output, 'jd')
@@ -290,11 +295,37 @@ def test_jadx():
     print(f'\t{len(new_failing_tests)} failing tests and') 
     print(f'\t{len(new_passing_tests)} passing tests')
 
-    with open(Path(output,'failing_tests_on_postfix_commit_jadx.txt'),'w') as f:
+    with open(Path(output,'failing_tests_on_postfix_commit_jadx.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in new_failing_tests.items()},f)
 
-    with open(Path(output,'passing_tests_on_postfix_commit_jadx.txt'),'w') as f:
+    with open(Path(output,'passing_tests_on_postfix_commit_jadx.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in new_passing_tests.items()},f)
+
+def compare_results(name, output):
+    
+    with open(Path(output, f'failing_tests_on_initial_commit_{name}.json'),'r') as f:
+        pre_fix_fails = set(json.load(f).keys())
+    with open(Path(output, f'failing_tests_on_postfix_commit_{name}.json'),'r') as f:
+        post_fix_fails = set(json.load(f).keys())
+    with open(Path(output, f'passing_tests_on_initial_commit_{name}.json'),'r') as f:
+        pre_fix_passes = set(json.load(f).keys())
+    with open(Path(output, f'passing_tests_on_postfix_commit_{name}.json'),'r') as f:
+        post_fix_passes = set(json.load(f).keys())
+
+    print(f'\n{name.upper()} RESULTS')
+
+    if (pre_fix_fails == post_fix_fails):
+        print(f'BUG NOT DETECTED - No failing test changes to pass after the fixing commit')
+    else:
+        pass_to_fail = [x for x in post_fix_passes if x in pre_fix_fails]
+        if len(pass_to_fail) != 0:
+            print(f'BUG DETECTED - The following tests change from fail to pass after the fixing commit:')
+            for x in pass_to_fail:
+                print(x)
+
+    print("If a test status changes from FAIL before the commit to PASS after the commit,")
+    print("this indicates that the test failure was caused by the specific bug that was ")
+    print("fixed in the commit, i.e., this JD-Tester test identified the bug that FuzzFlesh identified")
 
 
 def main():
@@ -302,13 +333,20 @@ def main():
 
     parser.add_argument('--jadx', action=argparse.BooleanOptionalAction)
     parser.add_argument('--cfr', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--analyse', action=argparse.BooleanOptionalAction)
 
     args = parser.parse_args()
 
+    cfr_output = Path('/data/dev/fuzzflesh/data/head2head_results/cfr')
+    jadx_output = Path('/data/dev/fuzzflesh/data/head2head_results/jadx')
+
     if args.jadx:
-        test_jadx()
+        test_jadx(jadx_output)
     elif args.cfr:
-        test_cfr()
+        test_cfr(cfr_output)
+    elif args.analyse:
+        compare_results('cfr', cfr_output)
+        compare_results('jadx', jadx_output)
 
 if __name__=="__main__":
     main()

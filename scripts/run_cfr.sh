@@ -2,15 +2,13 @@
 
 SRC='/data/dev/fuzzflesh/src'
 ACTION='fuzz'
-OUTPUT='/data/work/fuzzflesh/output'
+OUTPUT='/data/dev/fuzzflesh/output'
 LANG='javabc'
-JVM='/usr/lib/jvm/java-19-openjdk-amd64/bin'
-JASMIN='/homes/agg22/dev/jasmin-2.4'
-JSON='/data/dev/java/json-simple-1.1.1.jar'
+JVM='/usr/lib/jvm/java-11-openjdk-amd64/bin'
+JASMIN='/data/dev/fuzzflesh/external/jasmin/jasmin-2.4'
+JSON='/data/dev/fuzzflesh/external/json/json-simple-1.1.1.jar'
 COMPILER='cfr'
-DECOMPILER_PATH='/data/dev/cfr/target/classes'
-
-. $SRC/venv/bin/activate
+DECOMPILER_PATH='/data/dev/fuzzflesh/external/cfr/cfr/target/classes'
 
 PYTHONPATH=$SRC/fuzzflesh
 

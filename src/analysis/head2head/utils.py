@@ -4,23 +4,18 @@ import os
 
 # Anonymised commits for review
 jadx_commits = {
-    'initial' : 'xxx',
-    'fix1' : 'xxx', # issue xxx (jd)
-    'fix2' : 'xxx', # issue xxx (jd)
-    'fix3' : 'xxx', # issue xxx (jd)
-    'fix4' : 'xxx', # issue xxx (jd)
-    'pre_fix5' : 'xxx', # code still contains issue xxx
-    'fix5' : 'xxx'  # issue 2274 (ff)
+    'initial' : '87e0e5b',
+    'pre_fix1' : '5c83c22', # code still contains issue 2274
+    'fix1' : '699ceb1'  # issue 2274 (ff)
 }
 
 cfr_commits = {
-    'initial' : 'xxx',
-    'pre_fix1' : 'xxx',
-    'fix1' : 'xxx'
+    'initial' : '68477be',
+    'pre_fix1' : 'd6f6758',
+    'fix1' : '3d1d0f4'
 }
 
-def build_cfr(cfr : Path, commit : str, jdtester_location = None):
-
+def checkout_cfr(commit):
     get_commit_cmd = ['git', 'checkout', commit]
     result = subprocess.run(get_commit_cmd, cwd=cfr)
     
@@ -28,13 +23,18 @@ def build_cfr(cfr : Path, commit : str, jdtester_location = None):
         print('Checkout fail!')
         return False
 
+def build_cfr(cfr : Path, commit : str, jdtester_location = None, checkout = False):
+
+    if checkout:
+        checkout_cfr(commit)
+
     env = os.environ.copy()
     java = f'/usr/lib/jvm/java-1.11.0-openjdk-amd64'
     env['JAVA_HOME'] = java
     path = os.environ['PATH']
     env['PATH'] = f'{java}/bin:{path}'
 
-    build_cfr_cmd = ['mvn', 'package']
+    build_cfr_cmd = ['mvn', 'compile']
     result = subprocess.run(build_cfr_cmd, cwd=cfr, env=env)
     
     if result.returncode != 0:
