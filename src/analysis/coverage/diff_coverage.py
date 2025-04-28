@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 import collections, functools, operator
 import math
-
+import argparse
 
 class Summary():
     def __init__(self, decompiler : str, one : str, two : str, empty = False):
@@ -159,7 +159,6 @@ def make_overall_latex_table_java(overall_coverage : list[Summary], metric) -> s
         }
 
     cols = [f'instr_{v}' for k,v in col_config.items()] 
-    #cols.extend([f'branch_{v}' for k,v in col_config.items()])
 
     df = pd.DataFrame(columns=cols, 
             index = [v for k,v in rows.items()])
@@ -172,15 +171,6 @@ def make_overall_latex_table_java(overall_coverage : list[Summary], metric) -> s
                 df.loc[decomp, f'instr_{config}'] = instr_data[decomp][config]
             except:
                 df.loc[decomp, f'instr_{config}'] = '-'
-
-        # branch coverage
-        '''
-        for  c, config in col_config.items():
-            try:
-                df.loc[decomp, f'branch_{config}'] = branch_data[decomp][config]
-            except:
-                df.loc[decomp, f'branch_{config}'] = '-'
-        '''
 
 
         code = f'''
@@ -590,10 +580,7 @@ def compare(
 def filter_for_ff(df : pd.DataFrame, value : str):
     return df[(df['ci'] == value) | (df['cb'] == value)]
     
-def get_java_coverage(output_unit):
-
-    base : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
-    output : Path = Path(base, 'analysis')
+def get_java_coverage(base, output, output_unit):
 
     decompilers = ['cfr', 'fernflower', 'jadx']
     jdfuzzer = 'javafuzzer'
@@ -628,7 +615,6 @@ def get_java_coverage(output_unit):
 
     print(latex_code)
 
-
     with open(Path(output, f'unique_coverage_java_{output_unit}.tex'), 'w') as f:
         f.write(latex_code)
 
@@ -638,10 +624,7 @@ def get_java_coverage(output_unit):
         detailed_df[decomp] = detailed_df[decomp].reset_index(drop=True)
         detailed_df[decomp].to_csv(Path(output, f'ff_only_coverage_df_{decomp}'), sep = '\t')
 
-def get_c_coverage(output_unit):
-
-    base : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
-    output : Path = Path(base, 'analysis')
+def get_c_coverage(base, output, output_unit):
 
     decompilers = ['ghidra11']
     dirs = 'dirs_known'
@@ -686,10 +669,28 @@ def get_c_coverage(output_unit):
 
 
 def main():
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--c', action='store_true')
+    parser.add_argument('--java', action='store_true')
+
+    args = parser.parse_args()
+
     output_unit = 'num'
-    get_c_coverage(output_unit)
-    get_java_coverage(output_unit)
-    # TODO make visualisation e.g. venn diagram
+
+    base : Path = Path('/data/dev/fuzzflesh/data/coverage_results')
+    output : Path = Path(base, 'analysis', 'latex')
+
+    if args.c:
+        get_c_coverage(base, output, output_unit)
+
+    if args.java:
+        get_java_coverage(base, output, output_unit)
+
+    if  args == None:
+        get_c_coverage(output_unit)
+        get_java_coverage(output_unit)
 
 if __name__=="__main__":
     main()
