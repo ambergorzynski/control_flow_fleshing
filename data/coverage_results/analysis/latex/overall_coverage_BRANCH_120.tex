@@ -1,0 +1,27 @@
+
+\begin{table*}[htbp]
+\caption{Branch coverage comparison 2 hrs (\%)}
+\label{tab:instruction_coverage}
+\begin{tabular}{m{1.7cm}|M{1.65}M{1.65}M{1.65}M{1.65}M{1.65}}
+
+\toprule
+& \multicolumn{5}{c}{Testing tool} \\
+        Decompiler %
+        & \mC{1.65}{FuzzFlesh \footnotesize{path known}} %
+        & \mC{1.65}{FuzzFlesh \footnotesize{path unknown}} %
+        & \mC{1.65}{DecFuzzer} %
+        & \mC{1.65}{JD-Tester \footnotesize{JavaFuzzer}} %
+        & \mC{1.65}{JD-tester \footnotesize{Hephaestus}} \\
+\midrule 
+    Ghidra 11  & 23  & 17  & 18  & -  & - \\
+
+    CFR  & 20  & 19  & -  & 41  & 33 \\
+
+    FernFlower  & 29  & 28  & -  & 47  & 40 \\
+
+    JADX  & 30  & 30  & -  & 45  & 38 \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+    

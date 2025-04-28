@@ -1,0 +1,27 @@
+
+\begin{table*}[htbp]
+\caption{Instruction coverage comparison 8 hrs (\%)}
+\label{tab:instruction_coverage}
+\begin{tabular}{m{1.7cm}|M{1.65}M{1.65}M{1.65}M{1.65}M{1.65}}
+
+\toprule
+& \multicolumn{5}{c}{Testing tool} \\
+        Decompiler %
+        & \mC{1.65}{FuzzFlesh \footnotesize{path known}} %
+        & \mC{1.65}{FuzzFlesh \footnotesize{path unknown}} %
+        & \mC{1.65}{DecFuzzer} %
+        & \mC{1.65}{JD-Tester \footnotesize{JavaFuzzer}} %
+        & \mC{1.65}{JD-tester \footnotesize{Hephaestus}} \\
+\midrule 
+    Ghidra 11  & -  & -  & 39  & -  & - \\
+
+    CFR  & 31  & 30  & -  & 53  & 42 \\
+
+    FernFlower  & 42  & 41  & -  & 55  & 48 \\
+
+    JADX  & 37  & 36  & -  & 50  & 44 \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+    

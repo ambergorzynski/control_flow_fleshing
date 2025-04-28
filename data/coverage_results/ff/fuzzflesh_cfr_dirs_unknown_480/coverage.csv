@@ -1,0 +1,1128 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,MatchIterator,155,76,23,7,27,16,18,8,4,7
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,KleeneN,45,0,4,0,16,0,5,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,EmptyMatchResultCollector,6,0,0,0,4,0,4,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,MatchOneOf,38,0,4,0,9,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,KleenePlus,5,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,AbstractMatchResultIterator,3,3,0,0,3,1,3,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,DeadMethodRemover,38,0,6,0,12,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,MatchSequence,50,0,4,0,14,0,5,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,KleeneStar,5,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,MatchOpt,22,0,2,0,8,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,CollectMatch,0,29,0,2,0,9,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil,ResetAfterTest,37,0,2,0,11,0,4,0,3,0
+cfr,org.benf.cfr.reader.entities.annotations,ElementValueConst,38,6,6,0,10,3,7,1,4,1
+cfr,org.benf.cfr.reader.entities.annotations,ElementValueClass,39,0,4,0,13,0,7,0,5,0
+cfr,org.benf.cfr.reader.entities.annotations,ElementValueArray,75,0,8,0,22,0,9,0,5,0
+cfr,org.benf.cfr.reader.entities.annotations,ElementValueAnnotation,37,0,4,0,13,0,7,0,5,0
+cfr,org.benf.cfr.reader.entities.annotations,AnnotationTableTypeEntry,27,0,0,0,9,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.annotations,AnnotationTableEntry,118,9,14,0,25,4,14,1,7,1
+cfr,org.benf.cfr.reader.entities.annotations,ElementValueEnum,55,0,8,0,14,0,9,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SynchronizedRewriter,342,17,70,2,89,3,39,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValuePropSimple,210,0,26,0,47,0,15,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.IsBackJumpTo,11,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.new BinaryProcedure() {...},0,46,1,7,0,11,1,5,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,StaticInstanceCondenser,34,38,5,5,8,10,3,6,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.GraphVisitorBlockReachable,24,73,0,6,5,16,2,7,2,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalCondenser,97,293,25,53,26,75,20,24,0,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.IsForwardJumpTo,0,11,0,0,0,4,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,StatementEquivalenceConstraint,46,0,10,0,11,0,7,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LinearScannedBlock,74,0,8,0,15,0,12,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,JoinBlocks,23,90,4,14,5,20,4,7,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,NarrowingTypeRewriter.LValueAssignmentCollector,2,88,1,13,0,23,1,10,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,RedundantTries,89,24,12,2,21,8,8,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ReturnRewriter.new BinaryProcedure() {...},31,26,7,5,7,6,6,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,AnonymousArray,254,26,31,3,56,7,19,1,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,GenericInferer.GenericInferData,87,0,14,0,20,0,12,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalRewriter,1268,336,205,42,294,92,120,13,5,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,JumpsIntoLoopCloneRewriter.new BinaryProcedure() {...},6,60,1,5,1,9,1,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,CondenseConditionals,878,197,113,27,184,42,66,11,2,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,JumpsIntoLoopCloneRewriter.new BinaryProcedure() {...},54,0,6,0,9,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalRewriter.DiscoveredTernary,74,0,16,0,18,0,11,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,NegativeJumps,4,115,5,13,1,28,6,5,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalSimplifier,106,52,22,10,24,13,15,5,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler.FakeSwitch,9,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Op03Rewriters,6,213,0,4,3,92,2,49,2,47
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc,186,228,33,39,43,55,29,23,8,8
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler.OriginalSwitchLookupInfo,15,0,0,0,6,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.HasBackJump,20,35,5,5,3,10,3,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValuePropSimple.new LValueRewriter() {...},31,0,2,0,8,0,8,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IterLoopRewriter,861,0,100,0,189,0,56,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.GetBackJump,5,27,1,3,1,7,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PointlessExpressions,24,75,10,10,6,16,9,4,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,DeadConditionalRemover,58,48,11,7,14,13,7,6,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,BadNarrowingArgRewriter.InternalBadNarrowingRewriter,58,6,10,0,15,1,7,1,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IterLoopRewriter.new Predicate() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IterLoopRewriter.new BinaryProcedure() {...},85,0,14,0,17,0,9,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IterLoopRewriter.new Predicate() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IterLoopRewriter.new BinaryProcedure() {...},74,0,12,0,15,0,8,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SynchronizedRewriter.FindBlockStarts,2,20,1,3,0,6,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,GenericInferer.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,WhileRewriter.new Predicate() {...},2,16,1,3,0,2,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,WhileRewriter.new Predicate() {...},0,18,0,4,0,2,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,AnonymousBlocks.new Predicate() {...},2,20,1,3,0,5,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,WhileRewriter,654,115,114,16,169,30,67,7,6,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,UselessNops,3,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,FinallyRewriter.new Predicate() {...},7,12,3,1,1,3,2,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler,934,58,96,4,208,12,50,3,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalRewriter.new Predicate() {...},8,3,2,0,1,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ExceptionRewriters.new UnaryFunction() {...},5,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ExceptionRewriters.new Predicate() {...},15,0,4,0,2,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,RemoveDeterministicJumps,343,324,70,52,86,85,51,18,4,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,AssertionJumps,60,65,4,8,13,13,4,4,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ConditionalRewriter.IsForwardIf,2,28,1,5,0,5,1,3,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,BadCompareRewriter,153,31,16,3,25,9,11,4,2,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValuePropSimple.UsageCollector,58,0,8,0,13,0,7,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SynchronizedBlocks,262,14,33,1,62,3,21,1,4,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ClassifyGotos,318,132,49,23,66,32,30,12,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,NullTypedLValueRewriter,2,17,2,2,1,5,2,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Cleaner,29,185,5,23,8,49,6,15,2,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier,786,840,115,85,167,197,75,36,3,8
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ReturnRewriter,149,62,17,7,36,16,12,5,2,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PrePostchangeAssignmentRewriter,158,207,31,27,35,52,19,16,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,StaticInstanceCondenser.Rewriter,53,0,6,0,16,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Cleaner.new BinaryProcedure() {...},44,70,3,13,3,14,3,7,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,CondenseConstruction,3,24,0,2,1,6,1,2,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,NOPSearchingExpressionRewriter,53,0,10,0,14,0,8,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ExactTypeFilter,0,16,0,2,0,4,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,DupAssigns,66,68,9,9,15,16,8,4,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,EclipseLoops,92,69,9,11,22,15,7,5,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,TryRewriter,891,56,138,4,209,12,78,4,7,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SwitchUtils.new Predicate() {...},11,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler.new Predicate() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler.new UnaryFunction() {...},19,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,TypeFilter,9,21,0,2,4,5,1,3,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,BadBoolAssignmentRewriter,10,46,4,6,2,11,4,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PushThroughGoto.new Predicate() {...},0,15,0,2,0,5,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Comparator() {...},6,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Predicate() {...},0,16,0,2,0,2,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new UnaryFunction() {...},0,5,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Predicate() {...},0,25,1,3,0,3,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Predicate() {...},0,16,0,2,0,2,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Predicate() {...},0,16,1,3,0,3,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new Predicate() {...},2,9,1,1,0,2,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.new UnaryFunction() {...},6,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,GenericInferer,216,40,35,9,46,12,21,4,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PushThroughGoto,103,190,17,27,24,41,16,10,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValuePropSimple.AssignmentCollector,58,0,4,0,15,0,7,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SynchronizedBlocks.new BinaryProcedure() {...},45,0,6,0,8,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SynchronizedBlocks.new BinaryProcedure() {...},177,0,30,0,34,0,17,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ExceptionRewriters.SingleExceptionAddressing,15,0,0,0,6,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,MonitorRewriter,93,0,12,0,20,0,8,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ClassifyGotos.new Predicate() {...},0,18,0,4,0,5,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,CompareByIndex,18,26,1,3,1,9,1,4,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ClassifyGotos.new UnaryFunction() {...},2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,BreakRewriter,3,91,3,17,1,27,4,8,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,JumpsIntoLoopCloneRewriter,625,168,67,17,142,40,41,11,4,6
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,JumpsIntoDoRewriter,501,89,40,16,92,20,23,8,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValueProp,17,116,3,15,4,30,3,8,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,InlineDeAssigner.Deassigner,125,95,17,11,23,25,13,8,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SwitchReplacer,868,1987,133,219,197,460,93,100,2,15
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,IsolatedStackValue,64,55,11,11,13,15,8,5,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SwitchUtils,35,0,4,0,8,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,InstanceConstants,180,48,32,6,38,14,17,6,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PrePostchangeAssignmentRewriter.StatementCanBePostMutation,6,15,3,1,0,4,2,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PrePostchangeAssignmentRewriter.UsageWatcher,0,27,0,2,0,7,0,4,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopLivenessClash,192,0,34,0,48,0,21,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LoopIdentifier.LoopResult,0,9,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,ExceptionRewriters,1139,77,163,7,252,20,95,6,10,6
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,AnonymousBlocks,108,10,11,1,26,2,7,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,UselessNops.new Predicate() {...},0,15,0,4,0,2,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SwitchReplacer.NodeReachable,1,66,1,11,1,17,1,7,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,AnonymousArray.new Predicate() {...},0,27,0,0,0,5,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,NarrowingTypeRewriter,32,100,7,11,9,23,7,6,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,FinallyRewriter,66,48,13,7,15,12,10,3,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,BadNarrowingArgRewriter,0,30,0,2,0,6,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PushThroughGoto.new Predicate() {...},0,15,0,2,0,5,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,Misc.GraphVisitorReachableInThese,0,39,0,4,0,11,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,SwitchReplacer.NodesReachedUntil,0,48,1,5,0,17,1,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,StaticInitReturnRewriter,62,7,9,1,11,1,6,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,InlineDeAssigner,120,107,11,15,32,26,8,9,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,KotlinSwitchHandler.DistinctSwitchTarget,15,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,PointlessJumps,151,216,28,40,36,45,19,19,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters,LValueCondense,69,135,16,20,16,34,12,11,1,4
+cfr,org.benf.cfr.reader.entityfactories,AttributeFactory,152,149,28,28,32,33,21,10,1,2
+cfr,org.benf.cfr.reader.entityfactories,AttributeFactory.AttributeBuilder,0,16,0,0,0,5,0,2,0,2
+cfr,org.benf.cfr.reader.entityfactories,ContiguousEntityFactory,21,39,1,3,4,9,2,3,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocCollector,80,0,8,0,19,0,9,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocFactoryStub,0,7,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocSet,92,0,6,0,19,0,9,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocSpecific.Specific,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocFactoryImpl,155,5,30,0,36,1,21,1,6,1
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocFactory,0,16,0,0,0,3,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLoc,15,10,0,0,3,4,3,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocSpecific,9,8,0,0,4,4,4,2,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.loc,BytecodeLocSimple,31,0,0,0,10,0,6,0,6,0
+cfr,org.benf.cfr.reader,PluginRunner,121,0,4,0,27,0,10,0,8,0
+cfr,org.benf.cfr.reader,Driver,472,115,54,6,106,28,35,1,5,1
+cfr,org.benf.cfr.reader,PluginRunner.PluginDumperFactory,64,0,2,0,12,0,8,0,7,0
+cfr,org.benf.cfr.reader,Main,35,47,4,4,13,13,7,1,3,1
+cfr,org.benf.cfr.reader,PluginRunner.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader,CfrDriverImpl,64,93,16,10,6,24,12,3,0,2
+cfr,org.benf.cfr.reader,Driver.new BinaryFunction() {...},51,0,4,0,10,0,4,0,2,0
+cfr,org.benf.cfr.reader,Driver.new Predicate() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured,StructuredScope.AtLevel,4,9,0,0,1,4,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured,StructuredScope,134,135,24,16,30,34,19,12,4,7
+cfr,org.benf.cfr.reader.util.output,TokenStreamDumper.new UnaryFunction() {...},10,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,LoggerFactory,3,33,0,0,1,11,1,3,1,3
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.4.new SinkReturns.DecompiledMultiVer() {...},28,0,0,0,5,0,5,0,5,0
+cfr,org.benf.cfr.reader.util.output,IllegalIdentifierDump.Nop,2,12,0,0,1,4,1,4,1,4
+cfr,org.benf.cfr.reader.util.output,InternalDumperFactoryImpl,163,84,17,7,23,18,16,5,4,5
+cfr,org.benf.cfr.reader.util.output,BytecodeTrackingDumper,91,0,4,0,20,0,5,0,3,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.SinkStringExceptionDumper,11,0,0,0,5,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,BytecodeTrackingDumper.new BytecodeDumpConsumer.Item() {...},18,0,0,0,3,0,3,0,3,0
+cfr,org.benf.cfr.reader.util.output,BytecodeTrackingDumper.new UnaryFunction() {...},10,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,ProgressDumperStdErr,33,0,0,0,5,0,3,0,3,0
+cfr,org.benf.cfr.reader.util.output,BytecodeTrackingDumper.MethodBytecode,80,0,8,0,18,0,7,0,3,0
+cfr,org.benf.cfr.reader.util.output,TokenStreamDumper.Token,58,0,0,0,18,0,9,0,9,0
+cfr,org.benf.cfr.reader.util.output,ToStringDumper,181,103,6,6,44,27,26,10,21,9
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory,478,0,44,0,77,0,38,0,14,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.new StringStreamDumper() {...},39,0,0,0,5,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.new StringStreamDumper() {...},25,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.new StringStreamDumper() {...},36,0,0,0,5,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.new BytecodeDumpConsumer() {...},29,0,2,0,5,0,3,0,2,0
+cfr,org.benf.cfr.reader.util.output,ProgressDumperNop,1,6,0,0,1,2,1,2,1,2
+cfr,org.benf.cfr.reader.util.output,TypeContext,0,24,0,0,0,3,0,1,0,1
+cfr,org.benf.cfr.reader.util.output,IllegalIdentifierReplacement,141,85,24,12,27,22,19,8,4,5
+cfr,org.benf.cfr.reader.util.output,TokenStreamDumper.RecycleToken,18,0,0,0,7,0,5,0,5,0
+cfr,org.benf.cfr.reader.util.output,MethodErrorCollector.SummaryDumperMethodErrorCollector,17,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.1.new SinkReturns.LineNumberMapping() {...},46,0,4,0,9,0,7,0,5,0
+cfr,org.benf.cfr.reader.util.output,NopSummaryDumper,3,3,0,0,3,1,3,1,3,1
+cfr,org.benf.cfr.reader.util.output,FileDumper,338,0,22,0,59,0,20,0,9,0
+cfr,org.benf.cfr.reader.util.output,InternalDumperFactoryImpl.BytecodeDumpConsumerImpl,86,0,4,0,20,0,4,0,2,0
+cfr,org.benf.cfr.reader.util.output,StringStreamDumper,47,0,0,0,13,0,7,0,7,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.3.new SinkReturns.Decompiled() {...},24,0,0,0,4,0,4,0,4,0
+cfr,org.benf.cfr.reader.util.output,TokenStreamDumper,470,0,30,0,108,0,51,0,36,0
+cfr,org.benf.cfr.reader.util.output,AbstractDumper,44,87,7,7,8,25,9,8,2,8
+cfr,org.benf.cfr.reader.util.output,SinkSummaryDumper,83,0,4,0,17,0,6,0,4,0
+cfr,org.benf.cfr.reader.util.output,StdErrExceptionDumper,41,3,6,0,9,1,4,1,1,1
+cfr,org.benf.cfr.reader.util.output,DelegatingDumper,222,0,2,0,64,0,36,0,35,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.SinkProgressDumper,31,0,0,0,7,0,3,0,3,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.SinkExceptionDumper,19,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.output,LogFormatter,10,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.util.output,StdIODumper,26,13,0,0,4,6,3,4,3,4
+cfr,org.benf.cfr.reader.util.output,InternalDumperFactoryImpl.AdditionalComments,20,0,2,0,6,0,3,0,2,0
+cfr,org.benf.cfr.reader.util.output,TypeOverridingDumper,30,0,0,0,8,0,5,0,5,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.SinkExceptionDumper.new SinkReturns.ExceptionMessage() {...},24,0,0,0,4,0,4,0,4,0
+cfr,org.benf.cfr.reader.util.output,IllegalIdentifierDump.Factory,7,16,2,2,3,4,3,2,1,2
+cfr,org.benf.cfr.reader.util.output,MovableDumperContext,0,18,0,0,0,6,0,1,0,1
+cfr,org.benf.cfr.reader.util.output,BlockCommentState,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.util.output,BytecodeTrackingDumper.LocAtLine,26,0,2,0,10,0,5,0,4,0
+cfr,org.benf.cfr.reader.util.output,SinkDumperFactory.NopStringSink,1,0,0,0,1,0,1,0,1,0
+cfr,org.benf.cfr.reader.util.output,StreamDumper,103,266,11,17,25,68,14,26,5,21
+cfr,org.benf.cfr.reader.util.output,FileSummaryDumper,230,0,20,0,51,0,15,0,5,0
+cfr,org.benf.cfr.reader.util.output,Dumper.CannotCreate,18,0,0,0,5,0,3,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,NamedVariableFromHint,109,0,12,0,23,0,15,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,Keywords,21,272,2,0,5,56,3,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableNamerHinted.new UnaryFunction() {...},0,13,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableFactory,48,174,6,14,7,34,8,8,3,3
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableNamerHinted.OrderLocalVariables,2,14,1,1,0,3,1,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,Ident,16,69,5,7,0,16,5,6,0,5
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableNamerFactory,3,13,0,2,1,2,1,2,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableNamerDefault,76,56,7,3,22,13,6,4,2,3
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,Slot,16,40,3,5,1,12,4,6,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,VariableNamerHinted,223,48,28,2,46,11,18,2,4,1
+cfr,org.benf.cfr.reader.bytecode.analysis.variables,NamedVariableDefault,7,61,3,5,2,16,4,9,1,8
+cfr,org.benf.cfr.reader.entities.bootstrap,BootstrapMethodInfo,44,0,4,0,10,0,6,0,4,0
+cfr,org.benf.cfr.reader.entities.bootstrap,MethodHandleBehaviour,32,94,10,0,11,10,10,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,CreationCollector,400,38,69,3,109,10,39,3,3,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,SSAIdentifierUtils,59,0,14,0,12,0,9,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.MutationRewriterSecondPass,160,0,16,0,39,0,16,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueUsageCollectorSimpleRW,0,37,1,3,0,11,1,6,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,SSAIdentifierFactory,0,44,0,2,0,8,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.LValueStatementContainer,9,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,ConditionalUtils,41,27,10,2,11,7,7,2,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.MutationRewriterFirstPass.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,SSAIdent,32,111,5,9,6,27,6,12,3,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,Triplet,105,19,28,0,21,6,19,2,5,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.ExpressionStatementPair,4,9,0,0,1,4,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueUsageCollectorSimple,0,20,0,0,0,6,0,4,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.MutationRewriterFirstPass,18,114,4,12,4,27,4,13,0,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,BlockIdentifier,51,89,5,7,11,20,9,11,6,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentExpressionRewriter,112,0,16,0,26,0,11,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,ReadWrite,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueRewriter.Util,27,12,3,1,3,4,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,ArrayType,158,0,9,0,26,0,13,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.AliasRewriter.new UnaryFunction() {...},2,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.AliasRewriter.new UnaryFunction() {...},2,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,DefaultEquivalenceConstraint,80,8,24,0,16,2,15,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,JumpType,3,114,0,0,1,14,1,3,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.VersionedLValue,5,43,4,4,0,10,4,3,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,SSAIdentifiers,190,313,35,33,38,78,31,26,8,15
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,BlockIdentifierFactory,0,18,0,0,0,3,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser,278,340,68,40,61,84,49,24,2,17
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,BlockType,3,162,0,0,1,18,1,3,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,QuotingUtils,99,76,17,7,21,14,16,4,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,BlockIdentifier.new Predicate() {...},0,11,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,LValueAssignmentAndAliasCondenser.AliasRewriter,291,53,51,3,61,13,28,8,1,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,SSAIdentifierFactory.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,CreationCollector.new UnaryFunction() {...},2,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,CreationCollector.StatementPair,15,0,0,0,6,0,3,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils,Pair,35,72,12,8,3,19,11,6,1,6
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperRecord.new Predicate() {...},15,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.MethodData.new UnaryFunction() {...},20,0,2,0,4,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperEnum,324,0,36,0,66,0,24,0,6,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,VisibilityHelper,74,0,20,0,17,0,13,0,3,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumper.InnerClassDumpType,0,48,0,0,0,8,0,3,0,3
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ConstantLinks.new BinaryPredicate() {...},20,0,4,0,2,0,4,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ConstantLinks.new TrinaryFunction() {...},11,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ConstantLinks.new TrinaryFunction() {...},18,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ConstantLinks.new BinaryPredicate() {...},23,6,8,0,4,1,5,1,1,1
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperRecord,170,0,10,0,38,0,10,0,5,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper.new UnaryFunction() {...},19,9,2,0,4,1,2,1,1,1
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper.new UnaryFunction() {...},30,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper.new Predicate() {...},0,10,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper.new Predicate() {...},0,11,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper.new Predicate() {...},2,13,1,1,0,2,1,2,0,2
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet,844,0,154,0,199,0,88,0,11,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new UnaryFunction() {...},14,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new UnaryFunction() {...},14,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new Predicate() {...},19,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new Predicate() {...},20,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.new Predicate() {...},24,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperAnnotation,122,0,4,0,28,0,7,0,5,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,OverloadMethodSet.MethodData,116,0,14,0,24,0,15,0,8,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperModule,405,0,38,0,97,0,26,0,7,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ConstantLinks,171,61,28,6,40,14,20,3,3,3
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperAnonymousInner,186,0,34,0,49,0,21,0,4,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperInterface,251,0,18,0,57,0,16,0,7,0
+cfr,org.benf.cfr.reader.entities.classfilehelpers,AbstractClassFileDumper,180,292,34,30,34,75,26,15,0,9
+cfr,org.benf.cfr.reader.entities.classfilehelpers,ClassFileDumperNormal,26,196,8,6,6,34,8,4,1,4
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver,502,36,61,5,117,8,43,2,11,1
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.MemberInfo,131,86,22,8,25,21,19,6,6,4
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.MemberInfo.1.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.MemberInfo.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.MemberInfo.new UnaryFunction() {...},0,12,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.relationship,MemberNameResolver.MethodKey,54,23,10,0,7,7,7,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,AbstractLValueScopeDiscoverer,337,279,74,26,84,71,52,13,7,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,AbstractLValueScopeDiscoverer.ScopeDefinition,63,128,8,8,11,27,13,9,6,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,AbstractLValueScopeDiscoverer.ScopeKey,35,26,10,0,6,8,6,3,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,AbstractLValueScopeDiscoverer.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,AbstractLValueScopeDiscoverer.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,LocalClassScopeDiscoverImpl.SentinelNV,60,0,14,0,15,0,15,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,LocalClassScopeDiscoverImpl,130,65,17,5,26,19,13,4,2,4
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,LocalClassScopeDiscoverImpl.TypeUsageSpotter,16,39,1,5,4,10,2,6,1,4
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,LValueScopeDiscoverImpl,84,164,12,10,14,33,9,8,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.scope,ScopeDiscoverInfoCache,33,6,4,0,7,2,5,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},0,7,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},54,64,14,2,9,8,8,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryPredicate() {...},19,22,6,2,5,5,4,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},0,27,0,2,0,6,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},0,21,0,2,0,5,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryPredicate() {...},2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,InstrIndex.TempRelatives,0,42,0,0,0,11,0,4,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,GraphConversionHelper,20,83,1,7,1,19,1,7,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.Inliner,0,14,0,2,0,5,0,2,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.StackedBlock,0,12,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03SimpleStatement,904,908,97,86,186,240,80,78,19,46
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.ExceptionTempStatement,57,0,6,0,13,0,8,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03Blocks.new BinaryProcedure() {...},0,67,0,6,0,13,0,5,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03Blocks.new UnaryFunction() {...},2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03Blocks.Block3,82,154,3,13,14,39,8,15,5,10
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.StructuredGotoRemover,0,17,1,3,0,4,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.IdentFactory,0,18,0,0,0,3,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.UnstructuredIfConverter,4,12,1,1,1,4,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03SimpleStatement.new Object() {...},0,3,0,0,0,1,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03SimpleStatement.GraphVisitorCallee,30,0,2,0,8,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03Blocks,1424,1510,231,193,315,339,140,95,2,21
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op01WithProcessedDataAndByteJumps,88,124,15,7,21,27,19,9,6,6
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.NamedBreakRemover,5,9,1,1,1,3,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.7.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,InstrIndex,42,129,5,11,4,32,5,18,2,13
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.LabelledBlockExtractor,0,14,0,2,0,5,0,2,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.ScopeDescendingTransformer,6,49,1,5,1,13,1,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.PointlessBlockRemover,0,13,0,2,0,4,0,2,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.EmptyCatchTidier,4,9,1,1,1,3,1,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs,5666,1653,495,156,916,362,353,108,41,43
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.TryCatchTidier,0,14,0,2,0,5,0,2,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement,971,925,146,59,234,233,121,78,33,63
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op03SimpleStatement.new Predicate() {...},0,7,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},0,5,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.MutableProcessingBlockState,0,9,0,0,0,3,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op04StructuredStatement.new Object() {...},11,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},5,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},0,72,0,2,0,8,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},22,0,4,0,8,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new Predicate() {...},0,6,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new BinaryProcedure() {...},28,0,4,0,8,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph,Op02WithProcessedDataAndRefs.new Comparator() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDup2,86,3,2,0,9,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryCPEntryW,25,3,0,0,3,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryFakeCatch,36,3,2,0,6,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryGetStatic,22,3,2,0,4,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryInvokeDynamic,37,3,0,0,6,2,2,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDup2X2,225,3,6,0,17,1,5,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryReturn,5,20,1,1,0,4,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDup2X1,110,3,2,0,10,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryConditionalJump,0,35,0,0,0,7,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,DecodedLookupSwitch,0,130,0,8,0,20,0,6,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryTableSwitch,93,3,4,0,17,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryLDC2W,2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryLDC,64,3,10,0,18,1,7,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDup,39,3,0,0,4,1,2,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDupX1,53,3,0,0,6,1,2,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDupX2,109,3,2,0,11,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryGetField,23,3,2,0,4,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryLookupSwitch,0,83,0,4,0,16,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDupBase,0,3,0,0,0,1,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryPutField,33,3,2,0,4,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryWide,34,22,12,1,12,5,12,3,0,3
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryCPEntry,25,3,0,0,3,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryNew,25,3,0,0,3,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryInvokeInterface,35,3,0,0,5,2,2,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryLDCW,26,3,2,0,6,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryGotoW,25,3,0,0,5,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDefault,72,30,6,2,10,4,6,4,3,3
+cfr,org.benf.cfr.reader.bytecode.opcode,DecodedSwitchEntry,44,20,4,0,9,7,3,4,1,4
+cfr,org.benf.cfr.reader.bytecode.opcode,JVMInstr,32,4642,3,5,7,248,6,14,4,12
+cfr,org.benf.cfr.reader.bytecode.opcode,DecodedLookupSwitch.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryPop,29,3,2,0,5,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryPop2,49,3,2,0,7,1,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryThrow,22,3,2,0,3,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryMultiANewArray,60,3,4,0,10,1,4,1,2,1
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryPutStatic,22,3,2,0,4,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.opcode,DecodedTableSwitch,136,0,8,0,23,0,6,0,2,0
+cfr,org.benf.cfr.reader.bytecode.opcode,DecodedTableSwitch.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryGoto,0,28,0,0,0,6,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryInvoke,0,42,0,0,0,8,0,3,0,3
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactoryDefault.Handler,0,28,0,0,0,6,0,3,0,3
+cfr,org.benf.cfr.reader.bytecode.opcode,OperationFactorySwap,44,3,0,0,4,1,2,1,2,1
+cfr,org.benf.cfr.reader.util,MalformedPrototypeException,5,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.util,MiscUtils,93,7,17,1,18,3,13,2,4,2
+cfr,org.benf.cfr.reader.util,CannotLoadClassException,29,0,2,0,3,0,3,0,2,0
+cfr,org.benf.cfr.reader.util,AnalysisType,0,44,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.util,DecompilerComment,9,322,0,0,3,57,3,6,3,6
+cfr,org.benf.cfr.reader.util,CannotPerformDecode,4,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.util,StringUtils,98,8,14,2,24,2,13,2,6,1
+cfr,org.benf.cfr.reader.util,BoolPair,6,67,3,3,2,12,2,5,0,4
+cfr,org.benf.cfr.reader.util,MiscUtils.new Predicate() {...},23,0,2,0,3,0,3,0,2,0
+cfr,org.benf.cfr.reader.util,MiscUtils.new Predicate() {...},0,5,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.util,Troolean,14,42,5,2,4,6,5,2,1,2
+cfr,org.benf.cfr.reader.util,Optional,41,0,0,0,15,0,8,0,8,0
+cfr,org.benf.cfr.reader.util,ClassFileVersion,104,238,12,12,11,39,11,11,4,6
+cfr,org.benf.cfr.reader.util,ConfusedCFRException,4,4,0,0,2,2,1,1,1,1
+cfr,org.benf.cfr.reader.util,MiscConstants,4,0,0,0,1,0,1,0,1,0
+cfr,org.benf.cfr.reader.util,UnverifiableJumpException,3,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.util,CfrVersionInfo,2,33,2,2,0,6,2,1,0,1
+cfr,org.benf.cfr.reader.util,DecompilerComments,22,46,0,4,6,13,3,6,3,4
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.expression,StructuredStatementExpression,125,0,18,0,31,0,22,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op03obf,Op03Obf,3,0,0,0,1,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.new Predicate() {...},12,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.new Predicate() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.new Predicate() {...},19,0,2,0,3,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LambdaRewriter,862,0,110,0,181,0,68,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.SwitchForeignEnumMatchResultCollector,44,0,4,0,13,0,5,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,FakeMethodRewriter.Rewriter,11,19,1,1,2,6,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.AssertionTrackingControlFlowSwitchExpressionTransformer,27,0,4,0,7,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,UnreachableStaticRewriter.new Predicate() {...},0,12,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.ControlFlowSwitchExpressionTransformer.BreakClassification,44,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SyntheticAccessorRewriter,1095,55,68,4,140,15,41,5,6,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AnonymousClassConstructorRewriter,64,15,15,1,17,4,8,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,NonStaticLifter.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,NonStaticLifter.new Predicate() {...},21,0,4,0,5,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.ControlFlowSwitchExpressionTransformer,184,0,25,0,45,0,18,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,NonStaticLifter.new Predicate() {...},16,6,4,0,3,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.IsCanonicalConstructor,66,0,10,0,14,0,7,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,UnreachableStaticRewriter.Inaccessible,12,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.SwitchAssertUseCollector,611,0,75,0,129,0,47,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,J14ClassObjectRewriter,319,27,20,2,42,8,11,3,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter,692,14,57,1,128,3,34,1,5,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RetroLambdaRewriter,756,0,74,0,139,0,45,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,ScopeHidingVariableRewriter,144,0,20,0,35,0,13,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SealedClassChecker,85,0,16,0,24,0,13,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchStringRewriter.SwitchStringMatchResultCollector.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchStringRewriter.SwitchStringMatchResultCollector,186,0,10,0,44,0,13,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,NonStaticLifter,372,36,72,2,85,8,40,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RedundantSuperRewriter.SuperResultCollector.new Predicate() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RedundantSuperRewriter.SuperResultCollector,30,35,6,2,6,10,4,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,ExpressionReplacingRewriter,32,0,2,0,8,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SyntheticAccessorRewriter.FuncMatchCollector,47,0,4,0,9,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,IllegalGenericRewriter,49,48,9,3,13,14,7,5,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.AssertVarCollector,67,0,4,0,20,0,6,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter.EnumInitMatchCollector,311,0,40,0,68,0,26,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter,746,0,36,0,84,0,25,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SyntheticAccessorRewriter.VisibiliyDecreasingRewriter,21,6,4,0,6,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,PointlessStructuredExpressions,12,13,3,3,4,5,3,2,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.UsageCheck,21,0,2,0,6,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.BlockSwitchDiscoverer,49,0,8,0,13,0,6,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter.MatchedEnumEntry,15,0,0,0,6,0,3,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,ResourceReleaseDetector,520,0,10,0,37,0,11,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,StaticLifter.new Predicate() {...},27,0,6,0,5,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,FakeMethodRewriter,3,31,1,3,1,7,2,2,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchStringRewriter.EmptySwitchStringMatchResultCollector,70,0,2,0,18,0,6,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.LValueSingleUsageCheckingRewriter,59,0,6,0,15,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SyntheticAccessorRewriter.AccessorMatchCollector,72,0,12,0,11,0,8,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InnerClassConstructorRewriter,103,0,10,0,26,0,9,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,BadCastChainRewriter,67,15,11,1,11,4,6,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InnerClassConstructorRewriter.ConstructResultCollector,8,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LocalInlinedStringConstantRewriter,67,0,12,0,18,0,9,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.new UnaryFunction() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.new Predicate() {...},15,0,4,0,2,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.new UnaryFunction() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.new UnaryFunction() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.new UnaryFunction() {...},12,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,VarArgsRewriter,95,46,18,4,23,14,12,7,2,6
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InstanceofMatchTidyingRewriter.SearchPass,31,0,2,0,9,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter.ThisCheck,26,0,4,0,8,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchStringRewriter,954,27,50,2,120,8,32,2,6,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.ClassifiedStm,29,0,0,0,5,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumAllSuperRewriter,5,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.RollState,33,0,0,0,11,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LValueReplacingRewriter,23,0,2,0,7,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,NarrowingAssignmentRewriter,29,37,8,6,6,11,5,4,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InstanceofMatchTidyingRewriter.SearchPassRewriter,164,0,26,0,27,0,16,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InstanceofMatchTidyingRewriter,111,0,8,0,25,0,8,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,StaticLifter,113,0,20,0,29,0,13,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RecordRewriter,900,0,120,0,189,0,79,0,19,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.SwitchExpressionTransformer.BreakClassification,34,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,UnreachableStaticRewriter,80,62,10,6,17,14,8,2,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.ClassifyType,74,0,0,0,8,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter,1063,36,95,1,213,9,55,3,7,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LambdaRewriter.LambdaInternalRewriter,58,0,6,0,16,0,9,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.SwitchExpressionSearcher,63,0,12,0,21,0,9,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumClassRewriter.MatchedArrayData,21,0,0,0,8,0,4,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,PrimitiveBoxingRewriter,293,95,73,13,66,30,46,9,4,8
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter,1459,0,200,0,329,0,124,0,24,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,EnumSuperRewriter,61,0,4,0,16,0,7,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.SwitchEnumMatchResultCollector,50,0,4,0,15,0,9,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchExpressionRewriter.SwitchExpressionTransformer,274,0,40,0,72,0,24,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,AssertRewriter.AssertUseCollector,176,0,28,0,35,0,17,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,ExpressionWildcardReplacingRewriter,43,0,6,0,13,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,UnreachableStaticRewriter.Rewriter,101,0,18,0,22,0,13,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LambdaRewriter.new Predicate() {...},16,0,4,0,2,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LambdaRewriter.new UnaryFunction() {...},14,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,LambdaRewriter.new Predicate() {...},13,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,J14ClassObjectRewriter.new NonaryFunction() {...},66,0,4,0,9,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,ClashDeclarationReducer,223,0,26,0,48,0,18,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RedundantSuperRewriter,1,61,1,5,0,16,1,7,0,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchEnumRewriter.EclipseVarResultCollector,21,0,0,0,6,0,3,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,RetroLambdaRewriter.new Predicate() {...},17,0,4,0,2,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SwitchStringRewriter.FailedRewriteException,4,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,SyntheticOuterRefRewriter,5,31,1,1,2,8,2,5,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters,InstanceofMatchTidyingRewriter.AssignRemover,39,0,6,0,7,0,5,0,2,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryClass,97,69,5,3,19,14,8,8,5,7
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryMethodRef,85,126,6,2,23,27,5,10,2,9
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryFloat,21,0,0,0,8,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryFieldRef,101,0,2,0,19,0,10,0,9,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryLong,41,0,0,0,9,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryPackageInfo,44,0,0,0,10,0,7,0,7,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryString,31,12,2,0,6,4,4,2,3,2
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryMethodType,36,0,0,0,9,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntry.Type,34,188,12,6,12,25,12,7,0,2
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryDynamicInfo,46,0,0,0,10,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPool.RawTmp,0,12,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPool,211,217,25,11,44,51,29,18,9,12
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolUtils,443,415,60,47,102,116,47,26,4,9
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryDouble,29,0,0,0,8,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryMethodHandle,76,0,4,0,17,0,11,0,9,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryModuleInfo,36,0,0,0,9,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryNameAndType,26,76,2,2,3,14,4,6,2,6
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryUTF8,147,92,15,5,23,21,10,6,1,5
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryInvokeDynamic,46,0,0,0,10,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.constantpool,ConstantPoolEntryInteger,18,21,0,0,4,5,3,3,3,3
+cfr,org.benf.cfr.reader.api,OutputSinkFactory.SinkType,54,0,0,0,6,0,1,0,1,0
+cfr,org.benf.cfr.reader.api,SinkReturns.TokenType,186,0,0,0,24,0,4,0,4,0
+cfr,org.benf.cfr.reader.api,ClassFileSource.Factory,13,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.api,OutputSinkFactory.SinkClass,78,0,0,0,10,0,2,0,2,0
+cfr,org.benf.cfr.reader.api,CfrDriver.Builder,26,32,0,0,9,8,4,3,4,3
+cfr,org.benf.cfr.reader.api,SinkReturns.TokenTypeFlags,14,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode,RecoveryOptions,0,63,0,4,0,16,0,5,0,3
+cfr,org.benf.cfr.reader.bytecode,RecoveryOption,2,29,1,3,0,10,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode,BytecodeMeta.FlagTest,0,33,0,4,0,6,0,4,0,2
+cfr,org.benf.cfr.reader.bytecode,AnonymousClassUsage,41,35,4,4,8,7,6,3,2,3
+cfr,org.benf.cfr.reader.bytecode,CodeAnalyserWholeClass.new Predicate() {...},1,10,1,1,0,2,1,2,0,2
+cfr,org.benf.cfr.reader.bytecode,CodeAnalyserWholeClass.new UnaryFunction() {...},6,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode,CodeAnalyserWholeClass.new Predicate() {...},3,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode,RecoveryOption.ConditionalRO,34,0,2,0,8,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode,RecoveryOption.TrooleanRO,0,51,0,4,0,10,0,7,0,5
+cfr,org.benf.cfr.reader.bytecode,AnalysisResultFromException,0,40,0,0,0,10,0,6,0,6
+cfr,org.benf.cfr.reader.bytecode,BytecodeMeta.new UnaryFunction() {...},0,13,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode,RecoveryOption.IntRO,27,28,4,2,4,5,5,2,2,2
+cfr,org.benf.cfr.reader.bytecode,BytecodeMeta,78,75,12,6,20,18,11,8,3,6
+cfr,org.benf.cfr.reader.bytecode,CodeAnalyser,442,1674,77,95,96,322,66,32,5,7
+cfr,org.benf.cfr.reader.bytecode,BytecodeMeta.CodeInfoFlag,0,94,0,0,0,10,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode,AnalysisResultSuccessful,18,41,5,1,6,14,4,5,1,5
+cfr,org.benf.cfr.reader.bytecode,RecoveryOption.BooleanRO,8,40,1,3,2,6,2,4,1,3
+cfr,org.benf.cfr.reader.bytecode,CodeAnalyserWholeClass,396,466,93,53,108,127,71,29,6,21
+cfr,org.benf.cfr.reader.bytecode,RecoveryOptions.Applied,0,12,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,ExpressionRewriterTransformer,0,25,0,0,0,9,0,3,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter.ConditionTest,12,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InfiniteAssertRewriter,243,0,20,0,49,0,15,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,LambdaCleaner,86,31,13,1,19,9,8,4,1,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TypedBooleanTidier,64,69,19,3,11,19,12,7,1,7
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter.InstanceOfSearch,38,0,6,0,9,0,6,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter.MatchType,24,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,LValueTypeClashCheck.Check.Visitor,51,15,5,1,9,3,5,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerBase.LValueUsageCheckingRewriter,13,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerBase.TryResourcesMatchResultCollector,62,0,6,0,16,0,8,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TypeAnnotationTransformer.new Predicate() {...},28,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,LValueTypeClashCheck,50,94,9,11,17,31,14,11,5,10
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesCollapser,85,0,14,0,22,0,11,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerJ7,135,0,6,0,20,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerJ9,429,0,10,0,29,0,7,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfTreeTransformer.InstanceTreeRewriter,66,0,12,0,11,0,8,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TernaryCastCleaner,119,33,21,1,24,10,12,4,1,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,LValueTypeClashCheck.Check,0,23,0,0,0,7,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,UnusedAnonymousBlockFlattener,0,15,0,2,0,5,0,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.NameSimplifier,58,15,15,1,17,6,8,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.StructuredScopeWithVars,164,204,29,21,27,49,24,14,4,9
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.NameDiscoverer,73,9,9,1,20,3,9,2,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TypeAnnotationTransformer,239,0,36,0,52,0,28,0,10,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InvalidBooleanCastCleaner,117,36,24,2,25,11,15,4,2,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,PreconditionAssertRewriter,150,0,18,0,35,0,15,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.StructuredScopeWithVars.AtLevel,4,26,0,0,1,8,1,3,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfTreeTransformer,30,0,2,0,9,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,ObjectTypeUsageRewriter.new UnaryFunction() {...},20,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,RedundantIntersectionCastTransformer,27,33,7,1,7,10,4,4,0,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerJ12.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,ControlFlowCleaningTransformer,88,52,18,4,26,16,11,8,1,7
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,BadLoopPrettifier,140,29,25,3,33,9,14,4,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerJ12,366,0,34,0,72,0,25,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,LocalDeclarationRemover,60,0,8,0,17,0,11,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InvalidBooleanCastCleaner.BoolCastInnerTransformer,63,0,14,0,11,0,9,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourceTransformerFinally,11,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerBase.ResourceMatch,26,0,0,0,9,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter,380,0,10,0,53,0,12,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter.RewriteFinder,43,0,6,0,9,0,6,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,ObjectTypeUsageRewriter,215,50,49,3,50,14,30,5,4,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,HexLiteralTidier,128,36,31,2,30,11,21,4,4,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InvalidExpressionStatementCleaner,12,31,1,3,1,11,1,4,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier,39,104,4,8,10,28,5,7,2,4
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,NakedNullCaster,44,44,5,1,10,13,4,7,1,7
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,TryResourcesTransformerBase,343,0,42,0,76,0,28,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,ObjectTypeUsageRewriter.new UnaryFunction() {...},16,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,InstanceOfAssignRewriter.Rewriter,18,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.StructuredScopeWithVars.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.transformers,VariableNameTidier.StructuredScopeWithVars.new Predicate() {...},5,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.util.collections,LazyExceptionRetainingMap,11,20,1,1,4,6,1,2,0,2
+cfr,org.benf.cfr.reader.util.collections,SetUtil,64,115,19,25,13,27,14,16,3,5
+cfr,org.benf.cfr.reader.util.collections,SetFactory,13,51,0,0,4,13,2,9,2,9
+cfr,org.benf.cfr.reader.util.collections,UniqueSeenQueue,0,105,0,8,0,28,0,11,0,7
+cfr,org.benf.cfr.reader.util.collections,CollectionUtils,37,29,3,3,9,8,5,2,3,1
+cfr,org.benf.cfr.reader.util.collections,MapFactory,9,40,0,0,2,8,2,8,2,8
+cfr,org.benf.cfr.reader.util.collections,Functional,223,150,36,20,54,37,28,15,9,6
+cfr,org.benf.cfr.reader.util.collections,Functional.NotNull,0,9,0,2,0,2,0,3,0,2
+cfr,org.benf.cfr.reader.util.collections,LazyMap,28,58,0,2,8,16,6,9,6,8
+cfr,org.benf.cfr.reader.util.collections,StackFactory,3,4,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.util.collections,ListFactory,58,30,12,2,15,7,10,7,3,7
+cfr,org.benf.cfr.reader.entities.exceptions,BasicExceptions,93,0,0,0,14,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,ClosedIdxExceptionEntry,97,0,4,0,20,0,11,0,9,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.ByTarget,110,0,22,0,25,0,13,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,IntervalOverlapper,447,0,36,0,100,0,25,0,7,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionCheckSimple,8,5,0,0,4,1,4,1,4,1
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionTableEntry.ExceptionTableEntryBuilder,13,6,0,0,1,3,1,1,1,1
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionGroup.Entry,116,0,10,0,22,0,16,0,11,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionGroup.ExtenderKey,77,0,16,0,15,0,13,0,5,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionCheckImpl,237,0,38,0,78,0,25,0,6,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.ValidException,9,0,2,0,1,0,2,0,1,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.CompareExceptionTablesByRange,16,0,2,0,3,0,2,0,1,0
+cfr,org.benf.cfr.reader.entities.exceptions,IntervalCount,162,0,28,0,36,0,16,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionGroup,245,0,32,0,59,0,25,0,9,0
+cfr,org.benf.cfr.reader.entities.exceptions,IntervalCollisionRemover,147,0,18,0,26,0,11,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator,546,54,76,4,134,13,46,3,5,3
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionTableEntry,203,4,16,0,41,1,21,1,13,1
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.new UnaryFunction() {...},13,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.new Comparator() {...},22,0,2,0,4,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities.exceptions,ExceptionAggregator.new UnaryFunction() {...},10,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.innerclass,InnerClassAttributeInfo,27,0,0,0,10,0,5,0,5,0
+cfr,org.benf.cfr.reader.util.graph,GraphVisitorFIFO,0,5,0,0,0,2,0,1,0,1
+cfr,org.benf.cfr.reader.util.graph,GraphVisitorDFS,14,117,1,9,5,29,3,10,2,6
+cfr,org.benf.cfr.reader.util.graph,AbstractGraphVisitorFI,28,54,3,5,7,18,6,6,4,4
+cfr,org.benf.cfr.reader.mapping,Mapping.ObfuscationWrappingDumper.new UnaryFunction() {...},13,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,ClassMapping.MethodData,79,0,8,0,15,0,8,0,4,0
+cfr,org.benf.cfr.reader.mapping,MappingFactory.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,MappingFactory.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,ClassMapping.MethodData.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,MappingFactory,479,19,45,1,104,6,30,2,7,2
+cfr,org.benf.cfr.reader.mapping,MethodMapping,27,0,0,0,10,0,5,0,5,0
+cfr,org.benf.cfr.reader.mapping,Mapping.ObfuscationWrappingDumper,213,0,16,0,42,0,18,0,10,0
+cfr,org.benf.cfr.reader.mapping,ClassMapping.new UnaryFunction() {...},17,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,Mapping.MappingTypeUsage,77,0,0,0,16,0,13,0,13,0
+cfr,org.benf.cfr.reader.mapping,Mapping.new UnaryFunction() {...},11,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,Mapping.new UnaryFunction() {...},11,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.mapping,ClassMapping,346,0,52,0,80,0,36,0,10,0
+cfr,org.benf.cfr.reader.mapping,Mapping,101,0,8,0,25,0,12,0,8,0
+cfr,org.benf.cfr.reader.mapping,NullMapping,6,18,0,0,3,6,3,5,3,5
+cfr,org.benf.cfr.reader.mapping,FieldMapping,21,0,0,0,8,0,4,0,4,0
+cfr,org.benf.cfr.reader.mapping,NullMapping.new UnaryFunction() {...},2,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse,LValue.Creation,13,29,2,2,3,9,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op02obf,ControlFlowNullException,82,0,8,0,16,0,8,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op02obf,Op02Obf,39,0,4,0,9,0,6,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op02obf,SimpleControlFlowBase,301,0,52,0,50,0,34,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op02obf,ControlFlowIntDiv0Exception,124,0,8,0,15,0,8,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op02obf,ControlFlowNumericObf,126,0,14,0,27,0,11,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,InnerClassInfo.new InnerClassInfo() {...},24,9,0,0,10,4,10,4,10,4
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericRefTypeInstance.Annotated,53,0,2,0,13,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericPlaceholderTypeInstance.Annotated,47,0,4,0,10,0,5,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,InnerClassInfo,0,5,0,0,0,1,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototype.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototype.new UnaryFunction() {...},26,0,4,0,6,0,4,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,BoundSuperCollector,53,0,0,0,13,0,4,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,TypeConstants,0,192,0,0,0,33,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,RawJavaType,163,530,39,13,43,69,38,25,15,22
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DeclarationAnnotationHelper,404,13,79,1,87,3,44,2,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DeclarationAnnotationHelper.ArrayCountingIterator,15,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaIntersectionTypeInstance,267,0,30,0,69,0,43,0,28,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DeclarationAnnotationHelper.DeclarationAnnotationsInfo,27,54,4,4,3,15,6,6,2,6
+cfr,org.benf.cfr.reader.bytecode.analysis.types,ClassSignature,50,29,6,2,10,10,5,5,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DeclarationAnnotationHelper.SinglePartTypeIterator,27,0,0,0,11,0,6,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaArrayTypeInstance.new JavaArrayTypeInstance() {...},10,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MiscAnnotations,7,24,2,2,1,5,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,StackTypes,4,12,0,0,2,3,1,2,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaRefTypeInstance.RefTypeInnerClassInfo,112,0,10,0,33,0,19,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericRefTypeInstance.Annotated.Iterator,42,0,0,0,7,0,6,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DynamicInvokeType,40,78,10,0,7,10,7,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototype.HiddenReason,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,GenericTypeBinder,649,0,110,0,153,0,71,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericRefTypeInstance,476,43,70,4,106,13,73,2,36,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototype.ParameterLValue,25,9,2,0,2,4,3,1,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaWildcardTypeInstance,214,9,18,0,51,4,44,1,35,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,FormalTypeParameter,186,6,19,1,42,3,18,1,8,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,WildcardType,3,45,0,0,1,7,1,2,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,RawJavaType.Annotated.Iterator,13,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericRefTypeInstance.WildcardConstraint,16,3,4,0,4,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaRefTypeInstance.Annotated.Iterator,18,0,0,0,4,0,3,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaArrayTypeInstance,145,104,19,5,31,24,29,14,18,13
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericPlaceholderTypeInstance.Annotated.Iterator,13,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaGenericPlaceholderTypeInstance,222,14,30,0,54,6,50,2,35,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,ClassNameUtils,23,39,0,2,4,7,2,5,2,4
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaWildcardTypeInstance.Annotated,58,0,2,0,12,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,RawJavaType.Annotated,42,0,2,0,9,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaAnnotatedTypeIterator.BaseAnnotatedTypeIterator,27,0,0,0,11,0,6,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaArrayTypeInstance.Annotated,91,0,12,0,20,0,9,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,TypeAnnotationHelper,69,42,10,4,19,7,10,2,4,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,DeclarationAnnotationHelper.NestedCountingIterator,15,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,StackType,3,142,0,0,1,18,1,5,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototype,1469,546,228,58,310,127,168,27,31,20
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototypeAnnotationsHelper.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototypeAnnotationsHelper.new Predicate() {...},20,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,MethodPrototypeAnnotationsHelper,69,125,11,7,13,26,9,8,0,8
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaArrayTypeInstance.Annotated.Iterator,53,0,2,0,10,0,5,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,InnerClassInfoUtils,14,0,2,0,4,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaRefTypeInstance,488,213,92,12,124,54,71,25,21,23
+cfr,org.benf.cfr.reader.bytecode.analysis.types,BindingSuperContainer,128,20,16,0,31,6,15,2,7,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaRefTypeInstance.Annotated,151,0,26,0,38,0,19,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types,BindingSuperContainer.Route,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types,JavaWildcardTypeInstance.Annotated.Iterator,18,0,0,0,4,0,3,0,3,0
+cfr,org.benf.cfr.reader.util.bytestream,OffsettingBackedByteData,14,46,0,0,1,9,1,5,1,5
+cfr,org.benf.cfr.reader.util.bytestream,AbstractBackedByteData,147,138,0,0,16,17,3,7,3,7
+cfr,org.benf.cfr.reader.util.bytestream,BaseByteData,7,13,0,0,1,4,1,3,1,3
+cfr,org.benf.cfr.reader.util.bytestream,OffsetBackedByteData,16,19,0,0,2,4,2,2,2,2
+cfr,org.benf.cfr.reader.entities,MethodOrdering,90,0,12,0,22,0,8,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile.new Predicate() {...},77,0,16,0,11,0,10,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile.new Predicate() {...},0,16,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},0,26,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.entities,ClassFile.new Predicate() {...},0,11,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryProcedure() {...},0,19,0,0,0,3,0,2,0,2
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryProcedure() {...},0,14,0,0,0,3,0,2,0,2
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},10,9,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},11,6,0,0,2,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities,Field,472,0,52,0,118,0,40,0,14,0
+cfr,org.benf.cfr.reader.entities,AccessFlag,54,295,16,16,1,41,16,5,0,5
+cfr,org.benf.cfr.reader.entities,ClassFile.12.new Predicate() {...},27,0,4,0,3,0,4,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile,2017,903,314,74,485,200,224,52,41,41
+cfr,org.benf.cfr.reader.entities,AccessFlagMethod,30,256,8,20,0,35,8,11,0,5
+cfr,org.benf.cfr.reader.entities,ClassFile.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},6,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities,ClassFile.new UnaryFunction() {...},6,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities,FakeMethods.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,Method.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,Method.new Predicate() {...},20,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.entities,Method.new UnaryFunction() {...},13,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,FakeMethods,85,0,4,0,16,0,6,0,4,0
+cfr,org.benf.cfr.reader.entities,ClassFileField,119,0,12,0,33,0,19,0,13,0
+cfr,org.benf.cfr.reader.entities,AbstractConstantPoolEntry,5,13,1,1,1,5,1,2,0,2
+cfr,org.benf.cfr.reader.entities,Method.MethodConstructor,0,93,0,0,0,13,0,4,0,4
+cfr,org.benf.cfr.reader.entities,Method,653,612,101,55,147,135,84,36,17,25
+cfr,org.benf.cfr.reader.entities,Field.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities,Method.Visibility,0,44,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.entities,MethodOrdering.OrderData,30,0,4,0,8,0,4,0,2,0
+cfr,org.benf.cfr.reader.entities,ClassFile.11.new Predicate() {...},27,0,4,0,3,0,4,0,2,0
+cfr,org.benf.cfr.reader.entities,FakeMethod,71,0,6,0,19,0,7,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new BinaryProcedure() {...},26,0,2,0,5,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new BinaryProcedure() {...},74,0,6,0,12,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new BinaryProcedure() {...},65,0,10,0,13,0,7,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new BinaryProcedure() {...},67,0,12,0,14,0,8,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new UnaryFunction() {...},5,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,PeerTries,131,0,10,0,31,0,14,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new BinaryProcedure() {...},71,0,6,0,13,0,5,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer.new Predicate() {...},17,0,2,0,2,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,PeerTries.new UnaryFunction() {...},14,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinallyCatchBody,152,0,18,0,33,0,17,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinallyGraphHelper,405,0,65,0,95,0,38,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,Result,114,0,20,0,26,0,19,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,CompositeBlockIdentifierKey,108,0,14,0,21,0,13,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinallyGraphHelper.FinallyEquivalenceConstraint,151,0,28,0,35,0,22,0,8,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,PeerTries.PeerTrySet,47,0,8,0,13,0,9,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,FinalAnalyzer,1803,0,238,0,428,0,125,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.utils.finalhelp,CompositeBlockIdentifierKey.new Predicate() {...},16,0,2,0,4,0,3,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.util,BoxingHelper,204,0,16,0,44,0,15,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.util,ConstructorUtils,83,0,12,0,17,0,9,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.util,MiscStatementTools,33,44,7,5,9,15,7,4,2,3
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredWhile,97,0,14,0,20,0,11,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredFor,467,0,56,0,102,0,44,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredFinally,29,0,2,0,10,0,6,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredBreak,142,10,18,0,36,4,20,1,11,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredTry,51,0,2,0,10,0,7,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredIf,155,144,24,12,30,42,25,14,8,13
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredExpressionStatement,35,76,8,4,6,23,7,10,2,9
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredCatch,108,0,6,0,24,0,10,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredDefinition,69,45,17,1,18,15,12,9,3,9
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,AbstractStructuredContinue,0,4,0,0,0,2,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredDo,63,49,13,3,12,12,10,3,2,3
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredBreak,9,61,1,9,3,19,4,6,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredSynchronized,53,0,2,0,11,0,6,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredCatch,238,0,28,0,58,0,33,0,19,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredSwitch,206,14,18,0,49,5,27,1,18,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredSynchronized,81,0,0,0,22,0,11,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredDo,119,24,22,2,31,8,15,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredFakeDecompFailure,0,95,1,3,0,19,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredGoto,19,4,0,0,3,2,3,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredAnonBreakTarget,19,0,0,0,9,0,7,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredFor,109,0,4,0,21,0,7,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredThrow,116,0,16,0,27,0,20,0,12,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredWhile,110,58,10,6,22,15,11,4,4,3
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredExpressionYield,80,0,4,0,21,0,12,0,10,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredIf,166,68,22,2,34,15,17,2,5,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,AbstractUnStructuredStatement,21,8,0,0,9,5,9,4,9,4
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredCase,216,32,32,2,47,9,29,2,12,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredIter,175,0,10,0,39,0,20,0,15,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredIter,71,0,2,0,14,0,6,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredCase,89,28,5,1,16,7,7,2,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredComment,14,33,1,1,5,13,3,9,2,9
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredContinue,45,10,2,0,13,4,9,1,8,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredAnonymousBreak,38,0,2,0,11,0,7,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,AbstractStructuredConditionalLoopStatement,12,64,3,3,4,20,7,8,4,8
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredAssert,115,0,6,0,28,0,15,0,12,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,AbstractStructuredBlockStatement,5,24,1,1,2,8,1,5,0,5
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,AbstractStructuredStatement,52,41,2,0,13,19,12,15,11,15
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredReturn,187,14,34,0,45,6,29,3,12,3
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredSwitch,52,52,3,3,7,12,6,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredTry,498,0,80,0,127,0,68,0,28,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredFinally,77,0,2,0,27,0,15,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,UnstructuredContinue,32,33,2,2,13,9,13,2,11,2
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,Block,774,491,134,56,205,119,98,40,18,25
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement,StructuredAssignment,110,144,20,8,23,37,19,13,7,11
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameSameFrame,6,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeConstantValue,48,0,0,0,9,0,6,0,6,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.ModuleContentFlags,101,0,8,0,15,0,8,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeExceptions,22,45,2,2,6,10,4,4,3,3
+cfr,org.benf.cfr.reader.entities.attributes,TypePathPartNested,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameChopFrame,9,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationEmptyTarget,15,0,0,0,4,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameSameLocals1SameItemFrameExtended,9,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeMap,29,69,4,8,8,15,6,7,3,4
+cfr,org.benf.cfr.reader.entities.attributes,AttributeUnknown,42,0,0,0,8,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.ModuleFlags,81,0,6,0,13,0,7,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeDeprecated,6,16,0,0,2,5,2,3,2,3
+cfr,org.benf.cfr.reader.entities.attributes,AttributeScala,18,0,0,0,6,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeInnerClasses,187,0,18,0,46,0,18,0,9,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeVisibleTypeAnnotations,9,0,0,0,4,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeVisibleParameterAnnotations,7,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoUninitializedThis,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,LocalVariableEntry,15,24,0,0,4,9,4,3,4,3
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameSameFrameExtended,6,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.LocalVarTarget,33,0,6,0,6,0,5,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoNull,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModuleClassMain,22,0,0,0,7,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeLocalVariableTypeTable,18,0,0,0,6,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule,129,0,2,0,33,0,15,0,14,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoDouble,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoLong,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AnnotationHelpers,370,109,30,3,68,20,27,4,3,3
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.Use,41,0,2,0,11,0,4,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeParameterAnnotations,111,0,12,0,25,0,11,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,TypePathPartParameterized,12,0,0,0,4,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeCode,40,179,1,1,13,46,6,13,5,13
+cfr,org.benf.cfr.reader.entities.attributes,Attribute,1,3,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.entities.attributes,AttributeTypeAnnotations.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoFloat,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameFullFrame,12,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoUninitialized,6,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,TypePath,6,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoObject,6,0,0,0,3,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationCatchTarget,22,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeSynthetic,18,0,0,0,6,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationParameterTarget,25,0,0,0,6,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRecord,116,0,6,0,28,0,8,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoInteger,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,BadAttributeException,3,0,0,0,1,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeAnnotations,71,46,8,2,17,11,9,3,5,2
+cfr,org.benf.cfr.reader.entities.attributes,AttributeAnnotations.new Predicate() {...},15,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributePermittedSubclasses,59,0,2,0,16,0,7,0,6,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameAppendFrame,12,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.Require,62,0,2,0,14,0,6,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationEntryKind,0,104,0,0,0,11,0,1,0,1
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeInvisibleParameterAnnotations,7,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationFormalParameterTarget,25,0,0,0,6,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeVisibleAnnotations,0,7,0,0,0,3,0,2,0,2
+cfr,org.benf.cfr.reader.entities.attributes,AttributeEnclosingMethod,38,0,0,0,11,0,7,0,7,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationTypeArgumentTarget,34,0,0,0,8,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationParameterBoundTarget,37,0,0,0,8,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeTypeAnnotations,166,0,16,0,38,0,13,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationLocation,0,44,0,0,0,5,0,1,0,1
+cfr,org.benf.cfr.reader.entities.attributes,AttributeAnnotationDefault,49,0,0,0,12,0,7,0,7,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.VerificationInfoTop,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeLineNumberTable,24,62,3,3,5,13,7,4,5,3
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeInvisibleTypeAnnotations,9,0,0,0,4,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.ExportOpen,88,0,4,0,21,0,7,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeLocalVariableTable,2,79,0,2,1,17,1,5,1,4
+cfr,org.benf.cfr.reader.entities.attributes,TypePathPartArray,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeSourceFile,6,16,0,0,2,5,2,3,2,3
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationThrowsTarget,25,0,0,0,7,0,3,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModule.Provide,73,0,4,0,18,0,6,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRuntimeInvisibleAnnotations,7,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable,309,22,30,0,84,7,33,3,12,3
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationOffsetTarget,22,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeScalaSig,18,0,0,0,6,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationEntryValue,20,330,2,2,6,32,4,3,3,2
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationSupertypeTarget,22,0,0,0,6,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,TypeAnnotationTargetInfo.TypeAnnotationLocalVarTarget,86,0,6,0,19,0,6,0,3,0
+cfr,org.benf.cfr.reader.entities.attributes,TypePathPartBound,9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeStackMapTable.StackMapFrameSameLocals1SameItemFrame,9,0,0,0,4,0,1,0,1,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeSignature,12,26,0,0,1,7,1,4,1,4
+cfr,org.benf.cfr.reader.entities.attributes,AttributeModulePackages,22,0,0,0,7,0,5,0,5,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeRecord.RecordComponentInfo,22,0,0,0,8,0,4,0,4,0
+cfr,org.benf.cfr.reader.entities.attributes,AttributeBootstrapMethods,113,0,8,0,26,0,11,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.literal,TypedLiteral,651,222,116,16,107,39,96,21,22,20
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.literal,LiteralFolding,723,0,154,0,156,0,122,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.literal,TypedLiteral.LiteralType,0,94,0,0,0,10,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.literal,TypedLiteral.FormatHint,0,24,0,0,0,3,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.checker,VoidVariableChecker,10,34,4,6,3,10,4,4,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.checker,IllegalReturnChecker,22,55,7,9,8,16,5,6,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.checker,LooseCatchChecker,17,22,5,3,5,8,4,3,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,InferredJavaType.IJTInternal_Clash,646,0,88,0,144,0,70,0,26,0
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,InferredJavaType.ClashState,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,CastAction.new CastAction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,CastAction.new CastAction() {...},13,6,2,0,2,1,2,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,CastAction,0,24,0,0,0,3,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,InferredJavaType,849,403,214,68,201,112,157,28,25,18
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,InferredJavaType.IJTInternal_Impl,164,115,34,18,39,37,30,17,10,11
+cfr,org.benf.cfr.reader.bytecode.analysis.types.discovery,InferredJavaType.Source,0,194,0,0,0,20,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement.placeholder,EndBlock,30,6,6,0,9,3,6,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement.placeholder,ElseBlock,18,0,2,0,7,0,5,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement.placeholder,BeginBlock,33,6,6,0,10,3,7,1,4,1
+cfr,org.benf.cfr.reader.bytecode.analysis.structured.statement.placeholder,AbstractPlaceholder,78,4,0,0,27,2,27,2,27,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression.misc,Precedence,0,232,0,0,0,29,0,5,0,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,AnonBreakTarget,62,0,12,0,17,0,17,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ExpressionStatement,81,41,12,0,16,9,13,5,7,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,TryStatement,87,0,4,0,21,0,15,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ThrowStatement,108,15,10,2,19,5,15,2,9,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,AssignmentPreMutation,134,106,18,0,26,22,22,9,13,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,FinallyStatement,60,0,6,0,17,0,14,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ReturnNothingStatement,39,13,6,0,9,6,9,5,6,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CatchStatement,245,0,22,0,47,0,28,0,17,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CompoundStatement,139,0,12,0,30,0,20,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,RawSwitchStatement,142,46,10,0,22,11,12,6,7,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,AssignmentSimple,169,154,26,6,30,31,27,12,12,11
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,AbstractStatement,50,43,2,2,11,17,9,13,7,13
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,AbstractAssignment,0,4,0,0,0,2,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ReturnValueStatement,189,0,20,0,35,0,23,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,JSRRetStatement,94,0,8,0,20,0,14,0,10,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,JumpingStatement,0,4,0,0,0,2,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,WhileStatement,124,79,13,9,20,17,12,12,5,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,MonitorStatement,4,0,0,0,2,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ConstructorStatement,122,0,8,0,24,0,14,0,10,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,MonitorEnterStatement,111,0,8,0,22,0,15,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ForStatement,295,0,24,0,49,0,25,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,MonitorExitStatement,127,0,12,0,24,0,17,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,JSRCallStatement,59,0,6,0,14,0,13,0,10,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,Nop,30,9,6,0,7,6,7,5,4,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ForIterStatement,190,0,12,0,32,0,19,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,SwitchStatement,76,81,9,3,11,22,9,12,4,11
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,IfStatement,177,128,20,3,28,29,22,13,10,12
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CommentStatement,101,0,12,0,23,0,18,0,12,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,ReturnStatement,6,4,0,0,2,2,2,1,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,IfExitingStatement,228,0,30,0,37,0,28,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CaseStatement,90,91,12,4,15,18,11,11,5,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CatchStatement.new Predicate() {...},15,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,DoStatement,34,19,6,0,7,8,7,6,4,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,CommentStatement.StatementExpression,57,0,0,0,17,0,12,0,12,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.statement,GotoStatement,163,85,24,9,32,25,23,13,7,10
+cfr,org.benf.cfr.reader.bytecode.analysis.stack,StackEntry,95,79,12,0,20,21,15,9,9,9
+cfr,org.benf.cfr.reader.bytecode.analysis.stack,StackDeltaImpl,20,40,2,6,2,9,3,7,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.stack,StackSim,105,112,13,9,28,30,10,9,3,5
+cfr,org.benf.cfr.reader.bytecode.analysis.stack,StackEntryHolder,15,12,0,0,4,4,2,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ExplicitTypeCallRewriter.InnerExplicitTypeCallRewriter,51,6,12,0,15,1,9,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ExpressionRewriterFlags,0,34,0,0,0,4,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},15,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},10,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},22,9,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},22,9,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},17,9,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},19,9,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},38,12,3,0,4,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter.new NonaryFunction() {...},23,12,3,0,4,1,3,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,AbstractExpressionRewriter,0,28,0,0,0,6,0,6,0,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,LiteralRewriter,371,402,77,20,54,70,48,11,5,4
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,StringBuilderRewriter,465,63,89,4,109,15,52,5,5,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ConstantFoldingRewriter,57,0,6,0,18,0,8,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,XorRewriter,10,27,3,1,4,8,3,5,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ExplicitTypeCallRewriter,8,32,1,3,1,7,1,3,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,AccountingRewriter,1,92,0,6,1,17,1,9,1,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ConditionalSimplifyingRewriter,5,37,1,3,2,11,2,6,1,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,AccountingRewriter.new UnaryFunction() {...},0,9,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,CloneHelper,82,0,8,0,25,0,10,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,ExpressionRewriterHelper,41,7,3,1,5,2,4,1,2,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,StackVarToLocalRewriter,5,93,0,6,2,17,2,8,2,5
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.rewriters,AbstractExpressionVisitor,6,5,0,0,3,2,3,2,3,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,InstanceOfExpression,190,0,20,0,39,0,24,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,NewAnonymousArray,349,0,56,0,69,0,45,0,17,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,SwitchExpression.Branch,65,0,8,0,17,0,6,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractMemberFunctionInvokation,451,120,72,4,94,27,57,8,19,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,StackValue,65,52,8,2,16,14,13,8,9,7
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,TernaryExpression,292,113,43,3,47,24,38,6,15,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,LambdaExpressionFallback,520,0,85,0,96,0,57,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,BoolOp,59,0,3,0,13,0,7,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractAssignmentExpression,0,5,0,0,0,2,0,1,0,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ComparisonOperation,428,245,90,12,79,53,64,19,11,19
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithOp,76,262,21,0,25,25,23,3,5,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,BooleanExpression,116,64,15,1,27,16,21,10,13,10
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ConstructorInvokationSimple,254,8,43,1,56,3,34,1,12,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AssignmentExpression,266,0,34,0,50,0,38,0,21,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,SuperFunctionInvokation,174,40,16,2,30,11,17,3,8,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,SwitchExpression,375,0,46,0,72,0,34,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ConstructorInvokationExplicit,138,0,22,0,25,0,18,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,MethodHandlePlaceholder,387,0,24,0,62,0,32,0,17,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,NewObject,109,0,16,0,29,0,24,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractNewArray,7,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,MemberFunctionInvokationExplicit,239,0,30,0,39,0,26,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,CastExpression,489,0,84,0,111,0,65,0,23,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractMutatingAssignmentExpression,9,7,2,0,1,3,2,2,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithmeticOperation,611,152,102,12,124,33,86,10,23,10
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArrayLength,158,0,14,0,31,0,20,0,13,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractFunctionInvokation,13,15,0,0,4,5,4,2,4,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ComparisonOperation.BooleanComparisonType,0,48,0,0,0,8,0,3,0,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,LiteralHex,10,0,0,0,3,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,LambdaExpressionNewArray,55,0,2,0,15,0,12,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithmeticMonOperation,194,19,29,1,34,5,27,2,12,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,StaticFunctionInvokationExplicit,158,0,26,0,26,0,20,0,7,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,DynamicConstExpression,150,0,16,0,26,0,19,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,MemberFunctionInvokation,192,0,18,0,34,0,18,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,MethodHandlePlaceholder.new UnaryFunction() {...},11,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArrayIndex,150,121,23,3,27,26,22,9,9,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,BooleanOperation,516,0,53,0,98,0,53,0,26,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,CompOp,54,109,17,3,17,18,17,7,0,6
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,LValueExpression,90,88,15,3,16,23,15,13,7,12
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,Literal,157,146,40,5,31,34,30,16,6,15
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,InstanceOfExpressionDefining,215,0,24,0,40,0,26,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithmeticMutationOperation,279,0,28,0,47,0,32,0,18,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ConstructorInvokationAnonymousInner,224,0,22,0,55,0,22,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractExpression,63,77,12,8,16,25,15,12,5,11
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,NewPrimitiveArray,211,0,22,0,42,0,27,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithmeticPostMutationOperation,155,0,22,0,30,0,27,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractFunctionInvokationExplicit,67,0,2,0,19,0,10,0,9,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,AbstractConstructorInvokation,329,0,48,0,75,0,40,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,DynamicInvokation,282,0,36,0,52,0,32,0,14,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,LambdaExpression,367,0,56,0,66,0,44,0,16,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,ArithmeticPreMutationOperation,102,61,21,3,17,14,19,9,7,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,NotOperation,191,0,22,0,42,0,31,0,20,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,NewObjectArray,320,0,50,0,58,0,40,0,15,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.expression,StaticFunctionInvokation,452,0,52,0,94,0,49,0,23,0
+cfr,org.benf.cfr.reader.util.lambda,LambdaUtils,97,0,9,0,22,0,11,0,6,0
+cfr,org.benf.cfr.reader.util.getopt,BadParametersException,34,0,0,0,7,0,2,0,2,0
+cfr,org.benf.cfr.reader.util.getopt,PermittedOptionProvider.Argument,0,14,0,0,0,4,0,2,0,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.ExperimentalVersionSpecificDefaulter,87,34,11,5,10,10,10,3,2,3
+cfr,org.benf.cfr.reader.util.getopt,GetOptParser,357,96,41,7,71,21,29,6,7,4
+cfr,org.benf.cfr.reader.util.getopt,GetOptParser.OptData,21,13,0,0,8,5,4,1,4,1
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl,2,1133,1,1,0,123,1,7,0,7
+cfr,org.benf.cfr.reader.util.getopt,PermittedOptionProvider.ArgumentParam,107,28,18,0,18,10,12,4,3,4
+cfr,org.benf.cfr.reader.util.getopt,MutableOptions,13,117,4,8,4,25,4,9,0,7
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.DefaultChainBooleanDecoder,20,28,2,4,3,6,4,3,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.DefaultingBooleanDecoder,8,13,1,1,2,4,3,2,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.VersionSpecificDefaulter,27,25,2,4,2,7,4,3,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.DefaultNullEnumDecoder,19,10,1,1,3,4,3,2,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.new OptionDecoder() {...},4,12,0,2,2,3,2,3,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.new OptionDecoder() {...},4,5,0,0,2,2,2,2,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.new OptionDecoder() {...},56,7,5,1,12,2,5,2,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.DefaultingIntDecoder,17,19,1,3,2,7,3,3,2,2
+cfr,org.benf.cfr.reader.util.getopt,OptionsImpl.CFRFactory,0,9,0,0,0,3,0,3,0,3
+cfr,org.benf.cfr.reader.util.getopt,GetOptParser.new Comparator() {...},23,0,4,0,4,0,4,0,2,0
+cfr,org.benf.cfr.reader.state,OsInfo,7,15,2,2,1,4,3,1,1,1
+cfr,org.benf.cfr.reader.state,ClassFileSourceChained,112,0,18,0,31,0,15,0,6,0
+cfr,org.benf.cfr.reader.state,ClassFileRelocator.NopRelocator,0,10,0,0,0,3,0,3,0,3
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.FieldClash,6,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.state,OverloadMethodSetCache,19,10,0,0,3,2,2,1,2,1
+cfr,org.benf.cfr.reader.state,OsInfo.OS,0,155,0,0,0,10,0,4,0,4
+cfr,org.benf.cfr.reader.state,ClassNameFunctionCase,102,0,8,0,20,0,7,0,3,0
+cfr,org.benf.cfr.reader.state,OverloadMethodSetCache.new UnaryFunction() {...},2,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.state,LocalClassAwareTypeUsageInformation.new UnaryFunction() {...},9,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,AbstractTypeUsageCollector,29,21,7,5,5,8,6,5,1,4
+cfr,org.benf.cfr.reader.state,ClassFileRelocator.RenamingRelocator.FileDets,12,0,0,0,5,0,1,0,1,0
+cfr,org.benf.cfr.reader.state,ClassFileRelocator.PrefixRelocator,11,24,3,1,1,7,2,2,0,2
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.new Comparable() {...},71,0,10,0,18,0,7,0,2,0
+cfr,org.benf.cfr.reader.state,ClassFileSourceImpl.new Predicate() {...},10,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,ClassFileSourceImpl.new UnaryFunction() {...},14,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,ClassNameFunctionInvalid,90,0,8,0,20,0,7,0,3,0
+cfr,org.benf.cfr.reader.state,LocalClassAwareTypeUsageInformation,199,0,18,0,42,0,22,0,13,0
+cfr,org.benf.cfr.reader.state,TypeUsageUtils,154,0,28,0,41,0,16,0,2,0
+cfr,org.benf.cfr.reader.state,ClassFileRelocator.Configurator,140,32,15,5,20,5,10,3,1,2
+cfr,org.benf.cfr.reader.state,DetectedStaticImport,64,0,10,0,15,0,10,0,5,0
+cfr,org.benf.cfr.reader.state,ClassRenamer,126,21,15,3,27,7,13,1,4,1
+cfr,org.benf.cfr.reader.state,ClassFileSourceImpl,426,602,61,63,84,142,49,32,3,16
+cfr,org.benf.cfr.reader.state,DCCommonState,218,184,16,4,51,44,18,14,8,14
+cfr,org.benf.cfr.reader.state,JarContentImpl,6,15,0,0,2,6,2,2,2,2
+cfr,org.benf.cfr.reader.state,ClassFileSourceImpl.JarSourceEntry,6,9,0,0,2,4,2,1,2,1
+cfr,org.benf.cfr.reader.state,ClassFileRelocator.RenamingRelocator,139,0,12,0,18,0,10,0,4,0
+cfr,org.benf.cfr.reader.state,InnerClassTypeUsageInformation,195,0,26,0,47,0,28,0,15,0
+cfr,org.benf.cfr.reader.state,TypeUsageInformationEmpty,18,17,0,0,8,6,8,6,8,6
+cfr,org.benf.cfr.reader.state,ClassFileSourceWrapper,37,0,0,0,11,0,6,0,6,0
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl,215,195,25,11,41,45,24,10,8,8
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.new UnaryFunction() {...},0,8,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.new Predicate() {...},0,13,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.new Comparator() {...},0,18,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.state,TypeUsageInformationImpl.new UnaryFunction() {...},13,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,DCCommonState.new UnaryFunction() {...},5,6,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.state,DCCommonState.new UnaryFunction() {...},8,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,DCCommonState.new UnaryFunction() {...},17,0,0,0,2,0,2,0,2,0
+cfr,org.benf.cfr.reader.state,DCCommonState.new UnaryFunction() {...},0,11,0,0,0,2,0,2,0,2
+cfr,org.benf.cfr.reader.state,ClassCache,74,104,10,4,16,28,8,7,2,6
+cfr,org.benf.cfr.reader.state,TypeUsageCollectingDumper,27,111,0,2,10,39,9,29,9,28
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,Op02GetClassRewriter,157,61,42,8,37,15,25,7,2,5
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,TypeHintRecoveryNone,1,5,0,0,1,1,1,1,1,1
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,Op02RedundantStoreRewriter,401,0,62,0,97,0,35,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,TypeHintRecoveryImpl,73,0,8,0,19,0,6,0,2,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,GetClassTestLambda,39,0,2,0,11,0,4,0,3,0
+cfr,org.benf.cfr.reader.bytecode.analysis.opgraph.op2rewriters,GetClassTestInnerConstructor,27,7,4,0,6,2,3,2,1,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.StackLabelWildCard,34,0,4,0,11,0,6,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch,399,298,31,9,75,71,41,14,23,12
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.AbstractBaseExpressionWildcard,73,6,0,0,20,2,20,2,20,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ListWildcard,51,0,8,0,13,0,10,0,6,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.AnyOneOfExpression,25,0,2,0,8,0,5,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.BlockWildcard,46,0,10,0,13,0,9,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ExpressionWildcard,26,4,4,0,9,2,5,1,3,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.NewArrayWildcard,41,18,9,1,10,6,7,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.StaticVariableWildcard,74,0,14,0,19,0,11,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.DebugDumpable,17,0,0,0,1,0,1,0,1,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ArithmeticMutationWildcard,83,0,12,0,19,0,11,0,5,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.BlockIdentifierWildcard,43,0,8,0,12,0,8,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ConstructorInvokationSimpleWildcard,52,17,14,0,11,6,9,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.CastExpressionWildcard,70,0,14,0,17,0,11,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.StaticFunctionInvokationWildcard,121,0,24,0,26,0,16,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.SuperFunctionInvokationWildcard,48,30,9,3,8,10,7,3,1,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.MemberFunctionInvokationWildcard,90,21,19,1,18,7,12,2,2,2
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.LValueWildcard,78,24,5,3,27,9,27,3,23,3
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ConstructorInvokationAnonymousInnerWildcard,74,0,16,0,18,0,12,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,WildcardMatch.ConditionalExpressionWildcard,70,0,8,0,19,0,15,0,11,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.wildcard,OptionalMatch,38,0,4,0,12,0,6,0,4,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,StaticVariable,113,9,12,0,26,3,19,1,13,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,SentinelLocalClassLValue,90,0,14,0,24,0,24,0,17,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,AbstractFieldVariable,269,13,26,0,73,5,35,1,22,1
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,FieldVariable,267,0,46,0,70,0,44,0,21,0
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,ArrayVariable,50,53,4,0,14,15,12,9,10,9
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,AbstractLValue,36,45,4,2,10,15,10,8,7,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,StackSSALabel,82,50,12,4,20,14,19,9,12,8
+cfr,org.benf.cfr.reader.bytecode.analysis.parse.lvalue,LocalVariable,35,170,5,11,12,45,11,22,7,18

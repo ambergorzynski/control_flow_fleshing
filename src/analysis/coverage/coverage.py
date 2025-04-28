@@ -5,9 +5,8 @@ DECOMPILERS_JAVA = ['cfr','fernflower','jadx']
 DECOMPILERS_C = ['ghidra11']
 TOOLS = ['fuzzflesh','jdtester','decfuzzer']
 
-TIMES = ['120']
-TIME = TIMES[0]
-BASE : Path = Path('/data/work/fuzzflesh/coverage/coverage_results')
+TIMES = ['120','480']
+BASE : Path = Path('/data/dev/fuzzflesh/data/coverage_results')
 
 def import_java_ff():
     df = {}
@@ -55,11 +54,14 @@ def import_c_df():
 
     for decomp in DECOMPILERS_C:
             for time in TIMES:
+                if time == '120':
+                    file = f'decfuzzer_{decomp}_{time}/coverage.csv'
+                elif time == '480':
+                    file = 'coverage_seed_1000_csmith_progs_ghidra_11.csv'
                 try:
                     datapath = Path(BASE,
                             'df',
-                            f'decfuzzer_{decomp}_{time}',
-                            'coverage.csv')
+                            file)
                     data = pd.read_csv(datapath)
                     if data.empty:
                         data = None
@@ -185,12 +187,10 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
         df.loc[decomp, 'jd_hep']            = pct(get_metric(java_jd[f'{decomp}_hephaestus_{time}'], f'{jacoco_metric}_COVERED_PCT'))
         df.loc[decomp, 'ff_dirs_known']     = pct(get_metric(java_ff[f'{decomp}_dirs_known_{time}'], f'{jacoco_metric}_COVERED_PCT'))
         df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(java_ff[f'{decomp}_dirs_unknown_{time}'], f'{jacoco_metric}_COVERED_PCT'))
-       # df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(java_ff[f'{decomp}_dirs_mixed_{time}'], f'{jacoco_metric}_COVERED_PCT'))
 
     for decomp in ['ghidra11']:
         df.loc[decomp, 'ff_dirs_known']     = pct(get_metric(c_ff[f'{decomp}_dirs_known_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(c_ff[f'{decomp}_dirs_unknown_{time}'], f'{gcov_metric}_percent'))
-        #df.loc[decomp, 'ff_dirs_mixed']     = pct(get_metric(c_ff[f'{decomp}_dirs_mixed_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'df']                = pct(get_metric(c_df[f'{decomp}_{time}'], f'{gcov_metric}_percent'))
 
     print(df)
@@ -198,7 +198,7 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
 
     code = f'''
 \\begin{{table*}}[htbp]
-\caption{{{metric.title()} coverage comparison {int(int(TIME)/60)} hrs (\%)}}
+\caption{{{metric.title()} coverage comparison {int(int(time)/60)} hrs (\%)}}
 \label{{tab:instruction_coverage}}
 \\begin{{tabular}}{{m{{1.7cm}}|M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}}}
 
@@ -247,7 +247,7 @@ def main():
     input : Path = BASE
     output : Path = Path(BASE, 'analysis')
     latex : Path = Path(output, 'latex')
-
+    
     raw_java_jd = import_java_jd()
     raw_java_ff = import_java_ff()
     raw_c_df = import_c_df()
@@ -258,16 +258,17 @@ def main():
     overall_c_df = get_overall_coverage(raw_c_df, 'c')
     overall_c_ff = get_overall_coverage(raw_c_ff, 'c')
 
-    for metric in ['INSTRUCTION', 'BRANCH']:
-        code = make_overall_latex_table(overall_java_jd,
-                        overall_java_ff,
-                        overall_c_df,
-                        overall_c_ff,
-                        metric=metric,
-                        time=TIME)
+    for time in TIMES:
+        for metric in ['INSTRUCTION', 'BRANCH']:
+            code = make_overall_latex_table(overall_java_jd,
+                            overall_java_ff,
+                            overall_c_df,
+                            overall_c_ff,
+                            metric=metric,
+                            time=time)
 
-        with open(Path(latex, f'overall_coverage_{metric}_{TIME}.tex'),'w') as f:
-            f.write(code)
+            with open(Path(latex, f'overall_coverage_{metric}_{time}.tex'),'w') as f:
+                f.write(code)
 
 if __name__=="__main__":
     main()

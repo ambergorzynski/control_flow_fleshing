@@ -10,6 +10,7 @@ cd $BASE
 python 'src/analysis/coverage/coverage.py'
 
 # Coverage comparison - Ghidra
+python 'src/analysis/coverage/diff_coverage.py --ghidra'
 
 # Coverage comparison - Java decompilers
 
