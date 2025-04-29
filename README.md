@@ -26,6 +26,14 @@ FuzzFlesh implements Control Flow Graph-based program generation to test decompi
 
 
 # Install
+## With Docker
+A built image based on `docker/Dockerfile` is available. Use the following to run the container in interactive mode:
+```
+docker pull agg22/fuzzflesh-ecoop-2025
+docker run -it agg22/fuzzflesh-ecoop-2025 bash
+```
+
+## Without Docker
 Run the following commands from the root directory to set up a Python virtual environment and install the necessary packages:
 ```
 cd $FUZZFLESH/src
