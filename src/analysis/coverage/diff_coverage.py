@@ -81,10 +81,8 @@ class Data():
                             right_on = 'nr',
                             suffixes = (f'_{self.one_id}', f'_{self.two_id}'))
         except:
-            print(f'Merge failed for sourcefile: {self.sourcefile}')
-            if self.one.empty and self.two.empty:
-                print(f'Both dataframes are empty')
-            else:
+            if not (self.one.empty and self.two.empty):
+                print(f'Merge failed for non-empty sourcefiles: {self.sourcefile}')
                 print(f'Some data here! Check manually')
 
             return (Summary(self.decompiler, self.one_id, self.two_id, empty=True), pd.DataFrame())
