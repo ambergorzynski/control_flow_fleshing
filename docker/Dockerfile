@@ -35,6 +35,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 WORKDIR /data/dev/fuzzflesh/src 
 RUN pip install -e .
 
+WORKDIR /data/dev/fuzzflesh/external
+RUN unzip cfr -d .
+RUN unzip jadx -d .
 WORKDIR /data/dev/fuzzflesh/external/cfr/cfr
 RUN mvn compile
 WORKDIR /data/dev/fuzzflesh/external/cfr/cfr_fix1
