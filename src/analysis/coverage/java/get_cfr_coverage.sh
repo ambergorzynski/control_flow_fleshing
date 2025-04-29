@@ -10,6 +10,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 
 # Path to checkout of CFR with coverage from https://github.com/ambergorzynski/cfr_cov 
 CFR=/data/dev/fuzzflesh/external/coverage/cfr_cov
+unzip /data/dev/fuzzflesh/external/coverage_zipped/cfr_cov.zip -d $CFR
 
 # Path to Java 11, which is necessary to run CFR
 JAVA11=/usr/lib/jvm/java-11-openjdk-amd64/
@@ -46,3 +47,6 @@ rm -f $OUTPUT/html_coverage_${TOOL}.zip
 
 cp target/site/jacoco/jacoco.csv  $OUTPUT/coverage.csv
 cp target/site/jacoco/jacoco.xml  $OUTPUT/coverage.xml
+
+rm -rf $CFR
+

@@ -10,6 +10,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 
 # Path to checkout of FernFlower with coverage from https://github.com/ambergorzynski/intellij-community-cov
 FERNFLOWER=/data/dev/fuzzflesh/external/coverage/intellij-community-cov/plugins/java-decompiler/engine
+unzip /data/dev/fuzzflesh/external/coverage_zipped/intellij-community-cov.zip -d $FERNFLOWER
 
 # Copy the test .xml into the FernFlower test-spec folder
 # FernFlower will read from this file to determine the location of the .class files
@@ -39,3 +40,6 @@ rm -f $OUTPUT/html.zip
 # Get csv and xml report
 cp build/customJacocoReportDir/test/jacocoTestReport.csv $OUTPUT/coverage.csv
 cp build/customJacocoReportDir/test/jacocoTestReport.xml $OUTPUT/coverage.xml
+
+rm -rf $FERNFLOWER
+
