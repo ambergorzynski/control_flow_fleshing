@@ -41,8 +41,6 @@ WORKDIR /data/dev/fuzzflesh/external/cfr/cfr_fix1
 RUN mvn compile
 WORKDIR /data/dev/fuzzflesh/external/jadx/jadx
 RUN ./gradlew dist
-WORKDIR /data/dev/fuzzflesh/external/jadx/jadx_fix1
-RUN ./gradlew dist
 WORKDIR /data/dev/fuzzflesh/data/head2head_results/cfr
 RUN unzip cfr_pre_ff_fix_commit.zip -d cfr_pre_ff_fix_commit
 WORKDIR /data/dev/fuzzflesh/data/head2head_results/jadx
