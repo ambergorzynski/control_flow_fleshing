@@ -9,7 +9,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # running this script.
 
 # Path to checkout of CFR with coverage from https://github.com/ambergorzynski/cfr_cov 
-CFR=/data/dev/cfr_cov
+CFR=/data/dev/fuzzflesh/external/coverage/cfr_cov
 
 # Path to Java 11, which is necessary to run CFR
 JAVA11=/usr/lib/jvm/java-11-openjdk-amd64/

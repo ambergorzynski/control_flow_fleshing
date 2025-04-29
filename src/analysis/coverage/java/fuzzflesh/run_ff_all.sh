@@ -1,22 +1,22 @@
 #!/bin/sh
+TIMELIMIT=$1 # in minutes
 
-BASE=/data/work/fuzzflesh/coverage/fuzzer_outputs/ff
+BASE=/data/dev/fuzzflesh/data/coverage_results/fuzzer_outputs/ff
 
 TOOL='fuzzflesh'
-TIMELIMIT=480
-DECOMPILERS="jadx"
-DIRECTIONS="dirs_unknown"
+DECOMPILERS="jadx cfr fernflower"
+DIRECTIONS="dirs_known"
 
 for DECOMPILER in $DECOMPILERS
 do
     for DIRS in $DIRECTIONS
     do 
         if [ $DECOMPILER = "cfr" ]; then
-            DECOMPILER_PATH='/data/dev/cfr/target/classes'
+            DECOMPILER_PATH='/data/dev/fuzzflesh/external/cfr/cfr/target/classes'
         elif [ $DECOMPILER = "fernflower" ]; then
-            DECOMPILER_PATH='/data/dev/fernflower/java-decompiler-engine-242.21829.40.jar'
+            DECOMPILER_PATH='/data/dev/fuzzflesh/external/fernflower/java-decompiler-engine-242.21829.40.jar'
         elif [ $DECOMPILER = "jadx" ]; then
-            DECOMPILER_PATH='/data/dev/jadx/bin/jadx'
+            DECOMPILER_PATH='/data/dev/fuzzflesh/external/jadx/jadx/build/jadx/bin/jadx'
         else 
             echo "Invalid decompiler"
             exit 1
@@ -25,7 +25,6 @@ do
         OUTPUT=${BASE}/${TOOL}_${DECOMPILER}_${DIRS}_${TIMELIMIT}
         
         echo $OUTPUT
-        exit 1
         mkdir -p $OUTPUT
 
         /bin/bash run_fuzzflesh.sh \

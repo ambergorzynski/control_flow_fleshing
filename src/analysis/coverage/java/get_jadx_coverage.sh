@@ -9,7 +9,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # running this script.
 
 # Path to checkout of FernFlower with coverage from https://github.com/ambergorzynski/jadx_cov
-JADX=/data/dev/jadx_cov/jadx-core
+JADX=/data/dev/fuzzflesh/external/coverage/jadx_cov/jadx-core
 
 # Copy the test .xml into the Jadx test-spec folder
 # Jadx will read from this file to determine the location of the .class files

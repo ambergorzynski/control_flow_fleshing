@@ -1,13 +1,13 @@
 #!/bin/sh
 
-BASE=/data/work/fuzzflesh/coverage
+BASE=/data/dev/fuzzflesh/data/coverage_results
 
 FUZZER_OUTPUT=${BASE}/fuzzer_outputs/ff
 RESULTS_OUTPUT=${BASE}/coverage_results/ff
 
-DECOMPILERS="jadx" # "jadx"
-DIRS="dirs_known dirs_unknown"
-TIMELIMIT="480"
+DECOMPILERS="cfr fernflower jadx"
+DIRS="dirs_known"
+TIMELIMIT="1"
 
 for DECOMPILER in $DECOMPILERS
 do

@@ -9,7 +9,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # running this script.
 
 # Path to checkout of FernFlower with coverage from https://github.com/ambergorzynski/intellij-community-cov
-FERNFLOWER=/data/dev/fernflower/intellij-community-cov/plugins/java-decompiler/engine
+FERNFLOWER=/data/dev/fuzzflesh/external/coverage/intellij-community-cov/plugins/java-decompiler/engine
 
 # Copy the test .xml into the FernFlower test-spec folder
 # FernFlower will read from this file to determine the location of the .class files
