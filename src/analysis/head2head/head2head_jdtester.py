@@ -56,6 +56,7 @@ def get_failing_tests_cfr(original : Path, output : Path, original_tests : dict[
     # check if each test decompiles successfully
     for test in original_tests:
         outpath = Path(output, test.stem)
+        print(f'outpath is {outpath}')
 
         original_testdir = Path(test,'eposide-1','1','original-1')
 
@@ -65,9 +66,11 @@ def get_failing_tests_cfr(original : Path, output : Path, original_tests : dict[
                     'org.benf.cfr.reader.Main',
                     f'{original_testdir}/Test.class',
                     '--outputpath',
-                    outpath,
+                    str(outpath),
                     '--clobber',
                     'True']
+
+        print(f'decompile cmd:\n{decompile_cmd}')
 
         result = subprocess.run(decompile_cmd)
 
@@ -93,7 +96,7 @@ def get_failing_tests_cfr(original : Path, output : Path, original_tests : dict[
         # if test recompiles, check if it runs
         exe_cmd = ['java', 'Test']
         try:
-            exe_result = subprocess.run(exe_cmd, cwd = outpath, capture_output=True, timeout=10)
+            exe_result = subprocess.run(exe_cmd, cwd = outpath, capture_output=True, timeout=30)
         except:
             print('Timeout')
             failing_tests[test] = 'Fail'
@@ -105,7 +108,7 @@ def get_failing_tests_cfr(original : Path, output : Path, original_tests : dict[
 
         # if test runs, run original test and compare output to original output
         try:
-            original_exe_result = subprocess.run(exe_cmd, cwd = original_testdir, capture_output=True, timeout=10)
+            original_exe_result = subprocess.run(exe_cmd, cwd = original_testdir, capture_output=True, timeout=30)
         except:
             print('Timeout')
             failing_tests[test] = 'Fail'
@@ -118,9 +121,7 @@ def get_failing_tests_cfr(original : Path, output : Path, original_tests : dict[
 
         passing_tests[test] = 'Success'
 
-
     return (failing_tests, passing_tests)
-
 
 def get_failing_tests_jadx(original : Path, output : Path, original_tests : dict[Path, str], jadx : Path):
 
@@ -161,7 +162,6 @@ def get_failing_tests_jadx(original : Path, output : Path, original_tests : dict
                 'Test.java']
 
         result = subprocess.run(recompile_cmd, cwd = outpath)
-
 
         if result.returncode != 0:
             failing_tests[test] = 'Fail'
@@ -301,6 +301,46 @@ def test_jadx(output):
     with open(Path(output,'passing_tests_on_postfix_commit_jadx.json'),'w') as f:
         json.dump({str(k) : str(v) for k,v in new_passing_tests.items()},f)
 
+def get_cfr_results_from_raw(start_commit_output, output, cfr):
+
+    (failing_tests, passing_tests) = get_initial_failing_tests(start_commit_output)
+
+    with open(Path(output,'failing_tests_on_initial_commit.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in failing_tests.items()}, f)
+
+    with open(Path(output,'passing_tests_on_initial_commit.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in passing_tests.items()}, f)
+
+    # attempt to decompile and execute each previously failing test
+    outpath = Path(output, 'jd')
+    (new_failing_tests, new_passing_tests) = get_failing_tests_cfr(start_commit_output, outpath, failing_tests, cfr)
+
+    with open(Path(output,'failing_tests_on_postfix_commit.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in new_failing_tests.items()},f)
+
+    with open(Path(output,'passing_tests_on_postfix_commit.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in new_passing_tests.items()},f)
+
+def get_jadx_results_from_raw(start_commit_output, output, jadx):
+
+    (failing_tests, passing_tests) = get_initial_failing_tests(start_commit_output)
+
+    with open(Path(output,'failing_tests_on_initial_commit_jadx.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in failing_tests.items()}, f)
+
+    with open(Path(output,'passing_tests_on_initial_commit_jadx.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in passing_tests.items()}, f)
+
+    # attempt to decompile and execute each previously failing test
+    outpath = Path(output, 'jd')
+    (new_failing_tests, new_passing_tests) = get_failing_tests_jadx(start_commit_output, outpath, failing_tests, jadx)
+
+    with open(Path(output,'failing_tests_on_postfix_commit_jadx.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in new_failing_tests.items()},f)
+
+    with open(Path(output,'passing_tests_on_postfix_commit_jadx.json'),'w') as f:
+        json.dump({str(k) : str(v) for k,v in new_passing_tests.items()},f)
+
 def compare_results(name, output):
     
     with open(Path(output, f'failing_tests_on_initial_commit_{name}.json'),'r') as f:
@@ -334,9 +374,10 @@ def main():
     parser.add_argument('--jadx', action=argparse.BooleanOptionalAction)
     parser.add_argument('--cfr', action=argparse.BooleanOptionalAction)
     parser.add_argument('--analyse', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--analyse-raw', action=argparse.BooleanOptionalAction)
 
     args = parser.parse_args()
-
+    base = Path('/data/dev/fuzzflesh')
     cfr_output = Path('/data/dev/fuzzflesh/data/head2head_results/cfr')
     jadx_output = Path('/data/dev/fuzzflesh/data/head2head_results/jadx')
 
@@ -344,6 +385,18 @@ def main():
         test_jadx(jadx_output)
     elif args.cfr:
         test_cfr(cfr_output)
+    elif args.analyse_raw:
+        cfr_start_commit_output = Path(cfr_output, 'cfr_pre_ff_fix_commit')
+        cfr = Path(base, 'external', 'cfr', 'cfr_fix1')
+        get_cfr_results_from_raw(cfr_start_commit_output, cfr_output, cfr)
+
+        jadx_start_commit_output = Path(jadx_output, 'jadx_pre_ff_fix_commit')
+        jadx = Path(base, 'external', 'jadx', 'jadx_fix1')
+        get_jadx_results_from_raw(cfr_start_commit_output, jadx_output, jadx)
+
+        compare_results('cfr', cfr_output)
+        compare_results('jadx', jadx_output)
+
     elif args.analyse:
         compare_results('cfr', cfr_output)
         compare_results('jadx', jadx_output)
