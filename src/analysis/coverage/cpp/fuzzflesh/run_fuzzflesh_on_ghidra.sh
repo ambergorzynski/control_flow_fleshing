@@ -11,7 +11,7 @@ LANG='c'
 COMPILER='ghidra'
 COMPILER_PATH='g++'
 HEADLESS_PATH='/data/dev/fuzzflesh/src/fuzzflesh/harness/c/'
-INCLUDE_PATH='/data/dev/include/'
+INCLUDE_PATH='/data/dev/fuzzflesh/external/ghidra/ghidra_include'
 
 # if dirs
 if [ $DIRS = "dirs_known" ]
@@ -24,8 +24,6 @@ else
     echo "Directions argument is invalid"
     exit 1
 fi
-
-. $SRC/venv/bin/activate
 
 PYTHONPATH=$SRC/fuzzflesh
 

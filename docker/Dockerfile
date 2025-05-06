@@ -17,7 +17,11 @@ RUN apt-get clean
 
 WORKDIR /data/dev/fuzzflesh/src 
 RUN pip install -e .
-RUN pip install -r ../requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /data/dev/fuzzflesh/external/ghidra
+RUN wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1.2_build/ghidra_11.1.2_PUBLIC_20240709.zip
+RUN unzip ghidra_11.1.2_PUBLIC_20240709.zip
 
 WORKDIR /data/dev/fuzzflesh
 CMD ["./scripts/evaluation/02_run_fuzzflesh.sh"]

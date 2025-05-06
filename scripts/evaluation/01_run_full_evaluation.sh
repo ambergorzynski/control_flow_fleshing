@@ -7,3 +7,6 @@ BASE=/data/dev/fuzzflesh
 cd $BASE
 
 TIME_COVERAGE=1 # Minute
+
+echo "Running coverage analysis for FuzzFlesh on the decompiler Ghidra"
+./scripts/analysis/run_coverage_ff_on_ghidra.sh $TIME_COVERAGE
