@@ -21,6 +21,5 @@ evaluation/test/
 work*/
 fleshing_progs/
 csmith_temp/
-*.txt
 Notes.md
 todo.md
