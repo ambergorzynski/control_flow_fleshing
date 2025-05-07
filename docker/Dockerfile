@@ -17,6 +17,9 @@ RUN apt-get -y install pip
 
 RUN apt-get clean
 
+WORKDIR /data/dev/fuzzflesh/external/jdtester
+RUN unzip jdtester_cov.zip
+
 WORKDIR /data/dev/fuzzflesh/external/decfuzzer
 RUN wget https://github.com/ambergorzynski/DecFuzzer/archive/refs/heads/master.zip
 RUN unzip master.zip

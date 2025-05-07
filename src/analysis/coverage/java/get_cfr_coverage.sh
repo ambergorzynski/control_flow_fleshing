@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 OUTPUT=$1 # Path where results should be stored
 TEST_FILES=$2 # Path to the output directory containing fuzzer_classes.xml
@@ -28,8 +28,7 @@ fi
 export JAVA_HOME=$JAVA11
 export PATH=$JAVA11:$PATH
 
-# Run testse
-echo "HELLO"
+# Run tests
 echo $CFR
 cd $CFR
 mvn clean test

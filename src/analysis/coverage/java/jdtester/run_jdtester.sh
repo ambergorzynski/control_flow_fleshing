@@ -24,9 +24,9 @@ then
     PROGRAM_GENERATOR=Hephaestus
 fi
 
-JDTESTER=/data/dev/jdtester
+JDTESTER=/data/dev/fuzzflesh/external/jdtester/jdtester
 JDTESTER_JAR=${JDTESTER}/JD-Tester-${PROGRAM_GENERATOR}.jar
-ANDROID=/data/dev/Android/Sdk
+ANDROID=/data/dev/fuzzflesh/external/Android/Sdk
 PROGRAMS=1
 
 cd $JDTESTER

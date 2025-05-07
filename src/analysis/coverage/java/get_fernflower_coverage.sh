@@ -22,6 +22,7 @@ then
 fi
 
 # Run tests
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 cd $FERNFLOWER
 gradle clean build --no-build-cache
 

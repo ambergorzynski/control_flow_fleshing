@@ -1,13 +1,11 @@
 #!/bin/sh
 
-BASE=/data/work/fuzzflesh/coverage
+BASE=/data/dev/fuzzflesh/external/jdtester
 
-FUZZER_OUTPUT=${BASE}/fuzzer_outputs/jd
 RESULTS_OUTPUT=${BASE}/coverage_results/jd
 
 DECOMPILERS="jadx" # jadx fernflower"
 FUZZERS="javafuzzer hephaestus" #hephaestus"
-TIMELIMIT="480"
 
 for DECOMPILER in $DECOMPILERS
 do
