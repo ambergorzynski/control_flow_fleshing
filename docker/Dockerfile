@@ -21,6 +21,16 @@ RUN wget https://services.gradle.org/distributions/gradle-8.10-bin.zip
 RUN unzip gradle-8.10-bin.zip 
 ENV PATH=$PATH:/data/dev/fuzzflesh/external/gradle/gradle-8.10/bin
 
+WORKDIR /data/dev/fuzzflesh/external/jadx
+RUN wget https://github.com/skylot/jadx/releases/download/v1.5.1/jadx-1.5.1.zip
+RUN unzip jadx-1.5.1.zip -d jadx
+RUN rm -rf jadx-1.5.1.zip
+
+WORKDIR /data/dev/fuzzflesh/external/jadx
+RUN wget https://github.com/ambergorzynski/jadx_cov/archive/refs/heads/master.zip
+RUN unzip master.zip
+RUN rm -rf master.zip
+
 WORKDIR /data/dev/fuzzflesh/external/cfr
 RUN wget https://github.com/leibnitz27/cfr/archive/refs/heads/master.zip
 RUN unzip master.zip

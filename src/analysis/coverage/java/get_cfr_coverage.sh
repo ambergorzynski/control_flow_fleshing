@@ -37,6 +37,3 @@ mvn jacoco:report
 
 cp target/site/jacoco/jacoco.csv  $OUTPUT/coverage.csv
 cp target/site/jacoco/jacoco.xml  $OUTPUT/coverage.xml
-
-rm -rf $CFR
-

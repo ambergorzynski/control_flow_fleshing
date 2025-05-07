@@ -10,7 +10,7 @@ COVERAGE_OUTPUT=$COVERAGE_BASE/coverage_outputs/ff
 DIRS='dirs_known'
 
 echo "Run the fuzzer to generate test classes for the given time budget"
-#$COVERAGE/run_ff_all.sh $TIMELIMIT $DIRS $COVERAGE $FUZZER_OUTPUT
+$COVERAGE/run_ff_all.sh $TIMELIMIT $DIRS $COVERAGE $FUZZER_OUTPUT
 echo "Finished running the fuzzer"
 
 echo "Run the test classes using the decompiler instrumented with coverage"

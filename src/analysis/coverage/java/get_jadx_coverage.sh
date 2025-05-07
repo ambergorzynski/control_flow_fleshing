@@ -9,8 +9,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # running this script.
 
 # Path to checkout of FernFlower with coverage from https://github.com/ambergorzynski/jadx_cov
-JADX=/data/dev/fuzzflesh/external/coverage/jadx_cov/jadx-core
-unzip /data/dev/fuzzflesh/external/coverage_zipped/jadx_cov -d /data/dev/fuzzflesh/external/coverage/jadx_cov
+JADX=/data/dev/fuzzflesh/external/jadx/jadx_cov-master/jadx-core
 
 # Copy the test .xml into the Jadx test-spec folder
 # Jadx will read from this file to determine the location of the .class files
@@ -36,19 +35,5 @@ then
     exit 1
 fi
 
-
-# View interactive coverage results
-#open build/reports/jacoco/test/html/index.html
-
-# Compress coverage report and save
-(cd build/reports/jacoco/test && zip -r html.zip html)
-
-mv build/reports/jacoco/test/html.zip $OUTPUT/html.zip
-rm -rf $OUTPUT/html
-unzip $OUTPUT/html.zip -d $OUTPUT/html
-rm -f $OUTPUT/html.zip
-
 cp build/reports/jacoco/test/jacocoTestReport.csv $OUTPUT/coverage.csv
 cp build/reports/jacoco/test/jacocoTestReport.xml $OUTPUT/coverage.xml
-
-rm -rf  /data/dev/fuzzflesh/external/coverage/jadx_cov

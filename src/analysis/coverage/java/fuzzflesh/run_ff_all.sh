@@ -5,7 +5,7 @@ COVERAGE=$3
 BASE=$4
 
 TOOL='fuzzflesh'
-DECOMPILERS="cfr" # "cfr fernflower jadx"
+DECOMPILERS="jadx" # "cfr fernflower jadx"
 DIRECTIONS="dirs_known"
 
 for DECOMPILER in $DECOMPILERS
@@ -17,7 +17,7 @@ do
         elif [ $DECOMPILER = "fernflower" ]; then
             DECOMPILER_PATH='/data/dev/fuzzflesh/external/fernflower/java-decompiler-engine-242.21829.40.jar'
         elif [ $DECOMPILER = "jadx" ]; then
-            DECOMPILER_PATH='/data/dev/fuzzflesh/external/jadx/jadx/build/jadx/bin/jadx'
+            DECOMPILER_PATH='/data/dev/fuzzflesh/external/jadx/jadx/bin/jadx'
         else 
             echo "Invalid decompiler"
             exit 1
