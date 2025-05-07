@@ -1,13 +1,12 @@
 #!/bin/sh
 
-BASE=/data/dev/fuzzflesh/data/coverage_results
+TIMELIMIT=$1
+DIRS=$2
+COVERAGE=$3
+FUZZER_OUTPUT=$4
+RESULTS_OUTPUT=$5
 
-FUZZER_OUTPUT=${BASE}/fuzzer_outputs/ff
-RESULTS_OUTPUT=${BASE}/coverage_results/ff
-
-DECOMPILERS="cfr fernflower jadx"
-DIRS="dirs_known"
-TIMELIMIT="1"
+DECOMPILERS="fernflower" # "cfr fernflower jadx"
 
 for DECOMPILER in $DECOMPILERS
 do
@@ -18,7 +17,7 @@ do
             FUZZER_XML=${FUZZER_OUTPUT}/fuzzflesh_${DECOMPILER}_${DIR}_${TIME}/out
             OUTDIR=${RESULTS_OUTPUT}/fuzzflesh_${DECOMPILER}_${DIR}_${TIME}
             mkdir -p $OUTDIR
-            /bin/bash ../get_${DECOMPILER}_coverage.sh $OUTDIR $FUZZER_XML fuzzflesh
+            /bin/bash ${COVERAGE}/get_${DECOMPILER}_coverage.sh $OUTDIR $FUZZER_XML fuzzflesh
         done
     done
 done

@@ -1,10 +1,11 @@
 #!/bin/sh
 TIMELIMIT=$1 # in minutes
-
-BASE=/data/dev/fuzzflesh/data/coverage_results/fuzzer_outputs/ff
+DIRS=$2
+COVERAGE=$3
+BASE=$4
 
 TOOL='fuzzflesh'
-DECOMPILERS="jadx cfr fernflower"
+DECOMPILERS="fernflower" # "cfr fernflower jadx"
 DIRECTIONS="dirs_known"
 
 for DECOMPILER in $DECOMPILERS
@@ -27,7 +28,7 @@ do
         echo $OUTPUT
         mkdir -p $OUTPUT
 
-        /bin/bash run_fuzzflesh.sh \
+        /bin/bash $COVERAGE/run_fuzzflesh.sh \
         $TOOL \
         $OUTPUT \
         $DECOMPILER \

@@ -8,12 +8,11 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # The relevant tests should be added to the test directory prior to 
 # running this script.
 
-# Path to checkout of FernFlower with coverage from https://github.com/ambergorzynski/intellij-community-cov
-FERNFLOWER=/data/dev/fuzzflesh/external/coverage/intellij-community-cov/plugins/java-decompiler/engine
-unzip /data/dev/fuzzflesh/external/coverage_zipped/intellij-community-cov.zip -d $FERNFLOWER
+FERNFLOWER=/data/dev/fuzzflesh/external/fernflower/fernflower_cov/engine
 
 # Copy the test .xml into the FernFlower test-spec folder
 # FernFlower will read from this file to determine the location of the .class files
+echo ${TEST_FILES}/fuzzer_classes.xml
 cp ${TEST_FILES}/fuzzer_classes.xml ${FERNFLOWER}/testSpecs/
 RESULT=$?
 if [[ $RESULT != 0 ]]
@@ -26,20 +25,7 @@ fi
 cd $FERNFLOWER
 gradle clean build --no-build-cache
 
-# View interactive coverage results
-#open build/jacocoHtml/index.html
-
-# Compress coverage report and save
-(cd build && zip -r html.zip jacocoHtml)
-
-mv build/html.zip $OUTPUT/html.zip
-rm -rf $OUTPUT/html
-unzip $OUTPUT/html -d $OUTPUT/html
-rm -f $OUTPUT/html.zip
-
 # Get csv and xml report
 cp build/customJacocoReportDir/test/jacocoTestReport.csv $OUTPUT/coverage.csv
 cp build/customJacocoReportDir/test/jacocoTestReport.xml $OUTPUT/coverage.xml
-
-rm -rf $FERNFLOWER
 

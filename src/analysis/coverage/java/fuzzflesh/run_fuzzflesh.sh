@@ -22,11 +22,9 @@ fi
 SRC='/data/dev/fuzzflesh/src'
 ACTION='fuzz'
 LANG='javabc'
-JVM='/usr/lib/jvm/java-19-openjdk-amd64/bin'
+JVM='/usr/lib/jvm/java-17-openjdk-amd64/bin'
 JASMIN='/data/dev/fuzzflesh/external/jasmin/jasmin-2.4'
 JSON='/data/dev/fuzzflesh/external/json/json-simple-1.1.1.jar'
-
-. $SRC/venv/bin/activate
 
 PYTHONPATH=$SRC/fuzzflesh
 
