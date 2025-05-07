@@ -6,7 +6,7 @@ COVERAGE=$3
 FUZZER_OUTPUT=$4
 RESULTS_OUTPUT=$5
 
-DECOMPILERS="fernflower" # "cfr fernflower jadx"
+DECOMPILERS="cfr" # "cfr fernflower jadx"
 
 for DECOMPILER in $DECOMPILERS
 do

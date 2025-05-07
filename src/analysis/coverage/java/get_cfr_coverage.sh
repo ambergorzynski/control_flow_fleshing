@@ -3,14 +3,12 @@
 OUTPUT=$1 # Path where results should be stored
 TEST_FILES=$2 # Path to the output directory containing fuzzer_classes.xml
 TOOL=$3 # Tool from {fuzzflesh, jdtester}
-
 # This script runs tests in the CFR test directory and gathers coverage.
 # The relevant tests should be added to the test directory prior to 
 # running this script.
 
 # Path to checkout of CFR with coverage from https://github.com/ambergorzynski/cfr_cov 
-CFR=/data/dev/fuzzflesh/external/coverage/cfr_cov
-unzip /data/dev/fuzzflesh/external/coverage_zipped/cfr_cov.zip -d $CFR
+CFR=/data/dev/fuzzflesh/external/cfr/cfr_cov-master
 
 # Path to Java 11, which is necessary to run CFR
 JAVA11=/usr/lib/jvm/java-11-openjdk-amd64/
@@ -30,20 +28,12 @@ fi
 export JAVA_HOME=$JAVA11
 export PATH=$JAVA11:$PATH
 
-# Run tests
+# Run testse
+echo "HELLO"
+echo $CFR
 cd $CFR
 mvn clean test
 mvn jacoco:report
-
-# View interactive coverage results
-#open target/site/index.html
-# Compress coverage report and save
-zip -r html_coverage_${TOOL}.zip target/site
-
-mv html_coverage_${TOOL}.zip $OUTPUT/html_coverage_${TOOL}.zip
-rm -rf $OUTPUT/html_coverage_${TOOL}
-unzip $OUTPUT/html_coverage_${TOOL}.zip -d $OUTPUT/html_coverage_${TOOL}
-rm -f $OUTPUT/html_coverage_${TOOL}.zip
 
 cp target/site/jacoco/jacoco.csv  $OUTPUT/coverage.csv
 cp target/site/jacoco/jacoco.xml  $OUTPUT/coverage.xml
