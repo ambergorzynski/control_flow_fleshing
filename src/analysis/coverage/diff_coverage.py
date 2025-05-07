@@ -578,12 +578,11 @@ def compare(
 def filter_for_ff(df : pd.DataFrame, value : str):
     return df[(df['ci'] == value) | (df['cb'] == value)]
     
-def get_java_coverage(base, output, output_unit):
+def get_java_coverage(base, output, output_unit, time):
 
     decompilers = ['cfr', 'fernflower', 'jadx']
     jdfuzzer = 'javafuzzer'
     dirs = 'dirs_known'
-    time = 120
 
     configs = {}
     coverage = {}
@@ -622,11 +621,10 @@ def get_java_coverage(base, output, output_unit):
         detailed_df[decomp] = detailed_df[decomp].reset_index(drop=True)
         detailed_df[decomp].to_csv(Path(output, f'ff_only_coverage_df_{decomp}'), sep = '\t')
 
-def get_c_coverage(base, output, output_unit):
+def get_c_coverage(base, output, output_unit, time):
 
     decompilers = ['ghidra11']
     dirs = 'dirs_known'
-    time = 120
 
     configs = {}
     coverage = {}
@@ -670,25 +668,31 @@ def main():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('data')
+    parser.add_argument('output')
+    parser.add_argument('--time', default=120)
     parser.add_argument('--c', action='store_true')
     parser.add_argument('--java', action='store_true')
 
     args = parser.parse_args()
 
     output_unit = 'num'
+    time = args.time
 
-    base : Path = Path('/data/dev/fuzzflesh/data/coverage_results')
-    output : Path = Path(base, 'analysis', 'latex')
+    base : Path = Path(args.data)
+    output : Path = Path(args.output, 'latex')
+
+    output.mkdir(exist_ok=True)
 
     if args.c:
-        get_c_coverage(base, output, output_unit)
+        get_c_coverage(base, output, output_unit, time)
 
     if args.java:
-        get_java_coverage(base, output, output_unit)
+        get_java_coverage(base, output, output_unit, time)
 
     if  args == None:
-        get_c_coverage(output_unit)
-        get_java_coverage(output_unit)
+        get_c_coverage(base, output, output_unit, time)
+        get_java_coverage(base, output, output_unit, time)
 
 if __name__=="__main__":
     main()

@@ -1,14 +1,13 @@
 from pathlib import Path 
 import pandas as pd 
+import argparse
 
 DECOMPILERS_JAVA = ['cfr','fernflower','jadx']
 DECOMPILERS_C = ['ghidra11']
 TOOLS = ['fuzzflesh','jdtester','decfuzzer']
 
-TIMES = ['120','480']
-BASE : Path = Path('/data/dev/fuzzflesh/data/coverage_results')
 
-def import_java_ff():
+def import_java_ff(BASE, TIMES):
     df = {}
 
     for decomp in DECOMPILERS_JAVA:
@@ -27,7 +26,7 @@ def import_java_ff():
 
     return df
 
-def import_java_jd():
+def import_java_jd(BASE, TIMES):
     df = {}
 
     for decomp in DECOMPILERS_JAVA:
@@ -49,7 +48,7 @@ def import_java_jd():
 
     return df
 
-def import_c_df():
+def import_c_df(BASE, TIMES):
     df = {}
 
     for decomp in DECOMPILERS_C:
@@ -73,7 +72,7 @@ def import_c_df():
                 df[f'{decomp}_{time}'] = data
     return df
 
-def import_c_ff():
+def import_c_ff(BASE, TIMES):
     df = {}
 
     for decomp in DECOMPILERS_C:
@@ -193,6 +192,7 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
         df.loc[decomp, 'ff_dirs_unknown']   = pct(get_metric(c_ff[f'{decomp}_dirs_unknown_{time}'], f'{gcov_metric}_percent'))
         df.loc[decomp, 'df']                = pct(get_metric(c_df[f'{decomp}_{time}'], f'{gcov_metric}_percent'))
 
+    print(f'Overall {metric} coverage for a coverage run of {time} minutes')
     print(df)
 
 
@@ -244,21 +244,37 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('data')
+    parser.add_argument('output')
+    parser.add_argument('--time',default=None)
+
+    args = parser.parse_args()
+
+    BASE = Path(args.data)
+    output = Path(args.output)
+
     input : Path = BASE
-    output : Path = Path(BASE, 'analysis')
     latex : Path = Path(output, 'latex')
+
+    if args.time is None:
+        times = ['120','480']
+    else:
+        times = [args.time]
+
+    latex.mkdir(exist_ok=True)
     
-    raw_java_jd = import_java_jd()
-    raw_java_ff = import_java_ff()
-    raw_c_df = import_c_df()
-    raw_c_ff = import_c_ff()
+    raw_java_jd = import_java_jd(BASE, times)
+    raw_java_ff = import_java_ff(BASE, times)
+    raw_c_df = import_c_df(BASE, times)
+    raw_c_ff = import_c_ff(BASE, times)
 
     overall_java_jd = get_overall_coverage(raw_java_jd, 'java')
     overall_java_ff = get_overall_coverage(raw_java_ff, 'java')
     overall_c_df = get_overall_coverage(raw_c_df, 'c')
     overall_c_ff = get_overall_coverage(raw_c_ff, 'c')
 
-    for time in TIMES:
+    for time in times:
         for metric in ['INSTRUCTION', 'BRANCH']:
             code = make_overall_latex_table(overall_java_jd,
                             overall_java_ff,
