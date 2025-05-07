@@ -5,7 +5,7 @@ COVERAGE=$3
 BASE=$4
 
 TOOL='fuzzflesh'
-DECOMPILERS="jadx" # "cfr fernflower jadx"
+DECOMPILERS="cfr fernflower jadx"
 DIRECTIONS="dirs_known"
 
 for DECOMPILER in $DECOMPILERS
