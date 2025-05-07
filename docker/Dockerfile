@@ -21,6 +21,13 @@ RUN wget https://services.gradle.org/distributions/gradle-8.10-bin.zip
 RUN unzip gradle-8.10-bin.zip 
 ENV PATH=$PATH:/data/dev/fuzzflesh/external/gradle/gradle-8.10/bin
 
+WORKDIR /data/dev/fuzzflesh/external/fernflower
+RUN wget https://github.com/ambergorzynski/intellij-community-cov/archive/refs/heads/master.zip
+RUN unzip master.zip
+RUN cp -r intellij-community-cov-master/plugins/java-decompiler/engine fernflower_cov/
+RUN rm -rf intellij-community-cov-master
+
+
 WORKDIR /data/dev/fuzzflesh/external/ghidra
 RUN wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410.zip
 RUN unzip ghidra_11.0.3_PUBLIC_20240410.zip
