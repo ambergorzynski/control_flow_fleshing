@@ -8,8 +8,7 @@ cd $R2GHIDRA/ghidra-native
 
 gcovr -r . \
     --csv ${OUTPUT}/coverage.csv \
-    --xml ${OUTPUT}/coverage.xml \
-    --html --html-details ${OUTPUT}/coverage.html
+    --xml ${OUTPUT}/coverage.xml
 
 
 

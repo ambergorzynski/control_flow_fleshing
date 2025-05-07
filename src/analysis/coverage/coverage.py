@@ -53,10 +53,10 @@ def import_c_df(BASE, TIMES):
 
     for decomp in DECOMPILERS_C:
             for time in TIMES:
-                if time == '120':
-                    file = f'decfuzzer_{decomp}_{time}/coverage.csv'
-                elif time == '480':
+                if time == '480':
                     file = 'coverage_seed_1000_csmith_progs_ghidra_11.csv'
+                else:
+                    file = f'decfuzzer_{decomp}_{time}/coverage.csv'
                 try:
                     datapath = Path(BASE,
                             'df',

@@ -14,7 +14,13 @@ RUN apt-get -y install openjdk-17-jdk
 RUN apt-get -y install maven
 RUN apt-get -y install python3.10
 RUN apt-get -y install pip
+
 RUN apt-get clean
+
+WORKDIR /data/dev/fuzzflesh/external/decfuzzer
+RUN wget https://github.com/ambergorzynski/DecFuzzer/archive/refs/heads/master.zip
+RUN unzip master.zip
+RUN unzip experiments.zip
 
 WORKDIR /data/dev/fuzzflesh/external/gradle
 RUN wget https://services.gradle.org/distributions/gradle-8.10-bin.zip
@@ -65,6 +71,7 @@ RUN unzip ghidra1103release.zip
 WORKDIR /data/dev/fuzzflesh/external/ghidra/ghidra_cov-ghidra1103release
 RUN gradle -I gradle/support/fetchDependencies.gradle
 RUN gradle buildGhidra
+RUN gradle prepdev
 
 WORKDIR /data/dev/fuzzflesh/src 
 RUN pip install -e .

@@ -1,24 +1,16 @@
 #!/bin/sh
 
-OUTPUT=$1
-TIMELIMIT=$2
-
-DECFUZZER=/data/dev/decfuzzer
-
-# clean coverage files
-cd /data/dev/radare2/r2ghidra-11
-find . -name "*.gcda" | xargs rm -f
+TIMELIMIT=$1
+OUTPUT=$2
+DECFUZZER=/data/dev/fuzzflesh/external/decfuzzer/DecFuzzer-master
 
 cd $DECFUZZER
 
-# Must start the server as root
-# sudo service sql start
+# Start the server
+service sql start
 
-source venv/bin/activate
+#export HOME=/data/dev
+#export PATH=/data/dev/radare2/install/radare2-ghidra11/bin:$PATH
 
-export HOME=/data/dev
-export PATH=/data/dev/radare2/install/radare2-ghidra11/bin:$PATH
-
-python run.py
-#python run_with_generation.py $TIMELIMIT
+python run_with_generation.py
 

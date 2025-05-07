@@ -1,18 +1,11 @@
 #!/bin/sh
 
-TOOL='decfuzzer'
-BASE=/data/work/fuzzflesh/coverage/fuzzer_outputs/df
+COVERAGE=$
+BASE=$3
 
-for DECOMPILER in ghidra11
-do
-    for TIMELIMIT in 120 
-    do
-        OUTPUT=${BASE}/${TOOL}_${DECOMPILER}_${TIMELIMIT}
-        mkdir -p $OUTPUT
+OUTPUT=${BASE}/decfuzzer_ghidra_11_${TIMELIMIT}
+COVERAGE=/data/dev/fuzzflesh/src/analysis/coverage/cpp/decfuzzer
+mkdir -p $OUTPUT
 
-        /bin/bash run_decfuzzer.sh \
-            $OUTPUT \
-            $TIMELIMIT 
-
-    done
-done
+/bin/bash $COVERAGE/run_decfuzzer.sh \
+    $OUTPUT 
