@@ -8,7 +8,7 @@ TOOL=$3 # Tool from {fuzzflesh, jdtester}
 # The relevant tests should be added to the test directory prior to 
 # running this script.
 
-FERNFLOWER=/data/dev/fuzzflesh/external/fernflower/fernflower_cov/engine
+FERNFLOWER=/data/dev/fuzzflesh/external/fernflower/fernflower_cov
 
 # Copy the test .xml into the FernFlower test-spec folder
 # FernFlower will read from this file to determine the location of the .class files

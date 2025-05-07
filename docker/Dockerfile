@@ -31,20 +31,23 @@ RUN wget https://github.com/ambergorzynski/jadx_cov/archive/refs/heads/master.zi
 RUN unzip master.zip
 RUN rm -rf master.zip
 
+ENV MAVEN_HOME=/usr/share/maven
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
 WORKDIR /data/dev/fuzzflesh/external/cfr
 RUN wget https://github.com/leibnitz27/cfr/archive/refs/heads/master.zip
 RUN unzip master.zip
 RUN rm -rf master.zip
 RUN mv cfr-master cfr
 WORKDIR /data/dev/fuzzflesh/external/cfr/cfr
-ENV MAVEN_HOME=/usr/share/maven
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 RUN mvn compile
 
 WORKDIR /data/dev/fuzzflesh/external/cfr
 RUN wget https://github.com/ambergorzynski/cfr_cov/archive/refs/heads/master.zip
 RUN unzip master.zip
 RUN rm -rf master.zip
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 WORKDIR /data/dev/fuzzflesh/external/fernflower
 RUN wget https://github.com/ambergorzynski/intellij-community-cov/archive/refs/heads/master.zip

@@ -26,7 +26,7 @@ fi
 cd $JADX
 gradle clean 
 ../gradlew :jadx-core:spotlessApply
-gradle build --no-build-cache
+gradle build --no-build-cache -x :jadx-core:javadoc
 gradle test --rerun-tasks
 RESULT=$?
 if [[ $RESULT != 0 ]]

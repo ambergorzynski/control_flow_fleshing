@@ -198,7 +198,7 @@ def make_overall_latex_table(java_jd : dict[str, pd.DataFrame],
 
     code = f'''
 \\begin{{table*}}[htbp]
-\caption{{{metric.title()} coverage comparison {int(int(time)/60)} hrs (\%)}}
+\caption{{{metric.title()} coverage comparison {int(int(float(time))/60)} hrs (\%)}}
 \label{{tab:instruction_coverage}}
 \\begin{{tabular}}{{m{{1.7cm}}|M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}M{{1.65}}}}
 
@@ -262,7 +262,7 @@ def main():
     else:
         times = [args.time]
 
-    latex.mkdir(exist_ok=True)
+    latex.mkdir(parents=True, exist_ok=True)
     
     raw_java_jd = import_java_jd(BASE, times)
     raw_java_ff = import_java_ff(BASE, times)

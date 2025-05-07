@@ -33,7 +33,7 @@ for program in programs:
     print(program)
     env=os.environ.copy()
     
-    env['JAVA_HOME']='/usr/lib/jvm/java-19-openjdk-amd64/'
+    env['JAVA_HOME']='/usr/lib/jvm/java-17-openjdk-amd64/'
 
     ghidra_cmd = [str(decompiler_path),
         str(outdir),
