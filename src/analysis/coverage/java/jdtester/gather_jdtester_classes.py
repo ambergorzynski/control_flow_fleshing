@@ -21,7 +21,6 @@ def main():
     os.makedirs(Path(args.xmldir),exist_ok=True)
     
     classpaths = {}
-
     for dir in datadir.glob('*'):
         if args.fuzzer == 'javafuzzer':
             num=Path(dir).stem
@@ -34,6 +33,7 @@ def main():
         elif args.fuzzer == 'hephaestus':
             for rounds in dir.glob('*'):
                 for num in rounds.glob('*'):
+                    print(num)
                     id=Path(num).stem
                     classpath = Path(num, f'original-{id}')
                     if Path(classpath, 'Test.jar').exists():

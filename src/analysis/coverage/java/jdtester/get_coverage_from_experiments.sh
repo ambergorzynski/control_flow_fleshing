@@ -5,7 +5,7 @@ TIMELIMIT=$1
 FUZZER_OUTPUT=/data/dev/fuzzflesh/data/coverage/raw/fuzzer_outputs/jd
 COVERAGE_OUTPUT=/data/dev/fuzzflesh/data/coverage/raw/coverage_outputs/jd
 
-for DECOMPILER in Jadx FernFlower CFR
+for DECOMPILER in Jadx CFR FernFlower
 do
     if [ $DECOMPILER = "CFR" ]; then
         DECOMP="cfr"
@@ -23,24 +23,25 @@ do
             PG="hephaestus"
         fi
         
-        DATADIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/allData
-        # Some paths have a typo 
-        if [ $PROGRAM_GENERATOR = "JavaFuzzer" ]; then
-            if [ $DECOMPILER = "Jadx" ]; then
-                DATADIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/allData/allData
-            fi
-        fi
-        if [ $PROGRAM_GENERATOR = "Hephaestus" ]; then
-            if [ $DECOMPILER = "Jadx" ]; then
-                DATADIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/allDara
-            fi
-        fi
         FUZZ_OUTDIR=$FUZZER_OUTPUT/jdtester_${DECOMP}_${PG}_${TIMELIMIT}
         mkdir -p $FUZZ_OUTDIR
 
-        # unzip experimental data
-        unzip -o $DATADIR.zip -d $DATADIR
+        ZIPDIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/allData.zip
+        OUTDIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/
 
+        # Folders have different structures :(
+        if [ $PROGRAM_GENERATOR = "Hephaestus" ]; then
+            DATADIR=$OUTDIR
+            if [ $DECOMPILER = "Jadx" ]; then
+                ZIPDIR=/data/dev/fuzzflesh/external/jdtester/DecompilerStudy-1.1/experimentData/${PROGRAM_GENERATOR}/${DECOMPILER}-detailedExperimentData/allDara.zip
+            fi
+        elif [ $PROGRAM_GENERATOR = "JavaFuzzer" ]; then
+            DATADIR=$OUTDIR/allData
+        fi
+
+        # unzip experimental data
+        unzip -o $ZIPDIR -d $OUTDIR
+        
         # run python script to collect class file locations
         python3.10 /data/dev/fuzzflesh/src/analysis/coverage/java/jdtester/gather_jdtester_classes.py \
             --datadir=$DATADIR \
@@ -55,5 +56,6 @@ do
         echo "Run coverage"
 
         /data/dev/fuzzflesh/src/analysis/coverage/java/get_${DECOMP}_coverage.sh $OUTDIR $FUZZ_OUTDIR jdtester
+        
     done
 done
