@@ -36,7 +36,7 @@ This script runs all coverage configurations. You still need to choose the cover
 # Use FuzzFlesh
 We provide some examples of how to use FuzzFlesh in the following overall script:
 ```
-/data/dev/fuzzflesh/scripts/evaluation/02_run_fuzzflesh.sh
+/data/dev/fuzzflesh/scripts/evaluation/03_run_fuzzflesh.sh
 ```
 
 The component scripts contain user-configurable parameters. For example, to run FuzzFlesh in fuzzing mode on the binary-to-C decompiler Ghidra:
