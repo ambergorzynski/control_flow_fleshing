@@ -18,7 +18,6 @@ fuzzing*/
 jasmin/
 work/
 evaluation/test/
-*.json
 work*/
 fleshing_progs/
 csmith_temp/
