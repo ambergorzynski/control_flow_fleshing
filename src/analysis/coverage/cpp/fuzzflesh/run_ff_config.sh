@@ -5,7 +5,7 @@ DIRS=$2
 DECOMPILER_PATH=$3
 DATA_OUTPUT=$4
 
-COVERAGE=$BASE/src/analysis/coverage/cpp/fuzzflesh
+COVERAGE=/data/dev/fuzzflesh/src/analysis/coverage/cpp/fuzzflesh
 TOOL='fuzzflesh'
 DECOMPILER='ghidra11'
 

@@ -17,6 +17,11 @@ RUN apt-get -y install pip
 
 RUN apt-get clean
 
+WORKDIR /data/dev/fuzzflesh/data/head2head_results/cfr
+RUN unzip cfr_pre_ff_fix_commit.zip
+WORKDIR /data/dev/fuzzflesh/data/head2head_results/jadx
+RUN unzip jadx_pre_ff_fix_commit.zip
+
 WORKDIR /data/dev/fuzzflesh/external/jdtester
 RUN wget https://github.com/AIRTEspresso/DecompilerStudy/archive/refs/tags/V1.1.zip
 RUN unzip V1.1.zip
@@ -75,7 +80,6 @@ RUN unzip ghidra1103release.zip
 WORKDIR /data/dev/fuzzflesh/external/ghidra/ghidra_cov-ghidra1103release
 RUN gradle -I gradle/support/fetchDependencies.gradle
 RUN gradle buildGhidra
-RUN gradle prepdev
 
 WORKDIR /data/dev/fuzzflesh/src 
 RUN pip install -e .

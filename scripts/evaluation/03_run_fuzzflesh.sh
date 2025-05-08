@@ -7,3 +7,6 @@ cd $BASE
 
 echo "Running FuzzFlesh on Ghidra..."
 ./scripts/run_ghidra.sh
+
+echo "Running FuzzFlesh on CFR..."
+./scripts/run_cfr.sh

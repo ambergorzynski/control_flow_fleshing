@@ -1,9 +1,16 @@
 #!/bin/bash
 
 TIMELIMIT=$1
+PARTIAL=$2
 
 FUZZER_OUTPUT=/data/dev/fuzzflesh/data/coverage/raw/fuzzer_outputs/jd
 COVERAGE_OUTPUT=/data/dev/fuzzflesh/data/coverage/raw/coverage_outputs/jd
+
+if [ -z "$3" ]; then
+    GENERATORS="JavaFuzzer Hephaestus"
+else
+    GENERATORS="JavaFuzzer"
+fi
 
 for DECOMPILER in Jadx CFR FernFlower
 do
@@ -14,7 +21,7 @@ do
     elif [ $DECOMPILER = "Jadx" ]; then
         DECOMP="jadx"
     fi
-    for PROGRAM_GENERATOR in JavaFuzzer Hephaestus
+    for PROGRAM_GENERATOR in $GENERATORS
     do 
 
         if [ $PROGRAM_GENERATOR = "JavaFuzzer" ]; then

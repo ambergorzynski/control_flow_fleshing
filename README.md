@@ -1,51 +1,47 @@
-# FuzzFlesh
-FuzzFlesh implements Control Flow Graph-based program generation to test decompiler toolchains in multiple languages. So far, we offer support for:
-- Java decompilers CFR, JADX, and Fernflower
-- Binary decompiler Ghidra
-- C\# decompiler ILSpy
+# FuzzFlesh ECOOP 2025 Artifact
+FuzzFlesh implements Control Flow Graph-based program generation to test decompiler toolchains in multiple languages. 
 
-# Pre-requisites 
-- Python 3.10
+# Quick-start
 
-## To test Java decompilers
-- JVM (tested with openjdk 19.0.2 2023-01-17)
-- Jasmin 2.4, which you can download here: https://jasmin.sourceforge.net/
-- json-simple-1.1.1, which you can download here: https://code.google.com/archive/p/json-simple/downloads
-- rapidjson, which you can find here: https://rapidjson.org/
-- Json.NET, which you can find here: https://www.newtonsoft.com/json
-- CFR: https://github.com/leibnitz27/cfr
-- FernFlower: https://github.com/JetBrains/intellij-community
-- JADX: https://github.com/skylot/jadx
-
-## To test binary decompilers
-- Ghidra: https://github.com/NationalSecurityAgency/ghidra
-
-## To test C# decompilers
-- .NET SDK
-- ILSpy: https://github.com/icsharpcode/ILSpy
-
-
-# Install
-## With Docker
 A built image based on `docker/Dockerfile` is available. Use the following to run the container in interactive mode:
 ```
 docker pull agg22/fuzzflesh-ecoop-2025
 docker run -it agg22/fuzzflesh-ecoop-2025 bash
 ```
 
-## Without Docker
-Run the following commands from the root directory to set up a Python virtual environment and install the necessary packages:
+We provide the following options for reproducing our results based on your available resources:
+
+## *Fast* Reproduce results from data gathered during our experiments 
 ```
-cd $FUZZFLESH/src
-python -m venv venv
-source venv/bin/activate
-pip install -e .
+cd /data/dev/fuzzflesh
+/data/dev/fuzzflesh/scripts/evaluation/00_run_results_reproduction.sh
 ```
 
-# Run FuzzFlesh
-- Create an output directory, ideally somewhere outside of the repo
-- Edit the template `scripts/run_template.sh` to point to the relevant filepaths on your machine. You can find many example scripts here demonstrating how to use FuzzFlesh to fuzz decompilers in different language settings
-- Run the shell script 
+## *Slow* Run experiments from scratch
+Replicating the coverage analysis from scratch requires a significant amount of time to run. The Java decompiler code coverage requires a total of 96 hours which comprises 8 hours for each of the following: FuzzFlesh in two configurations to test three decompilers (so 6 sets of 8 hour-runs) and JD-Tester in two configurations to test three decompilers (an additional 6 sets of 8 hour-runs). The C decompiler code coverage requires a total of 18 hours for FuzzFlesh (two configurations) and DecFuzzer to test Ghidra. We provide the specification for the machine used for our 8 hour runs above.
+
+It is possible to set an alternative time limit for a reduced version of the FuzzFlesh coverage analysis. We provide scripts to do so in the following locations (not included in the push-button evaluation so that you can set your preferred time budget based on your resources). The default time limit within the top-level script is set to 1 minute to allow for a quick start-up check, but this can be changed to run a longer analysis. Note that even with a 1 minute fuzzer time limit, the full evaluation script takes in the region of 30 minutes to run due to the results analysis and re-building of software required for this.
+
+```
+/data/dev/fuzzflesh/scripts/evaluation/01_run_full_evaluation.sh
+```
+# Use FuzzFlesh
+We provide some examples of how to use FuzzFlesh in the following overall script:
+```
+/data/dev/fuzzflesh/scripts/evaluation/02_run_fuzzflesh.sh
+```
+
+The component scripts contain user-configurable parameters. For example, to run FuzzFlesh in fuzzing mode on the binary-to-C decompiler Ghidra:
+```
+cd /data/dev/fuzzflesh
+./scripts/run_ghidra.sh
+```
+
+To run FuzzFlesh in fuzzing mode on the Java decompiler CFR:
+```
+cd /data/dev/fuzzflesh
+./scripts/run_cfr.sh
+```
 
 # Extend FuzzFlesh to a new language
 Extending FuzzFlesh to an additional language is straightforward. Implement the following:
@@ -57,18 +53,6 @@ You should now be able to use FuzzFlesh in 'gen' mode to produce programs in you
 - Add a new language directory to `src/fuzzflesh/harness`
 - Implement the abstract class `Runner` which is in `src/fuzzflesh/harness/runner.py`
 - Add the filepaths required for your decompiler to the relevant argument subparser in `src/fuzzflesh/__main__.py`, and add the decompiler to the `Compiler` class in `src/fuzzflesh/common/utils.py`
-
-# Coverage analysis
-Navigate to `src/analysis/coverage`. The scripts to gather coverage for each testing tool - decompiler combination can be found within the `cpp` and `java` folders. Note that this requires a significant amount of setup and running time and the scripts are unlikely to work without adjustment on your machine. The overall coverage analysis is run as follows:
-- First, activate the virtual environment `/path/to/src venv/bin/activate`
-- Scripts for running each tool with coverage are found within the respective language, tool, and decompiler folders. Jacoco is used for Java coverage, while gcovr is used for C/C++ coverag.
-- Once the raw coverage results are complete, analyse the results by adjusting the filepaths to your own locations as necessary and run `python coverage.py` 
-- To gather unique coverage: `python diff_coverage.py`
-
-# Bug-finding analysis
-To run the bug-finding analysis you must install the JD-Tester tool from https://github.com/AIRTEspresso/DecompilerStudy 
-
-Next, navigate to `src/analysis/head2head` and run `python head2head_jdtester.py --cfr` or `python head2head_jdtester.py --jadx`. It may be necessary to run the shell scripts manually depending on your JD-Tester installation location.
 
 # License
 Copyright 2025 Amber Gorzynski

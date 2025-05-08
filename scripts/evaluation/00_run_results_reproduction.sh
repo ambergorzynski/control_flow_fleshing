@@ -4,7 +4,7 @@
 # The output is a set of Latex tables that correspond to the paper
 
 BASE=/data/dev/fuzzflesh
-COVERAGE_INPUT=$BASE/data/coverage/precalculated
+COVERAGE_DATA=$BASE/data/coverage/precalculated
 COVERAGE_OUTPUT=$BASE/output/coverage
 
 cd $BASE
@@ -13,7 +13,7 @@ cd $BASE
 python3.10 src/analysis/coverage/coverage.py $COVERAGE_DATA $COVERAGE_OUTPUT
 
 # Coverage comparison - Ghidra
-python3.10 src/analysis/coverage/diff_coverage.py $COVERAGE_DATA $COVERAGE_OUTPUT --c
+python3.10 src/analysis/coverage/diff_coverage.py $COVERAGE_DATA $COVERAGE_OUTPUT --c 
 
 # Coverage comparison - Java decompilers
 python3.10 src/analysis/coverage/diff_coverage.py $COVERAGE_DATA $COVERAGE_OUTPUT --java
