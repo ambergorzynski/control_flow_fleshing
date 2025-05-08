@@ -11,20 +11,28 @@ docker run -it agg22/fuzzflesh-ecoop-2025 bash
 
 We provide the following options for reproducing our results based on your available resources:
 
-## *Fast* Reproduce results from data gathered during our experiments 
+## *Fast*: Reproduce results from data gathered during our experiments 
 ```
 cd /data/dev/fuzzflesh
 /data/dev/fuzzflesh/scripts/evaluation/00_run_results_reproduction.sh
 ```
 
-## *Slow* Run experiments from scratch
+## *Slow*: Run some experiments from scratch
 Replicating the coverage analysis from scratch requires a significant amount of time to run. The Java decompiler code coverage requires a total of 96 hours which comprises 8 hours for each of the following: FuzzFlesh in two configurations to test three decompilers (so 6 sets of 8 hour-runs) and JD-Tester in two configurations to test three decompilers (an additional 6 sets of 8 hour-runs). The C decompiler code coverage requires a total of 18 hours for FuzzFlesh (two configurations) and DecFuzzer to test Ghidra. We provide the specification for the machine used for our 8 hour runs above.
 
 It is possible to set an alternative time limit for a reduced version of the FuzzFlesh coverage analysis. We provide scripts to do so in the following locations (not included in the push-button evaluation so that you can set your preferred time budget based on your resources). The default time limit within the top-level script is set to 1 minute to allow for a quick start-up check, but this can be changed to run a longer analysis. Note that even with a 1 minute fuzzer time limit, the full evaluation script takes in the region of 30 minutes to run due to the results analysis and re-building of software required for this.
 
+This script runs a subset of the experiments from scratch. You need to choose the coverage time budget; it is set to 1 minute to begin with.
 ```
-/data/dev/fuzzflesh/scripts/evaluation/01_run_full_evaluation.sh
+/data/dev/fuzzflesh/scripts/evaluation/01_run_partial_evaluation.sh
 ```
+
+## *Very slow*: Run all experiments from scratch
+This script runs all coverage configurations. You still need to choose the coverage time budget; it is set to 1 minute to begin with.
+```
+/data/dev/fuzzflesh/scripts/evaluation/02_run_full_evaluation.sh
+```
+
 # Use FuzzFlesh
 We provide some examples of how to use FuzzFlesh in the following overall script:
 ```

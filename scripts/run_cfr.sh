@@ -12,6 +12,8 @@ DECOMPILER_PATH='/data/dev/fuzzflesh/external/cfr/cfr/target/classes'
 
 PYTHONPATH=$SRC/fuzzflesh
 
+mkdir -p $OUTPUT
+
 python3 -m fuzzflesh \
     $ACTION \
     -base=$OUTPUT \

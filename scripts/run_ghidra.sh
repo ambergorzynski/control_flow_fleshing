@@ -6,11 +6,13 @@ OUTPUT='/data/dev/fuzzflesh/output'
 LANG='c'
 COMPILER='ghidra'
 COMPILER_PATH='g++'
-DECOMPILER_PATH='/data/dev/fuzzflesh/external/ghidra/ghidra_11.1.2_PUBLIC/support/analyzeHeadless'
+DECOMPILER_PATH='/data/dev/fuzzflesh/external/ghidra/ghidra_11.0.3_PUBLIC/support/analyzeHeadless'
 HEADLESS_PATH='/data/dev/fuzzflesh/src/fuzzflesh/harness/c/'
 INCLUDE_PATH='/data/dev/fuzzflesh/external/ghidra/ghidra_include/'
 
 PYTHONPATH=$SRC/fuzzflesh
+
+mkdir -p $OUTPUT
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 

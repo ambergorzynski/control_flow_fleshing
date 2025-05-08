@@ -81,4 +81,4 @@ RUN pip install -e .
 RUN pip install -r requirements.txt
 
 WORKDIR /data/dev/fuzzflesh
-CMD ["./scripts/evaluation/02_run_fuzzflesh.sh"]
+CMD ["./scripts/evaluation/00_run_results_reproduction.sh"]
